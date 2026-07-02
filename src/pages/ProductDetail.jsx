@@ -1,10 +1,15 @@
-import React, { useContext, useState } from 'react';
-import { AppContext } from '../context/AppContext';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addToCart, toggleWishlist, addReview } from '../store/slices/watchSlice';
 import ProductCard from '../components/ProductCard';
 import { Star, Shield, RefreshCw, Truck, Heart, ShoppingBag, Plus, Minus, ArrowLeft, CheckCircle2 } from 'lucide-react';
 
 export default function ProductDetail({ params, onPageChange }) {
-  const { products, addToCart, toggleWishlist, wishlist, addReview, currentUser } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const products = useSelector(state => state.watch.products);
+  const wishlist = useSelector(state => state.watch.wishlist);
+  const currentUser = useSelector(state => state.watch.currentUser);
+
   const productId = params?.id;
   const product = products.find(p => p.id === productId);
 
@@ -38,7 +43,7 @@ export default function ProductDetail({ params, onPageChange }) {
     : null;
 
   const handleAddToCart = () => {
-    const result = addToCart(product.id, qty);
+    const result = dispatch(addToCart(product.id, qty));
     if (result.success) {
       alert(`${qty} x ${product.name} added to cart!`);
     } else {
@@ -59,7 +64,7 @@ export default function ProductDetail({ params, onPageChange }) {
       return;
     }
 
-    const res = addReview(product.id, ratingInput, commentInput);
+    const res = dispatch(addReview(product.id, ratingInput, commentInput));
     if (res.success) {
       setReviewMessage(res.message);
       setCommentInput('');
@@ -190,7 +195,7 @@ export default function ProductDetail({ params, onPageChange }) {
               )}
               
               <button
-                onClick={() => toggleWishlist(product.id)}
+                onClick={() => dispatch(toggleWishlist(product.id))}
                 className={`py-4 px-6 border text-xs font-bold tracking-widest uppercase transition duration-300 flex items-center justify-center space-x-2 cursor-pointer ${
                   isWishlisted 
                     ? 'border-luxury-gold-dark bg-luxury-gold-dark text-white'

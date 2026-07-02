@@ -1,24 +1,22 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { AppContext } from '../context/AppContext';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { logoutUser, cancelOrder } from '../store/slices/watchSlice';
 import ProductCard from '../components/ProductCard';
-import { ShoppingBag, Heart, User, CheckCircle2, Package, XCircle, ShieldAlert, LogOut } from 'lucide-react';
+import { Heart, User, Package, LogOut } from 'lucide-react';
 
 export default function Profile({ params, onPageChange }) {
-  const { 
-    currentUser, 
-    logoutUser, 
-    orders, 
-    cancelOrder, 
-    wishlist, 
-    products 
-  } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const currentUser = useSelector(state => state.watch.currentUser);
+  const orders = useSelector(state => state.watch.orders);
+  const wishlist = useSelector(state => state.watch.wishlist);
+  const products = useSelector(state => state.watch.products);
 
   // Tab State
   const [activeTab, setActiveTab] = useState(params?.tab || 'orders');
   
   // Settings Form States
   const [profileName, setProfileName] = useState(currentUser?.name || '');
-  const [profileEmail, setProfileEmail] = useState(currentUser?.email || '');
+  const profileEmail = currentUser?.email || '';
   const [settingsMessage, setSettingsMessage] = useState('');
 
   // Sync tab updates
@@ -57,7 +55,7 @@ export default function Profile({ params, onPageChange }) {
 
   const handleCancelOrder = (orderId) => {
     if (window.confirm(`Are you sure you want to cancel order ${orderId}?`)) {
-      const res = cancelOrder(orderId);
+      const res = dispatch(cancelOrder(orderId));
       if (res.success) {
         alert('Order cancelled and stock restored successfully.');
       } else {
@@ -67,7 +65,7 @@ export default function Profile({ params, onPageChange }) {
   };
 
   const handleLogout = () => {
-    logoutUser();
+    dispatch(logoutUser());
     onPageChange('home');
   };
 
@@ -195,7 +193,7 @@ export default function Profile({ params, onPageChange }) {
                           {(order.status === 'Pending' || order.status === 'Paid' || order.status === 'Processing') && (
                             <button
                               onClick={() => handleCancelOrder(order.id)}
-                              className="text-[9px] text-luxury-red hover:text-red-400 font-bold uppercase border border-luxury-red/20 hover:border-luxury-red/50 px-2 py-1 rounded transition"
+                              className="text-[9px] text-luxury-red hover:text-red-400 font-bold uppercase border border-luxury-red/20 hover:border-luxury-red/50 px-2 py-1 rounded transition cursor-pointer"
                             >
                               Cancel
                             </button>

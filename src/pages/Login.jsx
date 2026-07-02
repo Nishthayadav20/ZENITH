@@ -1,30 +1,49 @@
-import React, { useContext, useState } from 'react';
-import { AppContext } from '../context/AppContext';
-import { Star, ShieldAlert, Key } from 'lucide-react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { loginUser, registerUser } from '../store/slices/watchSlice';
+import { Star, ShieldAlert, Key, CheckCircle2 } from 'lucide-react';
 
 export default function Login({ params, onPageChange }) {
-  const { loginUser, registerUser, currentUser } = useContext(AppContext);
+  const dispatch = useDispatch();
+  
   const redirectPage = params?.redirect || 'profile';
   const appliedCoupon = params?.appliedCoupon || null;
 
-  // States
-  const [isRegister, setIsRegister] = useState(false);
+  // Mode state: 'login' | 'register' | 'forgot'
+  const [authMode, setAuthMode] = useState('login');
+  
+  // Forms states
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  
+  // Status states
   const [errorMsg, setErrorMsg] = useState('');
+  const [forgotSuccess, setForgotSuccess] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrorMsg('');
+    setForgotSuccess(false);
 
-    if (!email || !password || (isRegister && !name)) {
+    if (authMode === 'forgot') {
+      if (!email) {
+        setErrorMsg('Please specify your registered email.');
+        return;
+      }
+      // Mock sending reset link
+      setForgotSuccess(true);
+      setEmail('');
+      return;
+    }
+
+    if (!email || !password || (authMode === 'register' && !name)) {
       setErrorMsg('Please complete all form inputs.');
       return;
     }
 
-    if (isRegister) {
-      registerUser(name, email, password);
+    if (authMode === 'register') {
+      dispatch(registerUser(name, email, password));
       // Redirect
       if (redirectPage === 'checkout') {
         onPageChange('checkout', { appliedCoupon });
@@ -32,7 +51,7 @@ export default function Login({ params, onPageChange }) {
         onPageChange('profile');
       }
     } else {
-      const res = loginUser(email, password);
+      const res = dispatch(loginUser(email, password));
       if (res.success) {
         if (res.role === 'admin') {
           onPageChange('admin');
@@ -53,7 +72,7 @@ export default function Login({ params, onPageChange }) {
   const handleAdminAutofill = () => {
     setEmail('admin@zenith.com');
     setPassword('admin123');
-    setIsRegister(false);
+    setAuthMode('login');
   };
 
   return (
@@ -70,25 +89,31 @@ export default function Login({ params, onPageChange }) {
       <div className="bg-luxury-gray border border-white/5 rounded-md p-6 sm:p-8 space-y-6 shadow-2xl">
         
         {/* Selector Tabs */}
-        <div className="flex border-b border-white/5">
-          <button
-            onClick={() => { setIsRegister(false); setErrorMsg(''); }}
-            className={`flex-1 pb-3 text-center text-xs font-bold uppercase tracking-wider border-b-2 cursor-pointer transition ${
-              !isRegister ? 'border-luxury-gold text-luxury-gold' : 'border-transparent text-gray-500 hover:text-gray-300'
-            }`}
-          >
-            Sign In
-          </button>
-          
-          <button
-            onClick={() => { setIsRegister(true); setErrorMsg(''); }}
-            className={`flex-1 pb-3 text-center text-xs font-bold uppercase tracking-wider border-b-2 cursor-pointer transition ${
-              isRegister ? 'border-luxury-gold text-luxury-gold' : 'border-transparent text-gray-500 hover:text-gray-300'
-            }`}
-          >
-            Register
-          </button>
-        </div>
+        {authMode !== 'forgot' ? (
+          <div className="flex border-b border-white/5">
+            <button
+              onClick={() => { setAuthMode('login'); setErrorMsg(''); }}
+              className={`flex-1 pb-3 text-center text-xs font-bold uppercase tracking-wider border-b-2 cursor-pointer transition ${
+                authMode === 'login' ? 'border-luxury-gold text-luxury-gold' : 'border-transparent text-gray-500 hover:text-gray-300'
+              }`}
+            >
+              Sign In
+            </button>
+            
+            <button
+              onClick={() => { setAuthMode('register'); setErrorMsg(''); }}
+              className={`flex-1 pb-3 text-center text-xs font-bold uppercase tracking-wider border-b-2 cursor-pointer transition ${
+                authMode === 'register' ? 'border-luxury-gold text-luxury-gold' : 'border-transparent text-gray-500 hover:text-gray-300'
+              }`}
+            >
+              Register
+            </button>
+          </div>
+        ) : (
+          <div className="border-b border-white/5 pb-3">
+            <h2 className="text-xs font-bold text-luxury-gold uppercase tracking-wider text-center">Reset Credentials Key</h2>
+          </div>
+        )}
 
         {errorMsg && (
           <div className="p-3 bg-luxury-red/10 border border-luxury-red/30 rounded text-luxury-red text-xs font-medium">
@@ -96,10 +121,17 @@ export default function Login({ params, onPageChange }) {
           </div>
         )}
 
+        {forgotSuccess && (
+          <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded text-emerald-400 text-xs font-medium flex items-center space-x-1.5">
+            <CheckCircle2 size={14} />
+            <span>A secure credential reset key has been dispatched to your email inbox.</span>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           
           {/* Name (Registration Only) */}
-          {isRegister && (
+          {authMode === 'register' && (
             <div className="space-y-1.5">
               <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Full Name</label>
               <input
@@ -113,7 +145,7 @@ export default function Login({ params, onPageChange }) {
             </div>
           )}
 
-          {/* Email */}
+          {/* Email (Always Needed) */}
           <div className="space-y-1.5">
             <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Email Address</label>
             <input
@@ -126,44 +158,74 @@ export default function Login({ params, onPageChange }) {
             />
           </div>
 
-          {/* Password */}
-          <div className="space-y-1.5">
-            <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Password</label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
-            />
-          </div>
+          {/* Password (Login & Register Only) */}
+          {authMode !== 'forgot' && (
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center">
+                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Password</label>
+                <button
+                  type="button"
+                  onClick={() => { setAuthMode('forgot'); setErrorMsg(''); }}
+                  className="text-[9px] text-luxury-gold hover:text-white transition uppercase font-semibold cursor-pointer"
+                >
+                  Forgot Password?
+                </button>
+              </div>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
+              />
+            </div>
+          )}
 
           <button
             type="submit"
             className="w-full py-3.5 bg-white text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold hover:text-luxury-dark transition cursor-pointer"
           >
-            {isRegister ? 'Create Account' : 'Authenticate Credentials'}
+            {authMode === 'register' 
+              ? 'Create Account' 
+              : authMode === 'forgot'
+              ? 'Request Reset Link'
+              : 'Authenticate Credentials'
+            }
           </button>
+
+          {authMode === 'forgot' && (
+            <div className="text-center pt-2">
+              <button
+                type="button"
+                onClick={() => { setAuthMode('login'); setErrorMsg(''); }}
+                className="text-[10px] text-gray-400 hover:text-white transition uppercase font-semibold cursor-pointer"
+              >
+                Return to Sign In
+              </button>
+            </div>
+          )}
         </form>
 
-        {/* Admin Quick Autofill Option */}
-        <div className="border-t border-white/5 pt-4 space-y-2">
-          <div className="flex items-center space-x-1.5 text-luxury-gold">
-            <ShieldAlert size={14} />
-            <span className="text-[9px] font-bold tracking-widest uppercase">Admin quick access</span>
+        {/* Admin Quick Autofill Option (Only visible when logging in) */}
+        {authMode === 'login' && (
+          <div className="border-t border-white/5 pt-4 space-y-2">
+            <div className="flex items-center space-x-1.5 text-luxury-gold">
+              <ShieldAlert size={14} />
+              <span className="text-[9px] font-bold tracking-widest uppercase">Admin quick access</span>
+            </div>
+            <p className="text-[10px] text-gray-500 font-light">
+              Skip filling forms. Use the preset administrator account to test stock controls and invoice status togglers.
+            </p>
+            <button
+              onClick={handleAdminAutofill}
+              className="w-full py-2 bg-luxury-gray hover:bg-white/5 border border-white/10 text-white font-semibold text-[10px] tracking-wider uppercase transition flex items-center justify-center space-x-1.5 cursor-pointer"
+            >
+              <Key size={10} />
+              <span>Load Admin Credentials</span>
+            </button>
           </div>
-          <p className="text-[10px] text-gray-500 font-light">
-            Skip filling forms. Use the preset administrator account to test stock controls and invoice status togglers.
-          </p>
-          <button
-            onClick={handleAdminAutofill}
-            className="w-full py-2 bg-luxury-gray hover:bg-white/5 border border-white/10 text-white font-semibold text-[10px] tracking-wider uppercase transition flex items-center justify-center space-x-1.5 cursor-pointer"
-          >
-            <Key size={10} />
-            <span>Load Admin Credentials</span>
-          </button>
-        </div>
+        )}
 
       </div>
     </div>

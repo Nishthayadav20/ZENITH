@@ -1,10 +1,14 @@
-import React, { useContext } from 'react';
-import { AppContext } from '../context/AppContext';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateCartQty, removeFromCart } from '../store/slices/watchSlice';
 import { X, Trash2, ShoppingBag, Plus, Minus, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CartDrawer({ isOpen, onClose, onPageChange }) {
-  const { cart, products, updateCartQty, removeFromCart, currentUser } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const cart = useSelector(state => state.watch.cart);
+  const products = useSelector(state => state.watch.products);
+  const currentUser = useSelector(state => state.watch.currentUser);
 
   // Calculate prices
   const cartItemsWithDetails = cart.map(item => {
@@ -101,7 +105,7 @@ export default function CartDrawer({ isOpen, onClose, onPageChange }) {
                             {item.product.name}
                           </h4>
                           <button
-                            onClick={() => removeFromCart(item.productId)}
+                            onClick={() => dispatch(removeFromCart(item.productId))}
                             className="text-luxury-muted hover:text-luxury-red transition ml-2 cursor-pointer"
                             title="Remove item"
                           >
@@ -117,7 +121,7 @@ export default function CartDrawer({ isOpen, onClose, onPageChange }) {
                         {/* Quantity controls */}
                         <div className="flex items-center border border-luxury-text/10 rounded-md bg-luxury-bg">
                           <button
-                            onClick={() => updateCartQty(item.productId, item.quantity - 1)}
+                            onClick={() => dispatch(updateCartQty(item.productId, item.quantity - 1))}
                             className="p-1.5 text-luxury-muted hover:text-luxury-text transition cursor-pointer"
                           >
                             <Minus size={12} />
@@ -126,7 +130,7 @@ export default function CartDrawer({ isOpen, onClose, onPageChange }) {
                             {item.quantity}
                           </span>
                           <button
-                            onClick={() => updateCartQty(item.productId, item.quantity + 1)}
+                            onClick={() => dispatch(updateCartQty(item.productId, item.quantity + 1))}
                             className="p-1.5 text-luxury-muted hover:text-luxury-text transition cursor-pointer"
                           >
                             <Plus size={12} />

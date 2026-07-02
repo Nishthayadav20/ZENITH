@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
-import { AppContext } from '../context/AppContext';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import ProductCard from '../components/ProductCard';
 import { motion } from 'framer-motion';
-import { Star, ShieldAlert, Award, Compass, ArrowRight } from 'lucide-react';
+import { Star, Award, Compass, ArrowRight } from 'lucide-react';
 
 export default function Home({ onPageChange }) {
-  const { products } = useContext(AppContext);
+  const products = useSelector(state => state.watch.products);
 
   // Show first 4 products on home page
   const featuredProducts = products.slice(0, 4);

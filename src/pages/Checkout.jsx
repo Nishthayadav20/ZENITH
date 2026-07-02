@@ -1,10 +1,15 @@
-import React, { useContext, useState } from 'react';
-import { AppContext } from '../context/AppContext';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { placeOrder } from '../store/slices/watchSlice';
 import confetti from 'canvas-confetti';
-import { CheckCircle2, CreditCard, Landmark, Check, Star, ArrowRight, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, CreditCard, Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
 
 export default function Checkout({ params, onPageChange }) {
-  const { cart, products, placeOrder, currentUser } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const cart = useSelector(state => state.watch.cart);
+  const products = useSelector(state => state.watch.products);
+  const currentUser = useSelector(state => state.watch.currentUser);
+  
   const appliedCoupon = params?.appliedCoupon || null;
 
   // Form states
@@ -55,18 +60,18 @@ export default function Checkout({ params, onPageChange }) {
       }
     }
 
-    // Call state manager to place the order
-    const result = placeOrder(
+    // Call Redux dispatcher to place the order
+    const result = dispatch(placeOrder(
       shippingForm,
       { method: paymentMethod, cardNumber: cardForm.cardNumber || 'UPI' },
       appliedCoupon
-    );
+    ));
 
     if (result.success) {
       setOrderReceipt(result.order);
       setStep(3);
       
-      // Fire beautiful luxury confetti celebration!
+      // Fire confetti celebration!
       confetti({
         particleCount: 150,
         spread: 80,

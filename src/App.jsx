@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { AppProvider } from './context/AppContext';
+import { Provider } from 'react-redux';
+import { store } from './store';
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
@@ -9,6 +10,7 @@ import Checkout from './pages/Checkout';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
+import Static from './pages/Static';
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -38,6 +40,8 @@ function AppContent() {
         return <Login params={pageParams} onPageChange={handlePageChange} />;
       case 'admin':
         return <Admin onPageChange={handlePageChange} />;
+      case 'static':
+        return <Static params={pageParams} onPageChange={handlePageChange} />;
       default:
         return <Home onPageChange={handlePageChange} />;
     }
@@ -52,8 +56,9 @@ function AppContent() {
 
 export default function App() {
   return (
-    <AppProvider>
+    <Provider store={store}>
       <AppContent />
-    </AppProvider>
+    </Provider>
   );
 }
+

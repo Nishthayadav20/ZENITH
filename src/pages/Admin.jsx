@@ -1,25 +1,26 @@
-import React, { useContext, useState } from 'react';
-import { AppContext } from '../context/AppContext';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { 
+  updateOrderStatus, 
+  addProduct, 
+  editProduct, 
+  deleteProduct, 
+  addCoupon, 
+  deleteCoupon, 
+  moderateReview 
+} from '../store/slices/watchSlice';
 import { 
   BarChart3, Plus, Edit, Trash2, Check, X, Tag, Star, 
-  Package, AlertTriangle, IndianRupee, ShieldAlert, ArrowLeft, ArrowUpRight,
+  Package, AlertTriangle, ShieldAlert, ArrowLeft, ArrowUpRight,
   CheckCircle2
 } from 'lucide-react';
 
 export default function Admin({ onPageChange }) {
-  const { 
-    products, 
-    orders, 
-    coupons, 
-    updateOrderStatus, 
-    addProduct, 
-    editProduct, 
-    deleteProduct, 
-    addCoupon, 
-    deleteCoupon, 
-    moderateReview,
-    currentUser 
-  } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const products = useSelector(state => state.watch.products);
+  const orders = useSelector(state => state.watch.orders);
+  const coupons = useSelector(state => state.watch.coupons);
+  const currentUser = useSelector(state => state.watch.currentUser);
 
   // Active Admin Sub-Tab
   const [activeTab, setActiveTab] = useState('analytics'); // analytics | products | orders | coupons | reviews
@@ -98,7 +99,7 @@ export default function Admin({ onPageChange }) {
       alert('Please fill out Name, Price and Stock.');
       return;
     }
-    const res = addProduct(newProduct);
+    const res = dispatch(addProduct(newProduct));
     if (res.success) {
       alert('Product created successfully!');
       setShowAddForm(false);
@@ -117,7 +118,7 @@ export default function Admin({ onPageChange }) {
 
   const handleUpdateProduct = (e) => {
     e.preventDefault();
-    const res = editProduct(editingId, editForm);
+    const res = dispatch(editProduct(editingId, editForm));
     if (res.success) {
       alert('Product edited successfully!');
       setEditingId(null);
@@ -127,14 +128,14 @@ export default function Admin({ onPageChange }) {
 
   const handleDeleteProductClick = (id) => {
     if (window.confirm('Delete this timepiece from store inventory?')) {
-      deleteProduct(id);
+      dispatch(deleteProduct(id));
     }
   };
 
   const handleCreateCoupon = (e) => {
     e.preventDefault();
     if (!newCouponCode || !newCouponDiscount) return;
-    const res = addCoupon(newCouponCode, newCouponDiscount, newCouponDesc);
+    const res = dispatch(addCoupon(newCouponCode, newCouponDiscount, newCouponDesc));
     if (res.success) {
       alert('Coupon code activated!');
       setNewCouponCode('');
@@ -146,7 +147,7 @@ export default function Admin({ onPageChange }) {
   };
 
   const handleReviewStatus = (productId, reviewId, status) => {
-    moderateReview(productId, reviewId, status);
+    dispatch(moderateReview(productId, reviewId, status));
   };
 
   return (
@@ -600,7 +601,7 @@ export default function Admin({ onPageChange }) {
                       <td className="p-4">
                         <select
                           value={o.status}
-                          onChange={(e) => updateOrderStatus(o.id, e.target.value)}
+                          onChange={(e) => dispatch(updateOrderStatus(o.id, e.target.value))}
                           className={`bg-luxury-dark text-xs border rounded px-2.5 py-1 font-semibold focus:outline-none ${
                             o.status === 'Delivered' 
                               ? 'border-emerald-500 text-emerald-400'
@@ -700,7 +701,7 @@ export default function Admin({ onPageChange }) {
                   </div>
                   
                   <button
-                    onClick={() => deleteCoupon(c.code)}
+                    onClick={() => dispatch(deleteCoupon(c.code))}
                     className="p-1.5 text-gray-500 hover:text-luxury-red transition hover:bg-white/5 rounded"
                     title="Revoke code"
                   >

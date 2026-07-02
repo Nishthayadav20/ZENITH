@@ -1,10 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { AppContext } from '../context/AppContext';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import ProductCard from '../components/ProductCard';
 import { SlidersHorizontal, Search, RotateCcw, X } from 'lucide-react';
 
 export default function Shop({ onPageChange, filterParams }) {
-  const { products } = useContext(AppContext);
+  const products = useSelector(state => state.watch.products);
 
   // States
   const [searchQuery, setSearchQuery] = useState(filterParams?.search || '');
@@ -15,6 +15,10 @@ export default function Shop({ onPageChange, filterParams }) {
   const [priceRange, setPriceRange] = useState(6000); // Max boundary
   const [sortOption, setSortOption] = useState('featured');
   const [showFiltersMobile, setShowFiltersMobile] = useState(false);
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   // Listen to outer navigation category/gender updates
   useEffect(() => {
@@ -28,6 +32,11 @@ export default function Shop({ onPageChange, filterParams }) {
       setSearchQuery(filterParams.search);
     }
   }, [filterParams]);
+
+  // Reset page when filters or sorting changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory, selectedGender, selectedMovement, selectedStrap, priceRange, sortOption]);
 
   // Extract unique attribute lists for filters
   const movements = ['All', ...new Set(products.map(p => p.specs.movement))];
@@ -43,6 +52,7 @@ export default function Shop({ onPageChange, filterParams }) {
     setSelectedStrap('All');
     setPriceRange(6000);
     setSortOption('featured');
+    setCurrentPage(1);
   };
 
   // Filter products logic
@@ -77,6 +87,12 @@ export default function Shop({ onPageChange, filterParams }) {
         return Number(a.id) - Number(b.id);
     }
   });
+
+  // Pagination Slicing
+  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+  const indexOfLastProduct = currentPage * itemsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+  const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
   return (
     <div className="space-y-8">
@@ -235,7 +251,7 @@ export default function Shop({ onPageChange, filterParams }) {
 
             {/* Results Count (Desktop) */}
             <span className="hidden lg:inline text-xs text-luxury-muted">
-              Showing <span className="text-luxury-text font-bold">{sortedProducts.length}</span> timepieces
+              Showing <span className="text-luxury-text font-bold">{indexOfFirstProduct + 1}-{Math.min(indexOfLastProduct, sortedProducts.length)}</span> of <span className="text-luxury-text font-bold">{sortedProducts.length}</span> timepieces
             </span>
 
             {/* Sort Dropdown */}
@@ -267,14 +283,63 @@ export default function Shop({ onPageChange, filterParams }) {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {sortedProducts.map((product) => (
-                <ProductCard 
-                  key={product.id} 
-                  product={product} 
-                  onPageChange={onPageChange}
-                />
-              ))}
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                {currentProducts.map((product) => (
+                  <ProductCard 
+                    key={product.id} 
+                    product={product} 
+                    onPageChange={onPageChange}
+                  />
+                ))}
+              </div>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center space-x-2 pt-8 border-t border-luxury-text/10">
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => {
+                      setCurrentPage(prev => Math.max(1, prev - 1));
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="px-4 py-2 border border-luxury-text/10 rounded-md text-xs font-bold uppercase tracking-wider text-luxury-text hover:border-luxury-gold-dark transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    Prev
+                  </button>
+
+                  {[...Array(totalPages)].map((_, index) => {
+                    const pageNum = index + 1;
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => {
+                          setCurrentPage(pageNum);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className={`w-9 h-9 rounded-md text-xs font-bold transition cursor-pointer ${
+                          currentPage === pageNum
+                            ? 'bg-luxury-gold-dark text-white'
+                            : 'border border-luxury-text/10 text-luxury-text hover:border-luxury-gold-dark'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+
+                  <button
+                    disabled={currentPage === totalPages}
+                    onClick={() => {
+                      setCurrentPage(prev => Math.min(totalPages, prev + 1));
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="px-4 py-2 border border-luxury-text/10 rounded-md text-xs font-bold uppercase tracking-wider text-luxury-text hover:border-luxury-gold-dark transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>

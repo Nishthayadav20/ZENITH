@@ -1,9 +1,15 @@
-import React, { useContext, useState } from 'react';
-import { AppContext } from '../context/AppContext';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateCartQty, removeFromCart } from '../store/slices/watchSlice';
 import { ShoppingBag, Trash2, Plus, Minus, Tag, ArrowRight, ShieldCheck } from 'lucide-react';
 
 export default function CartPage({ onPageChange }) {
-  const { cart, products, updateCartQty, removeFromCart, coupons, currentUser } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const cart = useSelector(state => state.watch.cart);
+  const products = useSelector(state => state.watch.products);
+  const coupons = useSelector(state => state.watch.coupons);
+  const currentUser = useSelector(state => state.watch.currentUser);
+
   const [couponInput, setCouponInput] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState('');
@@ -61,7 +67,7 @@ export default function CartPage({ onPageChange }) {
         <div className="space-y-2">
           <h1 className="text-xl font-bold font-serif uppercase tracking-widest text-luxury-text">Your Bag is Empty</h1>
           <p className="text-luxury-muted text-xs leading-relaxed font-light">
-            You haven't added any luxury timepieces to your order. Explore our catalog to choose a classic piece.
+            You haven\'t added any luxury timepieces to your order. Explore our catalog to choose a classic piece.
           </p>
         </div>
         <button
@@ -119,7 +125,7 @@ export default function CartPage({ onPageChange }) {
                     </h3>
                     <p className="text-[10px] text-luxury-muted uppercase tracking-widest mt-1">Category: {item.product.category}</p>
                     <button
-                      onClick={() => removeFromCart(item.productId)}
+                      onClick={() => dispatch(removeFromCart(item.productId))}
                       className="text-[10px] text-luxury-red hover:text-red-400 font-semibold tracking-wider uppercase mt-2 flex items-center space-x-1 cursor-pointer"
                     >
                       <Trash2 size={12} />
@@ -139,14 +145,14 @@ export default function CartPage({ onPageChange }) {
                   <span className="md:hidden text-[10px] text-luxury-muted font-bold uppercase">Quantity</span>
                   <div className="flex items-center border border-luxury-text/10 rounded bg-luxury-bg">
                     <button
-                      onClick={() => updateCartQty(item.productId, item.quantity - 1)}
+                      onClick={() => dispatch(updateCartQty(item.productId, item.quantity - 1))}
                       className="p-1 text-luxury-muted hover:text-luxury-text cursor-pointer"
                     >
                       <Minus size={12} />
                     </button>
                     <span className="px-3 text-xs font-bold text-luxury-text">{item.quantity}</span>
                     <button
-                      onClick={() => updateCartQty(item.productId, item.quantity + 1)}
+                      onClick={() => dispatch(updateCartQty(item.productId, item.quantity + 1))}
                       className="p-1 text-luxury-muted hover:text-luxury-text cursor-pointer"
                     >
                       <Plus size={12} />

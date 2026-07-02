@@ -1,9 +1,19 @@
-import React, { useContext, useState } from 'react';
-import { AppContext } from '../context/AppContext';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { logoutUser } from '../store/slices/watchSlice';
 import { ShoppingBag, Heart, Search, User, ShieldAlert, Menu, X, Star } from 'lucide-react';
 
 export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
-  const { cart, wishlist, currentUser, logoutUser } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const cart = useSelector(state => state.watch.cart);
+  const wishlist = useSelector(state => state.watch.wishlist);
+  const currentUser = useSelector(state => state.watch.currentUser);
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    setMobileMenuOpen(false);
+    onPageChange('home');
+  };
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -186,7 +196,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
           ))}
           {currentUser && (
             <button
-              onClick={() => { logoutUser(); setMobileMenuOpen(false); onPageChange('home'); }}
+              onClick={handleLogout}
               className="text-left text-sm text-luxury-red hover:text-red-400 transition py-2 font-medium tracking-widest cursor-pointer"
             >
               LOGOUT

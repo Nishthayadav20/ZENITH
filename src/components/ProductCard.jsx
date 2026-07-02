@@ -1,9 +1,11 @@
-import React, { useContext } from 'react';
-import { AppContext } from '../context/AppContext';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addToCart, toggleWishlist } from '../store/slices/watchSlice';
 import { ShoppingBag, Heart, Star } from 'lucide-react';
 
 export default function ProductCard({ product, onPageChange }) {
-  const { addToCart, toggleWishlist, wishlist } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const wishlist = useSelector(state => state.watch.wishlist);
   const isWishlisted = wishlist.includes(product.id);
 
   // Calculate average rating
@@ -14,7 +16,7 @@ export default function ProductCard({ product, onPageChange }) {
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
-    const result = addToCart(product.id, 1);
+    const result = dispatch(addToCart(product.id, 1));
     if (result.success) {
       alert(`${product.name} added to cart!`);
     } else {
@@ -24,7 +26,7 @@ export default function ProductCard({ product, onPageChange }) {
 
   const handleWishlistToggle = (e) => {
     e.stopPropagation();
-    toggleWishlist(product.id);
+    dispatch(toggleWishlist(product.id));
   };
 
   return (

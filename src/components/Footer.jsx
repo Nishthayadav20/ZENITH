@@ -86,22 +86,22 @@ export default function Footer({ onPageChange }) {
           {/* Col 2: Customer Service */}
           <div className="space-y-4">
             <h4 className="text-xs font-bold tracking-widest text-white uppercase">Customer Care</h4>
-            <ul className="space-y-2 text-[11px] text-gray-400">
-              <li><a href="#" className="hover:text-luxury-gold transition">Book an Appointment</a></li>
-              <li><a href="#" className="hover:text-luxury-gold transition">Register My Watch</a></li>
-              <li><a href="#" className="hover:text-luxury-gold transition">Shipping & Returns</a></li>
-              <li><a href="#" className="hover:text-luxury-gold transition">FAQ</a></li>
+            <ul className="space-y-2 text-[11px] text-gray-400 flex flex-col items-start">
+              <li><button onClick={() => onPageChange('static', { view: 'contact' })} className="hover:text-luxury-gold transition cursor-pointer">Book an Appointment</button></li>
+              <li><button onClick={() => onPageChange('profile', { tab: 'settings' })} className="hover:text-luxury-gold transition cursor-pointer">Register My Watch</button></li>
+              <li><button onClick={() => onPageChange('static', { view: 'faq' })} className="hover:text-luxury-gold transition cursor-pointer">Shipping & Returns</button></li>
+              <li><button onClick={() => onPageChange('static', { view: 'faq' })} className="hover:text-luxury-gold transition cursor-pointer">FAQ</button></li>
             </ul>
           </div>
 
           {/* Col 3: Brand */}
           <div className="space-y-4">
             <h4 className="text-xs font-bold tracking-widest text-white uppercase">The Brand</h4>
-            <ul className="space-y-2 text-[11px] text-gray-400">
-              <li><a href="#" className="hover:text-luxury-gold transition">Our History</a></li>
-              <li><a href="#" className="hover:text-luxury-gold transition">The Manufacture</a></li>
-              <li><a href="#" className="hover:text-luxury-gold transition">Sustainability</a></li>
-              <li><a href="#" className="hover:text-luxury-gold transition">News & Events</a></li>
+            <ul className="space-y-2 text-[11px] text-gray-400 flex flex-col items-start">
+              <li><button onClick={() => onPageChange('static', { view: 'about' })} className="hover:text-luxury-gold transition cursor-pointer">Our History</button></li>
+              <li><button onClick={() => onPageChange('static', { view: 'about' })} className="hover:text-luxury-gold transition cursor-pointer">The Manufacture</button></li>
+              <li><button onClick={() => onPageChange('static', { view: 'about' })} className="hover:text-luxury-gold transition cursor-pointer">Sustainability</button></li>
+              <li><button onClick={() => onPageChange('static', { view: 'about' })} className="hover:text-luxury-gold transition cursor-pointer">News & Events</button></li>
             </ul>
           </div>
 
@@ -133,9 +133,9 @@ export default function Footer({ onPageChange }) {
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-500 space-y-4 md:space-y-0">
           <p>© 2026 ZENITH Watches. All Rights Reserved. Inspired by Swiss Precision.</p>
           <div className="flex space-x-6">
-            <a href="#" className="hover:text-white transition">Terms of Use</a>
-            <a href="#" className="hover:text-white transition">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition">Cookie Preferences</a>
+            <button onClick={() => onPageChange('static', { view: 'policies' })} className="hover:text-white transition cursor-pointer">Terms of Use</button>
+            <button onClick={() => onPageChange('static', { view: 'policies' })} className="hover:text-white transition cursor-pointer">Privacy Policy</button>
+            <button onClick={() => onPageChange('static', { view: 'policies' })} className="hover:text-white transition cursor-pointer">Cookie Preferences</button>
             <a href="#" className="hover:text-white transition">Accessibility</a>
           </div>
         </div>
