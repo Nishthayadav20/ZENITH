@@ -22,6 +22,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Debug Middleware
+app.use((req, res, next) => {
+  if (req.query && req.query.debug === 'true') {
+    return res.json({
+      originalUrl: req.originalUrl,
+      url: req.url,
+      path: req.path,
+      query: req.query,
+      headers: req.headers
+    });
+  }
+  next();
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
