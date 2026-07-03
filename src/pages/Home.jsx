@@ -164,8 +164,6 @@ export default function Home({ onPageChange }) {
         </div>
       </section>
 
-      </div> {/* Close max-w-7xl container to go wider */}
-
       {/* Featured Collection Grid (Full width edge-to-edge layout, touching margins) */}
       <section className="w-full py-24 bg-transparent space-y-8">
         <div className="text-center max-w-2xl mx-auto space-y-2">
