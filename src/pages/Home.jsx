@@ -37,8 +37,8 @@ export default function Home({ onPageChange }) {
   return (
     <div className="space-y-24 pb-12">
 
-      {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center -mx-4 sm:-mx-6 lg:-mx-8 overflow-hidden bg-black border-b border-white/5">
+      {/* Hero Section - Excluded from light theme CSS overrides by using bg-[#1c1a17] */}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-[#1c1a17] border-b border-white/5">
         {/* Fullscreen Video Background */}
         <div className="absolute inset-0 z-0">
           <video
@@ -46,16 +46,16 @@ export default function Home({ onPageChange }) {
             loop
             muted
             playsInline
-            className="object-cover w-full h-full filter brightness-50 contrast-105"
+            className="object-cover w-full h-full filter brightness-95 contrast-100"
           >
             <source src="/assets/background.mp4" type="video/mp4" />
             Your browser does not support HTML5 video.
           </video>
-          {/* Subtle vignette/shading overlays */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/60" />
+          {/* Subtle shading overlays */}
+          <div className="absolute inset-0 bg-black/20" />
         </div>
 
-        <div className="relative z-10 text-center sm:text-left px-4 max-w-7xl w-full mx-auto grid grid-cols-1 sm:grid-cols-12 gap-8 items-center">
+        <div className="relative z-10 text-center sm:text-left px-4 sm:px-6 lg:px-8 max-w-7xl w-full mx-auto grid grid-cols-1 sm:grid-cols-12 gap-8 items-center">
           <div className="col-span-1 sm:col-span-8 space-y-6">
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -73,7 +73,7 @@ export default function Home({ onPageChange }) {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="font-serif text-4xl sm:text-5xl md:text-7xl font-bold tracking-wider text-white leading-tight uppercase"
+              className="font-sans font-black text-4xl sm:text-5xl md:text-7xl font-bold tracking-wider text-white leading-tight uppercase"
             >
               Time to Reach <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-luxury-gold via-yellow-400 to-luxury-gold">
@@ -112,6 +112,9 @@ export default function Home({ onPageChange }) {
           </div>
         </div>
       </section>
+
+      {/* Wrapping the rest of the home sections to align them beautifully */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
 
       {/* Featured Collection Grid */}
       <section className="space-y-8">
@@ -261,7 +264,7 @@ export default function Home({ onPageChange }) {
         </div>
       </section>
 
-
+      </div> {/* Closing standard alignment container */}
 
     </div>
   );
