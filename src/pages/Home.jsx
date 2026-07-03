@@ -130,7 +130,7 @@ export default function Home({ onPageChange }) {
             className="dark-panel group relative h-[580px] overflow-hidden cursor-pointer"
           >
             <div
-              className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-[2000ms]"
+              className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-[600ms]"
               style={{ backgroundImage: "url('/assets/men_watches_beach.jpg')" }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
@@ -153,7 +153,7 @@ export default function Home({ onPageChange }) {
             className="dark-panel group relative h-[580px] overflow-hidden cursor-pointer"
           >
             <div
-              className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-[2000ms]"
+              className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-[600ms]"
               style={{ backgroundImage: "url('/assets/women_watches_beach.jpg')" }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
