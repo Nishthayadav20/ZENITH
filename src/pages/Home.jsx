@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import ProductCard from '../components/ProductCard';
 import { motion } from 'framer-motion';
 import { Star, Award, Compass, ArrowRight } from 'lucide-react';
-import HeroParticles from '../components/HeroParticles';
 
 export default function Home({ onPageChange }) {
   const products = useSelector(state => state.watch.products);
@@ -55,9 +54,6 @@ export default function Home({ onPageChange }) {
           {/* Subtle shading overlays */}
           <div className="absolute inset-0 bg-black/20" />
         </div>
-
-        {/* Dynamic Falling Snow/Dust Particles Animation */}
-        <HeroParticles />
 
         <div className="relative z-10 text-center sm:text-left px-4 sm:px-6 lg:px-8 max-w-7xl w-full mx-auto grid grid-cols-1 sm:grid-cols-12 gap-8 items-center">
           <div className="col-span-1 sm:col-span-8 space-y-6">
