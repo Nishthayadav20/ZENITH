@@ -196,20 +196,15 @@ export default function Home({ onPageChange }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent" />
               </div>
 
-              <div className="absolute bottom-0 left-0 p-8 z-10 space-y-2">
-                <h3 className="font-serif text-2xl sm:text-3xl font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.9)', textShadow: '0 1px 8px rgba(0,0,0,0.4)' }}>
-                  Women's Watches
-                </h3>
-                <button
-                  onClick={(e) => { e.stopPropagation(); onPageChange('shop', { gender: 'women' }); }}
-                  className="flex items-center gap-2 text-xs font-bold tracking-widest uppercase transition-all duration-300 group/btn"
-                  style={{ color: 'rgba(255,255,255,0.85)' }}
-                >
-                  <span className="border-b border-white/60 pb-0.5 group-hover/btn:border-white group-hover/btn:text-white transition-all">Discover</span>
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="transform group-hover/btn:translate-x-1 transition-transform">
-                    <path d="M2 6H10M10 6L6.5 2.5M10 6L6.5 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
+              {/* Text Area */}
+              <div className="relative z-10 space-y-4">
+                <span className="text-xs sm:text-sm text-black font-extrabold tracking-widest uppercase">{col.tagline}</span>
+                <h3 className="text-3xl sm:text-4xl font-serif font-black text-black uppercase group-hover:text-luxury-gold-dark transition duration-200">{col.name}</h3>
+                <p className="text-black text-sm sm:text-base font-semibold leading-relaxed line-clamp-2">{col.desc}</p>
+                <div className="flex items-center space-x-2 text-black hover:text-luxury-gold-dark text-sm font-bold pt-2">
+                  <span>DISCOVER</span>
+                  <ArrowRight size={14} className="transform group-hover:translate-x-1 transition-transform" />
+                </div>
               </div>
             </div>
           ))}
@@ -240,45 +235,6 @@ export default function Home({ onPageChange }) {
 
       {/* Wrapping the rest of the home sections to align them beautifully */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
-
-      {/* Collections Highlight Banner (Tissot Grid Style) */}
-      <section className="space-y-12">
-        <div className="text-center max-w-2xl mx-auto space-y-2">
-          <p className="text-[10px] text-luxury-gold-dark font-bold tracking-widest uppercase">The Pillars of Zenith</p>
-          <h2 className="text-3xl font-bold font-serif text-luxury-text tracking-wide uppercase">Explore Collections</h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {collections.map((col, idx) => (
-            <div
-              key={idx}
-              onClick={() => onPageChange('shop', col.filter)}
-              className="group relative h-[450px] border border-luxury-text/10 rounded-md overflow-hidden cursor-pointer flex flex-col justify-end p-8 bg-white shadow-sm hover:shadow-md transition-all duration-300"
-            >
-              {/* Product Background Image */}
-              <div className="absolute inset-0 z-0 opacity-80 group-hover:opacity-95 transition duration-500 flex items-center justify-center p-12 bg-luxury-bg/30">
-                <img
-                  src={col.image}
-                  alt={col.name}
-                  className="max-h-full max-w-full object-contain transform group-hover:scale-105 transition duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
-              </div>
-
-              {/* Text Area */}
-              <div className="relative z-10 space-y-3">
-                <span className="text-[9px] text-luxury-gold-dark font-bold tracking-widest uppercase">{col.tagline}</span>
-                <h3 className="text-2xl font-serif font-bold text-luxury-text uppercase group-hover:text-luxury-gold-dark transition duration-200">{col.name}</h3>
-                <p className="text-luxury-muted text-xs font-light leading-relaxed line-clamp-2">{col.desc}</p>
-                <div className="flex items-center space-x-2 text-luxury-gold-dark text-xs font-semibold pt-2">
-                  <span>DISCOVER</span>
-                  <ArrowRight size={12} className="transform group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* Brand Story & Manufacturing Section */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 bg-white border border-luxury-text/5 p-8 sm:p-16 rounded-md items-center shadow-sm">
