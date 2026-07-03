@@ -323,9 +323,9 @@ export default function Checkout({ params, onPageChange }) {
                   
                   {/* Mock QR Code */}
                   <div className="h-40 w-40 bg-white border border-luxury-gold/50 mx-auto rounded p-2 flex items-center justify-center shadow-lg relative">
-                    <div className="h-36 w-36 bg-contain bg-center opacity-90" style={{ backgroundImage: "url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=zenithwatches@bank')" }} />
+                    <div className="h-36 w-36 bg-contain bg-center opacity-90" style={{ backgroundImage: "url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=khroniqwatches@bank')" }} />
                   </div>
-                  <span className="text-[9px] font-mono text-gray-500 uppercase">PAYEE: ZENITHWATCHES@BANK</span>
+                  <span className="text-[9px] font-mono text-gray-500 uppercase">PAYEE: KHRONIQWATCHES@BANK</span>
                 </div>
               )}
 

@@ -288,9 +288,9 @@ export default function ProductDetail({ params, onPageChange }) {
         {/* Tab Content: Details */}
         {activeTab === 'details' && (
           <div className="space-y-4 text-xs sm:text-sm text-luxury-text font-light leading-relaxed max-w-4xl bg-white border border-luxury-text/10 rounded p-6 sm:p-8 shadow-sm">
-            <h4 className="text-luxury-text font-bold tracking-wider uppercase text-xs">The Zenith Spirit of Innovation</h4>
+            <h4 className="text-luxury-text font-bold tracking-wider uppercase text-xs">The Khroniq Spirit of Innovation</h4>
             <p className="text-luxury-muted">
-              Each Zenith watch is crafted with painstaking precision in our historic manufacture in Le Locle. By integrating dial production, case tooling, movement machining, and fine-tuning calibration under a single Swiss roof, Zenith ensures every component complies with strict COSC chronometer specifications.
+              Each Khroniq watch is crafted with painstaking precision in our historic manufacture in Le Locle. By integrating dial production, case tooling, movement machining, and fine-tuning calibration under a single Swiss roof, Khroniq ensures every component complies with strict COSC chronometer specifications.
             </p>
             <p className="text-luxury-muted">
               The double anti-reflective sapphire dial glass ensures absolute clarity, shielding the watch indexes from solar glare and scratches. Fitted with premium gaskets, the case delivers advanced seals for water safety, maintaining structural integrity across varying atmospheres.

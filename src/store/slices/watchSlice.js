@@ -12,8 +12,8 @@ const loadSaved = (key, fallback) => {
 
 const initialState = {
   products: [],
-  cart: loadSaved('zenith_cart', []),
-  wishlist: loadSaved('zenith_wishlist', []),
+  cart: loadSaved('khroniq_cart', []),
+  wishlist: loadSaved('khroniq_wishlist', []),
   orders: [],
   coupons: [],
   currentUser: null
@@ -21,7 +21,7 @@ const initialState = {
 
 // Helper for standard API headers
 const getHeaders = () => {
-  const token = localStorage.getItem('zenith_token');
+  const token = localStorage.getItem('khroniq_token');
   const headers = {
     'Content-Type': 'application/json',
   };
@@ -190,7 +190,7 @@ export const fetchWishlistFromDb = () => async (dispatch) => {
 };
 
 export const fetchUserProfile = () => async (dispatch) => {
-  const token = localStorage.getItem('zenith_token');
+  const token = localStorage.getItem('khroniq_token');
   if (!token) return;
   try {
     const res = await fetch('/api/auth/profile', {
@@ -203,11 +203,11 @@ export const fetchUserProfile = () => async (dispatch) => {
       dispatch(fetchCartFromDb());
       dispatch(fetchWishlistFromDb());
     } else {
-      localStorage.removeItem('zenith_token');
+      localStorage.removeItem('khroniq_token');
     }
   } catch (error) {
     console.error('Failed to fetch user profile:', error);
-    localStorage.removeItem('zenith_token');
+    localStorage.removeItem('khroniq_token');
   }
 };
 
@@ -220,7 +220,7 @@ export const registerUser = (name, email, password) => async (dispatch, getState
     });
     const data = await res.json();
     if (data.success) {
-      localStorage.setItem('zenith_token', data.token);
+      localStorage.setItem('khroniq_token', data.token);
       dispatch(setCurrentUserAction(data.user));
 
       const guestCart = getState().watch.cart;
@@ -249,7 +249,7 @@ export const loginUser = (email, password) => async (dispatch, getState) => {
     });
     const data = await res.json();
     if (data.success) {
-      localStorage.setItem('zenith_token', data.token);
+      localStorage.setItem('khroniq_token', data.token);
       dispatch(setCurrentUserAction(data.user));
       dispatch(fetchOrders());
 
@@ -271,7 +271,7 @@ export const loginUser = (email, password) => async (dispatch, getState) => {
 };
 
 export const logoutUser = () => (dispatch) => {
-  localStorage.removeItem('zenith_token');
+  localStorage.removeItem('khroniq_token');
   dispatch(logoutUserAction());
 };
 

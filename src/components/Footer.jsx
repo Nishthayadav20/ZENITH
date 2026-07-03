@@ -108,7 +108,7 @@ export default function Footer({ onPageChange }) {
           {/* Col 4: Contact & Social */}
           <div className="space-y-4">
             <h4 className="text-xs font-bold tracking-widest text-white uppercase">Connect With Us</h4>
-            <p className="text-[11px] text-gray-400">Contact: concierge@zenith-watches.com</p>
+            <p className="text-[11px] text-gray-400">Contact: concierge@khroniq-watches.com</p>
             <div className="flex space-x-4 text-gray-400 pt-2">
               <a href="#" className="hover:text-luxury-gold transition" aria-label="Facebook">
                 <svg className="w-[18px] h-[18px] hover:text-luxury-gold transition" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">

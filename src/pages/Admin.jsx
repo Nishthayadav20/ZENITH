@@ -157,7 +157,7 @@ export default function Admin({ onPageChange }) {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-6">
         <div>
           <h1 className="font-serif text-3xl font-bold uppercase text-white tracking-widest">Admin Control Center</h1>
-          <p className="text-gray-400 text-xs mt-1">Configure Zenith store parameters, monitor sales trends, and verify stock thresholds.</p>
+          <p className="text-gray-400 text-xs mt-1">Configure Khroniq store parameters, monitor sales trends, and verify stock thresholds.</p>
         </div>
         
         <button
@@ -319,7 +319,7 @@ export default function Admin({ onPageChange }) {
                     value={newProduct.name}
                     onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
                     className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
-                    placeholder="Zenith Chronomaster Sport"
+                    placeholder="Khroniq Chronomaster Sport"
                   />
                 </div>
 

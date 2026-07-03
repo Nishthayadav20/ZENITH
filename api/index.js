@@ -22,7 +22,7 @@ const app = express();
 
 // Database Connection Status Variables
 let dbConnectionError = null;
-const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/zenith-watches';
+const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/khroniq-watches';
 
 // Middleware to ensure DB connection and seeding
 const ensureDb = async (req, res, next) => {
@@ -65,7 +65,7 @@ app.use('/api/wishlist', wishlistRoutes);
 
 // Base Endpoint
 app.get('/api', (req, res) => {
-  res.json({ message: 'Welcome to the ZENITH Watches API' });
+  res.json({ message: 'Welcome to the KHRONIQ Watches API' });
 });
 
 // Diagnostics Endpoint
@@ -92,14 +92,14 @@ const seedDatabase = async () => {
     if (productCount < 8) {
       const initialProducts = [
         {
-          name: 'Zenith Heritage Rose Gold',
+          name: 'Khroniq Heritage Rose Gold',
           image: '/assets/media__1782899491225.jpg',
-          brand: 'ZENITH',
+          brand: 'KHRONIQ',
           price: 1250,
           stock: 8,
           category: 'Heritage',
           gender: 'women',
-          description: "A luxurious timeless classic watch featuring a stunning rose gold casing and index numerals, matching its premium metallic link bracelet. A tribute to Zenith's heritage.",
+          description: "A luxurious timeless classic watch featuring a stunning rose gold casing and index numerals, matching its premium metallic link bracelet. A tribute to Khroniq's heritage.",
           specs: {
             movement: 'Automatic Chronometer',
             case: 'Rose Gold PVD Steel (40mm)',
@@ -113,9 +113,9 @@ const seedDatabase = async () => {
           ]
         },
         {
-          name: 'Zenith Chronomaster Black Edition',
+          name: 'Khroniq Chronomaster Black Edition',
           image: '/assets/media__1782899491297.jpg',
-          brand: 'ZENITH',
+          brand: 'KHRONIQ',
           price: 4800,
           stock: 5,
           category: 'Chronomaster',
@@ -133,9 +133,9 @@ const seedDatabase = async () => {
           ]
         },
         {
-          name: 'Zenith Elite Classic Brown',
+          name: 'Khroniq Elite Classic Brown',
           image: '/assets/media__1782899491320.jpg',
-          brand: 'ZENITH',
+          brand: 'KHRONIQ',
           price: 2100,
           stock: 12,
           category: 'Elite',
@@ -153,9 +153,9 @@ const seedDatabase = async () => {
           ]
         },
         {
-          name: 'Zenith Defy Automatic Steel',
+          name: 'Khroniq Defy Automatic Steel',
           image: '/assets/media__1782899491366.jpg',
-          brand: 'ZENITH',
+          brand: 'KHRONIQ',
           price: 3450,
           stock: 4,
           category: 'Defy',
@@ -173,9 +173,9 @@ const seedDatabase = async () => {
           ]
         },
         {
-          name: 'Zenith Chronomaster Open Heart',
+          name: 'Khroniq Chronomaster Open Heart',
           image: '/assets/media__1782899491297.jpg',
-          brand: 'ZENITH',
+          brand: 'KHRONIQ',
           price: 5200,
           stock: 6,
           category: 'Chronomaster',
@@ -191,9 +191,9 @@ const seedDatabase = async () => {
           reviews: []
         },
         {
-          name: 'Zenith Heritage Star Dial',
+          name: 'Khroniq Heritage Star Dial',
           image: '/assets/media__1782899491225.jpg',
-          brand: 'ZENITH',
+          brand: 'KHRONIQ',
           price: 3100,
           stock: 4,
           category: 'Heritage',
@@ -209,9 +209,9 @@ const seedDatabase = async () => {
           reviews: []
         },
         {
-          name: 'Zenith Elite Moonphase',
+          name: 'Khroniq Elite Moonphase',
           image: '/assets/media__1782899491320.jpg',
-          brand: 'ZENITH',
+          brand: 'KHRONIQ',
           price: 2650,
           stock: 7,
           category: 'Elite',
@@ -227,9 +227,9 @@ const seedDatabase = async () => {
           reviews: []
         },
         {
-          name: 'Zenith Defy Skyline Skeleton',
+          name: 'Khroniq Defy Skyline Skeleton',
           image: '/assets/media__1782899491366.jpg',
-          brand: 'ZENITH',
+          brand: 'KHRONIQ',
           price: 4100,
           stock: 5,
           category: 'Defy',
@@ -259,7 +259,7 @@ const seedDatabase = async () => {
     const couponCount = await Coupon.countDocuments();
     if (couponCount === 0) {
       const initialCoupons = [
-        { code: 'ZENITHSTAR', discountPercent: 20, description: '20% off Zenith Signature Collection' },
+        { code: 'KHRONIQSTAR', discountPercent: 20, description: '20% off Khroniq Signature Collection' },
         { code: 'WELCOME10', discountPercent: 10, description: '10% off for first-time buyers' }
       ];
       await Coupon.insertMany(initialCoupons);
@@ -267,15 +267,15 @@ const seedDatabase = async () => {
     }
 
     // 3. Seed Default Admin User
-    const adminExists = await User.findOne({ email: 'admin@zenith.com' });
+    const adminExists = await User.findOne({ email: 'admin@khroniq.com' });
     if (!adminExists) {
       await User.create({
         name: 'Admin Administrator',
-        email: 'admin@zenith.com',
+        email: 'admin@khroniq.com',
         password: 'admin123', // User model hooks will hash this auto
         role: 'admin'
       });
-      console.log('Database Seeding: Default admin user (admin@zenith.com / admin123) successfully seeded!');
+      console.log('Database Seeding: Default admin user (admin@khroniq.com / admin123) successfully seeded!');
     }
 
   } catch (error) {

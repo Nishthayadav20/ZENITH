@@ -157,7 +157,7 @@ export default function CartDrawer({ isOpen, onClose, onPageChange }) {
                 </div>
                 
                 <p className="text-luxury-muted text-[10px] leading-relaxed">
-                  Shipping, taxes, and discounts calculated at checkout. Zenith timepieces feature free secure priority shipping.
+                  Shipping, taxes, and discounts calculated at checkout. Khroniq timepieces feature free secure priority shipping.
                 </p>
 
                 <div className="grid grid-cols-1 gap-2 pt-2">

@@ -227,7 +227,7 @@ export default function CartPage({ onPageChange }) {
             <ShieldCheck className="mx-auto text-luxury-gold-dark" size={24} />
             <h4 className="text-[10px] font-bold tracking-widest text-luxury-text uppercase">Secure Checkout Guarantee</h4>
             <p className="text-[10px] leading-relaxed">
-              We secure transactions via SSL bank encryption. Each Zenith purchase is packaged in a deluxe leather presentation box.
+              We secure transactions via SSL bank encryption. Each Khroniq purchase is packaged in a deluxe leather presentation box.
             </p>
           </div>
 

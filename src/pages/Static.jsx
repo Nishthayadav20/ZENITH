@@ -24,8 +24,8 @@ export default function Static({ params, _onPageChange }) {
 
   const faqData = [
     {
-      q: "What warranty comes with my Zenith timepiece?",
-      a: "Every Zenith watch purchased through our platform is backed by a 3-Year International Swiss Warranty. This covers any manufacturing defect or caliber calibration issues. You can register your watch through the customer profile portal."
+      q: "What warranty comes with my Khroniq timepiece?",
+      a: "Every Khroniq watch purchased through our platform is backed by a 3-Year International Swiss Warranty. This covers any manufacturing defect or caliber calibration issues. You can register your watch through the customer profile portal."
     },
     {
       q: "How does priority secure shipping operate?",
@@ -46,7 +46,7 @@ export default function Static({ params, _onPageChange }) {
       {/* Header Banner */}
       <div className="border-b border-luxury-text/10 pb-6 text-center max-w-xl mx-auto space-y-2">
         <span className="text-[10px] text-luxury-gold-dark font-bold tracking-widest uppercase">Client Services</span>
-        <h1 className="font-serif text-3xl font-bold uppercase tracking-wider text-luxury-text">Zenith Concierge</h1>
+        <h1 className="font-serif text-3xl font-bold uppercase tracking-wider text-luxury-text">Khroniq Concierge</h1>
         <div className="w-12 h-[2px] bg-luxury-gold-dark mx-auto mt-3" />
       </div>
 
@@ -83,10 +83,10 @@ export default function Static({ params, _onPageChange }) {
                 <span className="text-[9px] text-luxury-gold-dark font-bold tracking-widest uppercase">ESTABLISHED 1865</span>
                 <h2 className="text-2xl font-serif font-bold text-luxury-text uppercase">The Manufacture of Georges Favre-Jacot</h2>
                 <p className="text-luxury-muted text-xs leading-relaxed font-light">
-                  In 1865, a visionary 22-year-old watchmaker named Georges Favre-Jacot founded Zenith in Le Locle, Switzerland. He pioneered the concept of a watch manufacture, gathering all specialized watchmaking crafts under a single roof to master every aspect of the movement assembly.
+                  In 1865, a visionary 22-year-old watchmaker named Georges Favre-Jacot founded Khroniq in Le Locle, Switzerland. He pioneered the concept of a watch manufacture, gathering all specialized watchmaking crafts under a single roof to master every aspect of the movement assembly.
                 </p>
                 <p className="text-luxury-muted text-xs leading-relaxed font-light">
-                  Today, Zenith remains at the historical birthplace, continuing to push boundaries with the legendary El Primero caliber—the world's first high-frequency integrated automatic chronograph.
+                  Today, Khroniq remains at the historical birthplace, continuing to push boundaries with the legendary El Primero caliber—the world's first high-frequency integrated automatic chronograph.
                 </p>
               </div>
               <div className="h-64 bg-luxury-bg border border-luxury-text/10 rounded flex items-center justify-center p-6 relative overflow-hidden">
@@ -198,7 +198,7 @@ export default function Static({ params, _onPageChange }) {
                 <div className="flex items-start space-x-3">
                   <MapPin size={16} className="text-luxury-gold-dark mt-0.5" />
                   <div>
-                    <h5 className="font-bold text-luxury-text uppercase">La Manufacture Zenith</h5>
+                    <h5 className="font-bold text-luxury-text uppercase">La Manufacture Khroniq</h5>
                     <p className="text-luxury-muted font-light leading-relaxed">Rue des Billodes 34,<br />2400 Le Locle, Switzerland</p>
                   </div>
                 </div>
@@ -215,7 +215,7 @@ export default function Static({ params, _onPageChange }) {
                   <Mail size={16} className="text-luxury-gold-dark mt-0.5" />
                   <div>
                     <h5 className="font-bold text-luxury-text uppercase">Boutique Email</h5>
-                    <p className="text-luxury-muted font-light">concierge@zenith-watches.com</p>
+                    <p className="text-luxury-muted font-light">concierge@khroniq-watches.com</p>
                   </div>
                 </div>
               </div>
@@ -265,7 +265,7 @@ export default function Static({ params, _onPageChange }) {
               <section className="space-y-2">
                 <h4 className="font-bold text-luxury-text uppercase text-[10px] tracking-wider">1. Privacy and Data Protection</h4>
                 <p>
-                  At ZENITH Watches, we are dedicated to protecting your client profile data. Any personal details, address books, and purchase order invoices collected are managed under strict Swiss Federal Act on Data Protection (FADP) and General Data Protection Regulations (GDPR). We enforce SSL encryption blocks on all security gateways.
+                  At KHRONIQ Watches, we are dedicated to protecting your client profile data. Any personal details, address books, and purchase order invoices collected are managed under strict Swiss Federal Act on Data Protection (FADP) and General Data Protection Regulations (GDPR). We enforce SSL encryption blocks on all security gateways.
                 </p>
               </section>
 
