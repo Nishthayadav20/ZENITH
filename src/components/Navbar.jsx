@@ -49,14 +49,12 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
   const isHome = currentPage === 'home';
   const headerClass = isHome 
     ? "absolute top-0 left-0 right-0 z-50 bg-transparent transition-all duration-300"
-    : "sticky top-0 z-50 glass transition-all duration-300";
+    : "sticky top-0 z-50 bg-[#111111] transition-all duration-300";
 
-  const textColorClass = isHome 
-    ? "text-white hover:text-luxury-gold" 
-    : "text-luxury-text hover:text-luxury-gold-dark";
+  const textColorClass = "text-white hover:text-luxury-gold";
 
-  const starColor = isHome ? "var(--color-luxury-gold)" : "var(--color-luxury-gold-dark)";
-  const starTextClass = isHome ? "text-luxury-gold" : "text-luxury-gold-dark";
+  const starColor = "var(--color-luxury-gold)";
+  const starTextClass = "text-luxury-gold";
 
   return (
     <header className={headerClass}>
@@ -74,7 +72,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
           </div>
 
           {/* Left Navigation: Brand Links (Desktop) */}
-          <nav className="hidden md:flex space-x-8 text-xs font-semibold tracking-widest">
+          <nav className="hidden md:flex space-x-8 text-xs font-black tracking-widest">
             {navLinks.map((link, idx) => (
               <button
                 key={idx}
@@ -95,12 +93,12 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
               className={`flex items-center space-x-2 transition duration-300 cursor-pointer ${textColorClass}`}
             >
               <Star className={`${starTextClass} animate-pulse`} size={22} fill={starColor} />
-              <span className="font-serif text-2xl font-bold tracking-widest">KHRONIQ</span>
+              <span className="font-serif text-2xl font-black tracking-widest">KHRONIQ</span>
             </button>
           </div>
 
           {/* Right Icons */}
-          <div className={`flex items-center space-x-5 ${isHome ? 'text-white bg-gradient-to-r from-transparent to-transparent' : 'text-luxury-text'}`}>
+          <div className="flex items-center space-x-5 text-white">
             {/* Search Icon / Bar */}
             <div className="relative flex items-center">
               {searchOpen ? (
@@ -127,7 +125,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
               ) : (
                 <button 
                   onClick={() => setSearchOpen(true)}
-                  className={`transition cursor-pointer ${isHome ? 'hover:text-luxury-gold' : 'hover:text-luxury-gold-dark'}`}
+                  className="transition cursor-pointer hover:text-luxury-gold"
                   title="Search"
                 >
                   <Search size={20} />
@@ -140,7 +138,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
               {currentUser ? (
                 <button
                   onClick={() => onPageChange(currentUser.role === 'admin' ? 'admin' : 'profile')}
-                  className={`flex items-center space-x-1.5 transition cursor-pointer ${isHome ? 'hover:text-luxury-gold' : 'hover:text-luxury-gold-dark'}`}
+                  className="flex items-center space-x-1.5 transition cursor-pointer hover:text-luxury-gold"
                   title={currentUser.role === 'admin' ? 'Admin Dashboard' : 'My Account'}
                 >
                   {currentUser.role === 'admin' ? (
@@ -155,7 +153,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
               ) : (
                 <button 
                   onClick={() => onPageChange('login')}
-                  className={`transition cursor-pointer ${isHome ? 'hover:text-luxury-gold' : 'hover:text-luxury-gold-dark'}`}
+                  className="transition cursor-pointer hover:text-luxury-gold"
                   title="Login"
                 >
                   <User size={20} />
@@ -166,7 +164,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
             {/* Wishlist Icon */}
             <button 
               onClick={() => onPageChange(currentUser ? 'profile' : 'login', currentUser ? { tab: 'wishlist' } : null)}
-              className={`relative transition cursor-pointer ${isHome ? 'hover:text-luxury-gold' : 'hover:text-luxury-gold-dark'}`}
+              className="relative transition cursor-pointer hover:text-luxury-gold"
               title="Wishlist"
             >
               <Heart size={20} />
@@ -180,7 +178,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
             {/* Cart Icon */}
             <button 
               onClick={onCartOpen}
-              className={`relative transition cursor-pointer ${isHome ? 'hover:text-luxury-gold' : 'hover:text-luxury-gold-dark'}`}
+              className="relative transition cursor-pointer hover:text-luxury-gold"
               title="Shopping Cart"
             >
               <ShoppingBag size={20} />
