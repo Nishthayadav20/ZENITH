@@ -35,7 +35,7 @@ export default function Home({ onPageChange }) {
   ];
 
   return (
-    <div className="space-y-24 pb-12">
+    <div className="pb-12">
 
       {/* Hero Section - Excluded from light theme CSS overrides by using bg-[#1c1a17] */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden bg-[#1c1a17] border-b border-white/5">
@@ -115,30 +115,6 @@ export default function Home({ onPageChange }) {
 
       {/* Men & Women Category Split Banner (Full width edge-to-edge, half-half split, no spacing/borders) */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-0 w-full overflow-hidden border-b border-white/5">
-        {/* Men's Column */}
-        <div 
-          onClick={() => onPageChange('shop', { gender: 'men' })}
-          className="group relative h-[550px] flex flex-col justify-end p-8 sm:p-12 overflow-hidden cursor-pointer bg-luxury-gray"
-        >
-          <div className="absolute inset-0 z-0">
-            <div 
-              className="absolute inset-0 bg-cover bg-[position:center_12%] group-hover:scale-105 transition-transform duration-[2000ms]" 
-              style={{ backgroundImage: "url('/assets/men_watches.jpg')" }} 
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-white/70 via-white/10 to-transparent" />
-          </div>
-          
-          <div className="relative z-10 space-y-2 text-left">
-            <h3 className="font-serif text-3xl sm:text-4xl font-bold text-luxury-text tracking-wide uppercase">Men's watches</h3>
-            <button 
-              onClick={(e) => { e.stopPropagation(); onPageChange('shop', { gender: 'men' }); }}
-              className="text-luxury-text text-xs font-bold tracking-widest uppercase border-b-2 border-luxury-text pb-1 hover:text-luxury-gold hover:border-luxury-gold transition duration-300 w-fit inline-block"
-            >
-              Discover
-            </button>
-          </div>
-        </div>
-
         {/* Women's Column */}
         <div 
           onClick={() => onPageChange('shop', { gender: 'women' })}
@@ -156,6 +132,30 @@ export default function Home({ onPageChange }) {
             <h3 className="font-serif text-3xl sm:text-4xl font-bold text-luxury-text tracking-wide uppercase">Women's watches</h3>
             <button 
               onClick={(e) => { e.stopPropagation(); onPageChange('shop', { gender: 'women' }); }}
+              className="text-luxury-text text-xs font-bold tracking-widest uppercase border-b-2 border-luxury-text pb-1 hover:text-luxury-gold hover:border-luxury-gold transition duration-300 w-fit inline-block"
+            >
+              Discover
+            </button>
+          </div>
+        </div>
+
+        {/* Men's Column */}
+        <div 
+          onClick={() => onPageChange('shop', { gender: 'men' })}
+          className="group relative h-[550px] flex flex-col justify-end p-8 sm:p-12 overflow-hidden cursor-pointer bg-luxury-gray"
+        >
+          <div className="absolute inset-0 z-0">
+            <div 
+              className="absolute inset-0 bg-cover bg-[position:center_12%] group-hover:scale-105 transition-transform duration-[2000ms]" 
+              style={{ backgroundImage: "url('/assets/men_watches.jpg')" }} 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-white/70 via-white/10 to-transparent" />
+          </div>
+          
+          <div className="relative z-10 space-y-2 text-left">
+            <h3 className="font-serif text-3xl sm:text-4xl font-bold text-luxury-text tracking-wide uppercase">Men's watches</h3>
+            <button 
+              onClick={(e) => { e.stopPropagation(); onPageChange('shop', { gender: 'men' }); }}
               className="text-luxury-text text-xs font-bold tracking-widest uppercase border-b-2 border-luxury-text pb-1 hover:text-luxury-gold hover:border-luxury-gold transition duration-300 w-fit inline-block"
             >
               Discover
