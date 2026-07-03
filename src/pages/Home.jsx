@@ -113,11 +113,8 @@ export default function Home({ onPageChange }) {
         </div>
       </section>
 
-      {/* Wrapping the rest of the home sections to align them beautifully */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
-
-      {/* Men & Women Category Split Banner */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-4 -mx-4 sm:-mx-6 lg:-mx-8">
+      {/* Men & Women Category Split Banner (Full width edge-to-edge, half-half split, no spacing/borders) */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-0 w-full overflow-hidden border-b border-white/5">
         {/* Men's Column */}
         <div 
           onClick={() => onPageChange('shop', { gender: 'men' })}
@@ -166,6 +163,9 @@ export default function Home({ onPageChange }) {
           </div>
         </div>
       </section>
+
+      {/* Wrapping the rest of the home sections to align them beautifully */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 space-y-24">
 
       {/* Featured Collection Grid */}
       <section className="space-y-8">
