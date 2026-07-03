@@ -212,9 +212,9 @@ export default function Home({ onPageChange }) {
 
               {/* Text Area */}
               <div className="relative z-10 space-y-3">
-                <span className="text-[9px] text-luxury-gold-dark font-extrabold tracking-widest uppercase">{col.tagline}</span>
+                <span className="text-[9px] text-black font-extrabold tracking-widest uppercase">{col.tagline}</span>
                 <h3 className="text-2xl font-serif font-black text-black uppercase group-hover:text-luxury-gold-dark transition duration-200">{col.name}</h3>
-                <p className="text-neutral-900 text-xs font-semibold leading-relaxed line-clamp-2">{col.desc}</p>
+                <p className="text-black text-xs font-semibold leading-relaxed line-clamp-2">{col.desc}</p>
                 <div className="flex items-center space-x-2 text-black hover:text-luxury-gold-dark text-xs font-bold pt-2">
                   <span>DISCOVER</span>
                   <ArrowRight size={12} className="transform group-hover:translate-x-1 transition-transform" />
