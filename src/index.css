@@ -40,14 +40,19 @@ body {
   overflow-x: hidden;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar - Completely Hidden / Transparent */
+html {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #ffffff;
+  background: var(--color-luxury-bg);
 }
 
 ::-webkit-scrollbar-thumb {

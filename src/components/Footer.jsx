@@ -24,10 +24,10 @@ export default function Footer({ onPageChange }) {
           <div className="space-y-4">
             <div className="flex items-center space-x-2 text-white">
               <Star className="text-luxury-gold" size={24} fill="var(--color-luxury-gold)" />
-              <span className="font-serif text-2xl font-bold tracking-widest">ZENITH</span>
+              <span className="font-serif text-2xl font-bold tracking-widest">KHRONIQ</span>
             </div>
             <p className="text-gray-400 text-xs leading-relaxed max-w-sm">
-              Since 1865, Zenith has been inspiring individuals to pursue their dreams and make them come true against all odds. "Time to reach your star" is our guiding motto.
+              Since 1865, KHRONIQ has been inspiring individuals to pursue their dreams and make them come true against all odds. "Time to reach your star" is our guiding motto.
             </p>
           </div>
 
@@ -44,11 +44,11 @@ export default function Footer({ onPageChange }) {
 
           {/* Newsletter Input */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold tracking-widest text-white uppercase">Subscribe to the Zenith Star Newsletter</h4>
+            <h4 className="text-xs font-bold tracking-widest text-white uppercase">Subscribe to the KHRONIQ Star Newsletter</h4>
             <p className="text-gray-400 text-[11px]">Receive updates on special collections, new arrivals, and events.</p>
             
             {subscribed ? (
-              <p className="text-luxury-gold text-xs font-semibold animate-pulse">Thank you for subscribing to Zenith notifications.</p>
+              <p className="text-luxury-gold text-xs font-semibold animate-pulse">Thank you for subscribing to KHRONIQ notifications.</p>
             ) : (
               <form onSubmit={handleSubscribe} className="flex">
                 <input
@@ -131,7 +131,7 @@ export default function Footer({ onPageChange }) {
 
         {/* Bottom copyright and legal */}
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-500 space-y-4 md:space-y-0">
-          <p>© 2026 ZENITH Watches. All Rights Reserved. Inspired by Swiss Precision.</p>
+          <p>© 2026 KHRONIQ Watches. All Rights Reserved. Inspired by Swiss Precision.</p>
           <div className="flex space-x-6">
             <button onClick={() => onPageChange('static', { view: 'policies' })} className="hover:text-white transition cursor-pointer">Terms of Use</button>
             <button onClick={() => onPageChange('static', { view: 'policies' })} className="hover:text-white transition cursor-pointer">Privacy Policy</button>
