@@ -116,25 +116,6 @@ export default function Home({ onPageChange }) {
       {/* Wrapping the rest of the home sections to align them beautifully */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
 
-      {/* Featured Collection Grid */}
-      <section className="space-y-8">
-        <div className="text-center max-w-2xl mx-auto space-y-2">
-          <p className="text-[10px] text-luxury-gold-dark font-bold tracking-widest uppercase">Signature Catalog</p>
-          <h2 className="text-3xl font-bold font-serif text-luxury-text tracking-wide uppercase">Featured Masterpieces</h2>
-          <div className="w-12 h-[2px] bg-luxury-gold-dark mx-auto mt-4" />
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featuredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onPageChange={onPageChange}
-            />
-          ))}
-        </div>
-      </section>
-
       {/* Men & Women Category Split Banner */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-4 -mx-4 sm:-mx-6 lg:-mx-8">
         {/* Men's Column */}
@@ -183,6 +164,25 @@ export default function Home({ onPageChange }) {
               Discover
             </button>
           </div>
+        </div>
+      </section>
+
+      {/* Featured Collection Grid */}
+      <section className="space-y-8">
+        <div className="text-center max-w-2xl mx-auto space-y-2">
+          <p className="text-[10px] text-luxury-gold-dark font-bold tracking-widest uppercase">Signature Catalog</p>
+          <h2 className="text-3xl font-bold font-serif text-luxury-text tracking-wide uppercase">Featured Masterpieces</h2>
+          <div className="w-12 h-[2px] bg-luxury-gold-dark mx-auto mt-4" />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {featuredProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onPageChange={onPageChange}
+            />
+          ))}
         </div>
       </section>
 
