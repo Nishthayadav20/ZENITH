@@ -95,7 +95,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
               className={`flex items-center space-x-2 transition duration-300 cursor-pointer ${textColorClass}`}
             >
               <Star className={`${starTextClass} animate-pulse`} size={22} fill={starColor} />
-              <span className="font-serif text-2xl font-bold tracking-widest">ZENITH</span>
+              <span className="font-serif text-2xl font-bold tracking-widest">KHRONIQ</span>
             </button>
           </div>
 

@@ -73,10 +73,10 @@ export default function Home({ onPageChange }) {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="font-sans font-black text-4xl sm:text-5xl md:text-7xl font-bold tracking-wider text-white leading-tight uppercase"
+              className="font-serif font-normal text-4xl sm:text-5xl md:text-7xl tracking-wider text-white leading-tight uppercase"
             >
               Time to Reach <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-luxury-gold via-yellow-400 to-luxury-gold">
+              <span className="text-[#0f4605]">
                 Your Star
               </span>
             </motion.h1>
@@ -87,7 +87,7 @@ export default function Home({ onPageChange }) {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-gray-200 text-sm sm:text-base max-w-xl font-light tracking-wide leading-relaxed"
             >
-              Zenith exists to inspire those who strive towards their dreams, offering unmatched horological mastery and mechanical innovation.
+              KHRONIQ exists to inspire those who strive towards their dreams, offering unmatched horological mastery and mechanical innovation.
             </motion.p>
 
             <motion.div
@@ -167,7 +167,7 @@ export default function Home({ onPageChange }) {
       {/* Collections Highlight Banner (Full width edge-to-edge layout, matching Featured) */}
       <section className="w-full px-4 sm:px-8 lg:px-12 pt-36 pb-24 bg-transparent space-y-12">
         <div className="text-center max-w-2xl mx-auto space-y-2">
-          <p className="text-[10px] text-luxury-gold-dark font-bold tracking-widest uppercase">The Pillars of Zenith</p>
+          <p className="text-[10px] text-luxury-gold-dark font-bold tracking-widest uppercase">The Pillars of KHRONIQ</p>
           <h2 className="text-3xl font-bold font-serif text-luxury-text tracking-wide uppercase">Explore Collections</h2>
         </div>
 
@@ -236,7 +236,7 @@ export default function Home({ onPageChange }) {
             A Manufacture of Precise Dreams
           </h2>
           <p className="text-luxury-muted text-xs sm:text-sm leading-relaxed font-light">
-            Founded by Georges Favre-Jacot in Le Locle, Switzerland, Zenith consolidated all watchmaking trades under one roof—creating the first integrated Manufacture. Every chronograph wheel, balance spring, and casing reflects our unrelenting drive for precision.
+            Founded by Georges Favre-Jacot in Le Locle, Switzerland, KHRONIQ consolidated all watchmaking trades under one roof—creating the first integrated Manufacture. Every chronograph wheel, balance spring, and casing reflects our unrelenting drive for precision.
           </p>
           <div className="grid grid-cols-3 gap-6 pt-4 text-center">
             <div className="border-r border-luxury-text/10 space-y-1">
