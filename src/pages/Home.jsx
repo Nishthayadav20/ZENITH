@@ -183,17 +183,14 @@ export default function Home({ onPageChange }) {
         </div>
       </section>
 
-      {/* Wrapping the rest of the home sections to align them beautifully */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
-
-      {/* Collections Highlight Banner (Tissot Grid Style) */}
-      <section className="space-y-12">
+      {/* Collections Highlight Banner (Full width edge-to-edge layout, matching Featured) */}
+      <section className="w-full px-4 sm:px-8 lg:px-12 py-24 bg-transparent space-y-12">
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <p className="text-[10px] text-luxury-gold-dark font-bold tracking-widest uppercase">The Pillars of Zenith</p>
           <h2 className="text-3xl font-bold font-serif text-luxury-text tracking-wide uppercase">Explore Collections</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
           {collections.map((col, idx) => (
             <div
               key={idx}
@@ -201,13 +198,13 @@ export default function Home({ onPageChange }) {
               className="group relative h-[450px] border border-luxury-text/10 rounded-md overflow-hidden cursor-pointer flex flex-col justify-end p-8 bg-white shadow-sm hover:shadow-md transition-all duration-300"
             >
               {/* Product Background Image */}
-              <div className="absolute inset-0 z-0 opacity-80 group-hover:opacity-95 transition duration-500 flex items-center justify-center p-0 bg-luxury-bg/30">
+              <div className="absolute inset-0 z-0 opacity-100 transition duration-500 flex items-center justify-center p-0 bg-luxury-bg/30">
                 <img
                   src={col.image}
                   alt={col.name}
                   className="w-full h-full object-cover transform group-hover:scale-105 transition duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/85 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent" />
               </div>
 
               {/* Text Area */}
@@ -224,6 +221,9 @@ export default function Home({ onPageChange }) {
           ))}
         </div>
       </section>
+
+      {/* Wrapping the rest of the home sections to align them beautifully */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 mt-24">
 
       {/* Brand Story & Manufacturing Section */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 bg-white border border-luxury-text/5 p-8 sm:p-16 rounded-md items-center shadow-sm">
