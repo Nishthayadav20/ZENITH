@@ -108,12 +108,12 @@ export default function CartPage({ onPageChange }) {
                 <div className="col-span-6 flex items-center space-x-4 w-full">
                   <div 
                     onClick={() => onPageChange('product-detail', { id: item.productId })}
-                    className="w-20 h-20 bg-luxury-gray/40 border border-luxury-text/5 rounded flex-shrink-0 flex items-center justify-center p-2 cursor-pointer"
+                    className="w-20 h-20 bg-luxury-gray/40 border border-luxury-text/5 rounded flex-shrink-0 flex items-center justify-center p-0 overflow-hidden cursor-pointer"
                   >
                     <img
                       src={item.product.image}
                       alt={item.product.name}
-                      className="max-h-full max-w-full object-contain"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                   <div>

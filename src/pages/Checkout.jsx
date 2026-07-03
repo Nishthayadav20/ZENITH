@@ -429,8 +429,8 @@ function CheckoutSummary({ cartItems, subtotal, discount, total }) {
       <div className="space-y-4 max-h-60 overflow-y-auto">
         {cartItems.map((item) => (
           <div key={item.productId} className="flex items-center space-x-3 pb-3 border-b border-white/5 last:border-b-0 last:pb-0">
-            <div className="h-12 w-12 bg-luxury-dark rounded border border-white/5 flex-shrink-0 flex items-center justify-center p-1">
-              <img src={item.product.image} alt={item.product.name} className="max-h-full max-w-full object-contain" />
+            <div className="h-12 w-12 bg-luxury-dark rounded border border-white/5 flex-shrink-0 flex items-center justify-center p-0 overflow-hidden">
+              <img src={item.product.image} alt={item.product.name} className="w-full h-full object-cover" />
             </div>
             <div className="flex-1 min-w-0">
               <h4 className="text-white text-xs font-semibold truncate uppercase tracking-wide">{item.product.name}</h4>

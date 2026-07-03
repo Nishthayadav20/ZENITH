@@ -87,11 +87,11 @@ export default function CartDrawer({ isOpen, onClose, onPageChange }) {
               ) : (
                 cartItemsWithDetails.map((item) => (
                   <div key={item.productId} className="flex space-x-4 border-b border-luxury-text/10 pb-6">
-                    <div className="w-24 h-24 bg-luxury-gray/40 border border-luxury-text/5 rounded-md overflow-hidden flex-shrink-0 flex items-center justify-center p-2">
+                    <div className="w-24 h-24 bg-luxury-gray/40 border border-luxury-text/5 rounded-md overflow-hidden flex-shrink-0 flex items-center justify-center p-0">
                       <img
                         src={item.product.image}
                         alt={item.product.name}
-                        className="max-h-full max-w-full object-contain"
+                        className="w-full h-full object-cover"
                       />
                     </div>
                     

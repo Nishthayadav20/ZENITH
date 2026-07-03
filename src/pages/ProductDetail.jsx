@@ -103,11 +103,11 @@ export default function ProductDetail({ params, onPageChange }) {
         
         {/* Left Column: Image Gallery */}
         <div className="lg:col-span-6 space-y-6">
-          <div className="bg-luxury-gray border border-white/5 rounded-md aspect-square flex items-center justify-center p-12 overflow-hidden relative">
+          <div className="bg-luxury-gray border border-white/5 rounded-md aspect-square flex items-center justify-center p-0 overflow-hidden relative">
             <img
               src={product.image}
               alt={product.name}
-              className="max-h-full max-w-full object-contain filter drop-shadow-[0_15px_35px_rgba(0,0,0,0.6)]"
+              className="w-full h-full object-cover filter drop-shadow-[0_15px_35px_rgba(0,0,0,0.6)]"
             />
             {product.stock === 0 && (
               <div className="absolute inset-0 bg-black/75 flex items-center justify-center">

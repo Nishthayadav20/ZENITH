@@ -52,11 +52,11 @@ export default function ProductCard({ product, onPageChange }) {
       </button>
 
       {/* Image container */}
-      <div className="aspect-square bg-luxury-gray/40 flex items-center justify-center p-6 overflow-hidden relative">
+      <div className="aspect-square bg-luxury-gray/40 flex items-center justify-center p-0 overflow-hidden relative">
         <img
           src={product.image}
           alt={product.name}
-          className="max-h-full max-w-full object-contain transform group-hover:scale-110 transition-transform duration-500"
+          className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
         />
         
         {/* Out of Stock Overlay */}
