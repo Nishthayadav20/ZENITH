@@ -41,6 +41,21 @@ app.get('/api', (req, res) => {
   res.json({ message: 'Welcome to the ZENITH Watches API' });
 });
 
+// Diagnostics Endpoint
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    env: {
+      has_mongodb_uri: !!process.env.MONGODB_URI,
+      has_jwt_secret: !!process.env.JWT_SECRET,
+      node_env: process.env.NODE_ENV
+    },
+    mongoose: {
+      readyState: mongoose.connection.readyState // 0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting
+    }
+  });
+});
+
 // Database Seed Function
 const seedDatabase = async () => {
   try {
