@@ -53,8 +53,8 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
 
   const textColorClass = "text-white hover:text-luxury-gold";
 
-  const starColor = "#0f4605";
-  const starTextClass = "text-[#0f4605]";
+  const starColor = "#ffffff";
+  const starTextClass = "text-white";
 
   return (
     <header className={headerClass}>
