@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { loginUser, registerUser } from '../store/slices/watchSlice';
-import { Star, ShieldAlert, Key, CheckCircle2 } from 'lucide-react';
+import { Star, CheckCircle2 } from 'lucide-react';
 
 export default function Login({ params, onPageChange }) {
   const dispatch = useDispatch();
@@ -69,11 +69,6 @@ export default function Login({ params, onPageChange }) {
     }
   };
 
-  const handleAdminAutofill = () => {
-    setEmail('admin@zenith.com');
-    setPassword('admin123');
-    setAuthMode('login');
-  };
 
   return (
     <div className="max-w-md mx-auto py-12 space-y-8">
@@ -207,25 +202,6 @@ export default function Login({ params, onPageChange }) {
           )}
         </form>
 
-        {/* Admin Quick Autofill Option (Only visible when logging in) */}
-        {authMode === 'login' && (
-          <div className="border-t border-white/5 pt-4 space-y-2">
-            <div className="flex items-center space-x-1.5 text-luxury-gold">
-              <ShieldAlert size={14} />
-              <span className="text-[9px] font-bold tracking-widest uppercase">Admin quick access</span>
-            </div>
-            <p className="text-[10px] text-gray-500 font-light">
-              Skip filling forms. Use the preset administrator account to test stock controls and invoice status togglers.
-            </p>
-            <button
-              onClick={handleAdminAutofill}
-              className="w-full py-2 bg-luxury-gray hover:bg-white/5 border border-white/10 text-white font-semibold text-[10px] tracking-wider uppercase transition flex items-center justify-center space-x-1.5 cursor-pointer"
-            >
-              <Key size={10} />
-              <span>Load Admin Credentials</span>
-            </button>
-          </div>
-        )}
 
       </div>
     </div>
