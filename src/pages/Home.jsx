@@ -252,29 +252,7 @@ export default function Home({ onPageChange }) {
         </div>
       </section>
 
-      {/* Promotion Code & Special Offer Banner */}
-      <section className="relative py-12 px-6 sm:px-12 bg-gradient-to-r from-luxury-red to-red-800 text-white rounded-md flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden">
-        <div className="absolute right-0 top-0 bottom-0 opacity-10 flex items-center">
-          <Star size={200} className="text-white fill-white" />
-        </div>
-        <div className="space-y-2 relative z-10 text-center md:text-left">
-          <span className="bg-black/35 text-[9px] font-bold tracking-widest px-2.5 py-1 uppercase rounded-sm border border-white/10">LIMITED OFFER</span>
-          <h3 className="text-xl sm:text-2xl font-bold tracking-wide uppercase font-serif">Welcome to the Stars</h3>
-          <p className="text-xs text-white/80 max-w-md">Experience your first Zenith purchase with a complementary 20% discount on all active collections.</p>
-        </div>
 
-        <div className="flex flex-col sm:flex-row items-center gap-4 relative z-10 w-full md:w-auto">
-          <div className="bg-black/30 border border-white/20 px-6 py-3 rounded-md text-center font-mono text-sm tracking-widest font-semibold w-full sm:w-auto">
-            PROMO: <span className="text-luxury-gold font-bold">ZENITHSTAR</span>
-          </div>
-          <button
-            onClick={() => onPageChange('shop')}
-            className="px-6 py-3.5 bg-white text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold hover:text-luxury-dark transition w-full sm:w-auto cursor-pointer"
-          >
-            Redeem Code
-          </button>
-        </div>
-      </section>
 
     </div>
   );

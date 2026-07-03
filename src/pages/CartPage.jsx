@@ -220,31 +220,7 @@ export default function CartPage({ onPageChange }) {
             </button>
           </div>
 
-          {/* Coupon Code Input */}
-          <div className="bg-white border border-luxury-text/10 rounded-md p-6 space-y-4 shadow-sm">
-            <h4 className="text-[10px] font-bold text-luxury-text uppercase tracking-widest">Apply Promo Code</h4>
-            
-            {couponError && (
-              <p className="text-luxury-red text-xs font-semibold">{couponError}</p>
-            )}
 
-            <form onSubmit={handleApplyCoupon} className="flex">
-              <input
-                type="text"
-                placeholder="PROMO CODE"
-                value={couponInput}
-                onChange={(e) => setCouponInput(e.target.value)}
-                className="bg-luxury-bg border border-luxury-text/10 border-r-0 rounded-l text-luxury-text text-xs px-3 py-2.5 w-full uppercase focus:outline-none focus:border-luxury-gold-dark"
-              />
-              <button
-                type="submit"
-                className="bg-luxury-gold-dark hover:bg-luxury-gold text-white font-bold text-xs tracking-wider uppercase px-4 py-2.5 rounded-r transition-colors cursor-pointer border border-luxury-gold-dark"
-              >
-                Apply
-              </button>
-            </form>
-            <p className="text-[10px] text-luxury-muted">Demo promo codes: <span className="text-luxury-gold-dark font-semibold">ZENITHSTAR</span> (20% off) or <span className="text-luxury-gold-dark font-semibold">WELCOME10</span> (10% off).</p>
-          </div>
 
           {/* Guarantee Badging */}
           <div className="border border-luxury-text/10 bg-white p-4 rounded text-center text-luxury-muted space-y-2 shadow-sm">
