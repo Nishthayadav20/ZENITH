@@ -273,7 +273,7 @@ export default function Login({ params, onPageChange }) {
       {/* Password Requirements Popup Modal */}
       {showPasswordPopup && (
         <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-luxury-gray border border-white/10 rounded-md p-6 max-w-sm w-full space-y-4 shadow-2xl animate-in fade-in zoom-in duration-200">
+          <div className="bg-[#1c1a17] border border-white/10 rounded-md p-6 max-w-sm w-full space-y-4 shadow-2xl animate-in fade-in zoom-in duration-200">
             <div className="flex items-center space-x-2 text-luxury-gold">
               <ShieldCheck size={20} />
               <h3 className="font-serif text-sm font-bold uppercase tracking-widest text-white">Password Requirements</h3>
