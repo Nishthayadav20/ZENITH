@@ -535,7 +535,22 @@ export default function Home({ onPageChange }) {
 
       {/* ══════════ COLLECTIONS ══════════
           Each card: different enter anim + full 3-D mouse-track tilt + image parallax */}
-      <section className="w-full px-4 sm:px-8 lg:px-12 pt-16 pb-24">
+      <section className="w-full px-4 sm:px-8 lg:px-12 pt-28 pb-24 space-y-16">
+        <div className="text-center max-w-3xl mx-auto space-y-4">
+          <Reveal dir="down">
+            <h2 className="text-5xl sm:text-6xl font-black font-serif text-luxury-text tracking-widest uppercase drop-shadow-md">
+              Explore Collection
+            </h2>
+          </Reveal>
+          <motion.div 
+            className="w-20 h-[3px] bg-luxury-gold-dark mx-auto"
+            initial={{ scaleX: 0 }} 
+            whileInView={{ scaleX: 1 }} 
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: 'easeOut' }} 
+          />
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {collections.map((col, idx) => (
             <CollectionCard key={idx} col={col} idx={idx} onPageChange={onPageChange} />
