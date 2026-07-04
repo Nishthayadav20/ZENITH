@@ -330,23 +330,28 @@ function CollectionCard({ col, idx, onPageChange }) {
       <div className="relative z-10 space-y-3" style={{ transform: 'translateZ(30px)' }}>
         <motion.span
           className="block text-[11px] font-extrabold tracking-[0.2em] uppercase"
-          style={{ color: col.accent }}
-          animate={{ letterSpacing: hov ? '0.28em' : '0.2em', opacity: hov ? 1 : 0.8 }}
+          animate={{ color: hov ? '#10b981' : '#000000', letterSpacing: hov ? '0.28em' : '0.2em' }}
           transition={{ duration: 0.2 }}
         >
           {col.tagline}
         </motion.span>
         <motion.h3
-          className="text-3xl sm:text-4xl font-serif font-black text-black uppercase"
-          animate={{ y: hov ? -3 : 0 }}
+          className="text-3xl sm:text-4xl font-serif font-black uppercase"
+          animate={{ color: hov ? '#10b981' : '#000000', y: hov ? -3 : 0 }}
           transition={{ duration: 0.2 }}
         >
           {col.name}
         </motion.h3>
-        <p className="text-black/65 text-sm font-medium leading-relaxed line-clamp-2">{col.desc}</p>
+        <motion.p 
+          className="text-sm font-medium leading-relaxed line-clamp-2"
+          animate={{ color: hov ? '#10b981' : '#000000' }}
+          transition={{ duration: 0.2 }}
+        >
+          {col.desc}
+        </motion.p>
         <motion.div
           className="flex items-center gap-2 text-sm font-bold pt-1"
-          animate={{ x: hov ? 5 : 0, color: hov ? col.accent : '#201e1b', gap: hov ? 14 : 8 }}
+          animate={{ x: hov ? 5 : 0, color: hov ? '#10b981' : '#000000', gap: hov ? 14 : 8 }}
           transition={{ duration: 0.18 }}
         >
           <span>DISCOVER</span><ArrowRight size={13} />
