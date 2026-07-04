@@ -37,7 +37,8 @@ router.post('/toggle', protect, async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    const index = user.wishlist.indexOf(productId);
+    const wishlistStrings = user.wishlist.map(id => id.toString());
+    const index = wishlistStrings.indexOf(productId.toString());
     if (index > -1) {
       user.wishlist.splice(index, 1);
     } else {
