@@ -330,7 +330,8 @@ function CollectionCard({ col, idx, onPageChange }) {
       <div className="relative z-10 space-y-3" style={{ transform: 'translateZ(30px)' }}>
         <motion.span
           className="block text-[11px] font-extrabold tracking-[0.2em] uppercase"
-          animate={{ color: hov ? '#10b981' : '#000000', letterSpacing: hov ? '0.28em' : '0.2em' }}
+          style={{ color: '#000000' }}
+          animate={{ letterSpacing: hov ? '0.28em' : '0.2em' }}
           transition={{ duration: 0.2 }}
         >
           {col.tagline}
@@ -342,16 +343,13 @@ function CollectionCard({ col, idx, onPageChange }) {
         >
           {col.name}
         </motion.h3>
-        <motion.p 
-          className="text-sm font-medium leading-relaxed line-clamp-2"
-          animate={{ color: hov ? '#10b981' : '#000000' }}
-          transition={{ duration: 0.2 }}
-        >
+        <p className="text-black text-sm font-medium leading-relaxed line-clamp-2">
           {col.desc}
-        </motion.p>
+        </p>
         <motion.div
           className="flex items-center gap-2 text-sm font-bold pt-1"
-          animate={{ x: hov ? 5 : 0, color: hov ? '#10b981' : '#000000', gap: hov ? 14 : 8 }}
+          style={{ color: '#000000' }}
+          animate={{ x: hov ? 5 : 0, gap: hov ? 14 : 8 }}
           transition={{ duration: 0.18 }}
         >
           <span>DISCOVER</span><ArrowRight size={13} />
