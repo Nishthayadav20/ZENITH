@@ -10,7 +10,7 @@ import {
   animate,
   useScroll,
 } from 'framer-motion';
-import { Star, Award, ArrowRight, ChevronDown } from 'lucide-react';
+import { Star, Award, ArrowRight, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 
 /* ─────────────────────────────────────────────────────────────────────
    ANIMATED COUNTER
@@ -393,7 +393,42 @@ export default function Home({ onPageChange }) {
   }, [rawX, rawY]);
   const onMouseLeave = useCallback(() => { rawX.set(0); rawY.set(0); }, [rawX, rawY]);
 
-  const featured = products.slice(0, 5);
+  // --- CAROUSEL SLIDER STATE & LOGIC ---
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [visibleCards, setVisibleCards] = useState(4);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setVisibleCards(1);
+      } else if (window.innerWidth < 1024) {
+        setVisibleCards(2);
+      } else {
+        setVisibleCards(4);
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const maxIndex = Math.max(0, products.length - visibleCards);
+
+  const nextSlide = useCallback(() => {
+    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+  }, [maxIndex]);
+
+  const prevSlide = useCallback(() => {
+    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
+  }, [maxIndex]);
+
+  useEffect(() => {
+    if (products.length <= visibleCards) return;
+    const timer = setInterval(nextSlide, 4500);
+    return () => clearInterval(timer);
+  }, [nextSlide, visibleCards, products.length, currentIndex]);
+
+  const featured = products;
 
   const collections = [
     { name: 'Khronomaster', image: '/assets/media__1782899491297.jpg', tagline: 'High-Frequency Chronographs', desc: 'Powered by the legendary El Primero caliber, blending historical authenticity with modern design.', filter: { category: 'Khronomaster' }, accent: '#34d399' },
@@ -574,17 +609,50 @@ export default function Home({ onPageChange }) {
               transition={{ duration: 0.8, delay: 0.25 }} />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 w-full px-4 sm:px-8 lg:px-12">
-            {featured.map((product, idx) => (
-              <motion.div key={product.id}
-                initial={{ opacity: 0, y: 52, scale: 0.92 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, margin: '-30px' }}
-                transition={{ duration: 0.6, delay: idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -10, scale: 1.04, transition: { duration: 0.2 } }}>
-                <ProductCard product={product} onPageChange={onPageChange} />
+          <div className="relative w-full px-4 sm:px-16 lg:px-20">
+            {/* Carousel Viewport */}
+            <div className="overflow-hidden py-4 px-1">
+              <motion.div
+                className="flex gap-6"
+                animate={{
+                  x: `calc(-${currentIndex * 100 / visibleCards}% - ${currentIndex * 24 / visibleCards}px)`
+                }}
+                transition={{ type: 'spring', stiffness: 120, damping: 20 }}
+              >
+                {featured.map((product) => (
+                  <div
+                    key={product.id}
+                    className="h-full transition duration-300"
+                    style={{
+                      width: `calc(${100 / visibleCards}% - ${24 * (visibleCards - 1) / visibleCards}px)`,
+                      flexShrink: 0
+                    }}
+                  >
+                    <ProductCard product={product} onPageChange={onPageChange} />
+                  </div>
+                ))}
               </motion.div>
-            ))}
+            </div>
+
+            {/* Navigation Arrows */}
+            {featured.length > visibleCards && (
+              <>
+                <button
+                  onClick={prevSlide}
+                  className="absolute left-2 sm:left-4 lg:left-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/60 border border-white/10 text-white flex items-center justify-center hover:bg-luxury-gold hover:text-luxury-dark hover:border-luxury-gold transition duration-300 cursor-pointer shadow-lg"
+                  aria-label="Previous timepiece"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className="absolute right-2 sm:right-4 lg:right-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/60 border border-white/10 text-white flex items-center justify-center hover:bg-luxury-gold hover:text-luxury-dark hover:border-luxury-gold transition duration-300 cursor-pointer shadow-lg"
+                  aria-label="Next timepiece"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </>
+            )}
           </div>
         </section>
 
