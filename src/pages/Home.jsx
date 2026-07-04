@@ -533,9 +533,104 @@ export default function Home({ onPageChange }) {
       {/* ══════════ MARQUEE B (reverse) ══════════ */}
       <Marquee items={marqueeB} speed={18} reverse />
 
+      {/* ══════════ SPOTLIGHT SECTION ══════════
+          Left: headline + desc + discover link
+          Right: large hero image
+          Below: 2-up product image mini-grid */}
+      <section className="w-full bg-white overflow-hidden">
+        {/* Top half — editorial split */}
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-2 min-h-[520px]"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          {/* Left — text */}
+          <div className="flex flex-col justify-center px-10 sm:px-16 py-16 space-y-6 bg-white">
+            <Reveal dir="left" delay={0}>
+              <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-luxury-gold-dark">Featured Collection</p>
+            </Reveal>
+            <SlideReveal delay={0.1}>
+              <h2 className="text-4xl sm:text-5xl font-serif font-bold text-luxury-text leading-tight">
+                Dive Deeper with the<br />
+                <span className="text-luxury-gold-dark">Khronomaster</span> Professional
+              </h2>
+            </SlideReveal>
+            <Reveal dir="left" delay={0.2}>
+              <p className="text-luxury-muted text-sm leading-relaxed max-w-md">
+                Engineered for extreme conditions, the Khronomaster Professional pushes boundaries with water resistance up to 600m and the legendary El Primero caliber. Built to inspire confidence at every depth.
+              </p>
+            </Reveal>
+            <Reveal dir="left" delay={0.3}>
+              <motion.button
+                onClick={() => onPageChange('shop', { category: 'Khronomaster' })}
+                className="flex items-center gap-2 text-xs font-black tracking-[0.22em] uppercase text-luxury-text border-b border-luxury-text pb-1 w-fit cursor-pointer"
+                whileHover={{ gap: 16, color: '#b8975a', borderColor: '#b8975a' }}
+                transition={{ duration: 0.25 }}
+              >
+                Discover <ArrowRight size={12} />
+              </motion.button>
+            </Reveal>
+          </div>
+
+          {/* Right — large hero image */}
+          <div className="relative overflow-hidden min-h-[420px] lg:min-h-0">
+            <motion.div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: "url('/assets/media__1782899491297.jpg')" }}
+              initial={{ scale: 1.08 }}
+              whileInView={{ scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ scale: 1.04 }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-transparent to-transparent" />
+          </div>
+        </motion.div>
+
+        {/* Bottom half — 2-up product mini grid */}
+        <div className="grid grid-cols-2 border-t border-luxury-text/8">
+          {[
+            { img: '/assets/media__1782899491320.jpg', label: 'Khronomaster El Primero', sub: 'High-Beat Chronograph' },
+            { img: '/assets/media__1782899491366.jpg', label: 'Defy Extreme', sub: 'Futuristic Architecture' },
+          ].map(({ img, label, sub }, i) => (
+            <motion.div
+              key={i}
+              onClick={() => onPageChange('shop')}
+              className={`relative overflow-hidden cursor-pointer group h-[300px] ${
+                i === 0 ? 'border-r border-luxury-text/8' : ''
+              }`}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <motion.div
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url('${img}')` }}
+                whileHover={{ scale: 1.06 }}
+                transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+              <div className="absolute bottom-0 left-0 p-7 space-y-1">
+                <motion.p
+                  className="text-white font-serif text-xl font-bold"
+                  initial={{ y: 8, opacity: 0.8 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}
+                >{label}</motion.p>
+                <p className="text-white/60 text-xs tracking-widest uppercase">{sub}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
       {/* ══════════ COLLECTIONS ══════════
           Each card: different enter anim + full 3-D mouse-track tilt + image parallax */}
-      <section className="w-full px-4 sm:px-8 lg:px-12 pt-32 pb-24 space-y-14">
+      <section className="w-full px-4 sm:px-8 lg:px-12 pt-16 pb-12 space-y-10">
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <Reveal dir="flip">
             <p className="text-xs text-luxury-gold-dark font-black tracking-[0.22em] uppercase">The Pillars of KHRONIQ</p>
@@ -555,10 +650,34 @@ export default function Home({ onPageChange }) {
         </div>
       </section>
 
+      {/* ══════════ FULL-WIDTH SCROLLING TEXT BANNER ══════════ */}
+      <div className="w-full overflow-hidden bg-[#0e0d0b] select-none" style={{ borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        {/* Strip 1 — forward */}
+        <motion.div
+          className="flex items-center whitespace-nowrap py-5"
+          animate={{ x: ['0%', '-50%'] }}
+          transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
+        >
+          {[...Array(8)].map((_, i) => (
+            <React.Fragment key={i}>
+              <span style={{ color: '#ffffff', fontFamily: 'Georgia, serif', letterSpacing: '0.18em' }} className="text-2xl sm:text-3xl font-bold uppercase mx-10 whitespace-nowrap shrink-0">
+                EVERY KHRONIQ WATCH HAS A SOUL AND A STORY TO BE WORN.
+              </span>
+              <img
+                src="/assets/media__1782899491297.jpg"
+                alt="watch"
+                className="h-10 w-10 object-cover rounded-full mx-4 opacity-80 shrink-0"
+                style={{ filter: 'brightness(1.1) contrast(1.05)' }}
+              />
+            </React.Fragment>
+          ))}
+        </motion.div>
+      </div>
+
       {/* ══════════ FEATURED PRODUCTS ══════════
           Stagger reveal + hover pop lift + 3-D tilt inside ProductCard */}
-      <div className="space-y-24 pb-12">
-        <section className="w-full py-20 space-y-10">
+      <div className="space-y-10 pb-12">
+        <section className="w-full py-10 space-y-8">
           <div className="text-center max-w-2xl mx-auto space-y-3 px-4">
             <Reveal dir="up">
               <p className="text-xs text-luxury-gold-dark font-black tracking-[0.22em] uppercase">Signature Catalog</p>
