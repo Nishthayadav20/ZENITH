@@ -38,6 +38,7 @@ export default function ProductCard({ product, onPageChange }) {
 
   const handleWishlistToggle = (e) => {
     e.stopPropagation();
+    e.preventDefault();
     dispatch(toggleWishlist(product.id));
   };
 
@@ -50,7 +51,12 @@ export default function ProductCard({ product, onPageChange }) {
   return (
     <motion.div
       ref={cardRef}
-      onClick={() => onPageChange('product-detail', { id: product.id })}
+      onClick={(e) => {
+        if (e.target.closest('.wishlist-btn')) {
+          return;
+        }
+        onPageChange('product-detail', { id: product.id });
+      }}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
       style={{ rotateX, rotateY, transformStyle: 'preserve-3d', perspective: 800 }}
@@ -61,7 +67,7 @@ export default function ProductCard({ product, onPageChange }) {
       {/* Wishlist */}
       <motion.button
         onClick={handleWishlistToggle}
-        className="absolute top-4 right-4 z-10 p-1 focus:outline-none"
+        className="wishlist-btn absolute top-3 right-3 z-10 p-2.5 focus:outline-none"
         whileHover={{ scale: 1.2 }}
         whileTap={{ scale: 0.85 }}
       >
