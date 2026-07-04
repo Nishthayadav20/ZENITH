@@ -286,7 +286,7 @@ function CollectionCard({ col, idx, onPageChange }) {
       onMouseMove={onMove}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={onLeave}
-      className="relative h-[560px] border border-luxury-text/10 rounded-xl overflow-hidden cursor-pointer flex flex-col justify-end p-10 sm:p-12 bg-white"
+      className="relative h-[780px] border border-luxury-text/10 rounded-xl overflow-hidden cursor-pointer flex flex-col justify-end p-10 sm:p-12 bg-white"
       variants={enterAnims[idx]}
       initial="hidden"
       whileInView="visible"
@@ -535,19 +535,7 @@ export default function Home({ onPageChange }) {
 
       {/* ══════════ COLLECTIONS ══════════
           Each card: different enter anim + full 3-D mouse-track tilt + image parallax */}
-      <section className="w-full px-4 sm:px-8 lg:px-12 pt-32 pb-24 space-y-14">
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <Reveal dir="flip">
-            <p className="text-xs text-luxury-gold-dark font-black tracking-[0.22em] uppercase">The Pillars of KHRONIQ</p>
-          </Reveal>
-          <SlideReveal delay={0.1}>
-            <h2 className="text-4xl sm:text-5xl font-black font-serif text-luxury-text tracking-wide uppercase">Explore Collections</h2>
-          </SlideReveal>
-          <motion.div className="w-16 h-[3px] bg-luxury-gold-dark mx-auto"
-            initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }}
-            transition={{ duration: 0.75, delay: 0.28 }} />
-        </div>
-
+      <section className="w-full px-4 sm:px-8 lg:px-12 pt-16 pb-24">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {collections.map((col, idx) => (
             <CollectionCard key={idx} col={col} idx={idx} onPageChange={onPageChange} />
