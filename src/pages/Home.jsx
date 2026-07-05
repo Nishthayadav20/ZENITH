@@ -399,6 +399,7 @@ export default function Home({ onPageChange }) {
   // --- CAROUSEL SLIDER STATE & LOGIC ---
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleCards, setVisibleCards] = useState(4);
+  const [showUpdates, setShowUpdates] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -785,10 +786,11 @@ export default function Home({ onPageChange }) {
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
           >
-            {/* Left Column: Text (takes remaining space) */}
-            <div className="flex-1 flex flex-col items-center lg:items-start justify-center text-center lg:text-left p-6 space-y-4">
+            {/* Left Column: Text (takes remaining space, aligned slightly up) */}
+            <div className="flex-1 flex flex-col items-center lg:items-start justify-start p-6 lg:pt-16 space-y-4 h-[600px]">
               <motion.div 
-                className="cursor-default group inline-block"
+                onClick={() => setShowUpdates(!showUpdates)}
+                className="cursor-pointer group inline-block text-center lg:text-left select-none"
                 initial="initial"
                 whileHover="hover"
               >
@@ -796,8 +798,8 @@ export default function Home({ onPageChange }) {
                   <motion.h2 
                     className="text-4xl sm:text-5xl lg:text-6xl font-serif font-black text-black tracking-[0.2em] uppercase leading-tight"
                     variants={{
-                      initial: { scale: 1, x: 0, color: '#000000' },
-                      hover: { scale: 1.04, x: 8, color: '#c5a880' }
+                      initial: { scale: 1, color: '#000000' },
+                      hover: { scale: 1.04, color: '#c5a880' }
                     }}
                     transition={{ type: 'spring', stiffness: 200, damping: 15 }}
                   >
@@ -812,6 +814,45 @@ export default function Home({ onPageChange }) {
                   }}
                   transition={{ duration: 0.35, ease: 'easeOut' }}
                 />
+                
+                {/* Hint indicator */}
+                <p className="text-[10px] text-luxury-muted uppercase tracking-[0.22em] mt-3 font-bold opacity-75 group-hover:text-luxury-gold transition duration-200">
+                  {showUpdates ? "▼ Click to collapse" : "▶ Click to expand"}
+                </p>
+              </motion.div>
+
+              {/* Expandable Bullet Points with Watch Brand updates */}
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ 
+                  height: showUpdates ? 'auto' : 0, 
+                  opacity: showUpdates ? 1 : 0 
+                }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="overflow-hidden w-full animate-gpu"
+              >
+                <ul className="space-y-4 text-left w-full mt-4 max-w-sm">
+                  {[
+                    { title: "Grand Boutique Launch", detail: "Geneva flagship store grand opening scheduled for October 15th." },
+                    { title: "Limited Titanium Caliber", detail: "Exclusive high-frequency titanium editions starting to ship next month." },
+                    { title: "Zero Carbon Milestone", detail: "Le Locle manufacture officially certified as a 100% net-zero operation." },
+                    { title: "Lifetime Precision Care", detail: "Introducing extended lifetime service programs for certified chronometers." }
+                  ].map((item, idx) => (
+                    <motion.li 
+                      key={idx}
+                      className="flex items-start gap-3"
+                      initial={{ x: -15, opacity: 0 }}
+                      animate={showUpdates ? { x: 0, opacity: 1 } : { x: -15, opacity: 0 }}
+                      transition={{ delay: showUpdates ? idx * 0.08 : 0, duration: 0.3 }}
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-luxury-gold mt-2 flex-shrink-0" />
+                      <div>
+                        <h4 className="text-xs font-black uppercase text-black tracking-wider">{item.title}</h4>
+                        <p className="text-luxury-muted text-xs leading-relaxed mt-0.5">{item.detail}</p>
+                      </div>
+                    </motion.li>
+                  ))}
+                </ul>
               </motion.div>
             </div>
 
