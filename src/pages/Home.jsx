@@ -787,11 +787,32 @@ export default function Home({ onPageChange }) {
           >
             {/* Left Column: Text (takes remaining space) */}
             <div className="flex-1 flex flex-col items-center lg:items-start justify-center text-center lg:text-left p-6 space-y-4">
-              <Reveal dir="left">
-                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-black text-black tracking-[0.2em] uppercase leading-tight">
-                  KHRONIQ<br />UPDATES
-                </h2>
-              </Reveal>
+              <motion.div 
+                className="cursor-default group inline-block"
+                initial="initial"
+                whileHover="hover"
+              >
+                <Reveal dir="left">
+                  <motion.h2 
+                    className="text-4xl sm:text-5xl lg:text-6xl font-serif font-black text-black tracking-[0.2em] uppercase leading-tight"
+                    variants={{
+                      initial: { scale: 1, x: 0, color: '#000000' },
+                      hover: { scale: 1.04, x: 8, color: '#c5a880' }
+                    }}
+                    transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+                  >
+                    KHRONIQ<br />UPDATES
+                  </motion.h2>
+                </Reveal>
+                <motion.div 
+                  className="h-[3px] bg-luxury-gold mt-4"
+                  variants={{
+                    initial: { width: '0%', originX: 0 },
+                    hover: { width: '100%', originX: 0 }
+                  }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
+                />
+              </motion.div>
             </div>
 
             {/* Right Column: Two Normal Videos side-by-side (adjusted to exact 720x1280 aspect ratio) */}
