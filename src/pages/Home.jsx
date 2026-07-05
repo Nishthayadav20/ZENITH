@@ -776,26 +776,17 @@ export default function Home({ onPageChange }) {
           </div>
         </section>
 
-        {/* ══════════ SPLIT VIDEO SHOWCASE SECTION ══════════ */}
+        {/* ══════════ BACKGROUND VIDEO SHOWCASE SECTION ══════════ */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.section
-            className="flex flex-col lg:flex-row gap-8 bg-white border border-luxury-text/5 rounded-xl overflow-hidden shadow-md items-center justify-between p-6 sm:p-10"
+            className="relative w-full h-[450px] rounded-xl overflow-hidden shadow-md bg-white flex items-center"
             initial={{ opacity: 0, y: 48 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
           >
-            {/* Left Column: Text (takes remaining space) */}
-            <div className="flex-1 flex flex-col items-center lg:items-start justify-center text-center lg:text-left p-6 space-y-4">
-              <Reveal dir="left">
-                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-black text-black tracking-[0.2em] uppercase leading-tight">
-                  KHRONIQ<br />UPDATES
-                </h2>
-              </Reveal>
-            </div>
-
-            {/* Right Column: Normal Video (adjusted to exact 720x1280 aspect ratio) */}
-            <div className="w-full lg:w-auto h-[600px] aspect-[720/1280] rounded-lg overflow-hidden shadow-lg relative bg-transparent flex-shrink-0">
+            {/* Background Video */}
+            <div className="absolute inset-0 z-0">
               <video 
                 autoPlay 
                 loop 
@@ -805,6 +796,15 @@ export default function Home({ onPageChange }) {
               >
                 <source src="/assets/quote_board.mp4" type="video/mp4" />
               </video>
+            </div>
+
+            {/* Left-Aligned Text Overlay */}
+            <div className="relative z-10 w-full flex items-center justify-start px-10 sm:px-20">
+              <Reveal dir="left">
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-black text-black tracking-[0.2em] uppercase leading-tight drop-shadow-sm">
+                  KHRONIQ<br />UPDATES
+                </h2>
+              </Reveal>
             </div>
           </motion.section>
         </div>
