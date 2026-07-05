@@ -786,7 +786,7 @@ export default function Home({ onPageChange }) {
             transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
           >
             {/* Left Column: Text (1/3 width) */}
-            <div className="lg:col-span-1 flex flex-col items-center justify-center p-8 sm:p-12 bg-white text-center h-[650px]">
+            <div className="lg:col-span-1 flex flex-col items-center justify-center p-8 sm:p-12 bg-white text-center h-[400px]">
               <Reveal dir="left">
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-black text-black tracking-[0.2em] uppercase leading-tight">
                   KHRONIQ<br />UPDATES
@@ -795,13 +795,13 @@ export default function Home({ onPageChange }) {
             </div>
 
             {/* Right Column: Normal Video (2/3 width) */}
-            <div className="lg:col-span-2 h-[650px] w-full relative bg-black">
+            <div className="lg:col-span-2 h-[400px] w-full relative">
               <video 
                 autoPlay 
                 loop 
                 muted 
                 playsInline 
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover"
               >
                 <source src="/assets/quote_board.mp4" type="video/mp4" />
               </video>
