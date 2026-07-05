@@ -794,17 +794,30 @@ export default function Home({ onPageChange }) {
               </Reveal>
             </div>
 
-            {/* Right Column: Normal Video (adjusted to exact 720x1280 aspect ratio) */}
-            <div className="w-full lg:w-auto h-[600px] aspect-[720/1280] rounded-lg overflow-hidden shadow-lg relative bg-transparent flex-shrink-0">
-              <video 
-                autoPlay 
-                loop 
-                muted 
-                playsInline 
-                className="w-full h-full object-cover"
-              >
-                <source src="/assets/quote_board.mp4" type="video/mp4" />
-              </video>
+            {/* Right Column: Two Normal Videos side-by-side (adjusted to exact 720x1280 aspect ratio) */}
+            <div className="flex flex-col sm:flex-row gap-6 w-full lg:w-auto flex-shrink-0">
+              <div className="w-full sm:w-auto h-[600px] aspect-[720/1280] rounded-lg overflow-hidden shadow-lg relative bg-transparent flex-shrink-0">
+                <video 
+                  autoPlay 
+                  loop 
+                  muted 
+                  playsInline 
+                  className="w-full h-full object-cover"
+                >
+                  <source src="/assets/quote_board.mp4" type="video/mp4" />
+                </video>
+              </div>
+              <div className="w-full sm:w-auto h-[600px] aspect-[720/1280] rounded-lg overflow-hidden shadow-lg relative bg-transparent flex-shrink-0">
+                <video 
+                  autoPlay 
+                  loop 
+                  muted 
+                  playsInline 
+                  className="w-full h-full object-cover"
+                >
+                  <source src="/assets/luxury_details.mp4" type="video/mp4" />
+                </video>
+              </div>
             </div>
           </motion.section>
         </div>
