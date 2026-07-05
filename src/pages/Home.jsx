@@ -776,20 +776,32 @@ export default function Home({ onPageChange }) {
           </div>
         </section>
 
-        {/* ══════════ VIDEO SHOWCASE SECTION ══════════ */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="w-full h-[650px] rounded-xl overflow-hidden shadow-2xl relative">
+        {/* ══════════ FULL SCREEN VIDEO SHOWCASE SECTION ══════════ */}
+        <section className="relative w-full h-[600px] overflow-hidden bg-black flex items-center justify-center">
+          {/* Background Video */}
+          <div className="absolute inset-0 z-0">
             <video 
               autoPlay 
               loop 
               muted 
               playsInline 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover blur-[4px] scale-105 opacity-80"
             >
               <source src="/assets/quote_board.mp4" type="video/mp4" />
             </video>
+            {/* Dark overlay to make text highly legible */}
+            <div className="absolute inset-0 bg-black/40 z-[1]" />
           </div>
-        </div>
+
+          {/* White text overlay */}
+          <div className="relative z-10 text-center px-4">
+            <Reveal dir="up">
+              <h2 className="text-4xl sm:text-6xl md:text-7xl font-serif font-black text-white tracking-[0.2em] uppercase drop-shadow-lg">
+                KHRONIQ UPDATES
+              </h2>
+            </Reveal>
+          </div>
+        </section>
       </div>
     </>
   );
