@@ -1,6 +1,6 @@
 import express from 'express';
-import BrandUpdate from '../models/BrandUpdate.js';
-import { protect, adminOnly } from '../middleware/auth.js';
+import BrandUpdate from '../_models/BrandUpdate.js';
+import { protect, adminOnly } from '../_middleware/auth.js';
 
 const router = express.Router();
 

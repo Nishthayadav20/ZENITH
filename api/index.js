@@ -4,19 +4,19 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 
 // Import Models
-import Product from './models/Product.js';
-import User from './models/User.js';
-import Coupon from './models/Coupon.js';
-import BrandUpdate from './models/BrandUpdate.js';
+import Product from './_models/Product.js';
+import User from './_models/User.js';
+import Coupon from './_models/Coupon.js';
+import BrandUpdate from './_models/BrandUpdate.js';
 
 // Import Routes
-import authRoutes from './routes/auth.js';
-import productRoutes from './routes/products.js';
-import orderRoutes from './routes/orders.js';
-import couponRoutes from './routes/coupons.js';
-import cartRoutes from './routes/cart.js';
-import wishlistRoutes from './routes/wishlist.js';
-import brandUpdateRoutes from './routes/brandUpdates.js';
+import authRoutes from './_routes/auth.js';
+import productRoutes from './_routes/products.js';
+import orderRoutes from './_routes/orders.js';
+import couponRoutes from './_routes/coupons.js';
+import cartRoutes from './_routes/cart.js';
+import wishlistRoutes from './_routes/wishlist.js';
+import brandUpdateRoutes from './_routes/brandUpdates.js';
 
 dotenv.config();
 
