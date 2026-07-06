@@ -41,7 +41,7 @@ export default function Shop({ onPageChange, filterParams }) {
   // Extract unique attribute lists for filters
   const movements = ['All', ...new Set(products.map(p => p.specs.movement))];
   const straps = ['All', ...new Set(products.map(p => p.specs.strap))];
-  const categories = ['All', 'Chronomaster', 'Defy', 'Heritage', 'Elite'];
+  const categories = ['All', 'Khronomaster', 'Defy', 'Heritage', 'Elite'];
 
   // Reset all filters
   const resetFilters = () => {
@@ -98,7 +98,7 @@ export default function Shop({ onPageChange, filterParams }) {
     <div className="space-y-8">
       {/* Page Header */}
       <div className="border-b border-luxury-text/10 pb-6">
-        <h1 className="font-serif text-3xl font-bold uppercase text-luxury-text tracking-widest">Zenith Catalogue</h1>
+        <h1 className="font-serif text-3xl font-bold uppercase text-luxury-text tracking-widest">Khroniq Catalogue</h1>
         <p className="text-luxury-muted text-xs mt-1">Discover precision Swiss timepieces engineered for ultimate endurance.</p>
       </div>
 

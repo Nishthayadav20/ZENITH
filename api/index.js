@@ -8,6 +8,7 @@ import cors from 'cors';
 import Product from './models/Product.js';
 import User from './models/User.js';
 import Coupon from './models/Coupon.js';
+import BrandUpdate from './models/BrandUpdate.js';
 
 // Import Routes
 import authRoutes from './routes/auth.js';
@@ -16,11 +17,14 @@ import orderRoutes from './routes/orders.js';
 import couponRoutes from './routes/coupons.js';
 import cartRoutes from './routes/cart.js';
 import wishlistRoutes from './routes/wishlist.js';
+
 import brandRoutes from './routes/brands.js';
 import categoryRoutes from './routes/categories.js';
 import uploadRoutes from './routes/upload.js';
 import paymentRoutes from './routes/payments.js';
 import adminRoutes from './routes/admin.js';
+import brandUpdateRoutes from './routes/brandUpdates.js';
+
 
 // dotenv.config();
 
@@ -28,7 +32,7 @@ const app = express();
 
 // Database Connection Status Variables
 let dbConnectionError = null;
-const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/zenith-watches';
+const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/khroniq-watches';
 
 // Middleware to ensure DB connection and seeding
 const ensureDb = async (req, res, next) => {
@@ -74,10 +78,12 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/brand-updates', brandUpdateRoutes);
+
 
 // Base Endpoint
 app.get('/api', (req, res) => {
-  res.json({ message: 'Welcome to the ZENITH Watches API' });
+  res.json({ message: 'Welcome to the KHRONIQ Watches API' });
 });
 
 // Diagnostics Endpoint
@@ -99,19 +105,22 @@ app.get('/api/health', (req, res) => {
 // Database Seed Function
 const seedDatabase = async () => {
   try {
+    // Migration: Update existing products with category 'Chronomaster' to 'Khronomaster'
+    await Product.updateMany({ category: 'Chronomaster' }, { $set: { category: 'Khronomaster' } });
+
     // 1. Seed Products
     const productCount = await Product.countDocuments();
     if (productCount < 8) {
       const initialProducts = [
         {
-          name: 'Zenith Heritage Rose Gold',
+          name: 'Khroniq Heritage Rose Gold',
           image: '/assets/media__1782899491225.jpg',
-          brand: 'ZENITH',
+          brand: 'KHRONIQ',
           price: 1250,
           stock: 8,
           category: 'Heritage',
           gender: 'women',
-          description: "A luxurious timeless classic watch featuring a stunning rose gold casing and index numerals, matching its premium metallic link bracelet. A tribute to Zenith's heritage.",
+          description: "A luxurious timeless classic watch featuring a stunning rose gold casing and index numerals, matching its premium metallic link bracelet. A tribute to Khroniq's heritage.",
           specs: {
             movement: 'Automatic Chronometer',
             case: 'Rose Gold PVD Steel (40mm)',
@@ -125,12 +134,12 @@ const seedDatabase = async () => {
           ]
         },
         {
-          name: 'Zenith Chronomaster Black Edition',
+          name: 'Khroniq Khronomaster Black Edition',
           image: '/assets/media__1782899491297.jpg',
-          brand: 'ZENITH',
+          brand: 'KHRONIQ',
           price: 4800,
           stock: 5,
-          category: 'Chronomaster',
+          category: 'Khronomaster',
           gender: 'men',
           description: 'High-precision luxury chronograph watch in matte black design with silver sub-dials and detailed tachymeter scale. Equipped with the legendary El Primero movement DNA.',
           specs: {
@@ -145,9 +154,9 @@ const seedDatabase = async () => {
           ]
         },
         {
-          name: 'Zenith Elite Classic Brown',
+          name: 'Khroniq Elite Classic Brown',
           image: '/assets/media__1782899491320.jpg',
-          brand: 'ZENITH',
+          brand: 'KHRONIQ',
           price: 2100,
           stock: 12,
           category: 'Elite',
@@ -165,9 +174,9 @@ const seedDatabase = async () => {
           ]
         },
         {
-          name: 'Zenith Defy Automatic Steel',
+          name: 'Khroniq Defy Automatic Steel',
           image: '/assets/media__1782899491366.jpg',
-          brand: 'ZENITH',
+          brand: 'KHRONIQ',
           price: 3450,
           stock: 4,
           category: 'Defy',
@@ -185,12 +194,12 @@ const seedDatabase = async () => {
           ]
         },
         {
-          name: 'Zenith Chronomaster Open Heart',
+          name: 'Khroniq Khronomaster Open Heart',
           image: '/assets/media__1782899491297.jpg',
-          brand: 'ZENITH',
+          brand: 'KHRONIQ',
           price: 5200,
           stock: 6,
-          category: 'Chronomaster',
+          category: 'Khronomaster',
           gender: 'men',
           description: 'An exquisite luxury timepiece featuring a dial opening revealing the high-frequency El Primero balance wheel. Crafted with a polished steel case.',
           specs: {
@@ -203,9 +212,9 @@ const seedDatabase = async () => {
           reviews: []
         },
         {
-          name: 'Zenith Heritage Star Dial',
+          name: 'Khroniq Heritage Star Dial',
           image: '/assets/media__1782899491225.jpg',
-          brand: 'ZENITH',
+          brand: 'KHRONIQ',
           price: 3100,
           stock: 4,
           category: 'Heritage',
@@ -221,9 +230,9 @@ const seedDatabase = async () => {
           reviews: []
         },
         {
-          name: 'Zenith Elite Moonphase',
+          name: 'Khroniq Elite Moonphase',
           image: '/assets/media__1782899491320.jpg',
-          brand: 'ZENITH',
+          brand: 'KHRONIQ',
           price: 2650,
           stock: 7,
           category: 'Elite',
@@ -239,9 +248,9 @@ const seedDatabase = async () => {
           reviews: []
         },
         {
-          name: 'Zenith Defy Skyline Skeleton',
+          name: 'Khroniq Defy Skyline Skeleton',
           image: '/assets/media__1782899491366.jpg',
-          brand: 'ZENITH',
+          brand: 'KHRONIQ',
           price: 4100,
           stock: 5,
           category: 'Defy',
@@ -271,7 +280,7 @@ const seedDatabase = async () => {
     const couponCount = await Coupon.countDocuments();
     if (couponCount === 0) {
       const initialCoupons = [
-        { code: 'ZENITHSTAR', discountPercent: 20, description: '20% off Zenith Signature Collection' },
+        { code: 'KHRONIQSTAR', discountPercent: 20, description: '20% off Khroniq Signature Collection' },
         { code: 'WELCOME10', discountPercent: 10, description: '10% off for first-time buyers' }
       ];
       await Coupon.insertMany(initialCoupons);
@@ -279,15 +288,28 @@ const seedDatabase = async () => {
     }
 
     // 3. Seed Default Admin User
-    const adminExists = await User.findOne({ email: 'admin@zenith.com' });
+    const adminExists = await User.findOne({ email: 'admin@khroniq.com' });
     if (!adminExists) {
       await User.create({
         name: 'Admin Administrator',
-        email: 'admin@zenith.com',
+        email: 'admin@khroniq.com',
         password: 'admin123', // User model hooks will hash this auto
         role: 'admin'
       });
-      console.log('Database Seeding: Default admin user (admin@zenith.com / admin123) successfully seeded!');
+      console.log('Database Seeding: Default admin user (admin@khroniq.com / admin123) successfully seeded!');
+    }
+
+    // 4. Seed Default Brand Updates
+    const updateCount = await BrandUpdate.countDocuments();
+    if (updateCount === 0) {
+      const initialUpdates = [
+        { title: "Grand Boutique Launch", detail: "Geneva flagship store grand opening scheduled for October 15th.", approved: true },
+        { title: "Limited Titanium Caliber", detail: "Exclusive high-frequency titanium editions starting to ship next month.", approved: true },
+        { title: "Zero Carbon Milestone", detail: "Le Locle manufacture officially certified as a 100% net-zero operation.", approved: true },
+        { title: "Lifetime Precision Care", detail: "Introducing extended lifetime service programs for certified chronometers.", approved: true }
+      ];
+      await BrandUpdate.insertMany(initialUpdates);
+      console.log('Database Seeding: Brand Updates successfully seeded!');
     }
 
   } catch (error) {

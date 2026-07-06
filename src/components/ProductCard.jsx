@@ -1,32 +1,55 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addToCart, toggleWishlist } from '../store/slices/watchSlice';
+import { addToCart, toggleWishlist, selectCurrentCurrency, formatPrice } from '../store/slices/watchSlice';
 import { ShoppingBag, Heart, Star } from 'lucide-react';
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 
-export default function ProductCard({ product, onPageChange }) {
+export default function ProductCard({ product, onPageChange, showRemove = false }) {
   const dispatch = useDispatch();
   const wishlist = useSelector(state => state.watch.wishlist);
+  const currentCurrency = useSelector(selectCurrentCurrency);
   const isWishlisted = wishlist.includes(product.id);
 
-  // Calculate average rating
+  /* Toast state */
+  const [toast, setToast] = useState(null); // 'added' | 'removed' | null
+  const toastTimer = useRef(null);
+
   const approvedReviews = product.reviews?.filter(r => r.status === 'approved') || [];
   const averageRating = approvedReviews.length > 0
     ? (approvedReviews.reduce((sum, r) => sum + r.rating, 0) / approvedReviews.length).toFixed(1)
     : null;
 
+  /* ── 3-D tilt on hover ── */
+  const cardRef = useRef(null);
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const rotateX = useSpring(useTransform(rawY, [-1, 1], [8, -8]), { stiffness: 180, damping: 18 });
+  const rotateY = useSpring(useTransform(rawX, [-1, 1], [-8, 8]), { stiffness: 180, damping: 18 });
+
+  const handleMove = (e) => {
+    const rect = cardRef.current.getBoundingClientRect();
+    rawX.set(((e.clientX - rect.left) / rect.width) * 2 - 1);
+    rawY.set(((e.clientY - rect.top) / rect.height) * 2 - 1);
+  };
+  const handleLeave = () => { rawX.set(0); rawY.set(0); };
+
   const handleAddToCart = (e) => {
     e.stopPropagation();
     const result = dispatch(addToCart(product.id, 1));
-    if (result.success) {
-      alert(`${product.name} added to cart!`);
-    } else {
-      alert(result.message);
-    }
+    if (result.success) alert(`${product.name} added to cart!`);
+    else alert(result.message);
   };
 
   const handleWishlistToggle = (e) => {
     e.stopPropagation();
+    e.preventDefault();
+    const willAdd = !isWishlisted;
     dispatch(toggleWishlist(product.id));
+
+    /* Show toast */
+    clearTimeout(toastTimer.current);
+    setToast(willAdd ? 'added' : 'removed');
+    toastTimer.current = setTimeout(() => setToast(null), 2000);
   };
 
   const specItems = [];
@@ -36,32 +59,37 @@ export default function ProductCard({ product, onPageChange }) {
   const specLine = specItems.length > 0 ? specItems.join(' • ') : 'Swiss Quartz';
 
   return (
-    <div 
-      onClick={() => onPageChange('product-detail', { id: product.id })}
-      className="group relative flex flex-col h-full cursor-pointer bg-transparent transition-all duration-300"
+    <motion.div
+      ref={cardRef}
+      onClick={(e) => {
+        if (e.target.closest('.wishlist-btn')) return;
+        onPageChange('product-detail', { id: product.id });
+      }}
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
+      style={{ rotateX, rotateY, transformStyle: 'preserve-3d', perspective: 800 }}
+      className="group relative flex flex-col h-full cursor-pointer bg-transparent"
+      whileHover={{ z: 20 }}
+      transition={{ type: 'spring', stiffness: 200, damping: 20 }}
     >
-      {/* Wishlist Button (Minimalist Wireframe Heart matching Tissot) */}
-      <button
-        onClick={handleWishlistToggle}
-        className="absolute top-4 right-4 z-10 p-1 text-luxury-text hover:text-luxury-red transition duration-300 focus:outline-none"
-      >
-        <Heart 
-          size={18} 
-          className="transition duration-300 text-neutral-400 hover:text-[#e10600]" 
-          fill={isWishlisted ? "#e10600" : "none"} 
-          stroke={isWishlisted ? "#e10600" : "currentColor"} 
-        />
-      </button>
-
-      {/* Image container (1:1 ratio covering the entire block) */}
-      <div className="aspect-square bg-[#f6f6f6] rounded-sm overflow-hidden relative flex items-center justify-center p-0">
-        <img
+      {/* Image */}
+      <div className="aspect-square bg-[#f6f6f6] rounded-sm overflow-hidden relative flex items-center justify-center">
+        <motion.img
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover"
+          whileHover={{ scale: 1.09 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
         />
-        
-        {/* Out of Stock Overlay */}
+
+        {/* Hover shimmer */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent pointer-events-none"
+          initial={{ x: '-120%' }}
+          whileHover={{ x: '120%' }}
+          transition={{ duration: 0.55, ease: 'easeInOut' }}
+        />
+
         {product.stock === 0 && (
           <div className="absolute inset-0 bg-[#f6f6f6]/80 flex items-center justify-center">
             <span className="text-luxury-red font-bold text-[10px] tracking-widest uppercase border border-luxury-red px-2.5 py-1">
@@ -71,20 +99,109 @@ export default function ProductCard({ product, onPageChange }) {
         )}
       </div>
 
-      {/* Text Details (Clean, left-aligned, no border, matching the Tissot layout) */}
-      <div className="pt-3 pb-2 bg-transparent space-y-1 flex flex-col justify-between flex-1">
-        <div className="space-y-0.5">
-          <h3 className="text-luxury-text text-sm font-semibold tracking-wide group-hover:text-luxury-gold-dark transition duration-200 line-clamp-1">
-            {product.name}
-          </h3>
-          <p className="text-[11px] text-luxury-muted font-normal tracking-wide">
-            {specLine}
-          </p>
-        </div>
-        <p className="text-luxury-text text-xs sm:text-sm font-semibold pt-1">
-          ${product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-        </p>
+      {/* ── Wishlist heart button ── */}
+      <div className="wishlist-btn absolute top-3 right-3 z-20" style={{ transform: 'translateZ(30px)' }}>
+        <motion.button
+          onClick={handleWishlistToggle}
+          className="relative p-2.5 focus:outline-none"
+          whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 0.8 }}
+        >
+          {/* Heart burst rings on add */}
+          <AnimatePresence>
+            {isWishlisted && (
+              <>
+                <motion.span
+                  key="ring1"
+                  className="absolute inset-0 rounded-full border-2 border-red-500 pointer-events-none"
+                  initial={{ scale: 0.6, opacity: 0.8 }}
+                  animate={{ scale: 2.2, opacity: 0 }}
+                  exit={{}}
+                  transition={{ duration: 0.55, ease: 'easeOut' }}
+                />
+                <motion.span
+                  key="ring2"
+                  className="absolute inset-0 rounded-full border border-red-300 pointer-events-none"
+                  initial={{ scale: 0.6, opacity: 0.6 }}
+                  animate={{ scale: 2.8, opacity: 0 }}
+                  exit={{}}
+                  transition={{ duration: 0.7, delay: 0.08, ease: 'easeOut' }}
+                />
+              </>
+            )}
+          </AnimatePresence>
+
+          {/* Heart icon */}
+          <motion.div
+            animate={
+              isWishlisted
+                ? { scale: [1, 1.5, 0.9, 1.15, 1], rotate: [0, -12, 10, -5, 0] }
+                : { scale: 1, rotate: 0 }
+            }
+            transition={{ duration: 0.45, ease: 'easeOut' }}
+          >
+            <Heart
+              size={18}
+              fill={isWishlisted ? '#e10600' : 'none'}
+              stroke={isWishlisted ? '#e10600' : '#a3a3a3'}
+              style={{ filter: isWishlisted ? 'drop-shadow(0 0 6px rgba(225,6,0,0.5))' : 'none' }}
+            />
+          </motion.div>
+        </motion.button>
+
+        {/* Floating toast pill */}
+        <AnimatePresence>
+          {toast && (
+            <motion.div
+              key={toast}
+              className="absolute top-[-10px] right-9 whitespace-nowrap rounded-full px-3 py-1 text-[10px] font-bold tracking-wide shadow-lg pointer-events-none z-30"
+              style={{
+                background: toast === 'added' ? '#e10600' : '#6b7280',
+                color: '#fff',
+              }}
+              initial={{ opacity: 0, x: 8, scale: 0.85 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 8, scale: 0.85 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {toast === 'added' ? '❤️ Wishlisted' : 'Removed'}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
+
+      {/* Details */}
+      <motion.div
+        className="pt-3 pb-2 bg-transparent space-y-1 flex flex-col justify-between flex-1"
+        initial={{ opacity: 0.85 }}
+        whileHover={{ opacity: 1 }}
+      >
+        <div className="space-y-0.5">
+          <motion.h3
+            className="text-luxury-text text-sm font-semibold tracking-wide line-clamp-1"
+            whileHover={{ color: '#93744d', x: 2 }}
+            transition={{ duration: 0.2 }}
+          >
+            {product.name}
+          </motion.h3>
+          <p className="text-[11px] text-luxury-muted font-normal tracking-wide">{specLine}</p>
+        </div>
+        <motion.p
+          className="text-luxury-text text-xs sm:text-sm font-semibold pt-1"
+          whileHover={{ scale: 1.04 }}
+          style={{ originX: 0 }}
+        >
+          {formatPrice(product.price, currentCurrency)}
+        </motion.p>
+        {showRemove && (
+          <button
+            onClick={handleWishlistToggle}
+            className="wishlist-btn mt-2.5 w-full py-2 bg-transparent border border-red-500/25 text-red-500 hover:bg-red-500 hover:text-white text-[10px] font-bold tracking-widest uppercase transition duration-300 cursor-pointer rounded-sm"
+          >
+            Remove
+          </button>
+        )}
+      </motion.div>
+    </motion.div>
   );
 }

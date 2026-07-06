@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { logoutUser } from '../store/slices/watchSlice';
+import { logoutUser, setCurrencyAction, selectCurrentCurrency } from '../store/slices/watchSlice';
 import { ShoppingBag, Heart, Search, User, ShieldAlert, Menu, X, Star } from 'lucide-react';
 
 export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
@@ -17,7 +17,43 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const currentCurrency = useSelector(selectCurrentCurrency);
+  const [currencyOpen, setCurrencyOpen] = useState(false);
 
+  const currencyMap = {
+    INR: { symbol: '₹', label: 'Indian Currency (Rupees)' },
+    USD: { symbol: '$', label: 'US Currency (Dollar)' },
+    EUR: { symbol: '€', label: 'British Currency (Euro)' }
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Track scrolling for background transparency on homepage
+      if (currentScrollY > 80) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+
+      // Hide header on scroll down, show on scroll up
+      if (currentScrollY < 10) {
+        setVisible(true);
+      } else if (currentScrollY > lastScrollY) {
+        setVisible(false); // Scrolling down
+      } else {
+        setVisible(true); // Scrolling up
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   const handleSearchSubmit = (e) => {
@@ -34,7 +70,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
     { label: 'MEN', page: 'shop', filter: { gender: 'men' } },
     { label: 'WOMEN', page: 'shop', filter: { gender: 'women' } },
     { label: 'SHOP ALL', page: 'shop' },
-    { label: 'CHRONOMASTER', page: 'shop', filter: { category: 'Chronomaster' } },
+    { label: 'KHRONOMASTER', page: 'shop', filter: { category: 'Khronomaster' } },
   ];
 
   const handleNavLinkClick = (link) => {
@@ -47,16 +83,20 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
   };
 
   const isHome = currentPage === 'home';
-  const headerClass = isHome 
-    ? "absolute top-0 left-0 right-0 z-50 bg-gradient-to-r from-black/45 via-transparent to-black/45 border-b border-white/10 transition-all duration-300"
-    : "sticky top-0 z-50 glass border-b border-luxury-text/10 transition-all duration-300";
+  const headerClass = `${
+    isHome ? 'fixed' : 'sticky'
+  } top-0 left-0 right-0 z-50 transition-all duration-300 transform ${
+    visible ? 'translate-y-0' : '-translate-y-full'
+  } ${
+    isHome 
+      ? (scrolled ? 'bg-black/95 backdrop-blur-md shadow-md' : 'bg-transparent')
+      : 'bg-[#111111] shadow-md'
+  }`;
 
-  const textColorClass = isHome 
-    ? "text-white hover:text-luxury-gold" 
-    : "text-luxury-text hover:text-luxury-gold-dark";
+  const textColorClass = "text-white hover:text-luxury-gold";
 
-  const starColor = isHome ? "var(--color-luxury-gold)" : "var(--color-luxury-gold-dark)";
-  const starTextClass = isHome ? "text-luxury-gold" : "text-luxury-gold-dark";
+  const starColor = "#ffffff";
+  const starTextClass = "text-white";
 
   return (
     <header className={headerClass}>
@@ -74,13 +114,13 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
           </div>
 
           {/* Left Navigation: Brand Links (Desktop) */}
-          <nav className="hidden md:flex space-x-8 text-xs font-semibold tracking-widest">
+          <nav className="hidden md:flex space-x-8 text-sm lg:text-base font-black tracking-widest">
             {navLinks.map((link, idx) => (
               <button
                 key={idx}
                 onClick={() => handleNavLinkClick(link)}
                 className={`${textColorClass} transition duration-200 cursor-pointer ${
-                  currentPage === link.page ? (isHome ? 'text-luxury-gold' : 'text-luxury-gold-dark') : ''
+                  currentPage === link.page ? 'text-luxury-gold' : ''
                 }`}
               >
                 {link.label}
@@ -94,13 +134,13 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
               onClick={() => onPageChange('home')} 
               className={`flex items-center space-x-2 transition duration-300 cursor-pointer ${textColorClass}`}
             >
-              <Star className={`${starTextClass} animate-pulse`} size={22} fill={starColor} />
-              <span className="font-serif text-2xl font-bold tracking-widest">ZENITH</span>
+              <Star className={`${starTextClass} animate-pulse`} size={28} fill={starColor} />
+              <span className="font-serif text-3xl lg:text-4xl font-black tracking-widest">KHRONIQ</span>
             </button>
           </div>
 
           {/* Right Icons */}
-          <div className={`flex items-center space-x-5 ${isHome ? 'text-white bg-gradient-to-r from-transparent to-transparent' : 'text-luxury-text'}`}>
+          <div className="flex items-center space-x-5 text-white">
             {/* Search Icon / Bar */}
             <div className="relative flex items-center">
               {searchOpen ? (
@@ -127,10 +167,10 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
               ) : (
                 <button 
                   onClick={() => setSearchOpen(true)}
-                  className={`transition cursor-pointer ${isHome ? 'hover:text-luxury-gold' : 'hover:text-luxury-gold-dark'}`}
+                  className="transition cursor-pointer hover:text-luxury-gold"
                   title="Search"
                 >
-                  <Search size={20} />
+                  <Search size={24} />
                 </button>
               )}
             </div>
@@ -140,25 +180,25 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
               {currentUser ? (
                 <button
                   onClick={() => onPageChange(currentUser.role === 'admin' ? 'admin' : 'profile')}
-                  className={`flex items-center space-x-1.5 transition cursor-pointer ${isHome ? 'hover:text-luxury-gold' : 'hover:text-luxury-gold-dark'}`}
+                  className="flex items-center space-x-1.5 transition cursor-pointer hover:text-luxury-gold"
                   title={currentUser.role === 'admin' ? 'Admin Dashboard' : 'My Account'}
                 >
                   {currentUser.role === 'admin' ? (
-                    <ShieldAlert size={20} className="text-luxury-red" />
+                    <ShieldAlert size={24} className="text-luxury-red" />
                   ) : (
-                    <User size={20} />
+                    <User size={24} />
                   )}
-                  <span className="hidden lg:inline text-xs max-w-20 truncate font-medium">
+                  <span className="hidden lg:inline text-sm max-w-24 truncate font-bold">
                     {currentUser.name}
                   </span>
                 </button>
               ) : (
                 <button 
                   onClick={() => onPageChange('login')}
-                  className={`transition cursor-pointer ${isHome ? 'hover:text-luxury-gold' : 'hover:text-luxury-gold-dark'}`}
+                  className="transition cursor-pointer hover:text-luxury-gold"
                   title="Login"
                 >
-                  <User size={20} />
+                  <User size={24} />
                 </button>
               )}
             </div>
@@ -166,26 +206,56 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
             {/* Wishlist Icon */}
             <button 
               onClick={() => onPageChange(currentUser ? 'profile' : 'login', currentUser ? { tab: 'wishlist' } : null)}
-              className={`relative transition cursor-pointer ${isHome ? 'hover:text-luxury-gold' : 'hover:text-luxury-gold-dark'}`}
+              className="relative transition cursor-pointer hover:text-luxury-gold"
               title="Wishlist"
             >
-              <Heart size={20} />
+              <Heart size={24} />
               {wishlist.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-luxury-gold-dark text-white text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-luxury-gold-dark text-white text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center">
                   {wishlist.length}
                 </span>
               )}
             </button>
 
+            {/* Currency Selector Dropdown */}
+            <div className="relative">
+              <button 
+                onClick={() => setCurrencyOpen(!currencyOpen)}
+                className="flex items-center justify-center w-10 h-10 rounded-full border border-white/20 hover:border-luxury-gold hover:text-luxury-gold transition cursor-pointer text-lg font-black"
+                title="Select Currency"
+              >
+                {currencyMap[currentCurrency]?.symbol || '$'}
+              </button>
+              {currencyOpen && (
+                <div className="absolute right-0 mt-2.5 w-52 bg-[#111111] border border-white/10 rounded shadow-xl py-2 z-50 text-xs text-white font-bold">
+                  {Object.entries(currencyMap).map(([code, details]) => (
+                    <button
+                      key={code}
+                      onClick={() => {
+                        dispatch(setCurrencyAction(code));
+                        setCurrencyOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2.5 hover:bg-white/15 transition cursor-pointer flex justify-between items-center ${
+                        currentCurrency === code ? 'text-luxury-gold' : ''
+                      }`}
+                    >
+                      <span>{details.label}</span>
+                      {currentCurrency === code && <span className="text-luxury-gold">✓</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Cart Icon */}
             <button 
               onClick={onCartOpen}
-              className={`relative transition cursor-pointer ${isHome ? 'hover:text-luxury-gold' : 'hover:text-luxury-gold-dark'}`}
+              className="relative transition cursor-pointer hover:text-luxury-gold"
               title="Shopping Cart"
             >
-              <ShoppingBag size={20} />
+              <ShoppingBag size={24} />
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-luxury-red text-white text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-luxury-red text-white text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center">
                   {cartCount}
                 </span>
               )}

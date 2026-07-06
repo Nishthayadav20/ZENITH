@@ -241,7 +241,7 @@ router.post('/forgot-password', async (req, res) => {
 
     await sendEmail({
       to: user.email,
-      subject: 'ZENITH Watches - Password Reset Request',
+      subject: 'KHRONIQ Watches - Password Reset Request',
       html: `
         <p>Hello ${user.name},</p>
         <p>You requested a password reset. Click the link below to set a new password. This link expires in 15 minutes.</p>

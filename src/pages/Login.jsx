@@ -122,7 +122,7 @@ export default function Login({ params, onPageChange }) {
       <div className="text-center space-y-2">
         <Star className="mx-auto text-luxury-gold animate-pulse" size={32} fill="var(--color-luxury-gold)" />
         <h1 className="font-serif text-2xl font-bold uppercase tracking-widest text-white">Security Gateway</h1>
-        <p className="text-xs text-gray-400">Secure entry to the Zenith Horological Portal.</p>
+        <p className="text-xs text-gray-400">Secure entry to the Khroniq Horological Portal.</p>
       </div>
 
       {/* Login Box */}
@@ -286,7 +286,7 @@ export default function Login({ params, onPageChange }) {
             </div>
             
             <p className="text-[10px] text-gray-400 font-light">
-              Your security is paramount. Please ensure your password meets all Zenith guidelines:
+              Your security is paramount. Please ensure your password meets all Khroniq guidelines:
             </p>
 
             <ul className="space-y-2.5 text-xs">

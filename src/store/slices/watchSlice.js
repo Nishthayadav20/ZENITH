@@ -12,16 +12,17 @@ const loadSaved = (key, fallback) => {
 
 const initialState = {
   products: [],
-  cart: loadSaved('zenith_cart', []),
-  wishlist: loadSaved('zenith_wishlist', []),
+  cart: loadSaved('khroniq_cart', []),
+  wishlist: loadSaved('khroniq_wishlist', []),
   orders: [],
   coupons: [],
-  currentUser: null
+  currentUser: null,
+  currentCurrency: loadSaved('khroniq_currency', 'USD')
 };
 
 // Helper for standard API headers
 const getHeaders = () => {
-  const token = localStorage.getItem('zenith_token');
+  const token = localStorage.getItem('khroniq_token');
   const headers = {
     'Content-Type': 'application/json',
   };
@@ -87,6 +88,10 @@ const watchSlice = createSlice({
     },
     setWishlistAction: (state, action) => {
       state.wishlist = action.payload;
+    },
+    setCurrencyAction: (state, action) => {
+      state.currentCurrency = action.payload;
+      localStorage.setItem('khroniq_currency', action.payload);
     }
   }
 });
@@ -103,8 +108,21 @@ export const {
   setOrdersAction,
   setCouponsAction,
   setCartAction,
-  setWishlistAction
+  setWishlistAction,
+  setCurrencyAction
 } = watchSlice.actions;
+
+export const selectCurrentCurrency = state => state.watch.currentCurrency || 'USD';
+
+export const formatPrice = (price, currency) => {
+  const numPrice = Number(price) || 0;
+  if (currency === 'INR') {
+    return `₹ ${(numPrice * 83).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
+  } else if (currency === 'EUR') {
+    return `€ ${(numPrice * 0.92).toLocaleString('en-GB', { maximumFractionDigits: 0 })}`;
+  }
+  return `$ ${numPrice.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+};
 
 // Async Thunks using native fetch
 export const fetchProducts = () => async (dispatch) => {
@@ -190,7 +208,7 @@ export const fetchWishlistFromDb = () => async (dispatch) => {
 };
 
 export const fetchUserProfile = () => async (dispatch) => {
-  const token = localStorage.getItem('zenith_token');
+  const token = localStorage.getItem('khroniq_token');
   if (!token) return;
   try {
     const res = await fetch('/api/auth/profile', {
@@ -203,11 +221,11 @@ export const fetchUserProfile = () => async (dispatch) => {
       dispatch(fetchCartFromDb());
       dispatch(fetchWishlistFromDb());
     } else {
-      localStorage.removeItem('zenith_token');
+      localStorage.removeItem('khroniq_token');
     }
   } catch (error) {
     console.error('Failed to fetch user profile:', error);
-    localStorage.removeItem('zenith_token');
+    localStorage.removeItem('khroniq_token');
   }
 };
 
@@ -220,7 +238,7 @@ export const registerUser = (name, email, password) => async (dispatch, getState
     });
     const data = await res.json();
     if (data.success) {
-      localStorage.setItem('zenith_token', data.token);
+      localStorage.setItem('khroniq_token', data.token);
       dispatch(setCurrentUserAction(data.user));
 
       const guestCart = getState().watch.cart;
@@ -249,7 +267,7 @@ export const loginUser = (email, password) => async (dispatch, getState) => {
     });
     const data = await res.json();
     if (data.success) {
-      localStorage.setItem('zenith_token', data.token);
+      localStorage.setItem('khroniq_token', data.token);
       dispatch(setCurrentUserAction(data.user));
       dispatch(fetchOrders());
 
@@ -271,7 +289,7 @@ export const loginUser = (email, password) => async (dispatch, getState) => {
 };
 
 export const logoutUser = () => (dispatch) => {
-  localStorage.removeItem('zenith_token');
+  localStorage.removeItem('khroniq_token');
   dispatch(logoutUserAction());
 };
 
