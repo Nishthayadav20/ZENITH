@@ -12,6 +12,9 @@ import Login from './pages/Login';
 import Admin from './pages/Admin';
 import Static from './pages/Static';
 import { fetchProducts, fetchCoupons, fetchUserProfile } from './store/slices/watchSlice';
+import ResetPassword from './pages/ResetPassword';
+
+
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -23,6 +26,14 @@ function AppContent() {
     dispatch(fetchCoupons());
     dispatch(fetchUserProfile());
   }, [dispatch]);
+
+  useEffect(() => {
+  const match = window.location.pathname.match(/^\/reset-password\/(.+)$/);
+  if (match) {
+    setCurrentPage('reset-password');
+    setPageParams({ token: match[1] });
+  }
+}, []);
 
   const handlePageChange = (page, params = null) => {
     setCurrentPage(page);
@@ -50,6 +61,8 @@ function AppContent() {
         return <Admin onPageChange={handlePageChange} />;
       case 'static':
         return <Static params={pageParams} onPageChange={handlePageChange} />;
+      case 'reset-password':
+        return <ResetPassword params={pageParams} onPageChange={handlePageChange} />;
       default:
         return <Home onPageChange={handlePageChange} />;
     }

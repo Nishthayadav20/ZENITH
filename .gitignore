@@ -29,3 +29,7 @@ dist-ssr
 .env.development.local
 .env.production.local
 .env.test.local
+
+
+
+mongodb+srv://zenith_admin:zenith_admin2026@cluster0.fg0dyzo.mongodb.net/?appName=Cluster0

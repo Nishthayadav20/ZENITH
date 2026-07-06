@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { loginUser, registerUser } from '../store/slices/watchSlice';
 import { Star, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { forgotPassword } from '../store/slices/watchSlice';
+
 
 export default function Login({ params, onPageChange }) {
   const dispatch = useDispatch();
@@ -47,15 +49,19 @@ export default function Login({ params, onPageChange }) {
     setForgotSuccess(false);
 
     if (authMode === 'forgot') {
-      if (!email) {
-        setErrorMsg('Please specify your registered email.');
-        return;
-      }
-      // Mock sending reset link
-      setForgotSuccess(true);
-      setEmail('');
-      return;
-    }
+  if (!email) {
+    setErrorMsg('Please specify your registered email.');
+    return;
+  }
+  const res = await dispatch(forgotPassword(email));
+  if (res.success) {
+    setForgotSuccess(true);
+    setEmail('');
+  } else {
+    setErrorMsg(res.message || 'Failed to send reset link.');
+  }
+  return;
+}
 
     if (!email || !password || (authMode === 'register' && !name)) {
       setErrorMsg('Please complete all form inputs.');

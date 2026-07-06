@@ -635,4 +635,93 @@ export const moderateReview = (productId, reviewId, status) => async (dispatch) 
   }
 };
 
+
+export const forgotPassword = (email) => async () => {
+  try {
+    const res = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return { success: false, message: 'Request failed. Server error.' };
+  }
+};
+
+export const resetPassword = (token, password) => async () => {
+  try {
+    const res = await fetch(`/api/auth/reset-password/${token}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password })
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return { success: false, message: 'Reset failed. Server error.' };
+  }
+};
+
+
+
+export const createRazorpayOrder = (amount) => async () => {
+  try {
+    const res = await fetch('/api/payments/create-order', {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ amount })
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return { success: false, message: 'Failed to initiate payment.' };
+  }
+};
+
+export const verifyRazorpayPayment = (paymentData) => async (dispatch) => {
+  try {
+    const res = await fetch('/api/payments/verify', {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(paymentData)
+    });
+    const data = await res.json();
+    if (data.success) {
+      if (dispatch) {
+        // Refresh state after successful payment
+        dispatch(clearCartAction());
+      }
+      try {
+        await fetch('/api/cart/clear', { method: 'POST', headers: getHeaders() });
+      } catch (err) {
+        console.error('Failed to clear database cart:', err);
+      }
+      dispatch(fetchProducts());
+      dispatch(fetchOrders());
+    }
+    return data;
+  } catch (error) {
+    return { success: false, message: 'Payment verification failed.' };
+  }
+};
+
+
+export const fetchAnalytics = () => async (dispatch) => {
+  try {
+    const res = await fetch('/api/admin/analytics', {
+      headers: getHeaders()
+    });
+    const data = await res.json();
+    if (data.success) {
+      return data.analytics;
+    }
+    return null;
+  } catch (error) {
+    console.error('Failed to fetch analytics:', error);
+    return null;
+  }
+};
+
 export default watchSlice.reducer;

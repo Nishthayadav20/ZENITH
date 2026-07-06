@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
   updateOrderStatus, 
@@ -7,7 +7,8 @@ import {
   deleteProduct, 
   addCoupon, 
   deleteCoupon, 
-  moderateReview 
+  moderateReview,
+  fetchAnalytics
 } from '../store/slices/watchSlice';
 import { 
   BarChart3, Plus, Edit, Trash2, Check, X, Tag, Star, 
@@ -46,12 +47,25 @@ export default function Admin({ onPageChange }) {
 
   // Edit Product Form State
   const [editingId, setEditingId] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [editForm, setEditForm] = useState(null);
 
   // Add Coupon Form State
+// Add Coupon Form State
   const [newCouponCode, setNewCouponCode] = useState('');
   const [newCouponDiscount, setNewCouponDiscount] = useState('');
   const [newCouponDesc, setNewCouponDesc] = useState('');
+
+  // Analytics State
+  const [analytics, setAnalytics] = useState(null);
+
+  useEffect(() => {
+    if (currentUser?.role === 'admin') {
+      dispatch(fetchAnalytics()).then((data) => {
+        if (data) setAnalytics(data);
+      });
+    }
+  }, [currentUser, dispatch]);
 
   // Validation checking for security
   if (!currentUser || currentUser.role !== 'admin') {
@@ -73,10 +87,10 @@ export default function Admin({ onPageChange }) {
   }
 
   // --- ANALYTICS CALCULATIONS ---
+// --- ANALYTICS CALCULATIONS (fallback client-side values, used until backend analytics loads) ---
   const totalSales = orders.filter(o => o.status !== 'Cancelled').reduce((sum, o) => sum + o.total, 0);
   const totalOrdersCount = orders.length;
   const outOfStockCount = products.filter(p => p.stock === 0).length;
-  const totalSubscribersMock = 148;
 
   // Compile all pending reviews for moderation
   const pendingReviews = [];
@@ -91,6 +105,40 @@ export default function Admin({ onPageChange }) {
       }
     });
   });
+
+
+
+
+const handleImageUpload = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  setUploadingImage(true);
+  const formData = new FormData();
+  formData.append('image', file);
+
+  try {
+    const token = localStorage.getItem('zenith_token');
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    });
+    const data = await res.json();
+    if (data.success) {
+      setNewProduct({ ...newProduct, image: data.imageUrl });
+    } else {
+      alert(data.message || 'Image upload failed');
+    }
+  } catch (error) {
+    console.error('Upload error:', error);
+    alert('Image upload failed');
+  } finally {
+    setUploadingImage(false);
+  }
+};
+
+
 
   // --- ACTIONS HANDLERS ---
   const handleCreateProduct = (e) => {
@@ -208,82 +256,104 @@ export default function Admin({ onPageChange }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-luxury-gray border border-white/5 p-6 rounded-md space-y-2">
               <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Gross Sales Revenue</span>
-              <p className="text-2xl font-extrabold text-luxury-gold">${totalSales.toLocaleString()}</p>
-              <span className="text-[9px] text-emerald-400 flex items-center space-x-1 font-medium">
-                <ArrowUpRight size={10} />
-                <span>+12.4% vs last week</span>
-              </span>
+              <p className="text-2xl font-extrabold text-luxury-gold">${(analytics?.totalRevenue ?? totalSales).toLocaleString()}</p>
+              <span className="text-[9px] text-gray-500 font-light">Excludes cancelled orders</span>
             </div>
             
             <div className="bg-luxury-gray border border-white/5 p-6 rounded-md space-y-2">
               <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Total Orders</span>
-              <p className="text-2xl font-extrabold text-white">{totalOrdersCount}</p>
+              <p className="text-2xl font-extrabold text-white">{analytics?.totalOrders ?? totalOrdersCount}</p>
               <span className="text-[9px] text-gray-500 font-light">All status types included</span>
             </div>
 
             <div className="bg-luxury-gray border border-white/5 p-6 rounded-md space-y-2">
               <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Out of Stock Watches</span>
               <p className="text-2xl font-extrabold text-white flex items-center space-x-2">
-                <span>{outOfStockCount}</span>
-                {outOfStockCount > 0 && <AlertTriangle size={18} className="text-luxury-red animate-pulse" />}
+                <span>{analytics?.outOfStockCount ?? outOfStockCount}</span>
+                {(analytics?.outOfStockCount ?? outOfStockCount) > 0 && <AlertTriangle size={18} className="text-luxury-red animate-pulse" />}
               </p>
               <span className="text-[9px] text-gray-500">Requires production triggers</span>
             </div>
 
             <div className="bg-luxury-gray border border-white/5 p-6 rounded-md space-y-2">
-              <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Star Newsletter Subscriptions</span>
-              <p className="text-2xl font-extrabold text-white">{totalSubscribersMock}</p>
-              <span className="text-[9px] text-emerald-400 font-medium">Mock marketing reach</span>
+              <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Low Stock Alerts</span>
+              <p className="text-2xl font-extrabold text-white">{analytics?.lowStockProducts?.length ?? 0}</p>
+              <span className="text-[9px] text-gray-500">Products under 5 units</span>
             </div>
           </div>
 
-          {/* SVG Chart Panel */}
+          {/* Sales by Category Chart (real data) */}
           <div className="bg-luxury-gray border border-white/5 p-6 sm:p-8 rounded-md space-y-6">
             <div className="flex justify-between items-center border-b border-white/5 pb-4">
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-widest text-white">Sales Performance Curve</h3>
-                <p className="text-[10px] text-gray-500 mt-0.5">Calculated relative gross trends by collection category</p>
+                <h3 className="text-xs font-bold uppercase tracking-widest text-white">Sales by Category</h3>
+                <p className="text-[10px] text-gray-500 mt-0.5">Real revenue breakdown by watch collection</p>
               </div>
-              <span className="bg-white/5 border border-white/10 text-[9px] font-bold text-gray-300 px-2.5 py-1 tracking-widest uppercase rounded">
+              <span className="bg-emerald-500/10 border border-emerald-500/20 text-[9px] font-bold text-emerald-400 px-2.5 py-1 tracking-widest uppercase rounded">
                 Live Data
               </span>
             </div>
 
-            {/* Custom Interactive SVG Graph */}
-            <div className="relative pt-4 flex flex-col items-center">
-              <svg className="w-full h-64 overflow-visible" viewBox="0 0 600 240">
-                {/* Horizontal Guide Lines */}
-                <line x1="50" y1="40" x2="550" y2="40" stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
-                <line x1="50" y1="90" x2="550" y2="90" stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
-                <line x1="50" y1="140" x2="550" y2="140" stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
-                <line x1="50" y1="190" x2="550" y2="190" stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
-                
-                {/* Axes */}
-                <line x1="50" y1="190" x2="550" y2="190" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
-                <line x1="50" y1="40" x2="50" y2="190" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
+            {!analytics || analytics.salesByCategory.length === 0 ? (
+              <p className="text-gray-500 text-xs italic text-center py-8">No sales data yet.</p>
+            ) : (
+              <div className="space-y-3">
+                {analytics.salesByCategory.map((cat) => {
+                  const maxRevenue = Math.max(...analytics.salesByCategory.map(c => c.revenue));
+                  const widthPct = maxRevenue > 0 ? (cat.revenue / maxRevenue) * 100 : 0;
+                  return (
+                    <div key={cat._id} className="space-y-1">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-300 font-semibold uppercase tracking-wide">{cat._id}</span>
+                        <span className="text-luxury-gold font-bold">${cat.revenue.toLocaleString()}</span>
+                      </div>
+                      <div className="h-2.5 bg-luxury-dark rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-luxury-gold rounded-full transition-all"
+                          style={{ width: `${widthPct}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
 
-                {/* Bars - Mocking Category Sales: Chronomaster, Defy, Heritage, Elite */}
-                {/* Chronomaster: 190 to 60 */}
-                <rect x="90" y="60" width="40" height="130" fill="var(--color-luxury-gold)" opacity="0.8" rx="2" className="hover:opacity-100 transition" />
-                {/* Defy: 190 to 90 */}
-                <rect x="210" y="90" width="40" height="100" fill="var(--color-luxury-red)" opacity="0.8" rx="2" className="hover:opacity-100 transition" />
-                {/* Heritage: 190 to 120 */}
-                <rect x="330" y="120" width="40" height="70" fill="#ffffff" opacity="0.7" rx="2" className="hover:opacity-100 transition" />
-                {/* Elite: 190 to 150 */}
-                <rect x="450" y="150" width="40" height="40" fill="var(--color-luxury-gold-dark)" opacity="0.8" rx="2" className="hover:opacity-100 transition" />
+          {/* Best Sellers & Low Stock */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-luxury-gray border border-white/5 p-6 rounded-md space-y-4">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-white border-b border-white/5 pb-3">Best Selling Timepieces</h3>
+              {!analytics || analytics.bestSellers.length === 0 ? (
+                <p className="text-gray-500 text-xs italic">No sales yet.</p>
+              ) : (
+                <div className="space-y-3">
+                  {analytics.bestSellers.map((item, idx) => (
+                    <div key={item._id} className="flex justify-between items-center text-xs">
+                      <span className="text-gray-300"><span className="text-luxury-gold font-bold mr-2">#{idx + 1}</span>{item.name}</span>
+                      <span className="text-white font-semibold">{item.totalQuantity} sold</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
-                {/* Y-axis Labels */}
-                <text x="40" y="45" fill="rgba(255,255,255,0.4)" fontSize="9" textAnchor="end">$10K</text>
-                <text x="40" y="95" fill="rgba(255,255,255,0.4)" fontSize="9" textAnchor="end">$5K</text>
-                <text x="40" y="145" fill="rgba(255,255,255,0.4)" fontSize="9" textAnchor="end">$2.5K</text>
-                <text x="40" y="195" fill="rgba(255,255,255,0.4)" fontSize="9" textAnchor="end">$0</text>
-
-                {/* X-axis Labels */}
-                <text x="110" y="210" fill="rgba(255,255,255,0.6)" fontSize="9" textAnchor="middle">CHRONOMASTER</text>
-                <text x="230" y="210" fill="rgba(255,255,255,0.6)" fontSize="9" textAnchor="middle">DEFY</text>
-                <text x="350" y="210" fill="rgba(255,255,255,0.6)" fontSize="9" textAnchor="middle">HERITAGE</text>
-                <text x="470" y="210" fill="rgba(255,255,255,0.6)" fontSize="9" textAnchor="middle">ELITE</text>
-              </svg>
+            <div className="bg-luxury-gray border border-white/5 p-6 rounded-md space-y-4">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-white border-b border-white/5 pb-3">Low Stock Warning</h3>
+              {!analytics || analytics.lowStockProducts.length === 0 ? (
+                <p className="text-gray-500 text-xs italic">All products sufficiently stocked.</p>
+              ) : (
+                <div className="space-y-3">
+                  {analytics.lowStockProducts.map((item) => (
+                    <div key={item._id} className="flex justify-between items-center text-xs">
+                      <span className="text-gray-300">{item.name}</span>
+                      <span className={`font-bold ${item.stock === 0 ? 'text-luxury-red' : 'text-yellow-400'}`}>
+                        {item.stock} left
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -376,18 +446,18 @@ export default function Admin({ onPageChange }) {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Image Path</label>
-                  <select
-                    value={newProduct.image}
-                    onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
-                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
-                  >
-                    <option value="/assets/media__1782899491225.jpg">Rose Gold Watch (Asset 1)</option>
-                    <option value="/assets/media__1782899491297.jpg">Black Chronograph (Asset 2)</option>
-                    <option value="/assets/media__1782899491320.jpg">Minimalist Leather (Asset 3)</option>
-                    <option value="/assets/media__1782899491366.jpg">Defy Steel (Asset 4)</option>
-                  </select>
-                </div>
+  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Watch Image</label>
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleImageUpload}
+    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none file:mr-3 file:py-1 file:px-3 file:border-0 file:text-xs file:bg-luxury-gold file:text-luxury-dark file:font-bold file:uppercase file:cursor-pointer"
+  />
+  {uploadingImage && <p className="text-[10px] text-luxury-gold">Uploading image...</p>}
+  {newProduct.image && !uploadingImage && (
+    <img src={newProduct.image} alt="Preview" className="mt-2 h-20 w-20 object-cover rounded border border-white/10" />
+  )}
+</div>
 
                 <div className="md:col-span-2 space-y-1.5">
                   <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Product Description</label>

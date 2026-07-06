@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { placeOrder } from '../store/slices/watchSlice';
+import { createRazorpayOrder, verifyRazorpayPayment } from '../store/slices/watchSlice';
 import confetti from 'canvas-confetti';
-import { CheckCircle2, CreditCard, Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, ArrowRight, ShieldCheck } from 'lucide-react';
 
 export default function Checkout({ params, onPageChange }) {
   const dispatch = useDispatch();
@@ -21,15 +21,8 @@ export default function Checkout({ params, onPageChange }) {
     zipCode: currentUser?.shippingAddress?.postalCode || '',
     country: currentUser?.shippingAddress?.country || 'United States'
   });
-  
-  const [paymentMethod, setPaymentMethod] = useState('card'); // card | upi
-  const [cardForm, setCardForm] = useState({
-    cardNumber: '',
-    expiry: '',
-    cvv: '',
-    cardName: currentUser?.name || ''
-  });
 
+  const [processingPayment, setProcessingPayment] = useState(false);
   const [orderReceipt, setOrderReceipt] = useState(null);
 
   // Sync shipping details once current user profile is fetched/loaded
@@ -44,10 +37,6 @@ export default function Checkout({ params, onPageChange }) {
         country: (prev.country === 'United States' || !prev.country) && currentUser.shippingAddress?.country 
           ? currentUser.shippingAddress.country 
           : prev.country
-      }));
-      setCardForm(prev => ({
-        ...prev,
-        cardName: prev.cardName || currentUser.name || ''
       }));
     }
   }, [currentUser]);
@@ -71,36 +60,85 @@ export default function Checkout({ params, onPageChange }) {
     setStep(2);
   };
 
-  const handlePaymentSubmit = (e) => {
-    e.preventDefault();
-    if (paymentMethod === 'card') {
-      if (!cardForm.cardNumber || !cardForm.expiry || !cardForm.cvv || !cardForm.cardName) {
-        alert('Please complete credit card details.');
-        return;
+  const handleRazorpayPayment = async () => {
+    setProcessingPayment(true);
+
+    const items = cartItemsWithDetails.map(item => ({
+      productId: item.productId,
+      name: item.product.name,
+      price: item.product.price,
+      quantity: item.quantity,
+      image: item.product.image
+    }));
+
+    // 1. Create Razorpay order via backend
+    const orderRes = await dispatch(createRazorpayOrder(total));
+
+    if (!orderRes.success) {
+      alert(orderRes.message || 'Could not initiate payment.');
+      setProcessingPayment(false);
+      return;
+    }
+
+    const { order, key_id } = orderRes;
+
+    // 2. Open Razorpay's official checkout popup
+    const options = {
+      key: key_id,
+      amount: order.amount,
+      currency: order.currency,
+      name: 'ZENITH Watches',
+      description: 'Timepiece Purchase',
+      order_id: order.id,
+      handler: async function (response) {
+        // 3. Verify payment on backend, which then creates the real order
+        const verifyRes = await dispatch(verifyRazorpayPayment({
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+          items,
+          subtotal,
+          discount,
+          total,
+          shippingDetails: shippingForm
+        }));
+
+        setProcessingPayment(false);
+
+        if (verifyRes.success) {
+          setOrderReceipt(verifyRes.order);
+          setStep(3);
+
+          confetti({
+            particleCount: 150,
+            spread: 80,
+            origin: { y: 0.6 },
+            colors: ['#c5a880', '#e10600', '#ffffff', '#1e293b']
+          });
+        } else {
+          alert(verifyRes.message || 'Payment verification failed.');
+        }
+      },
+      modal: {
+        ondismiss: function () {
+          setProcessingPayment(false);
+        }
+      },
+      prefill: {
+        name: shippingForm.fullName,
+        email: currentUser?.email || ''
+      },
+      theme: {
+        color: '#c5a880'
       }
-    }
+    };
 
-    // Call Redux dispatcher to place the order
-    const result = dispatch(placeOrder(
-      shippingForm,
-      { method: paymentMethod, cardNumber: cardForm.cardNumber || 'UPI' },
-      appliedCoupon
-    ));
-
-    if (result.success) {
-      setOrderReceipt(result.order);
-      setStep(3);
-      
-      // Fire confetti celebration!
-      confetti({
-        particleCount: 150,
-        spread: 80,
-        origin: { y: 0.6 },
-        colors: ['#c5a880', '#e10600', '#ffffff', '#1e293b']
-      });
-    } else {
-      alert(result.message);
-    }
+    const rzp = new window.Razorpay(options);
+    rzp.on('payment.failed', function () {
+      alert('Payment failed. Please try again.');
+      setProcessingPayment(false);
+    });
+    rzp.open();
   };
 
   return (
@@ -219,133 +257,41 @@ export default function Checkout({ params, onPageChange }) {
         </div>
       )}
 
-      {/* Step 2: Payment Method Form */}
+      {/* Step 2: Payment via Razorpay */}
       {step === 2 && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Payment Details */}
           <div className="lg:col-span-7 bg-luxury-gray border border-white/5 p-6 sm:p-8 rounded-md space-y-6">
             <h2 className="text-sm font-bold tracking-widest text-white uppercase border-b border-white/5 pb-3">Payment Portal</h2>
-            
-            {/* Toggle Payment Method */}
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('card')}
-                className={`py-3.5 rounded border text-xs font-bold uppercase flex flex-col items-center justify-center space-y-2 cursor-pointer transition ${
-                  paymentMethod === 'card' 
-                    ? 'border-luxury-gold bg-luxury-gold/5 text-luxury-gold' 
-                    : 'border-white/10 text-gray-400 hover:border-white/20'
-                }`}
-              >
-                <CreditCard size={18} />
-                <span>Credit Card</span>
-              </button>
-              
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('upi')}
-                className={`py-3.5 rounded border text-xs font-bold uppercase flex flex-col items-center justify-center space-y-2 cursor-pointer transition ${
-                  paymentMethod === 'upi' 
-                    ? 'border-luxury-gold bg-luxury-gold/5 text-luxury-gold' 
-                    : 'border-white/10 text-gray-400 hover:border-white/20'
-                }`}
-              >
-                <Landmark size={18} />
-                <span>UPI / QR Scan</span>
-              </button>
+
+            <div className="border border-white/5 rounded-md p-6 bg-luxury-dark text-center space-y-4">
+              <ShieldCheck className="mx-auto text-luxury-gold" size={32} />
+              <p className="text-gray-300 text-xs max-w-sm mx-auto font-light leading-relaxed">
+                You will be redirected to our secure payment gateway to complete your purchase via Card, UPI, Netbanking, or Wallet.
+              </p>
+              <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">
+                Powered by Razorpay
+              </p>
             </div>
 
-            {/* Methods forms */}
-            <form onSubmit={handlePaymentSubmit} className="space-y-4">
-              {paymentMethod === 'card' ? (
-                <div className="space-y-4">
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Cardholder Name</label>
-                    <input
-                      type="text"
-                      required
-                      value={cardForm.cardName}
-                      onChange={(e) => setCardForm({ ...cardForm, cardName: e.target.value })}
-                      placeholder="John Doe"
-                      className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
-                    />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Card Number</label>
-                    <input
-                      type="text"
-                      required
-                      maxLength="16"
-                      value={cardForm.cardNumber}
-                      onChange={(e) => setCardForm({ ...cardForm, cardNumber: e.target.value })}
-                      placeholder="4111222233334444"
-                      className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold font-mono"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Expiry Date</label>
-                      <input
-                        type="text"
-                        required
-                        maxLength="5"
-                        value={cardForm.expiry}
-                        onChange={(e) => setCardForm({ ...cardForm, expiry: e.target.value })}
-                        placeholder="MM/YY"
-                        className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold font-mono"
-                      />
-                    </div>
-                    
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">CVV</label>
-                      <input
-                        type="password"
-                        required
-                        maxLength="3"
-                        value={cardForm.cvv}
-                        onChange={(e) => setCardForm({ ...cardForm, cvv: e.target.value })}
-                        placeholder="***"
-                        className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold font-mono"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="border border-white/5 rounded-md p-6 bg-luxury-dark text-center space-y-4">
-                  <span className="bg-white/5 border border-white/10 text-[9px] font-bold text-gray-300 px-3 py-1.5 tracking-widest uppercase rounded">
-                    UPI Instant Transfer
-                  </span>
-                  <p className="text-gray-400 text-xs max-w-sm mx-auto font-light leading-relaxed">
-                    Upon clicking place order, scan the generated gateway QR code on your mobile device to complete payment.
-                  </p>
-                  
-                  {/* Mock QR Code */}
-                  <div className="h-40 w-40 bg-white border border-luxury-gold/50 mx-auto rounded p-2 flex items-center justify-center shadow-lg relative">
-                    <div className="h-36 w-36 bg-contain bg-center opacity-90" style={{ backgroundImage: "url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=zenithwatches@bank')" }} />
-                  </div>
-                  <span className="text-[9px] font-mono text-gray-500 uppercase">PAYEE: ZENITHWATCHES@BANK</span>
-                </div>
-              )}
-
-              <div className="flex space-x-4 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setStep(1)}
-                  className="py-4 px-6 border border-white/10 text-white font-bold text-xs tracking-widest uppercase hover:border-white transition w-1/3 cursor-pointer"
-                >
-                  Back
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 py-4 bg-luxury-red hover:bg-red-700 text-white font-bold text-xs tracking-widest uppercase transition flex items-center justify-center space-x-2 cursor-pointer"
-                >
-                  <ShieldCheck size={16} />
-                  <span>Authorize Order</span>
-                </button>
-              </div>
-            </form>
+            <div className="flex space-x-4 pt-4">
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                disabled={processingPayment}
+                className="py-4 px-6 border border-white/10 text-white font-bold text-xs tracking-widest uppercase hover:border-white transition w-1/3 cursor-pointer disabled:opacity-50"
+              >
+                Back
+              </button>
+              <button
+                type="button"
+                onClick={handleRazorpayPayment}
+                disabled={processingPayment}
+                className="flex-1 py-4 bg-luxury-red hover:bg-red-700 text-white font-bold text-xs tracking-widest uppercase transition flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
+              >
+                <ShieldCheck size={16} />
+                <span>{processingPayment ? 'Processing...' : `Pay $${total.toLocaleString()}`}</span>
+              </button>
+            </div>
           </div>
 
           {/* Right Summary */}
@@ -425,7 +371,6 @@ function CheckoutSummary({ cartItems, subtotal, discount, total }) {
     <div className="bg-luxury-gray border border-white/5 rounded-md p-6 space-y-4">
       <h3 className="text-xs font-bold tracking-widest text-white uppercase border-b border-white/5 pb-3">Bag Review</h3>
       
-      {/* Items list */}
       <div className="space-y-4 max-h-60 overflow-y-auto">
         {cartItems.map((item) => (
           <div key={item.productId} className="flex items-center space-x-3 pb-3 border-b border-white/5 last:border-b-0 last:pb-0">
@@ -441,7 +386,6 @@ function CheckoutSummary({ cartItems, subtotal, discount, total }) {
         ))}
       </div>
 
-      {/* Totals */}
       <div className="border-t border-white/5 pt-4 space-y-2 text-xs">
         <div className="flex justify-between text-gray-300">
           <span>Subtotal</span>

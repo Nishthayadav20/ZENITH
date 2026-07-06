@@ -1,7 +1,8 @@
+import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import dotenv from 'dotenv';
+
 
 // Import Models
 import Product from './models/Product.js';
@@ -15,8 +16,13 @@ import orderRoutes from './routes/orders.js';
 import couponRoutes from './routes/coupons.js';
 import cartRoutes from './routes/cart.js';
 import wishlistRoutes from './routes/wishlist.js';
+import brandRoutes from './routes/brands.js';
+import categoryRoutes from './routes/categories.js';
+import uploadRoutes from './routes/upload.js';
+import paymentRoutes from './routes/payments.js';
+import adminRoutes from './routes/admin.js';
 
-dotenv.config();
+// dotenv.config();
 
 const app = express();
 
@@ -55,6 +61,7 @@ app.use((req, res, next) => {
   next();
 });
 
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
@@ -62,6 +69,11 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/coupons', couponRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/brands', brandRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/upload', uploadRoutes);
+app.use('/api/payments', paymentRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Base Endpoint
 app.get('/api', (req, res) => {

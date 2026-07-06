@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ['customer', 'admin'], default: 'customer' },
   loginAttempts: { type: Number, required: true, default: 0 },
   lockUntil: { type: Date },
+  resetPasswordToken: { type: String },
+  resetPasswordExpire: { type: Date },
   cart: [{
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
     quantity: { type: Number, required: true, default: 1 }

@@ -2,6 +2,8 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import { protect } from '../middleware/auth.js';
+import crypto from 'crypto';
+import sendEmail from '../utils/sendEmail.js';
 
 const router = express.Router();
 
@@ -209,6 +211,82 @@ router.put('/profile', protect, async (req, res) => {
     });
   } catch (error) {
     console.error('Profile update error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// @route   POST /api/auth/forgot-password
+// @desc    Send password reset link to user's email
+// @access  Public
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      // Don't reveal whether the email exists, for security
+      return res.json({ success: true, message: 'If that email exists, a reset link has been sent.' });
+    }
+
+    // Generate raw token (sent to user) and hashed version (stored in DB)
+    const rawToken = crypto.randomBytes(32).toString('hex');
+    const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+    user.resetPasswordToken = hashedToken;
+    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000; // 15 minutes
+    await user.save();
+
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${rawToken}`;
+
+    await sendEmail({
+      to: user.email,
+      subject: 'ZENITH Watches - Password Reset Request',
+      html: `
+        <p>Hello ${user.name},</p>
+        <p>You requested a password reset. Click the link below to set a new password. This link expires in 15 minutes.</p>
+        <p><a href="${resetUrl}">${resetUrl}</a></p>
+        <p>If you did not request this, please ignore this email.</p>
+      `
+    });
+
+    res.json({ success: true, message: 'If that email exists, a reset link has been sent.' });
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// @route   POST /api/auth/reset-password/:token
+// @desc    Reset password using a valid token
+// @access  Public
+router.post('/reset-password/:token', async (req, res) => {
+  const { password } = req.body;
+
+  if (!password || password.length < 8) {
+    return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long.' });
+  }
+
+  try {
+    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+    const user = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpire: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired reset link.' });
+    }
+
+    user.password = password; // pre-save hook will hash it
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    res.json({ success: true, message: 'Password reset successful. You can now log in.' });
+  } catch (error) {
+    console.error('Reset password error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
