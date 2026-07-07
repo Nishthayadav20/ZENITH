@@ -231,6 +231,14 @@ export default function Profile({ params, onPageChange }) {
     }
   };
 
+  const handleExchangeRefundClick = (order) => {
+    if (order.status === 'Shipped') {
+      alert('Exchange/Refund requests can only be made after the order has been delivered.');
+      return;
+    }
+    handleExchangeRefund(order.id);
+  };
+
   const handleLogout = () => {
     dispatch(logoutUser());
     onPageChange('home');
@@ -358,8 +366,8 @@ export default function Profile({ params, onPageChange }) {
                             {order.status}
                           </span>
 
-                          {/* Cancellation Button (Pending/Before Payment only) */}
-                          {order.status === 'Pending' && (
+                          {/* Cancellation Button (Before Dispatch: Pending, Paid, or Processing) */}
+                          {(order.status === 'Pending' || order.status === 'Paid' || order.status === 'Processing') && (
                             <button
                               onClick={() => handleCancelOrder(order.id)}
                               className="text-[9px] text-luxury-red hover:text-red-400 font-bold uppercase border border-luxury-red/20 hover:border-luxury-red/50 px-2 py-1 rounded transition cursor-pointer"
@@ -368,10 +376,10 @@ export default function Profile({ params, onPageChange }) {
                             </button>
                           )}
 
-                          {/* Exchange/Refund Button (Only once Delivered) */}
-                          {order.status === 'Delivered' && (
+                          {/* Exchange/Refund Button (After Dispatch: Shipped or Delivered) */}
+                          {(order.status === 'Shipped' || order.status === 'Delivered') && (
                             <button
-                              onClick={() => handleExchangeRefund(order.id)}
+                              onClick={() => handleExchangeRefundClick(order)}
                               className="text-[9px] text-purple-400 hover:text-purple-300 font-bold uppercase border border-purple-500/20 hover:border-purple-500/50 px-2 py-1 rounded transition cursor-pointer bg-purple-500/5"
                             >
                               Exchange / Refund
