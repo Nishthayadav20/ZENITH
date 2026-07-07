@@ -403,6 +403,34 @@ export default function Home({ onPageChange }) {
   const [brandUpdates, setBrandUpdates] = useState([]);
   const [hoveredProduct, setHoveredProduct] = useState(null);
 
+  const hoverTimeoutRef = useRef(null);
+
+  const handleHoverStart = (product) => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setHoveredProduct(product);
+  };
+
+  const handleHoverEnd = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoveredProduct(null);
+      hoverTimeoutRef.current = null;
+    }, 150);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const fetchUpdates = async () => {
       try {
@@ -769,7 +797,7 @@ export default function Home({ onPageChange }) {
         <section
           className="w-full py-14 space-y-10 transition-colors duration-500 ease-in-out dark-panel"
           style={{
-            background: hoveredProduct
+            backgroundColor: hoveredProduct
               ? (() => {
                   const cat = hoveredProduct.category?.toLowerCase() || '';
                   return cat.includes('khronomaster') ? '#071c12'
@@ -830,7 +858,7 @@ export default function Home({ onPageChange }) {
                 transition={{ type: 'spring', stiffness: 120, damping: 20 }}
               >
                 {featured.map((product) => (
-                  <motion.div
+                  <div
                     key={product.id}
                     className="h-full"
                     style={{
@@ -838,13 +866,17 @@ export default function Home({ onPageChange }) {
                       flexShrink: 0,
                       position: 'relative',
                     }}
-                    onHoverStart={() => setHoveredProduct(product)}
-                    onHoverEnd={() => setHoveredProduct(null)}
-                    whileHover={{ scale: 1.10, zIndex: 20 }}
-                    transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+                    onMouseEnter={() => handleHoverStart(product)}
+                    onMouseLeave={handleHoverEnd}
                   >
-                    <ProductCard product={product} onPageChange={onPageChange} />
-                  </motion.div>
+                    <motion.div
+                      className="h-full w-full"
+                      whileHover={{ scale: 1.10, zIndex: 20 }}
+                      transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+                    >
+                      <ProductCard product={product} onPageChange={onPageChange} />
+                    </motion.div>
+                  </div>
                 ))}
               </motion.div>
             </div>
