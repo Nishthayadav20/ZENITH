@@ -31,7 +31,7 @@ const productSchema = new mongoose.Schema({
     waterResistance: { type: String },
     glass: { type: String }
   },
-  customizable: { type: Boolean, default: false },
+  customizable: { type: Boolean, default: true },
   allowStrapCustomization: { type: Boolean, default: true },
   allowCaseCustomization: { type: Boolean, default: true },
   customizationOptions: {

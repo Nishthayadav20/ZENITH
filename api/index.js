@@ -93,6 +93,19 @@ const seedDatabase = async () => {
     // Migration: Update existing products with category 'Chronomaster' to 'Khronomaster'
     await Product.updateMany({ category: 'Chronomaster' }, { $set: { category: 'Khronomaster' } });
 
+    // Migration: Ensure all current products default to customizable: true on startup
+    const countCustomizable = await Product.countDocuments({ customizable: true });
+    if (countCustomizable === 0) {
+      await Product.updateMany({}, { 
+        $set: { 
+          customizable: true,
+          allowStrapCustomization: true,
+          allowCaseCustomization: true
+        } 
+      });
+      console.log('Migrated existing products to customizable: true');
+    }
+
     // 1. Seed Products
     const productCount = await Product.countDocuments();
     if (productCount < 8) {

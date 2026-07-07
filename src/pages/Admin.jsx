@@ -46,7 +46,7 @@ export default function Admin({ onPageChange }) {
       waterResistance: '50m',
       glass: 'Sapphire Crystal'
     },
-    customizable: false,
+    customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true
   });
@@ -251,7 +251,7 @@ export default function Admin({ onPageChange }) {
         name: '', price: '', stock: '', category: 'Khronomaster', description: '',
         image: '/assets/media__1782899491225.jpg',
         specs: { movement: 'Automatic', case: '40mm', strap: 'Leather', waterResistance: '50m', glass: 'Sapphire' },
-        customizable: false,
+        customizable: true,
         allowStrapCustomization: true,
         allowCaseCustomization: true
       });
