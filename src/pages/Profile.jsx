@@ -245,8 +245,8 @@ export default function Profile({ params, onPageChange }) {
                             </button>
                           )}
 
-                          {/* Exchange/Refund Button (Paid, Processing, Shipped) */}
-                          {(order.status === 'Paid' || order.status === 'Processing' || order.status === 'Shipped') && (
+                          {/* Exchange/Refund Button (Only once Delivered) */}
+                          {order.status === 'Delivered' && (
                             <button
                               onClick={() => handleExchangeRefund(order.id)}
                               className="text-[9px] text-purple-400 hover:text-purple-300 font-bold uppercase border border-purple-500/20 hover:border-purple-500/50 px-2 py-1 rounded transition cursor-pointer bg-purple-500/5"

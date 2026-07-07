@@ -172,8 +172,8 @@ router.put('/:id/exchange-refund', protect, async (req, res) => {
       return res.status(403).json({ success: false, message: 'Access denied: not your order' });
     }
 
-    if (order.status === 'Cancelled') {
-      return res.status(400).json({ success: false, message: 'Order is already cancelled' });
+    if (order.status !== 'Delivered') {
+      return res.status(400).json({ success: false, message: 'Exchange/Refund can only be requested after the order has been delivered.' });
     }
 
     order.status = 'Exchange/Refund Requested';
