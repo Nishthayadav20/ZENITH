@@ -50,7 +50,7 @@ router.post('/', protect, adminOnly, async (req, res) => {
     res.status(201).json({ success: true, product: createdProduct });
   } catch (error) {
     console.error('Create product error:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    res.status(500).json({ success: false, message: error.message || 'Server error' });
   }
 });
 
@@ -93,7 +93,7 @@ router.put('/:id', protect, adminOnly, async (req, res) => {
     res.json({ success: true, product: updatedProduct });
   } catch (error) {
     console.error('Update product error:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    res.status(500).json({ success: false, message: error.message || 'Server error' });
   }
 });
 
