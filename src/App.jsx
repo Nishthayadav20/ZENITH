@@ -52,7 +52,7 @@ function AppContent() {
       case 'static':
         return <Static params={pageParams} onPageChange={handlePageChange} />;
       case 'customization':
-        return <Customization onPageChange={handlePageChange} />;
+        return <Customization onPageChange={handlePageChange} params={pageParams} />;
       default:
         return <Home onPageChange={handlePageChange} />;
     }

@@ -144,7 +144,7 @@ function WatchPreview({ product, dialColor, finish, engraving }) {
 }
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
-export default function Customization({ onPageChange }) {
+export default function Customization({ onPageChange, params }) {
   const dispatch = useDispatch();
   const products = useSelector(state => state.watch.products);
   const currentCurrency = useSelector(selectCurrentCurrency);
@@ -168,6 +168,13 @@ export default function Customization({ onPageChange }) {
   const [addedToCart,     setAddedToCart]     = useState(false);
 
   const options = selectedProduct ? buildOptions(selectedProduct) : null;
+
+  // Reset page back to customizable models selection when params.reset is received from Navbar
+  useEffect(() => {
+    if (params && params.reset) {
+      setSelectedProduct(null);
+    }
+  }, [params]);
 
   // Currency formatter
   const formatPrice = (usd) => formatPriceUtil(usd, currentCurrency);
@@ -300,7 +307,7 @@ export default function Customization({ onPageChange }) {
 
           {/* ── LEFT: Live Preview ── */}
           <div className="space-y-6 sticky top-28">
-            <div className="bg-[#0d0d0d] rounded-2xl border border-white/5 p-8 flex flex-col items-center gap-6">
+            <div className="dark-panel bg-[#0d0d0d] rounded-2xl border border-white/5 p-8 flex flex-col items-center gap-6">
               <WatchPreview
                 product={selectedProduct}
                 dialColor={dialColor}
@@ -309,13 +316,13 @@ export default function Customization({ onPageChange }) {
               />
               <div className="text-center space-y-1">
                 <p className="text-white font-bold text-lg">{selectedProduct.name}</p>
-                <p className="text-luxury-muted text-xs">{selectedProduct.category} · {selectedProduct.gender}</p>
+                <p className="text-gray-400 text-xs">{selectedProduct.category} · {selectedProduct.gender}</p>
                 <p className="text-luxury-gold font-black text-xl mt-2">{formatPrice(selectedProduct.price)}</p>
               </div>
             </div>
 
             {/* Summary card */}
-            <div className="bg-[#111111] rounded-xl border border-white/5 p-5 space-y-3 text-xs text-luxury-muted">
+            <div className="dark-panel bg-[#111111] rounded-xl border border-white/5 p-5 space-y-3 text-xs text-white/90">
               <p className="text-white font-bold text-[11px] uppercase tracking-widest mb-3">Your Configuration</p>
               {[
                 ['Dial Color',     dialColor?.label   || '—'],
@@ -324,7 +331,7 @@ export default function Customization({ onPageChange }) {
                 ['Engraving',      engraving || 'None'],
               ].map(([k, v]) => (
                 <div key={k} className="flex justify-between">
-                  <span>{k}</span>
+                  <span className="text-gray-300">{k}</span>
                   <span className="text-white font-semibold">{v}</span>
                 </div>
               ))}

@@ -78,6 +78,8 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
   const handleNavLinkClick = (link) => {
     if (link.filter) {
       onPageChange('shop', link.filter);
+    } else if (link.page === 'customization') {
+      onPageChange('customization', { reset: Date.now() });
     } else {
       onPageChange(link.page);
     }
