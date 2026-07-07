@@ -61,20 +61,19 @@ export default function ProductDetail({ params, onPageChange }) {
     ? (approvedReviews.reduce((sum, r) => sum + r.rating, 0) / approvedReviews.length).toFixed(1)
     : null;
 
-  const handleAddToCart = () => {
-    const result = dispatch(addToCart(product.id, qty));
-    if (result.success) {
-      alert(`${qty} x ${product.name} added to cart!`);
+  const handleAddToCart = async () => {
+    const result = await dispatch(addToCart(product.id, qty));
+    if (result && result.success) {
+      alert("ADDED TO CART");
     } else {
-      alert(result.message);
+      alert(result?.message || "Failed to add to cart");
     }
   };
 
-  const handleReviewSubmit = (e) => {
+  const handleReviewSubmit = async (e) => {
     e.preventDefault();
     if (!currentUser) {
       alert('Please log in first to write a review.');
-      onPageChange('login');
       return;
     }
 
@@ -83,14 +82,14 @@ export default function ProductDetail({ params, onPageChange }) {
       return;
     }
 
-    const res = dispatch(addReview(product.id, ratingInput, commentInput));
-    if (res.success) {
-      setReviewMessage(res.message);
+    const res = await dispatch(addReview(product.id, ratingInput, commentInput));
+    if (res && res.success) {
+      setReviewMessage(res.message || 'Review submitted successfully!');
       setCommentInput('');
       setRatingInput(5);
       setTimeout(() => setReviewMessage(''), 6000);
     } else {
-      alert(res.message);
+      alert(res?.message || 'Failed to submit review.');
     }
   };
 

@@ -86,13 +86,13 @@ export default function Profile({ params, onPageChange }) {
     setTimeout(() => setSettingsMessage(''), 5000);
   };
 
-  const handleCancelOrder = (orderId) => {
+  const handleCancelOrder = async (orderId) => {
     if (window.confirm(`Are you sure you want to cancel order ${orderId}?`)) {
-      const res = dispatch(cancelOrder(orderId));
-      if (res.success) {
+      const res = await dispatch(cancelOrder(orderId));
+      if (res && res.success) {
         alert('Order cancelled and stock restored successfully.');
       } else {
-        alert(res.message);
+        alert(res?.message || 'Failed to cancel order.');
       }
     }
   };

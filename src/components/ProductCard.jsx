@@ -39,11 +39,14 @@ export default function ProductCard({ product, onPageChange, showRemove = false 
     rawY.set(0);
   };
 
-  const handleAddToCart = (e) => {
+  const handleAddToCart = async (e) => {
     e.stopPropagation();
-    const result = dispatch(addToCart(product.id, 1));
-    if (result.success) alert(`${product.name} added to cart!`);
-    else alert(result.message);
+    const result = await dispatch(addToCart(product.id, 1));
+    if (result && result.success) {
+      alert("ADDED TO CART");
+    } else {
+      alert(result?.message || "Failed to add to cart");
+    }
   };
 
   const handleWishlistToggle = (e) => {

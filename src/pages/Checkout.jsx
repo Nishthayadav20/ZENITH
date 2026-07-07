@@ -72,7 +72,7 @@ export default function Checkout({ params, onPageChange }) {
     setStep(2);
   };
 
-  const handlePaymentSubmit = (e) => {
+  const handlePaymentSubmit = async (e) => {
     e.preventDefault();
     if (paymentMethod === 'card') {
       if (!cardForm.cardNumber || !cardForm.expiry || !cardForm.cvv || !cardForm.cardName) {
@@ -82,13 +82,13 @@ export default function Checkout({ params, onPageChange }) {
     }
 
     // Call Redux dispatcher to place the order
-    const result = dispatch(placeOrder(
+    const result = await dispatch(placeOrder(
       shippingForm,
       { method: paymentMethod, cardNumber: cardForm.cardNumber || 'UPI' },
       appliedCoupon
     ));
 
-    if (result.success) {
+    if (result && result.success) {
       setOrderReceipt(result.order);
       setStep(3);
       
@@ -100,7 +100,7 @@ export default function Checkout({ params, onPageChange }) {
         colors: ['#c5a880', '#e10600', '#ffffff', '#1e293b']
       });
     } else {
-      alert(result.message);
+      alert(result?.message || 'Failed to place order.');
     }
   };
 
