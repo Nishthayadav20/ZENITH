@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { addToCart, toggleWishlist, addReview, selectCurrentCurrency, formatPrice } from '../store/slices/watchSlice';
 import ProductCard from '../components/ProductCard';
 import { Star, Shield, RefreshCw, Truck, Heart, ShoppingBag, Plus, Minus, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { getExpectedDeliveryDate } from './Checkout';
 
 export default function ProductDetail({ params, onPageChange }) {
   const dispatch = useDispatch();
@@ -20,6 +21,26 @@ export default function ProductDetail({ params, onPageChange }) {
   const [ratingInput, setRatingInput] = useState(5);
   const [commentInput, setCommentInput] = useState('');
   const [reviewMessage, setReviewMessage] = useState('');
+
+  // Pincode Checker States
+  const [pincode, setPincode] = useState('');
+  const [deliveryEstimate, setDeliveryEstimate] = useState('');
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckPincode = (e) => {
+    e.preventDefault();
+    if (!pincode.trim()) {
+      alert('Please enter a pincode.');
+      return;
+    }
+    const dateStr = getExpectedDeliveryDate(pincode);
+    if (dateStr) {
+      setDeliveryEstimate(dateStr);
+      setIsChecked(true);
+    } else {
+      alert('Invalid pincode. Please enter digits.');
+    }
+  };
 
   // Hover Zoom States & Handler
   const [zoomPos, setZoomPos] = useState({ x: 0, y: 0, pxX: 0, pxY: 0, width: 0, height: 0 });
@@ -164,6 +185,42 @@ export default function ProductDetail({ params, onPageChange }) {
                 <span className="text-luxury-red font-bold text-sm tracking-widest uppercase border border-luxury-red px-4 py-2">
                   Sold Out
                 </span>
+              </div>
+            )}
+          </div>
+
+          {/* Delivery Pincode Checker */}
+          <div className="bg-luxury-gray border border-white/5 p-4 rounded mt-4 space-y-3">
+            <div className="flex items-center space-x-2">
+              <Truck size={14} className="text-luxury-gold-dark" />
+              <h4 className="text-xs font-bold uppercase tracking-wider text-luxury-text">Estimated Delivery Courier</h4>
+            </div>
+            
+            <form onSubmit={handleCheckPincode} className="flex gap-2">
+              <input
+                type="text"
+                value={pincode}
+                onChange={(e) => {
+                  setPincode(e.target.value);
+                  setIsChecked(false);
+                }}
+                placeholder="Enter pincode (e.g. 110001)"
+                maxLength={8}
+                className="flex-1 bg-white border border-gray-300 rounded text-xs px-3 py-2 focus:outline-none focus:border-luxury-gold-dark text-luxury-text"
+              />
+              <button
+                type="submit"
+                className="px-5 py-2 bg-luxury-gold text-luxury-dark text-xs font-bold uppercase tracking-widest hover:bg-luxury-gold-dark transition cursor-pointer"
+              >
+                Check
+              </button>
+            </form>
+
+            {isChecked && deliveryEstimate && (
+              <div className="pt-2.5 border-t border-white/5 space-y-1">
+                <p className="text-[9px] font-bold text-emerald-600 uppercase tracking-wider">Estimated Delivery</p>
+                <p className="text-xs font-semibold text-luxury-text">{deliveryEstimate}</p>
+                <p className="text-[8px] text-gray-500 font-light leading-relaxed">Secure courier service dispatched directly from our Swiss Manufacture headquarters.</p>
               </div>
             )}
           </div>

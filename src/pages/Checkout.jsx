@@ -4,6 +4,34 @@ import { placeOrder, selectCurrentCurrency, formatPrice } from '../store/slices/
 import confetti from 'canvas-confetti';
 import { CheckCircle2, CreditCard, Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
 
+export function getExpectedDeliveryDate(zipCode) {
+  if (!zipCode) return null;
+  const cleaned = zipCode.trim();
+  if (cleaned.length === 0) return null;
+
+  let days = 5; // Default delivery days
+  const firstDigit = cleaned.charAt(0);
+  if (['1', '2'].includes(firstDigit)) {
+    days = 3;
+  } else if (['3', '4'].includes(firstDigit)) {
+    days = 4;
+  } else if (['5', '6'].includes(firstDigit)) {
+    days = 5;
+  } else if (['7', '8', '9'].includes(firstDigit)) {
+    days = 6;
+  }
+
+  const deliveryDate = new Date();
+  deliveryDate.setDate(deliveryDate.getDate() + days);
+
+  return deliveryDate.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
 export default function Checkout({ params, onPageChange }) {
   const dispatch = useDispatch();
   const cart = useSelector(state => state.watch.cart);
@@ -215,7 +243,7 @@ export default function Checkout({ params, onPageChange }) {
 
           {/* Right Summary */}
           <div className="lg:col-span-5 space-y-6">
-            <CheckoutSummary cartItems={cartItemsWithDetails} subtotal={subtotal} discount={discount} total={total} />
+            <CheckoutSummary cartItems={cartItemsWithDetails} subtotal={subtotal} discount={discount} total={total} zipCode={shippingForm.zipCode} />
           </div>
         </div>
       )}
@@ -351,7 +379,7 @@ export default function Checkout({ params, onPageChange }) {
 
           {/* Right Summary */}
           <div className="lg:col-span-5 space-y-6">
-            <CheckoutSummary cartItems={cartItemsWithDetails} subtotal={subtotal} discount={discount} total={total} />
+            <CheckoutSummary cartItems={cartItemsWithDetails} subtotal={subtotal} discount={discount} total={total} zipCode={shippingForm.zipCode} />
           </div>
         </div>
       )}
@@ -396,6 +424,7 @@ export default function Checkout({ params, onPageChange }) {
             <div className="border-t border-white/5 pt-3 space-y-1 font-light text-gray-400">
               <p><span className="font-semibold text-white">Deliver to:</span> {orderReceipt.shippingDetails.fullName}</p>
               <p><span className="font-semibold text-white">Address:</span> {orderReceipt.shippingDetails.streetAddress}, {orderReceipt.shippingDetails.city}, {orderReceipt.shippingDetails.zipCode}</p>
+              <p><span className="font-semibold text-white">Expected Delivery:</span> {getExpectedDeliveryDate(orderReceipt.shippingDetails.zipCode)}</p>
             </div>
           </div>
 
@@ -421,11 +450,21 @@ export default function Checkout({ params, onPageChange }) {
 }
 
 // Sub-component for Order Summary
-function CheckoutSummary({ cartItems, subtotal, discount, total }) {
+function CheckoutSummary({ cartItems, subtotal, discount, total, zipCode }) {
   const currentCurrency = useSelector(selectCurrentCurrency);
+  const deliveryDate = getExpectedDeliveryDate(zipCode);
   return (
     <div className="bg-luxury-gray border border-white/5 rounded-md p-6 space-y-4">
       <h3 className="text-xs font-bold tracking-widest text-white uppercase border-b border-white/5 pb-3">Bag Review</h3>
+      
+      {/* Expected Delivery Date Alert Box */}
+      {deliveryDate && (
+        <div className="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded text-xs">
+          <span className="text-[9px] font-bold uppercase tracking-widest text-emerald-450 block mb-0.5">Expected Delivery</span>
+          <p className="text-white font-semibold">{deliveryDate}</p>
+          <p className="text-[9px] text-gray-500 font-light mt-0.5">Calculated based on shipping pincode: {zipCode}</p>
+        </div>
+      )}
       
       {/* Items list */}
       <div className="space-y-4 max-h-60 overflow-y-auto">
