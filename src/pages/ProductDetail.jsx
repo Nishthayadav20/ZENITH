@@ -189,40 +189,23 @@ export default function ProductDetail({ params, onPageChange }) {
             )}
           </div>
 
-          {/* Delivery Pincode Checker */}
-          <div className="bg-luxury-gray border border-white/5 p-4 rounded mt-4 space-y-3">
-            <div className="flex items-center space-x-2">
-              <Truck size={14} className="text-luxury-gold-dark" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-luxury-text">Estimated Delivery Courier</h4>
+          {/* Guarantees Box */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-white p-4 border border-luxury-text/5 rounded shadow-sm mt-4">
+            <div className="flex flex-col items-center text-center p-2 space-y-1">
+              <Truck size={18} className="text-luxury-gold-dark" />
+              <span className="text-[9px] font-bold text-gray-800 tracking-widest uppercase">FREE SHIPPING</span>
+              <p className="text-[9px] text-gray-500">2-4 Business Days Express</p>
             </div>
-            
-            <form onSubmit={handleCheckPincode} className="flex gap-2">
-              <input
-                type="text"
-                value={pincode}
-                onChange={(e) => {
-                  setPincode(e.target.value);
-                  setIsChecked(false);
-                }}
-                placeholder="Enter pincode (e.g. 110001)"
-                maxLength={8}
-                className="flex-1 bg-white border border-gray-300 rounded text-xs px-3 py-2 focus:outline-none focus:border-luxury-gold-dark text-luxury-text"
-              />
-              <button
-                type="submit"
-                className="px-5 py-2 bg-luxury-gold text-luxury-dark text-xs font-bold uppercase tracking-widest hover:bg-luxury-gold-dark transition cursor-pointer"
-              >
-                Check
-              </button>
-            </form>
-
-            {isChecked && deliveryEstimate && (
-              <div className="pt-2.5 border-t border-white/5 space-y-1">
-                <p className="text-[9px] font-bold text-emerald-600 uppercase tracking-wider">Estimated Delivery</p>
-                <p className="text-xs font-semibold text-luxury-text">{deliveryEstimate}</p>
-                <p className="text-[8px] text-gray-500 font-light leading-relaxed">Secure courier service dispatched directly from our Swiss Manufacture headquarters.</p>
-              </div>
-            )}
+            <div className="flex flex-col items-center text-center p-2 space-y-1 border-t sm:border-t-0 sm:border-l sm:border-r border-luxury-text/10">
+              <RefreshCw size={18} className="text-luxury-gold-dark" />
+              <span className="text-[9px] font-bold text-gray-800 tracking-widest uppercase">EASY RETURNS</span>
+              <p className="text-[9px] text-gray-500">14-day free return policy</p>
+            </div>
+            <div className="flex flex-col items-center text-center p-2 space-y-1">
+              <Shield size={18} className="text-luxury-gold-dark" />
+              <span className="text-[9px] font-bold text-gray-800 tracking-widest uppercase">WARRANTY</span>
+              <p className="text-[9px] text-gray-500">3-Year Swiss warranty</p>
+            </div>
           </div>
         </div>
 
@@ -315,23 +298,40 @@ export default function ProductDetail({ params, onPageChange }) {
             </div>
           </div>
 
-          {/* Guarantees Box */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-white p-4 border border-luxury-text/5 rounded shadow-sm">
-            <div className="flex flex-col items-center text-center p-2 space-y-1">
-              <Truck size={18} className="text-luxury-gold-dark" />
-              <span className="text-[9px] font-bold text-gray-800 tracking-widest uppercase">FREE SHIPPING</span>
-              <p className="text-[9px] text-gray-500">2-4 Business Days Express</p>
+          {/* Delivery Pincode Checker */}
+          <div className="bg-luxury-gray border border-white/5 p-4 rounded space-y-3">
+            <div className="flex items-center space-x-2">
+              <Truck size={14} className="text-luxury-gold-dark" />
+              <h4 className="text-xs font-bold uppercase tracking-wider text-luxury-text">Estimated Delivery Courier</h4>
             </div>
-            <div className="flex flex-col items-center text-center p-2 space-y-1 border-t sm:border-t-0 sm:border-l sm:border-r border-luxury-text/10">
-              <RefreshCw size={18} className="text-luxury-gold-dark" />
-              <span className="text-[9px] font-bold text-gray-800 tracking-widest uppercase">EASY RETURNS</span>
-              <p className="text-[9px] text-gray-500">14-day free return policy</p>
-            </div>
-            <div className="flex flex-col items-center text-center p-2 space-y-1">
-              <Shield size={18} className="text-luxury-gold-dark" />
-              <span className="text-[9px] font-bold text-gray-800 tracking-widest uppercase">WARRANTY</span>
-              <p className="text-[9px] text-gray-500">3-Year Swiss warranty</p>
-            </div>
+            
+            <form onSubmit={handleCheckPincode} className="flex gap-2">
+              <input
+                type="text"
+                value={pincode}
+                onChange={(e) => {
+                  setPincode(e.target.value);
+                  setIsChecked(false);
+                }}
+                placeholder="Enter pincode (e.g. 110001)"
+                maxLength={8}
+                className="flex-1 bg-white border border-gray-300 rounded text-xs px-3 py-2 focus:outline-none focus:border-luxury-gold-dark text-luxury-text"
+              />
+              <button
+                type="submit"
+                className="px-5 py-2 bg-luxury-gold text-luxury-dark text-xs font-bold uppercase tracking-widest hover:bg-luxury-gold-dark transition cursor-pointer"
+              >
+                Check
+              </button>
+            </form>
+
+            {isChecked && deliveryEstimate && (
+              <div className="pt-2.5 border-t border-white/5 space-y-1">
+                <p className="text-[9px] font-bold text-emerald-600 uppercase tracking-wider">Estimated Delivery</p>
+                <p className="text-xs font-semibold text-luxury-text">{deliveryEstimate}</p>
+                <p className="text-[8px] text-gray-500 font-light leading-relaxed">Secure courier service dispatched directly from our Swiss Manufacture headquarters.</p>
+              </div>
+            )}
           </div>
 
         </div>
