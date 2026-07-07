@@ -556,14 +556,14 @@ export default function Home({ onPageChange }) {
 
             {/* Heading — both lines same depth */}
             <motion.div initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.85, delay: 0.16, ease: [0.22, 1, 0.36, 1] }} className="select-none cursor-default">
-              <div className="font-serif font-normal text-4xl sm:text-5xl md:text-7xl tracking-wider text-white uppercase leading-tight">
+              <div className="font-cinzel font-bold text-4xl sm:text-5xl md:text-7xl tracking-wider text-white uppercase leading-tight">
                 Time to Reach
               </div>
-              <div className="font-serif font-normal text-4xl sm:text-5xl md:text-7xl tracking-wider uppercase leading-tight mt-1">
+              <div className="font-cinzel font-bold text-4xl sm:text-5xl md:text-7xl tracking-wider uppercase leading-tight mt-1">
                 <span style={{
-                  background: 'linear-gradient(135deg,#34d399 0%,#10b981 35%,#059669 62%,#6ee7b7 100%)',
+                  background: 'linear-gradient(135deg, #10b981 0%, #059669 35%, #047857 62%, #065f46 100%)',
                   WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-                  filter: 'drop-shadow(0 0 22px rgba(52,211,153,0.55)) drop-shadow(0 0 52px rgba(16,185,129,0.28))',
+                  filter: 'drop-shadow(0 0 20px rgba(5,150,105,0.4)) drop-shadow(0 0 40px rgba(4,120,87,0.2))',
                   display: 'inline-block',
                 }}>Your Star</span>
               </div>
