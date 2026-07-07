@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addToCart, selectCurrentCurrency, formatPrice as formatPriceUtil } from '../store/slices/watchSlice';
 import { Paintbrush, ShoppingBag, ChevronLeft, Check, Sparkles } from 'lucide-react';
