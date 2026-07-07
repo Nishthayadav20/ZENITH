@@ -45,7 +45,10 @@ export default function Admin({ onPageChange }) {
       strap: 'Leather strap',
       waterResistance: '50m',
       glass: 'Sapphire Crystal'
-    }
+    },
+    customizable: false,
+    allowStrapCustomization: true,
+    allowCaseCustomization: true
   });
 
   // Edit Product Form State
@@ -247,7 +250,10 @@ export default function Admin({ onPageChange }) {
       setNewProduct({
         name: '', price: '', stock: '', category: 'Khronomaster', description: '',
         image: '/assets/media__1782899491225.jpg',
-        specs: { movement: 'Automatic', case: '40mm', strap: 'Leather', waterResistance: '50m', glass: 'Sapphire' }
+        specs: { movement: 'Automatic', case: '40mm', strap: 'Leather', waterResistance: '50m', glass: 'Sapphire' },
+        customizable: false,
+        allowStrapCustomization: true,
+        allowCaseCustomization: true
       });
     }
   };
@@ -558,6 +564,66 @@ export default function Admin({ onPageChange }) {
                     className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
                     placeholder="Enter full descriptive paragraphs..."
                   />
+                </div>
+
+                {/* Customizable Toggle for New Product */}
+                <div className="md:col-span-2 flex flex-col bg-luxury-dark border border-white/10 rounded p-3 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-white">Customizable</p>
+                      <p className="text-[9px] text-gray-500 mt-0.5">Show in Bespoke Atelier / Customization tab</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const val = !newProduct.customizable;
+                        setNewProduct({ 
+                          ...newProduct, 
+                          customizable: val,
+                          allowStrapCustomization: val ? (newProduct.allowStrapCustomization ?? true) : false,
+                          allowCaseCustomization: val ? (newProduct.allowCaseCustomization ?? true) : false
+                        });
+                      }}
+                      className={`w-12 h-6 rounded-full transition-all duration-300 cursor-pointer relative ${
+                        newProduct.customizable ? 'bg-luxury-gold' : 'bg-white/10'
+                      }`}
+                    >
+                      <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
+                        newProduct.customizable ? 'left-6' : 'left-0.5'
+                      }`} />
+                    </button>
+                  </div>
+
+                  {/* Checkboxes shown ONLY when Customizable is checked */}
+                  {newProduct.customizable && (
+                    <div className="pt-2 border-t border-white/5 space-y-2">
+                      <p className="text-[9px] font-bold uppercase tracking-widest text-luxury-gold mb-1">Tailoring Capabilities</p>
+                      <div className="flex items-center space-x-2.5">
+                        <input
+                          type="checkbox"
+                          id="newAllowStrapCustomization"
+                          checked={newProduct.allowStrapCustomization ?? true}
+                          onChange={(e) => setNewProduct({ ...newProduct, allowStrapCustomization: e.target.checked })}
+                          className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                        />
+                        <label htmlFor="newAllowStrapCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                          Allow Strap Customization
+                        </label>
+                      </div>
+                      <div className="flex items-center space-x-2.5">
+                        <input
+                          type="checkbox"
+                          id="newAllowCaseCustomization"
+                          checked={newProduct.allowCaseCustomization ?? true}
+                          onChange={(e) => setNewProduct({ ...newProduct, allowCaseCustomization: e.target.checked })}
+                          className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                        />
+                        <label htmlFor="newAllowCaseCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                          Allow Case Finish Customization
+                        </label>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <button
