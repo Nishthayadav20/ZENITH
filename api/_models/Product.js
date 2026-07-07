@@ -32,6 +32,8 @@ const productSchema = new mongoose.Schema({
     glass: { type: String }
   },
   customizable: { type: Boolean, default: false },
+  allowStrapCustomization: { type: Boolean, default: true },
+  allowCaseCustomization: { type: Boolean, default: true },
   customizationOptions: {
     dialColors: [{ type: String }],
     strapMaterials: [{ type: String }],

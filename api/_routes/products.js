@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
 // @desc    Create a product
 // @access  Private/Admin
 router.post('/', protect, adminOnly, async (req, res) => {
-  const { name, price, stock, category, gender, description, image, specs } = req.body;
+  const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization } = req.body;
 
   try {
     const product = new Product({
@@ -40,6 +40,9 @@ router.post('/', protect, adminOnly, async (req, res) => {
         waterResistance: specs?.waterResistance || '50m',
         glass: specs?.glass || 'Sapphire Crystal'
       },
+      customizable: customizable || false,
+      allowStrapCustomization: allowStrapCustomization !== undefined ? allowStrapCustomization : true,
+      allowCaseCustomization: allowCaseCustomization !== undefined ? allowCaseCustomization : true,
       reviews: []
     });
 
@@ -55,7 +58,7 @@ router.post('/', protect, adminOnly, async (req, res) => {
 // @desc    Update a product
 // @access  Private/Admin
 router.put('/:id', protect, adminOnly, async (req, res) => {
-  const { name, price, stock, category, gender, description, image, specs } = req.body;
+  const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization } = req.body;
 
   try {
     const product = await Product.findById(req.params.id);
@@ -81,6 +84,10 @@ router.put('/:id', protect, adminOnly, async (req, res) => {
         glass: specs.glass !== undefined ? specs.glass : product.specs.glass
       };
     }
+
+    if (customizable !== undefined) product.customizable = customizable;
+    if (allowStrapCustomization !== undefined) product.allowStrapCustomization = allowStrapCustomization;
+    if (allowCaseCustomization !== undefined) product.allowCaseCustomization = allowCaseCustomization;
 
     const updatedProduct = await product.save();
     res.json({ success: true, product: updatedProduct });

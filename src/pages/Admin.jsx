@@ -254,7 +254,12 @@ export default function Admin({ onPageChange }) {
 
   const handleEditProductInit = (product) => {
     setEditingId(product.id);
-    setEditForm({ ...product });
+    setEditForm({ 
+      ...product, 
+      customizable: product.customizable ?? false,
+      allowStrapCustomization: product.allowStrapCustomization ?? true,
+      allowCaseCustomization: product.allowCaseCustomization ?? true
+    });
   };
 
   const handleUpdateProduct = (e) => {
@@ -649,22 +654,63 @@ export default function Admin({ onPageChange }) {
                   </div>
 
                   {/* Customizable Toggle */}
-                  <div className="flex items-center justify-between bg-luxury-dark border border-white/10 rounded p-3">
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-white">Customizable</p>
-                      <p className="text-[9px] text-gray-500 mt-0.5">Show in Bespoke Atelier / Customization tab</p>
+                  <div className="flex flex-col bg-luxury-dark border border-white/10 rounded p-3 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-white">Customizable</p>
+                        <p className="text-[9px] text-gray-500 mt-0.5">Show in Bespoke Atelier / Customization tab</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const val = !editForm.customizable;
+                          setEditForm({ 
+                            ...editForm, 
+                            customizable: val,
+                            allowStrapCustomization: val ? (editForm.allowStrapCustomization ?? true) : false,
+                            allowCaseCustomization: val ? (editForm.allowCaseCustomization ?? true) : false
+                          });
+                        }}
+                        className={`w-12 h-6 rounded-full transition-all duration-300 cursor-pointer relative ${
+                          editForm.customizable ? 'bg-luxury-gold' : 'bg-white/10'
+                        }`}
+                      >
+                        <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
+                          editForm.customizable ? 'left-6' : 'left-0.5'
+                        }`} />
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setEditForm({ ...editForm, customizable: !editForm.customizable })}
-                      className={`w-12 h-6 rounded-full transition-all duration-300 cursor-pointer relative ${
-                        editForm.customizable ? 'bg-luxury-gold' : 'bg-white/10'
-                      }`}
-                    >
-                      <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
-                        editForm.customizable ? 'left-6' : 'left-0.5'
-                      }`} />
-                    </button>
+
+                    {/* Checkboxes shown ONLY when Customizable is checked */}
+                    {editForm.customizable && (
+                      <div className="pt-2 border-t border-white/5 space-y-2">
+                        <p className="text-[9px] font-bold uppercase tracking-widest text-luxury-gold mb-1">Tailoring Capabilities</p>
+                        <div className="flex items-center space-x-2.5">
+                          <input
+                            type="checkbox"
+                            id="allowStrapCustomization"
+                            checked={editForm.allowStrapCustomization ?? true}
+                            onChange={(e) => setEditForm({ ...editForm, allowStrapCustomization: e.target.checked })}
+                            className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                          />
+                          <label htmlFor="allowStrapCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                            Allow Strap Customization
+                          </label>
+                        </div>
+                        <div className="flex items-center space-x-2.5">
+                          <input
+                            type="checkbox"
+                            id="allowCaseCustomization"
+                            checked={editForm.allowCaseCustomization ?? true}
+                            onChange={(e) => setEditForm({ ...editForm, allowCaseCustomization: e.target.checked })}
+                            className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                          />
+                          <label htmlFor="allowCaseCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                            Allow Case Finish Customization
+                          </label>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 pt-2">

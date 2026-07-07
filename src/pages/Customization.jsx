@@ -183,8 +183,8 @@ export default function Customization({ onPageChange, params }) {
     setSelectedProduct(product);
     const opts = buildOptions(product);
     setDialColor(opts.dialColors[0] || null);
-    setStrapMaterial(opts.strapMaterials[0] || null);
-    setCaseFinish(opts.caseFinishes[0] || null);
+    setStrapMaterial(product.allowStrapCustomization !== false ? (opts.strapMaterials[0] || null) : (product.specs?.strap || 'Standard Strap'));
+    setCaseFinish(product.allowCaseCustomization !== false ? (opts.caseFinishes[0] || null) : (product.specs?.case || 'Standard Finish'));
     setEngraving('');
     setAddedToCart(false);
   };
@@ -325,11 +325,11 @@ export default function Customization({ onPageChange, params }) {
             <div className="dark-panel bg-[#111111] rounded-xl border border-white/5 p-5 space-y-3 text-xs text-white/90">
               <p className="text-white font-bold text-[11px] uppercase tracking-widest mb-3">Your Configuration</p>
               {[
-                ['Dial Color',     dialColor?.label   || '—'],
-                ['Strap Material', strapMaterial      || '—'],
-                ['Case Finish',    caseFinish         || '—'],
-                ['Engraving',      engraving || 'None'],
-              ].map(([k, v]) => (
+                ['Dial Color',     dialColor?.label   || '—', true],
+                ['Strap Material', strapMaterial      || '—', selectedProduct.allowStrapCustomization !== false],
+                ['Case Finish',    caseFinish         || '—', selectedProduct.allowCaseCustomization !== false],
+                ['Engraving',      engraving || 'None',   options.engravingAllowed],
+              ].filter(([,, allowed]) => allowed).map(([k, v]) => (
                 <div key={k} className="flex justify-between">
                   <span className="text-gray-300">{k}</span>
                   <span className="text-white font-semibold">{v}</span>
@@ -377,48 +377,52 @@ export default function Customization({ onPageChange, params }) {
             </div>
 
             {/* Strap Material */}
-            <div className="space-y-3">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-muted">
-                Strap Material — <span className="text-white">{strapMaterial}</span>
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {options.strapMaterials.map((mat) => (
-                  <button
-                    key={mat}
-                    onClick={() => setStrapMaterial(mat)}
-                    className={`px-3 py-2 text-xs font-bold rounded border transition-all cursor-pointer ${
-                      strapMaterial === mat
-                        ? 'border-luxury-gold bg-luxury-gold/10 text-luxury-gold'
-                        : 'border-white/10 text-luxury-muted hover:border-white/30 hover:text-white'
-                    }`}
-                  >
-                    {mat}
-                  </button>
-                ))}
+            {selectedProduct.allowStrapCustomization !== false && (
+              <div className="space-y-3">
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-muted">
+                  Strap Material — <span className="text-white">{strapMaterial}</span>
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {options.strapMaterials.map((mat) => (
+                    <button
+                      key={mat}
+                      onClick={() => setStrapMaterial(mat)}
+                      className={`px-3 py-2 text-xs font-bold rounded border transition-all cursor-pointer ${
+                        strapMaterial === mat
+                          ? 'border-luxury-gold bg-luxury-gold/10 text-luxury-gold'
+                          : 'border-white/10 text-luxury-muted hover:border-white/30 hover:text-white'
+                      }`}
+                    >
+                      {mat}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Case Finish */}
-            <div className="space-y-3">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-muted">
-                Case Finish — <span className="text-white">{caseFinish}</span>
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {options.caseFinishes.map((fin) => (
-                  <button
-                    key={fin}
-                    onClick={() => setCaseFinish(fin)}
-                    className={`px-3 py-2 text-xs font-bold rounded border transition-all cursor-pointer ${
-                      caseFinish === fin
-                        ? 'border-luxury-gold bg-luxury-gold/10 text-luxury-gold'
-                        : 'border-white/10 text-luxury-muted hover:border-white/30 hover:text-white'
-                    }`}
-                  >
-                    {fin}
-                  </button>
-                ))}
+            {selectedProduct.allowCaseCustomization !== false && (
+              <div className="space-y-3">
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-muted">
+                  Case Finish — <span className="text-white">{caseFinish}</span>
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {options.caseFinishes.map((fin) => (
+                    <button
+                      key={fin}
+                      onClick={() => setCaseFinish(fin)}
+                      className={`px-3 py-2 text-xs font-bold rounded border transition-all cursor-pointer ${
+                        caseFinish === fin
+                          ? 'border-luxury-gold bg-luxury-gold/10 text-luxury-gold'
+                          : 'border-white/10 text-luxury-muted hover:border-white/30 hover:text-white'
+                      }`}
+                    >
+                      {fin}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Engraving */}
             {options.engravingAllowed && (
