@@ -906,6 +906,8 @@ export default function Admin({ onPageChange }) {
                               ? 'border-red-500 text-red-400'
                               : o.status === 'Shipped'
                               ? 'border-sky-500 text-sky-400'
+                              : o.status === 'Exchange/Refund Requested'
+                              ? 'border-purple-500 text-purple-450'
                               : 'border-yellow-500 text-yellow-450'
                           }`}
                         >
@@ -914,6 +916,7 @@ export default function Admin({ onPageChange }) {
                           <option value="Shipped">Shipped</option>
                           <option value="Delivered">Delivered</option>
                           <option value="Cancelled">Cancelled</option>
+                          <option value="Exchange/Refund Requested">Exchange/Refund Requested</option>
                         </select>
                       </td>
                     </tr>

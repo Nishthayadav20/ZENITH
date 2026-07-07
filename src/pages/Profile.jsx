@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { logoutUser, cancelOrder, updateUserProfile } from '../store/slices/watchSlice';
+import { logoutUser, cancelOrder, updateUserProfile, requestExchangeRefund } from '../store/slices/watchSlice';
 import ProductCard from '../components/ProductCard';
 import { Heart, User, Package, LogOut } from 'lucide-react';
 
@@ -93,6 +93,17 @@ export default function Profile({ params, onPageChange }) {
         alert('Order cancelled and stock restored successfully.');
       } else {
         alert(res?.message || 'Failed to cancel order.');
+      }
+    }
+  };
+
+  const handleExchangeRefund = async (orderId) => {
+    if (window.confirm(`Are you sure you want to request an Exchange/Refund for order ${orderId}?`)) {
+      const res = await dispatch(requestExchangeRefund(orderId));
+      if (res && res.success) {
+        alert('Your Exchange/Refund request has been submitted successfully.');
+      } else {
+        alert(res?.message || 'Failed to submit Exchange/Refund request.');
       }
     }
   };
@@ -217,18 +228,30 @@ export default function Profile({ params, onPageChange }) {
                               ? 'border-red-500 bg-red-500/10 text-red-400'
                               : order.status === 'Shipped'
                               ? 'border-sky-500 bg-sky-500/10 text-sky-400'
+                              : order.status === 'Exchange/Refund Requested'
+                              ? 'border-purple-500 bg-purple-500/10 text-purple-400'
                               : 'border-yellow-500 bg-yellow-500/10 text-yellow-400'
                           }`}>
                             {order.status}
                           </span>
 
-                          {/* Cancellation Button */}
-                          {(order.status === 'Pending' || order.status === 'Paid' || order.status === 'Processing') && (
+                          {/* Cancellation Button (Pending/Before Payment only) */}
+                          {order.status === 'Pending' && (
                             <button
                               onClick={() => handleCancelOrder(order.id)}
                               className="text-[9px] text-luxury-red hover:text-red-400 font-bold uppercase border border-luxury-red/20 hover:border-luxury-red/50 px-2 py-1 rounded transition cursor-pointer"
                             >
                               Cancel
+                            </button>
+                          )}
+
+                          {/* Exchange/Refund Button (Paid, Processing, Shipped) */}
+                          {(order.status === 'Paid' || order.status === 'Processing' || order.status === 'Shipped') && (
+                            <button
+                              onClick={() => handleExchangeRefund(order.id)}
+                              className="text-[9px] text-purple-400 hover:text-purple-300 font-bold uppercase border border-purple-500/20 hover:border-purple-500/50 px-2 py-1 rounded transition cursor-pointer bg-purple-500/5"
+                            >
+                              Exchange / Refund
                             </button>
                           )}
                         </div>

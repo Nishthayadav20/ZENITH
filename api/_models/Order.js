@@ -27,7 +27,7 @@ const orderSchema = new mongoose.Schema({
     method: { type: String, required: true },
     last4: { type: String, required: true }
   },
-  status: { type: String, enum: ['Paid', 'Pending', 'Processing', 'Cancelled', 'Shipped'], default: 'Paid' },
+  status: { type: String, enum: ['Paid', 'Pending', 'Processing', 'Cancelled', 'Shipped', 'Exchange/Refund Requested'], default: 'Paid' },
   date: { type: String, default: () => new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) },
   time: { type: String, default: () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
 }, {

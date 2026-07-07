@@ -653,4 +653,22 @@ export const moderateReview = (productId, reviewId, status) => async (dispatch) 
   }
 };
 
+export const requestExchangeRefund = (orderId) => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/orders/${orderId}/exchange-refund`, {
+      method: 'PUT',
+      headers: getHeaders()
+    });
+    const data = await res.json();
+    if (data.success) {
+      dispatch(fetchOrders());
+      return { success: true };
+    } else {
+      return { success: false, message: data.message };
+    }
+  } catch (error) {
+    return { success: false, message: 'Failed to request Exchange/Refund. Server error.' };
+  }
+};
+
 export default watchSlice.reducer;

@@ -156,4 +156,34 @@ router.put('/:id/cancel', protect, async (req, res) => {
   }
 });
 
+// @route   PUT /api/orders/:id/exchange-refund
+// @desc    Request Exchange/Refund for an order
+// @access  Private
+router.put('/:id/exchange-refund', protect, async (req, res) => {
+  try {
+    const order = await Order.findOne({ id: req.params.id });
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    // Authorization check
+    if (req.user.role !== 'admin' && order.userEmail !== req.user.email) {
+      return res.status(403).json({ success: false, message: 'Access denied: not your order' });
+    }
+
+    if (order.status === 'Cancelled') {
+      return res.status(400).json({ success: false, message: 'Order is already cancelled' });
+    }
+
+    order.status = 'Exchange/Refund Requested';
+    const updatedOrder = await order.save();
+
+    res.json({ success: true, order: updatedOrder });
+  } catch (error) {
+    console.error('Request exchange/refund error:', error);
+    res.status(500).json({ success: false, message: error.message || 'Server error' });
+  }
+});
+
 export default router;
