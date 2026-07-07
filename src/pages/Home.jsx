@@ -561,9 +561,9 @@ export default function Home({ onPageChange }) {
               </div>
               <div className="font-cinzel font-bold text-4xl sm:text-5xl md:text-7xl tracking-wider uppercase leading-tight mt-1">
                 <span style={{
-                  background: 'linear-gradient(135deg, #10b981 0%, #059669 35%, #047857 62%, #065f46 100%)',
+                  background: 'linear-gradient(135deg, #047857 0%, #065f46 45%, #022c22 100%)',
                   WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-                  filter: 'drop-shadow(0 0 20px rgba(5,150,105,0.4)) drop-shadow(0 0 40px rgba(4,120,87,0.2))',
+                  filter: 'drop-shadow(0 0 15px rgba(4,120,87,0.35)) drop-shadow(0 0 35px rgba(2,44,34,0.15))',
                   display: 'inline-block',
                 }}>Your Star</span>
               </div>
