@@ -237,14 +237,14 @@ export default function Admin({ onPageChange }) {
   });
 
   // --- ACTIONS HANDLERS ---
-  const handleCreateProduct = (e) => {
+  const handleCreateProduct = async (e) => {
     e.preventDefault();
     if (!newProduct.name || !newProduct.price || !newProduct.stock) {
       alert('Please fill out Name, Price and Stock.');
       return;
     }
-    const res = dispatch(addProduct(newProduct));
-    if (res.success) {
+    const res = await dispatch(addProduct(newProduct));
+    if (res && res.success) {
       alert('Product created successfully!');
       setShowAddForm(false);
       setNewProduct({
@@ -255,6 +255,8 @@ export default function Admin({ onPageChange }) {
         allowStrapCustomization: true,
         allowCaseCustomization: true
       });
+    } else {
+      alert(res?.message || 'Failed to create product.');
     }
   };
 
@@ -268,13 +270,15 @@ export default function Admin({ onPageChange }) {
     });
   };
 
-  const handleUpdateProduct = (e) => {
+  const handleUpdateProduct = async (e) => {
     e.preventDefault();
-    const res = dispatch(editProduct(editingId, editForm));
-    if (res.success) {
+    const res = await dispatch(editProduct(editingId, editForm));
+    if (res && res.success) {
       alert('Product edited successfully!');
       setEditingId(null);
       setEditForm(null);
+    } else {
+      alert(res?.message || 'Failed to update product.');
     }
   };
 
@@ -284,17 +288,17 @@ export default function Admin({ onPageChange }) {
     }
   };
 
-  const handleCreateCoupon = (e) => {
+  const handleCreateCoupon = async (e) => {
     e.preventDefault();
     if (!newCouponCode || !newCouponDiscount) return;
-    const res = dispatch(addCoupon(newCouponCode, newCouponDiscount, newCouponDesc));
-    if (res.success) {
+    const res = await dispatch(addCoupon(newCouponCode, newCouponDiscount, newCouponDesc));
+    if (res && res.success) {
       alert('Coupon code activated!');
       setNewCouponCode('');
       setNewCouponDiscount('');
       setNewCouponDesc('');
     } else {
-      alert(res.message);
+      alert(res?.message || 'Failed to add coupon.');
     }
   };
 
