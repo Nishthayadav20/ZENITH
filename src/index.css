@@ -305,13 +305,3 @@ input:focus, select:focus, textarea:focus {
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
-/* Specific overrides to force true white/light-gray text inside dark panels, bypassing light theme overrides */
-.dark-panel .text-white {
-  color: #ffffff !important;
-}
-
-.dark-panel .text-gray-300,
-.dark-panel .text-gray-400 {
-  color: rgba(255, 255, 255, 0.75) !important;
-}
-
