@@ -22,14 +22,21 @@ export default function ProductDetail({ params, onPageChange }) {
   const [reviewMessage, setReviewMessage] = useState('');
 
   // Hover Zoom States & Handler
-  const [zoomPos, setZoomPos] = useState({ x: 0, y: 0 });
+  const [zoomPos, setZoomPos] = useState({ x: 0, y: 0, pxX: 0, pxY: 0, width: 0, height: 0 });
   const [isZoomed, setIsZoomed] = useState(false);
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setZoomPos({ x, y });
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    setZoomPos({
+      x: (x / rect.width) * 100,
+      y: (y / rect.height) * 100,
+      pxX: x,
+      pxY: y,
+      width: rect.width,
+      height: rect.height,
+    });
   };
 
   if (!product) {
@@ -114,10 +121,10 @@ export default function ProductDetail({ params, onPageChange }) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         
         {/* Left Column: Image Gallery */}
-        <div className="lg:col-span-6 space-y-6 relative">
+        <div className="lg:col-span-6 space-y-6">
           <div 
             onMouseEnter={() => setIsZoomed(true)}
-            onMouseLeave={() => { setIsZoomed(false); setZoomPos({ x: 0, y: 0 }); }}
+            onMouseLeave={() => { setIsZoomed(false); setZoomPos({ x: 0, y: 0, pxX: 0, pxY: 0, width: 0, height: 0 }); }}
             onMouseMove={handleMouseMove}
             className="bg-luxury-gray border border-white/5 rounded-md aspect-square flex items-center justify-center p-0 overflow-hidden relative cursor-zoom-in"
           >
@@ -127,19 +134,30 @@ export default function ProductDetail({ params, onPageChange }) {
               className="w-full h-full object-cover filter drop-shadow-[0_15px_35px_rgba(0,0,0,0.6)]"
             />
             
-            {/* Hover Target Rectangular Lens */}
+            {/* Hover Target Magnifying Square Lens */}
             {isZoomed && (
               <div 
-                className="absolute rounded border border-luxury-gold bg-white/10 pointer-events-none hidden lg:block"
+                className="absolute border-2 border-luxury-gold bg-[#0d0d0d] overflow-hidden rounded-md pointer-events-none hidden lg:block shadow-[0_20px_50px_rgba(0,0,0,0.65)]"
                 style={{
-                  width: '140px',
-                  height: '140px',
+                  width: '180px',
+                  height: '180px',
                   left: `${zoomPos.x}%`,
                   top: `${zoomPos.y}%`,
                   transform: 'translate(-50%, -50%)',
-                  boxShadow: '0 0 15px rgba(197,168,128,0.4)',
                 }}
-              />
+              >
+                <img 
+                  src={product.image}
+                  alt="Zoomed view"
+                  className="absolute max-w-none"
+                  style={{
+                    width: `${zoomPos.width * 3}px`,
+                    height: `${zoomPos.height * 3}px`,
+                    left: `${90 - (zoomPos.pxX * 3)}px`,
+                    top: `${90 - (zoomPos.pxY * 3)}px`,
+                  }}
+                />
+              </div>
             )}
 
             {product.stock === 0 && (
@@ -150,25 +168,6 @@ export default function ProductDetail({ params, onPageChange }) {
               </div>
             )}
           </div>
-
-          {/* Side Rectangular Zoom Window */}
-          {isZoomed && (
-            <div 
-              className="absolute left-[104%] top-0 w-[500px] h-[500px] rounded-lg overflow-hidden border-2 border-luxury-gold bg-[#0d0d0d] z-40 pointer-events-none shadow-[0_25px_60px_rgba(0,0,0,0.65)] hidden lg:block"
-            >
-              <img 
-                src={product.image}
-                alt="Zoomed view"
-                className="absolute max-w-none"
-                style={{
-                  width: '300%',
-                  height: '300%',
-                  left: `${250 - (zoomPos.x / 100) * 3 * 500}px`,
-                  top: `${250 - (zoomPos.y / 100) * 3 * 500}px`,
-                }}
-              />
-            </div>
-          )}
         </div>
 
         {/* Right Column: Order Details */}
