@@ -136,7 +136,7 @@ export default function ProductDetail({ params, onPageChange }) {
             {/* Hover Target Magnifying Square Lens */}
             {isZoomed && (
               <div 
-                className="absolute border-2 border-luxury-gold bg-[#0d0d0d] overflow-hidden rounded-md pointer-events-none hidden lg:block shadow-[0_20px_50px_rgba(0,0,0,0.65)]"
+                className="absolute border-2 border-luxury-gold bg-[#0d0d0d] overflow-hidden rounded-full pointer-events-none hidden lg:block shadow-[0_20px_50px_rgba(0,0,0,0.65)]"
                 style={{
                   width: '180px',
                   height: '180px',
