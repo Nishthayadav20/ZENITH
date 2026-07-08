@@ -489,17 +489,17 @@ export default function Home({ onPageChange }) {
   const featured = products;
 
   const collections = [
-    { name: 'Khronomaster', image: '/assets/media__1782899491297.jpg', tagline: 'High-Frequency Chronographs', desc: 'Powered by the legendary El Primero caliber, blending historical authenticity with modern design.', filter: { category: 'Khronomaster' }, accent: '#34d399' },
+    { name: 'Khronomaster', image: '/assets/media__1782899491297.jpg', tagline: 'High-Frequency Chronographs', desc: 'Powered by our high-precision caliber calibers, blending robust authenticity with modern Indian design.', filter: { category: 'Khronomaster' }, accent: '#34d399' },
     { name: 'Defy', image: '/assets/media__1782899491366.jpg', tagline: 'Futuristic Watchmaking', desc: 'Unmatched durability and architectural design built for the boundary-breakers.', filter: { category: 'Defy' }, accent: '#60a5fa' },
-    { name: 'Elite & Heritage', image: '/assets/media__1782899491225.jpg', tagline: 'Timeless Swiss Classics', desc: 'Elegant profiles, vintage inspirations, and dress chronometers suited for any formal setting.', filter: { category: 'Heritage' }, accent: '#c5a880' },
+    { name: 'Elite & Heritage', image: '/assets/media__1782899491225.jpg', tagline: 'Timeless Swadeshi Classics', desc: 'Elegant profiles, vintage inspirations, and dress chronometers suited for any formal setting.', filter: { category: 'Heritage' }, accent: '#c5a880' },
   ];
 
-  const marqueeA = ['Swiss Made Since 1865', 'El Primero Caliber', 'COSC Certified', 'Sapphire Crystal', '36,000 vph', 'In-House Movement'];
-  const marqueeB = ['Water Resistant 200m', 'Limited Edition', 'Manufacture Movements', 'Chronometry Prize', 'Le Locle Switzerland', 'Precision Engineered'];
+  const marqueeA = ['Swadeshi Luxury', 'Indian Engineered', 'Make In India Pride', 'Sapphire Crystal', 'High-Beat Caliber', 'In-House Assembly'];
+  const marqueeB = ['Water Resistant 200m', 'Limited Edition Masterpiece', 'Indo-Swiss Caliber DNA', 'Excellence Redefined', 'State-of-the-Art Indian Manufacture', 'Precision Horology'];
   const stats = [
-    { raw: '36', suffix: 'K', label: 'vibrations/hour' },
-    { raw: '100', suffix: '%', label: 'Swiss Made' },
-    { raw: '2300', suffix: '+', label: 'Prizes Won' },
+    { raw: '100', suffix: '%', label: 'Swadeshi Design' },
+    { raw: '2026', suffix: '', label: 'Indian Launch' },
+    { raw: '50', suffix: 'K+', label: 'Pre-bookings' },
   ];
 
   /* ─── Render ─────────────────────────────────────────────────────── */

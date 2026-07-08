@@ -80,13 +80,13 @@ export default function Static({ params, _onPageChange }) {
           <div className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div className="space-y-4">
-                <span className="text-[9px] text-luxury-gold-dark font-bold tracking-widest uppercase">ESTABLISHED 1865</span>
-                <h2 className="text-2xl font-serif font-bold text-luxury-text uppercase">The Manufacture of Georges Favre-Jacot</h2>
+                <span className="text-[9px] text-luxury-gold-dark font-bold tracking-widest uppercase">LAUNCH EDITION</span>
+                <h2 className="text-2xl font-serif font-bold text-luxury-text uppercase">The Dawn of Modern Indian Luxury</h2>
                 <p className="text-luxury-muted text-xs leading-relaxed font-light">
-                  In 1865, a visionary 22-year-old watchmaker named Georges Favre-Jacot founded Khroniq in Le Locle, Switzerland. He pioneered the concept of a watch manufacture, gathering all specialized watchmaking crafts under a single roof to master every aspect of the movement assembly.
+                  Khroniq was born from a bold vision: to establish a world-class luxury horology house in India. Merging traditional styling with cutting-edge micro-engineering, we design timepieces that redefine elegance and stand as a symbol of modern Indian precision.
                 </p>
                 <p className="text-luxury-muted text-xs leading-relaxed font-light">
-                  Today, Khroniq remains at the historical birthplace, continuing to push boundaries with the legendary El Primero caliber—the world's first high-frequency integrated automatic chronograph.
+                  From our state-of-the-art assembly headquarters, our designers and engineers push technical limits. We craft robust calibers and elegant designs tailored for individuals who demand sophistication, reliability, and distinction.
                 </p>
               </div>
               <div className="h-64 bg-luxury-bg border border-luxury-text/10 rounded flex items-center justify-center p-6 relative overflow-hidden">
@@ -102,8 +102,8 @@ export default function Static({ params, _onPageChange }) {
             <div className="border-t border-luxury-text/10 pt-8 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
               <div className="space-y-2">
                 <Award className="mx-auto text-luxury-gold-dark" size={24} />
-                <h4 className="text-xs font-bold text-luxury-text uppercase tracking-wider">SWISS EXCELLENCE</h4>
-                <p className="text-[11px] text-luxury-muted leading-relaxed font-light">100% of our movements are engineered and manufactured in Le Locle, Switzerland.</p>
+                <h4 className="text-xs font-bold text-luxury-text uppercase tracking-wider">PRESTIGE DESIGN</h4>
+                <p className="text-[11px] text-luxury-muted leading-relaxed font-light">Every caliber is meticulously engineered and assembled by master craftsmen at our state-of-the-art facilities.</p>
               </div>
               <div className="space-y-2">
                 <Compass className="mx-auto text-luxury-gold-dark" size={24} />
@@ -265,7 +265,7 @@ export default function Static({ params, _onPageChange }) {
               <section className="space-y-2">
                 <h4 className="font-bold text-luxury-text uppercase text-[10px] tracking-wider">1. Privacy and Data Protection</h4>
                 <p>
-                  At KHRONIQ Watches, we are dedicated to protecting your client profile data. Any personal details, address books, and purchase order invoices collected are managed under strict Swiss Federal Act on Data Protection (FADP) and General Data Protection Regulations (GDPR). We enforce SSL encryption blocks on all security gateways.
+                  At KHRONIQ Watches, we are dedicated to protecting your client profile data. Any personal details, address books, and purchase order invoices collected are managed under strict Indian data protection laws and international General Data Protection Regulation (GDPR) guidelines. We enforce SSL encryption blocks on all security gateways.
                 </p>
               </section>
 
