@@ -288,7 +288,7 @@ function CollectionCard({ col, idx, onPageChange }) {
       onMouseMove={onMove}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={onLeave}
-      className="relative h-[780px] border border-luxury-text/10 rounded-xl overflow-hidden cursor-pointer flex flex-col justify-end p-10 sm:p-12 bg-luxury-dark"
+      className="relative h-[420px] sm:h-[500px] lg:h-[580px] border border-luxury-text/10 rounded-xl overflow-hidden cursor-pointer flex flex-col justify-end p-6 sm:p-8 bg-luxury-dark"
       variants={enterAnims[idx]}
       initial="hidden"
       whileInView="visible"
