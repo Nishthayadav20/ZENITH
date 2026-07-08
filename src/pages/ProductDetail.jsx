@@ -204,7 +204,7 @@ export default function ProductDetail({ params, onPageChange }) {
             <div className="flex flex-col items-center text-center p-2 space-y-1">
               <Shield size={18} className="text-luxury-gold-dark" />
               <span className="text-[9px] font-bold text-gray-800 tracking-widest uppercase">WARRANTY</span>
-              <p className="text-[9px] text-gray-500">3-Year Swiss warranty</p>
+              <p className="text-[9px] text-gray-500">3-Year Premium warranty</p>
             </div>
           </div>
         </div>
@@ -329,7 +329,7 @@ export default function ProductDetail({ params, onPageChange }) {
               <div className="pt-2.5 border-t border-white/5 space-y-1">
                 <p className="text-[9px] font-bold text-emerald-600 uppercase tracking-wider">Estimated Delivery</p>
                 <p className="text-xs font-semibold text-luxury-text">{deliveryEstimate}</p>
-                <p className="text-[8px] text-gray-500 font-light leading-relaxed">Secure courier service dispatched directly from our Swiss Manufacture headquarters.</p>
+                <p className="text-[8px] text-gray-500 font-light leading-relaxed">Secure courier service dispatched directly from our Indian Manufacture headquarters.</p>
               </div>
             )}
           </div>
@@ -387,7 +387,7 @@ export default function ProductDetail({ params, onPageChange }) {
             </div>
             <div className="flex justify-between py-2">
               <span className="text-gray-500 tracking-wider">ORIGIN</span>
-              <span className="text-gray-800 font-semibold uppercase">Swiss Made (Le Locle)</span>
+              <span className="text-gray-800 font-semibold uppercase">Designed & Crafted in India</span>
             </div>
           </div>
         )}
@@ -397,7 +397,7 @@ export default function ProductDetail({ params, onPageChange }) {
           <div className="space-y-4 text-xs sm:text-sm text-gray-800 font-normal leading-relaxed max-w-4xl bg-white border border-luxury-text/10 rounded p-6 sm:p-8 shadow-sm">
             <h4 className="text-gray-800 font-bold tracking-wider uppercase text-xs">The Khroniq Spirit of Innovation</h4>
             <p className="text-gray-600 font-normal">
-              Each Khroniq watch is crafted with painstaking precision in our historic manufacture in Le Locle. By integrating dial production, case tooling, movement machining, and fine-tuning calibration under a single Swiss roof, Khroniq ensures every component complies with strict COSC chronometer specifications.
+              Each Khroniq watch is crafted with painstaking precision in our state-of-the-art manufacture. By integrating design, case tooling, assembly, and fine-tuning calibration under a single roof, Khroniq ensures every component complies with strict chronometer specifications and Swadeshi premium quality.
             </p>
             <p className="text-gray-600 font-normal">
               The double anti-reflective sapphire dial glass ensures absolute clarity, shielding the watch indexes from solar glare and scratches. Fitted with premium gaskets, the case delivers advanced seals for water safety, maintaining structural integrity across varying atmospheres.

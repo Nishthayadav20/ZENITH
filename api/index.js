@@ -93,6 +93,34 @@ const seedDatabase = async () => {
     // Migration: Update existing products with category 'Chronomaster' to 'Khronomaster'
     await Product.updateMany({ category: 'Chronomaster' }, { $set: { category: 'Khronomaster' } });
 
+    // Migration: Rebrand product movement references to remove "El Primero"
+    await Product.updateOne(
+      { name: 'Khroniq Khronomaster Black Edition' },
+      {
+        $set: {
+          description: 'High-precision luxury chronograph watch in matte black design with silver sub-dials and detailed tachymeter scale. Equipped with our signature high-precision movement caliber.',
+          'specs.movement': 'Khroniq Chronograph Caliber'
+        }
+      }
+    );
+    await Product.updateOne(
+      { name: 'Khroniq Khronomaster Open Heart' },
+      {
+        $set: {
+          description: 'An exquisite luxury timepiece featuring a dial opening revealing the high-frequency Khroniq balance wheel. Crafted with a polished steel case.',
+          'specs.movement': 'Khroniq Automatic Chronograph'
+        }
+      }
+    );
+    await Product.updateOne(
+      { name: 'Khroniq Defy Skyline Skeleton' },
+      {
+        $set: {
+          'specs.movement': 'Khroniq High-Frequency Automatic'
+        }
+      }
+    );
+
     // Migration: Ensure all current products default to customizable: true on startup
     const countCustomizable = await Product.countDocuments({ customizable: true });
     if (countCustomizable === 0) {
@@ -139,16 +167,16 @@ const seedDatabase = async () => {
           stock: 5,
           category: 'Khronomaster',
           gender: 'men',
-          description: 'High-precision luxury chronograph watch in matte black design with silver sub-dials and detailed tachymeter scale. Equipped with the legendary El Primero movement DNA.',
+          description: 'High-precision luxury chronograph watch in matte black design with silver sub-dials and detailed tachymeter scale. Equipped with our signature high-precision movement caliber.',
           specs: {
-            movement: 'El Primero Chronograph (36,000 vph)',
+            movement: 'Khroniq Chronograph Caliber',
             case: 'Matte Black Ceramic (42mm)',
             strap: 'Black Rubberized Steel Link',
             waterResistance: '100m (10 ATM)',
             glass: 'Double Anti-reflective Sapphire'
           },
           reviews: [
-            { userName: 'Marc V.', rating: 5, comment: 'The El Primero movement is flawless. The black ceramic case is scratchproof!', date: '2026-05-10', status: 'approved' }
+            { userName: 'Marc V.', rating: 5, comment: 'The Khroniq movement is flawless. The black ceramic case is scratchproof!', date: '2026-05-10', status: 'approved' }
           ]
         },
         {
@@ -199,9 +227,9 @@ const seedDatabase = async () => {
           stock: 6,
           category: 'Khronomaster',
           gender: 'men',
-          description: 'An exquisite luxury timepiece featuring a dial opening revealing the high-frequency El Primero balance wheel. Crafted with a polished steel case.',
+          description: 'An exquisite luxury timepiece featuring a dial opening revealing the high-frequency Khroniq balance wheel. Crafted with a polished steel case.',
           specs: {
-            movement: 'El Primero Automatic Chronograph',
+            movement: 'Khroniq Automatic Chronograph',
             case: 'Polished Steel (42mm)',
             strap: 'Alligator Leather Strap',
             waterResistance: '100m (10 ATM)',
@@ -255,7 +283,7 @@ const seedDatabase = async () => {
           gender: 'men',
           description: 'A modern architectural masterpiece featuring an openworked black skeleton dial inside a sharp octagonal steel case.',
           specs: {
-            movement: 'El Primero High-Frequency Automatic',
+            movement: 'Khroniq High-Frequency Automatic',
             case: 'Brushed Steel Octagonal (41mm)',
             strap: 'Black Rubber Strap',
             waterResistance: '100m (10 ATM)',
