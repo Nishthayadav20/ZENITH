@@ -550,7 +550,7 @@ export default function Home({ onPageChange }) {
               <motion.span className="inline-flex items-center gap-2 border border-luxury-gold/45 text-luxury-gold px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-black/45 backdrop-blur-sm"
                 whileHover={{ scale: 1.05, borderColor: 'rgba(197,168,128,0.85)' }} transition={{ duration: 0.15 }}>
                 <Star size={10} fill="var(--color-luxury-gold)" className="animate-spin" style={{ animationDuration: '6s' }} />
-                THE SWISS WATCH MANUFACTURE SINCE 1865
+                YOUR TRUSTED INDIAN MANUFACTURER SINCE 1865
               </motion.span>
             </motion.div>
 
