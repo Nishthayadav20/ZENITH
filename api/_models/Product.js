@@ -38,7 +38,11 @@ const productSchema = new mongoose.Schema({
     dialColors: [{ type: String }],
     strapMaterials: [{ type: String }],
     caseFinishes: [{ type: String }],
-    engravingAllowed: { type: Boolean, default: false }
+    engravingAllowed: { type: Boolean, default: false },
+    customStrapName: { type: String, default: '' },
+    customStrapImage: { type: String, default: '' },
+    customCaseName: { type: String, default: '' },
+    customCaseColor: { type: String, default: '' }
   },
   reviews: [reviewSchema]
 }, {

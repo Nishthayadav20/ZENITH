@@ -22,27 +22,68 @@ function buildOptions(product) {
   const opts = product.customizationOptions || {};
   const dialColors = (opts.dialColors?.length ? opts.dialColors : FALLBACK_DIAL_COLORS.map(d => d.value))
     .map(v => FALLBACK_DIAL_COLORS.find(d => d.value === v) || { label: v, value: v, textDark: false });
-  const strapMaterials = opts.strapMaterials?.length ? opts.strapMaterials : FALLBACK_STRAPS;
-  const caseFinishes   = opts.caseFinishes?.length   ? opts.caseFinishes   : FALLBACK_FINISHES;
+  
+  // Custom strap options
+  const strapMaterials = [...(opts.strapMaterials?.length ? opts.strapMaterials : FALLBACK_STRAPS)];
+  if (opts.customStrapName && !strapMaterials.includes(opts.customStrapName)) {
+    strapMaterials.push(opts.customStrapName);
+  }
+  
+  // Custom case finishes
+  const caseFinishes = [...(opts.caseFinishes?.length ? opts.caseFinishes : FALLBACK_FINISHES)];
+  if (opts.customCaseName && !caseFinishes.includes(opts.customCaseName)) {
+    caseFinishes.push(opts.customCaseName);
+  }
+
   const engravingAllowed = opts.engravingAllowed ?? true;
-  return { dialColors, strapMaterials, caseFinishes, engravingAllowed };
+  return { 
+    dialColors, 
+    strapMaterials, 
+    caseFinishes, 
+    engravingAllowed,
+    customStrapName: opts.customStrapName || '',
+    customStrapImage: opts.customStrapImage || '',
+    customCaseName: opts.customCaseName || '',
+    customCaseColor: opts.customCaseColor || ''
+  };
 }
 
 // ─── Watch Face Preview ───────────────────────────────────────────────────────
-function WatchPreview({ product, dialColor, finish, engraving }) {
-  const finishTone = finish?.toLowerCase().includes('black') ? '#1a1a1a'
-    : finish?.toLowerCase().includes('rose') ? '#c8856a'
-    : finish?.toLowerCase().includes('matte') ? '#555'
-    : finish?.toLowerCase().includes('brushed') ? '#888'
-    : '#c0c0c0';
+function WatchPreview({ product, dialColor, finish, engraving, strapImage, caseColor }) {
+  const finishTone = caseColor || (
+    finish?.toLowerCase().includes('black') ? '#1a1a1a'
+      : finish?.toLowerCase().includes('rose') ? '#c8856a'
+      : finish?.toLowerCase().includes('matte') ? '#555'
+      : finish?.toLowerCase().includes('brushed') ? '#888'
+      : '#c0c0c0'
+  );
 
   return (
     <div className="relative flex items-center justify-center" style={{ minHeight: 300 }}>
       {/* Glow */}
       <div
         className="absolute rounded-full blur-3xl opacity-30 w-56 h-56"
-        style={{ background: dialColor?.value || '#c8a96a' }}
+        style={{ background: dialColor?.value || '#c8a96a', zIndex: 1 }}
       />
+
+      {/* Strap band */}
+      {strapImage && (
+        <div className="absolute animate-fade-in" style={{
+          width: 44,
+          height: 290,
+          backgroundImage: `url(${strapImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          borderRadius: 4,
+          boxShadow: '0 0 15px rgba(0,0,0,0.6)',
+          zIndex: 2
+        }} />
+      )}
+
+      {/* Lug top */}
+      <div className="absolute" style={{ width: 26, height: 28, top: 14, left: '50%', transform: 'translateX(-50%)', background: finishTone, borderRadius: '4px 4px 0 0', opacity: 0.9, zIndex: 3 }} />
+      {/* Lug bottom */}
+      <div className="absolute" style={{ width: 26, height: 28, bottom: 14, left: '50%', transform: 'translateX(-50%)', background: finishTone, borderRadius: '0 0 4px 4px', opacity: 0.9, zIndex: 3 }} />
 
       {/* Case / Bezel */}
       <div
@@ -53,6 +94,7 @@ function WatchPreview({ product, dialColor, finish, engraving }) {
           background: `radial-gradient(circle at 35% 35%, ${finishTone}dd, ${finishTone}66)`,
           border: `6px solid ${finishTone}`,
           boxShadow: `0 0 40px ${finishTone}55, inset 0 2px 4px rgba(255,255,255,0.15)`,
+          zIndex: 4
         }}
       >
         {/* Crystal */}
@@ -134,11 +176,6 @@ function WatchPreview({ product, dialColor, finish, engraving }) {
           )}
         </div>
       </div>
-
-      {/* Lug top */}
-      <div className="absolute" style={{ width: 26, height: 28, top: 14, left: '50%', transform: 'translateX(-50%)', background: finishTone, borderRadius: '4px 4px 0 0', opacity: 0.9 }} />
-      {/* Lug bottom */}
-      <div className="absolute" style={{ width: 26, height: 28, bottom: 14, left: '50%', transform: 'translateX(-50%)', background: finishTone, borderRadius: '0 0 4px 4px', opacity: 0.9 }} />
     </div>
   );
 }
@@ -313,6 +350,8 @@ export default function Customization({ onPageChange, params }) {
                 dialColor={dialColor}
                 finish={caseFinish}
                 engraving={engraving}
+                strapImage={strapMaterial === options?.customStrapName ? options?.customStrapImage : ''}
+                caseColor={caseFinish === options?.customCaseName ? options?.customCaseColor : ''}
               />
               <div className="text-center space-y-1">
                 <p className="text-white font-bold text-lg">{selectedProduct.name}</p>

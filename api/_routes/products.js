@@ -43,6 +43,7 @@ router.post('/', protect, adminOnly, async (req, res) => {
       customizable: customizable || false,
       allowStrapCustomization: allowStrapCustomization !== undefined ? allowStrapCustomization : true,
       allowCaseCustomization: allowCaseCustomization !== undefined ? allowCaseCustomization : true,
+      customizationOptions: req.body.customizationOptions,
       reviews: []
     });
 
@@ -88,6 +89,9 @@ router.put('/:id', protect, adminOnly, async (req, res) => {
     if (customizable !== undefined) product.customizable = customizable;
     if (allowStrapCustomization !== undefined) product.allowStrapCustomization = allowStrapCustomization;
     if (allowCaseCustomization !== undefined) product.allowCaseCustomization = allowCaseCustomization;
+    if (req.body.customizationOptions !== undefined) {
+      product.customizationOptions = req.body.customizationOptions;
+    }
 
     const updatedProduct = await product.save();
     res.json({ success: true, product: updatedProduct });
