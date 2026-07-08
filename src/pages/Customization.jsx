@@ -12,6 +12,7 @@ const FALLBACK_DIAL_COLORS = [
   { label: 'Forest Green',   value: '#1c3a2a', textDark: false },
   { label: 'Champagne Gold', value: '#c8a96a', textDark: true  },
   { label: 'Crimson Red',    value: '#6b1515', textDark: false },
+  { label: 'Beige Dial',     value: '#f5f5dc', textDark: true  },
 ];
 
 const STRAP_IMAGES = {
@@ -360,13 +361,13 @@ export default function Customization({ onPageChange, params }) {
 
           {/* ── LEFT: Live Preview ── */}
           <div className="space-y-6 sticky top-28">
-            <div className="dark-panel bg-[#0d0d0d] rounded-2xl border border-white/5 p-8 flex flex-col items-center gap-6">
+            <div className="dark-panel bg-[#0d0d0d] rounded-2xl border border-white/5 p-4 sm:p-8 flex flex-col items-center gap-6">
               <WatchPreview
                 product={selectedProduct}
                 dialColor={dialColor}
                 finish={caseFinish}
                 engraving={engraving}
-                strapImage={strapMaterial === options?.customStrapName ? options?.customStrapImage : ''}
+                strapImage={strapMaterial === options?.customStrapName ? options?.customStrapImage : (STRAP_IMAGES[strapMaterial] || '')}
                 caseColor={caseFinish === options?.customCaseName ? options?.customCaseColor : ''}
               />
               <div className="text-center space-y-1">
