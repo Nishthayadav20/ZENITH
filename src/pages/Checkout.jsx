@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-
+import jsPDF from 'jspdf';
 import { createRazorpayOrder, verifyRazorpayPayment, selectCurrentCurrency, formatPrice } from '../store/slices/watchSlice';
 
 import confetti from 'canvas-confetti';
@@ -142,6 +142,48 @@ export default function Checkout({ params, onPageChange }) {
       setProcessingPayment(false);
     });
     rzp.open();
+  };
+
+  const handleDownloadInvoice = () => {
+    if (!orderReceipt) return;
+
+    const doc = new jsPDF();
+    let y = 20;
+
+    doc.setFontSize(18);
+    doc.text('KHRONIQ Watches - Invoice', 20, y);
+    y += 10;
+
+    doc.setFontSize(10);
+    doc.text(`Order Reference: ${orderReceipt.id}`, 20, y);
+    y += 6;
+    doc.text(`Date: ${new Date(orderReceipt.createdAt || Date.now()).toLocaleDateString()}`, 20, y);
+    y += 12;
+
+    doc.setFontSize(12);
+    doc.text('Items:', 20, y);
+    y += 8;
+
+    doc.setFontSize(10);
+    orderReceipt.items.forEach((item) => {
+      doc.text(`${item.name} (x${item.quantity})`, 20, y);
+      doc.text(`$${(item.price * item.quantity).toLocaleString()}`, 160, y);
+      y += 7;
+    });
+
+    y += 6;
+    doc.setFontSize(12);
+    doc.text(`Total: $${orderReceipt.total.toLocaleString()}`, 20, y);
+    y += 12;
+
+    doc.setFontSize(10);
+    doc.text('Shipping Address:', 20, y);
+    y += 6;
+    doc.text(`${orderReceipt.shippingDetails.fullName}`, 20, y);
+    y += 6;
+    doc.text(`${orderReceipt.shippingDetails.streetAddress}, ${orderReceipt.shippingDetails.city}, ${orderReceipt.shippingDetails.zipCode}`, 20, y);
+
+    doc.save(`Invoice-${orderReceipt.id}.pdf`);
   };
 
   return (
@@ -350,7 +392,13 @@ export default function Checkout({ params, onPageChange }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+            <button
+              onClick={handleDownloadInvoice}
+              className="py-3.5 bg-white text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-gray-200 transition cursor-pointer"
+            >
+              Download Invoice
+            </button>
             <button
               onClick={() => onPageChange('profile', { tab: 'orders' })}
               className="py-3.5 bg-luxury-gold text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold-dark transition cursor-pointer"

@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import Product from '../models/Product.js';
 import Order from '../models/Order.js';
 import { protect } from '../middleware/auth.js';
+import sendEmail from '../utils/sendEmail.js';
 
 const router = express.Router();
 
@@ -119,6 +120,50 @@ router.post('/verify', protect, async (req, res) => {
     });
 
     const createdOrder = await order.save();
+
+    // Send invoice email (non-blocking — don't fail the order if email fails)
+    try {
+      const itemsHtml = dbItems.map(item => `
+        <tr>
+          <td style="padding:8px;border-bottom:1px solid #eee;">${item.name}</td>
+          <td style="padding:8px;border-bottom:1px solid #eee;text-align:center;">${item.quantity}</td>
+          <td style="padding:8px;border-bottom:1px solid #eee;text-align:right;">₹${item.price.toLocaleString()}</td>
+        </tr>
+      `).join('');
+
+      await sendEmail({
+        to: req.user.email,
+        subject: `KHRONIQ Watches - Order Confirmation ${randomId}`,
+        html: `
+          <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;">
+            <h2>Thank you for your order, ${req.user.name}!</h2>
+            <p>Your order <strong>${randomId}</strong> has been confirmed and paid.</p>
+            <table style="width:100%;border-collapse:collapse;margin:20px 0;">
+              <thead>
+                <tr>
+                  <th style="padding:8px;text-align:left;border-bottom:2px solid #333;">Item</th>
+                  <th style="padding:8px;text-align:center;border-bottom:2px solid #333;">Qty</th>
+                  <th style="padding:8px;text-align:right;border-bottom:2px solid #333;">Price</th>
+                </tr>
+              </thead>
+              <tbody>${itemsHtml}</tbody>
+            </table>
+            <p>Subtotal: ₹${Number(subtotal).toLocaleString()}</p>
+            ${discount > 0 ? `<p>Discount: -₹${Number(discount).toLocaleString()}</p>` : ''}
+            <p style="font-size:16px;font-weight:bold;">Total Paid: ₹${Number(total).toLocaleString()}</p>
+            <hr/>
+            <p><strong>Shipping to:</strong><br/>
+            ${shippingDetails.fullName}<br/>
+            ${shippingDetails.streetAddress}, ${shippingDetails.city}, ${shippingDetails.zipCode}</p>
+            <p style="color:#888;font-size:12px;">Payment ID: ${razorpay_payment_id}</p>
+          </div>
+        `
+      });
+    } catch (emailError) {
+      console.error('Invoice email failed to send:', emailError);
+      // Don't block the order response even if email fails
+    }
+
     res.status(201).json({ success: true, order: createdOrder });
   } catch (error) {
     console.error('Payment verification error:', error);
