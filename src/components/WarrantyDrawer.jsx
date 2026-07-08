@@ -5,14 +5,16 @@ import { X, ShieldCheck, User, QrCode } from 'lucide-react';
 export default function WarrantyDrawer({ isOpen, onClose }) {
   const products = useSelector(state => state.watch.products);
   const [watchName, setWatchName] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedWatch, setSelectedWatch] = useState(null);
   const [ownerDetail, setOwnerDetail] = useState('');
   const [warrantyCode, setWarrantyCode] = useState('');
   const [verificationResult, setVerificationResult] = useState(null);
 
-  // Dynamically look up watch based on text typed
-  const matchedWatch = watchName.trim().length >= 2 
-    ? products.find(p => p.name.toLowerCase().includes(watchName.toLowerCase())) 
-    : null;
+  // Suggestions based on search
+  const suggestions = watchName.trim().length >= 1
+    ? products.filter(p => p.name.toLowerCase().includes(watchName.toLowerCase()))
+    : [];
 
   const handleVerify = (e) => {
     e.preventDefault();
@@ -20,7 +22,6 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
       alert('Please fill out all fields to verify.');
       return;
     }
-    // Set a mock success verification result
     setVerificationResult({
       status: 'Active',
       expires: 'July 2029',
@@ -65,35 +66,58 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
           <form onSubmit={handleVerify} className="space-y-4 text-xs">
             {/* Watch Name Input */}
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 relative">
               <label className="text-[8px] text-gray-500 font-bold uppercase tracking-widest block">Name of Watch</label>
               <div className="relative">
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Defy Skyline, Khronomaster..."
+                  placeholder="Type to search watch models..."
                   value={watchName}
+                  onFocus={() => setShowDropdown(true)}
                   onChange={(e) => {
                     setWatchName(e.target.value);
-                    setVerificationResult(null); // Reset verification on edit
+                    setShowDropdown(true);
+                    setSelectedWatch(null);
+                    setVerificationResult(null);
                   }}
                   className="w-full bg-neutral-900 border border-white/10 rounded text-white p-2.5 focus:outline-none focus:border-luxury-gold transition"
                 />
               </div>
+
+              {/* Suggestions Dropdown */}
+              {showDropdown && suggestions.length > 0 && (
+                <div className="absolute left-0 right-0 mt-1 bg-neutral-900 border border-white/10 rounded-md shadow-2xl max-h-40 overflow-y-auto z-[60] scrollbar-thin">
+                  {suggestions.map(p => (
+                    <button
+                      key={p.id || p._id}
+                      type="button"
+                      onClick={() => {
+                        setWatchName(p.name);
+                        setSelectedWatch(p);
+                        setShowDropdown(false);
+                      }}
+                      className="w-full text-left px-3 py-2 text-[10px] text-gray-300 hover:bg-luxury-gold/10 hover:text-luxury-gold transition border-b border-white/5 last:border-0 cursor-pointer"
+                    >
+                      {p.name}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Watch Image Display Area (Visible as soon as watch name matches) */}
-            {matchedWatch && (
+            {/* Selected Watch Card */}
+            {selectedWatch && (
               <div className="bg-neutral-900/80 border border-luxury-gold/20 rounded p-3 flex items-center space-x-3 animate-scale-in">
                 <img 
-                  src={matchedWatch.image} 
-                  alt={matchedWatch.name} 
+                  src={selectedWatch.image} 
+                  alt={selectedWatch.name} 
                   className="w-14 h-14 object-cover rounded bg-black/40 border border-white/5"
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider">Watch Matched</p>
-                  <p className="text-white font-bold truncate text-[11px]">{matchedWatch.name}</p>
-                  <p className="text-gray-500 text-[9px]">{matchedWatch.specs?.movement || 'Automatic'}</p>
+                  <p className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider">Watch Selected</p>
+                  <p className="text-white font-bold truncate text-[11px]">{selectedWatch.name}</p>
+                  <p className="text-gray-500 text-[9px]">{selectedWatch.specs?.movement || 'Automatic'}</p>
                 </div>
               </div>
             )}
