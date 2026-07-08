@@ -1,6 +1,6 @@
 import express from 'express';
-import Coupon from '../models/Coupon.js';
-import { protect, adminOnly } from '../middleware/auth.js';
+import Coupon from '../_models/Coupon.js';
+import { protect, adminOnly } from '../_middleware/auth.js';
 
 const router = express.Router();
 

@@ -1,8 +1,131 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { logoutUser, cancelOrder, updateUserProfile } from '../store/slices/watchSlice';
+import { logoutUser, cancelOrder, updateUserProfile, requestExchangeRefund } from '../store/slices/watchSlice';
 import ProductCard from '../components/ProductCard';
 import { Heart, User, Package, LogOut } from 'lucide-react';
+
+const getStatusStepIndex = (status) => {
+  switch (status) {
+    case 'Pending':
+    case 'Paid':
+      return 0;
+    case 'Processing':
+      return 1;
+    case 'Shipped':
+      return 2;
+    case 'Delivered':
+    case 'Exchange/Refund Requested':
+      return 3;
+    default:
+      return -1;
+  }
+};
+
+const renderOrderTracker = (status) => {
+  const stepIndex = getStatusStepIndex(status);
+  
+  if (status === 'Cancelled') {
+    return (
+      <div 
+        className="py-2.5 px-3 rounded flex items-center justify-between text-[11px]"
+        style={{ backgroundColor: 'rgba(225, 6, 0, 0.05)', border: '1px solid rgba(225, 6, 0, 0.15)', color: '#e10600' }}
+      >
+        <span className="font-bold uppercase tracking-wider">Order Status: Cancelled</span>
+        <span className="text-[9px]" style={{ color: 'rgba(32, 30, 27, 0.6)' }}>Restored to inventory</span>
+      </div>
+    );
+  }
+
+  const steps = [
+    { label: 'Confirmed', desc: 'Order Placed' },
+    { label: 'Dispatched', desc: 'Preparation' },
+    { label: 'Shipped', desc: 'In Transit' },
+    { label: 'Delivered', desc: 'Arrived' }
+  ];
+
+  const progressPercent = stepIndex <= 0 ? 0 : (stepIndex / 3) * 100;
+
+  return (
+    <div className="py-4 border-b border-white/5 space-y-4">
+      <div className="flex justify-between items-center text-[9px] font-bold uppercase tracking-widest" style={{ color: 'rgba(32, 30, 27, 0.6)' }}>
+        <span>TRACKING PROGRESS</span>
+        <span style={{ color: '#c5a880' }}>
+          {status === 'Exchange/Refund Requested' ? 'DELIVERED (EXCHANGE/REFUND)' : status.toUpperCase()}
+        </span>
+      </div>
+      <div className="relative flex items-center justify-between w-full pt-1.5 pb-2">
+        {/* Progress Line */}
+        <div 
+          className="absolute left-8 right-8 top-[18px] h-[2px] -z-0" 
+          style={{ backgroundColor: 'rgba(32, 30, 27, 0.08)' }}
+        />
+        {progressPercent > 0 && (
+          <div 
+            className="absolute left-8 top-[18px] h-[2px] transition-all duration-500 -z-0" 
+            style={{ 
+              backgroundColor: '#c5a880', 
+              width: `calc(${progressPercent}% - 32px)` 
+            }}
+          />
+        )}
+
+        {steps.map((step, idx) => {
+          const isCompleted = idx < stepIndex;
+          const isActive = idx === stepIndex;
+          
+          let circleStyle = {
+            backgroundColor: '#ffffff',
+            color: 'rgba(32, 30, 27, 0.4)',
+            borderColor: 'rgba(32, 30, 27, 0.15)'
+          };
+          if (isCompleted) {
+            circleStyle = {
+              backgroundColor: '#c5a880',
+              color: '#ffffff',
+              borderColor: '#c5a880'
+            };
+          } else if (isActive) {
+            circleStyle = {
+              backgroundColor: '#ffffff',
+              color: '#c5a880',
+              borderColor: '#c5a880',
+              boxShadow: '0 0 10px rgba(197, 168, 128, 0.4)'
+            };
+          }
+
+          let labelColor = 'rgba(32, 30, 27, 0.4)';
+          if (isActive) labelColor = '#93744d';
+          else if (isCompleted) labelColor = '#201e1b';
+
+          return (
+            <div key={idx} className="flex flex-col items-center flex-1 text-center relative z-10">
+              {/* Step indicator circle */}
+              <div 
+                className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-mono font-bold transition-all duration-300 border"
+                style={circleStyle}
+              >
+                {idx + 1}
+              </div>
+              {/* Step Labels */}
+              <span 
+                className="text-[9px] font-bold uppercase tracking-wider mt-1.5 block"
+                style={{ color: labelColor }}
+              >
+                {step.label}
+              </span>
+              <span 
+                className="text-[8px] font-light block mt-0.5"
+                style={{ color: 'rgba(32, 30, 27, 0.5)' }}
+              >
+                {step.desc}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
 
 export default function Profile({ params, onPageChange }) {
   const dispatch = useDispatch();
@@ -86,15 +209,34 @@ export default function Profile({ params, onPageChange }) {
     setTimeout(() => setSettingsMessage(''), 5000);
   };
 
-  const handleCancelOrder = (orderId) => {
+  const handleCancelOrder = async (orderId) => {
     if (window.confirm(`Are you sure you want to cancel order ${orderId}?`)) {
-      const res = dispatch(cancelOrder(orderId));
-      if (res.success) {
+      const res = await dispatch(cancelOrder(orderId));
+      if (res && res.success) {
         alert('Order cancelled and stock restored successfully.');
       } else {
-        alert(res.message);
+        alert(res?.message || 'Failed to cancel order.');
       }
     }
+  };
+
+  const handleExchangeRefund = async (orderId) => {
+    if (window.confirm(`Are you sure you want to request an Exchange/Refund for order ${orderId}?`)) {
+      const res = await dispatch(requestExchangeRefund(orderId));
+      if (res && res.success) {
+        alert('Your Exchange/Refund request has been submitted successfully.');
+      } else {
+        alert(res?.message || 'Failed to submit Exchange/Refund request.');
+      }
+    }
+  };
+
+  const handleExchangeRefundClick = (order) => {
+    if (order.status === 'Shipped') {
+      alert('Exchange/Refund requests can only be made after the order has been delivered.');
+      return;
+    }
+    handleExchangeRefund(order.id);
   };
 
   const handleLogout = () => {
@@ -217,12 +359,14 @@ export default function Profile({ params, onPageChange }) {
                               ? 'border-red-500 bg-red-500/10 text-red-400'
                               : order.status === 'Shipped'
                               ? 'border-sky-500 bg-sky-500/10 text-sky-400'
+                              : order.status === 'Exchange/Refund Requested'
+                              ? 'border-purple-500 bg-purple-500/10 text-purple-400'
                               : 'border-yellow-500 bg-yellow-500/10 text-yellow-400'
                           }`}>
                             {order.status}
                           </span>
 
-                          {/* Cancellation Button */}
+                          {/* Cancellation Button (Before Dispatch: Pending, Paid, or Processing) */}
                           {(order.status === 'Pending' || order.status === 'Paid' || order.status === 'Processing') && (
                             <button
                               onClick={() => handleCancelOrder(order.id)}
@@ -231,8 +375,21 @@ export default function Profile({ params, onPageChange }) {
                               Cancel
                             </button>
                           )}
+
+                          {/* Exchange/Refund Button (After Dispatch: Shipped or Delivered) */}
+                          {(order.status === 'Shipped' || order.status === 'Delivered') && (
+                            <button
+                              onClick={() => handleExchangeRefundClick(order)}
+                              className="text-[9px] text-purple-400 hover:text-purple-300 font-bold uppercase border border-purple-500/20 hover:border-purple-500/50 px-2 py-1 rounded transition cursor-pointer bg-purple-500/5"
+                            >
+                              Exchange / Refund
+                            </button>
+                          )}
                         </div>
                       </div>
+
+                      {/* Delivery Status Tracker Progress Stepper */}
+                      {renderOrderTracker(order.status)}
 
                       {/* Items */}
                       <div className="space-y-3">

@@ -653,7 +653,6 @@ export const moderateReview = (productId, reviewId, status) => async (dispatch) 
   }
 };
 
-
 export const forgotPassword = (email) => async () => {
   try {
     const res = await fetch('/api/auth/forgot-password', {
@@ -681,8 +680,6 @@ export const resetPassword = (token, password) => async () => {
     return { success: false, message: 'Reset failed. Server error.' };
   }
 };
-
-
 
 export const createRazorpayOrder = (amount) => async () => {
   try {
@@ -725,7 +722,6 @@ export const verifyRazorpayPayment = (paymentData) => async (dispatch) => {
   }
 };
 
-
 export const fetchAnalytics = () => async (dispatch) => {
   try {
     const res = await fetch('/api/admin/analytics', {
@@ -739,6 +735,26 @@ export const fetchAnalytics = () => async (dispatch) => {
   } catch (error) {
     console.error('Failed to fetch analytics:', error);
     return null;
+  }
+};
+
+export const requestExchangeRefund = (orderId) => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/orders/${orderId}/exchange-refund`, {
+      method: 'PUT',
+      headers: getHeaders()
+    });
+    const data = await res.json();
+    if (data.success) {
+      dispatch(fetchOrders());
+      return { success: true };
+    } else {
+      return { success: false, message: data.message };
+    }
+  } catch (error) {
+    return { success: false, message: 'Failed to request Exchange/Refund. Server error.' };
+  }
+};
   }
 };
 

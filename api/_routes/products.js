@@ -1,7 +1,7 @@
 import express from 'express';
-import Product from '../models/Product.js';
-import Order from '../models/Order.js';
-import { protect, adminOnly } from '../middleware/auth.js';
+import Product from '../_models/Product.js';
+import Order from '../_models/Order.js';
+import { protect, adminOnly } from '../_middleware/auth.js';
 
 const router = express.Router();
 
@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
 // @desc    Create a product
 // @access  Private/Admin
 router.post('/', protect, adminOnly, async (req, res) => {
-  const { name, price, stock, category, gender, description, image, specs } = req.body;
+  const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization } = req.body;
 
   try {
     const product = new Product({
@@ -40,6 +40,9 @@ router.post('/', protect, adminOnly, async (req, res) => {
         waterResistance: specs?.waterResistance || '50m',
         glass: specs?.glass || 'Sapphire Crystal'
       },
+      customizable: customizable || false,
+      allowStrapCustomization: allowStrapCustomization !== undefined ? allowStrapCustomization : true,
+      allowCaseCustomization: allowCaseCustomization !== undefined ? allowCaseCustomization : true,
       reviews: []
     });
 
@@ -47,7 +50,7 @@ router.post('/', protect, adminOnly, async (req, res) => {
     res.status(201).json({ success: true, product: createdProduct });
   } catch (error) {
     console.error('Create product error:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    res.status(500).json({ success: false, message: error.message || 'Server error' });
   }
 });
 
@@ -55,7 +58,7 @@ router.post('/', protect, adminOnly, async (req, res) => {
 // @desc    Update a product
 // @access  Private/Admin
 router.put('/:id', protect, adminOnly, async (req, res) => {
-  const { name, price, stock, category, gender, description, image, specs } = req.body;
+  const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization } = req.body;
 
   try {
     const product = await Product.findById(req.params.id);
@@ -82,11 +85,15 @@ router.put('/:id', protect, adminOnly, async (req, res) => {
       };
     }
 
+    if (customizable !== undefined) product.customizable = customizable;
+    if (allowStrapCustomization !== undefined) product.allowStrapCustomization = allowStrapCustomization;
+    if (allowCaseCustomization !== undefined) product.allowCaseCustomization = allowCaseCustomization;
+
     const updatedProduct = await product.save();
     res.json({ success: true, product: updatedProduct });
   } catch (error) {
     console.error('Update product error:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    res.status(500).json({ success: false, message: error.message || 'Server error' });
   }
 });
 

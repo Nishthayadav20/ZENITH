@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser, setCurrencyAction, selectCurrentCurrency } from '../store/slices/watchSlice';
-import { ShoppingBag, Heart, Search, User, ShieldAlert, Menu, X, Star } from 'lucide-react';
+import { ShoppingBag, Heart, Search, User, ShieldAlert, Menu, X } from 'lucide-react';
+
 
 export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
   const dispatch = useDispatch();
@@ -77,6 +78,8 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
   const handleNavLinkClick = (link) => {
     if (link.filter) {
       onPageChange('shop', link.filter);
+    } else if (link.page === 'customization') {
+      onPageChange('customization', { reset: Date.now() });
     } else {
       onPageChange(link.page);
     }
@@ -95,9 +98,6 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
   }`;
 
   const textColorClass = "text-white hover:text-luxury-gold";
-
-  const starColor = "#ffffff";
-  const starTextClass = "text-white";
 
   return (
     <header className={headerClass}>
@@ -133,10 +133,18 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
           <div className="flex-1 md:flex-none flex justify-center items-center">
             <button 
               onClick={() => onPageChange('home')} 
-              className={`flex items-center space-x-2 transition duration-300 cursor-pointer ${textColorClass}`}
+              className="flex flex-col items-center gap-1 transition duration-300 cursor-pointer py-1"
             >
-              <Star className={`${starTextClass} animate-pulse`} size={28} fill={starColor} />
-              <span className="font-serif text-3xl lg:text-4xl font-black tracking-widest">KHRONIQ</span>
+              <img 
+                src="/assets/logo_icon.png" 
+                alt="KHRONIQ Logo" 
+                className="w-10 h-10 md:w-12 md:h-12 object-contain" 
+              />
+              <img 
+                src="/assets/logo_text.png" 
+                alt="KHRONIQ" 
+                className="h-4 md:h-5 object-contain" 
+              />
             </button>
           </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addToCart, selectCurrentCurrency, formatPrice as formatPriceUtil } from '../store/slices/watchSlice';
 import { Paintbrush, ShoppingBag, ChevronLeft, Check, Sparkles } from 'lucide-react';
@@ -85,7 +85,7 @@ function WatchPreview({ product, dialColor, finish, engraving }) {
 
           {/* Brand name */}
           <span
-            className="text-[9px] font-black tracking-[0.2em] uppercase mt-10"
+            className="font-cinzel text-[10px] font-bold tracking-[0.2em] uppercase mt-10"
             style={{ color: dialColor?.textDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)' }}
           >
             KHRONIQ
@@ -144,7 +144,7 @@ function WatchPreview({ product, dialColor, finish, engraving }) {
 }
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
-export default function Customization({ onPageChange }) {
+export default function Customization({ onPageChange, params }) {
   const dispatch = useDispatch();
   const products = useSelector(state => state.watch.products);
   const currentCurrency = useSelector(selectCurrentCurrency);
@@ -169,6 +169,13 @@ export default function Customization({ onPageChange }) {
 
   const options = selectedProduct ? buildOptions(selectedProduct) : null;
 
+  // Reset page back to customizable models selection when params.reset is received from Navbar
+  useEffect(() => {
+    if (params && params.reset) {
+      setSelectedProduct(null);
+    }
+  }, [params]);
+
   // Currency formatter
   const formatPrice = (usd) => formatPriceUtil(usd, currentCurrency);
 
@@ -176,8 +183,8 @@ export default function Customization({ onPageChange }) {
     setSelectedProduct(product);
     const opts = buildOptions(product);
     setDialColor(opts.dialColors[0] || null);
-    setStrapMaterial(opts.strapMaterials[0] || null);
-    setCaseFinish(opts.caseFinishes[0] || null);
+    setStrapMaterial(product.allowStrapCustomization !== false ? (opts.strapMaterials[0] || null) : (product.specs?.strap || 'Standard Strap'));
+    setCaseFinish(product.allowCaseCustomization !== false ? (opts.caseFinishes[0] || null) : (product.specs?.case || 'Standard Finish'));
     setEngraving('');
     setAddedToCart(false);
   };
@@ -300,7 +307,7 @@ export default function Customization({ onPageChange }) {
 
           {/* ── LEFT: Live Preview ── */}
           <div className="space-y-6 sticky top-28">
-            <div className="bg-[#0d0d0d] rounded-2xl border border-white/5 p-8 flex flex-col items-center gap-6">
+            <div className="dark-panel bg-[#0d0d0d] rounded-2xl border border-white/5 p-8 flex flex-col items-center gap-6">
               <WatchPreview
                 product={selectedProduct}
                 dialColor={dialColor}
@@ -309,22 +316,22 @@ export default function Customization({ onPageChange }) {
               />
               <div className="text-center space-y-1">
                 <p className="text-white font-bold text-lg">{selectedProduct.name}</p>
-                <p className="text-luxury-muted text-xs">{selectedProduct.category} · {selectedProduct.gender}</p>
+                <p className="text-gray-400 text-xs">{selectedProduct.category} · {selectedProduct.gender}</p>
                 <p className="text-luxury-gold font-black text-xl mt-2">{formatPrice(selectedProduct.price)}</p>
               </div>
             </div>
 
             {/* Summary card */}
-            <div className="bg-[#111111] rounded-xl border border-white/5 p-5 space-y-3 text-xs text-luxury-muted">
+            <div className="dark-panel bg-[#111111] rounded-xl border border-white/5 p-5 space-y-3 text-xs text-white/90">
               <p className="text-white font-bold text-[11px] uppercase tracking-widest mb-3">Your Configuration</p>
               {[
-                ['Dial Color',     dialColor?.label   || '—'],
-                ['Strap Material', strapMaterial      || '—'],
-                ['Case Finish',    caseFinish         || '—'],
-                ['Engraving',      engraving || 'None'],
-              ].map(([k, v]) => (
+                ['Dial Color',     dialColor?.label   || '—', true],
+                ['Strap Material', strapMaterial      || '—', selectedProduct.allowStrapCustomization !== false],
+                ['Case Finish',    caseFinish         || '—', selectedProduct.allowCaseCustomization !== false],
+                ['Engraving',      engraving || 'None',   options.engravingAllowed],
+              ].filter(([,, allowed]) => allowed).map(([k, v]) => (
                 <div key={k} className="flex justify-between">
-                  <span>{k}</span>
+                  <span className="text-gray-300">{k}</span>
                   <span className="text-white font-semibold">{v}</span>
                 </div>
               ))}
@@ -370,48 +377,52 @@ export default function Customization({ onPageChange }) {
             </div>
 
             {/* Strap Material */}
-            <div className="space-y-3">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-muted">
-                Strap Material — <span className="text-white">{strapMaterial}</span>
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {options.strapMaterials.map((mat) => (
-                  <button
-                    key={mat}
-                    onClick={() => setStrapMaterial(mat)}
-                    className={`px-3 py-2 text-xs font-bold rounded border transition-all cursor-pointer ${
-                      strapMaterial === mat
-                        ? 'border-luxury-gold bg-luxury-gold/10 text-luxury-gold'
-                        : 'border-white/10 text-luxury-muted hover:border-white/30 hover:text-white'
-                    }`}
-                  >
-                    {mat}
-                  </button>
-                ))}
+            {selectedProduct.allowStrapCustomization !== false && (
+              <div className="space-y-3">
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-muted">
+                  Strap Material — <span className="text-white">{strapMaterial}</span>
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {options.strapMaterials.map((mat) => (
+                    <button
+                      key={mat}
+                      onClick={() => setStrapMaterial(mat)}
+                      className={`px-3 py-2 text-xs font-bold rounded border transition-all cursor-pointer ${
+                        strapMaterial === mat
+                          ? 'border-luxury-gold bg-luxury-gold/10 text-luxury-gold'
+                          : 'border-white/10 text-luxury-muted hover:border-white/30 hover:text-white'
+                      }`}
+                    >
+                      {mat}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Case Finish */}
-            <div className="space-y-3">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-muted">
-                Case Finish — <span className="text-white">{caseFinish}</span>
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {options.caseFinishes.map((fin) => (
-                  <button
-                    key={fin}
-                    onClick={() => setCaseFinish(fin)}
-                    className={`px-3 py-2 text-xs font-bold rounded border transition-all cursor-pointer ${
-                      caseFinish === fin
-                        ? 'border-luxury-gold bg-luxury-gold/10 text-luxury-gold'
-                        : 'border-white/10 text-luxury-muted hover:border-white/30 hover:text-white'
-                    }`}
-                  >
-                    {fin}
-                  </button>
-                ))}
+            {selectedProduct.allowCaseCustomization !== false && (
+              <div className="space-y-3">
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-muted">
+                  Case Finish — <span className="text-white">{caseFinish}</span>
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {options.caseFinishes.map((fin) => (
+                    <button
+                      key={fin}
+                      onClick={() => setCaseFinish(fin)}
+                      className={`px-3 py-2 text-xs font-bold rounded border transition-all cursor-pointer ${
+                        caseFinish === fin
+                          ? 'border-luxury-gold bg-luxury-gold/10 text-luxury-gold'
+                          : 'border-white/10 text-luxury-muted hover:border-white/30 hover:text-white'
+                      }`}
+                    >
+                      {fin}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Engraving */}
             {options.engravingAllowed && (

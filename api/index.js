@@ -5,25 +5,24 @@ import cors from 'cors';
 
 
 // Import Models
-import Product from './models/Product.js';
-import User from './models/User.js';
-import Coupon from './models/Coupon.js';
-import BrandUpdate from './models/BrandUpdate.js';
+import Product from './_models/Product.js';
+import User from './_models/User.js';
+import Coupon from './_models/Coupon.js';
+import BrandUpdate from './_models/BrandUpdate.js';
 
 // Import Routes
-import authRoutes from './routes/auth.js';
-import productRoutes from './routes/products.js';
-import orderRoutes from './routes/orders.js';
-import couponRoutes from './routes/coupons.js';
-import cartRoutes from './routes/cart.js';
-import wishlistRoutes from './routes/wishlist.js';
-
-import brandRoutes from './routes/brands.js';
-import categoryRoutes from './routes/categories.js';
-import uploadRoutes from './routes/upload.js';
-import paymentRoutes from './routes/payments.js';
-import adminRoutes from './routes/admin.js';
-import brandUpdateRoutes from './routes/brandUpdates.js';
+import authRoutes from './_routes/auth.js';
+import productRoutes from './_routes/products.js';
+import orderRoutes from './_routes/orders.js';
+import couponRoutes from './_routes/coupons.js';
+import cartRoutes from './_routes/cart.js';
+import wishlistRoutes from './_routes/wishlist.js';
+import brandRoutes from './_routes/brands.js';
+import categoryRoutes from './_routes/categories.js';
+import uploadRoutes from './_routes/upload.js';
+import paymentRoutes from './_routes/payments.js';
+import adminRoutes from './_routes/admin.js';
+import brandUpdateRoutes from './_routes/brandUpdates.js';
 
 
 // dotenv.config();
@@ -107,6 +106,19 @@ const seedDatabase = async () => {
   try {
     // Migration: Update existing products with category 'Chronomaster' to 'Khronomaster'
     await Product.updateMany({ category: 'Chronomaster' }, { $set: { category: 'Khronomaster' } });
+
+    // Migration: Ensure all current products default to customizable: true on startup
+    const countCustomizable = await Product.countDocuments({ customizable: true });
+    if (countCustomizable === 0) {
+      await Product.updateMany({}, { 
+        $set: { 
+          customizable: true,
+          allowStrapCustomization: true,
+          allowCaseCustomization: true
+        } 
+      });
+      console.log('Migrated existing products to customizable: true');
+    }
 
     // 1. Seed Products
     const productCount = await Product.countDocuments();

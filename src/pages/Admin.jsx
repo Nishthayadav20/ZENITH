@@ -46,7 +46,10 @@ export default function Admin({ onPageChange }) {
       strap: 'Leather strap',
       waterResistance: '50m',
       glass: 'Sapphire Crystal'
-    }
+    },
+    customizable: true,
+    allowStrapCustomization: true,
+    allowCaseCustomization: true
   });
 
   // Edit Product Form State
@@ -284,36 +287,48 @@ const handleImageUpload = async (e) => {
 
 
   // --- ACTIONS HANDLERS ---
-  const handleCreateProduct = (e) => {
+  const handleCreateProduct = async (e) => {
     e.preventDefault();
     if (!newProduct.name || !newProduct.price || !newProduct.stock) {
       alert('Please fill out Name, Price and Stock.');
       return;
     }
-    const res = dispatch(addProduct(newProduct));
-    if (res.success) {
+    const res = await dispatch(addProduct(newProduct));
+    if (res && res.success) {
       alert('Product created successfully!');
       setShowAddForm(false);
       setNewProduct({
         name: '', price: '', stock: '', category: 'Khronomaster', description: '',
         image: '/assets/media__1782899491225.jpg',
-        specs: { movement: 'Automatic', case: '40mm', strap: 'Leather', waterResistance: '50m', glass: 'Sapphire' }
+        specs: { movement: 'Automatic', case: '40mm', strap: 'Leather', waterResistance: '50m', glass: 'Sapphire' },
+        customizable: true,
+        allowStrapCustomization: true,
+        allowCaseCustomization: true
       });
+    } else {
+      alert(res?.message || 'Failed to create product.');
     }
   };
 
   const handleEditProductInit = (product) => {
     setEditingId(product.id);
-    setEditForm({ ...product });
+    setEditForm({ 
+      ...product, 
+      customizable: product.customizable ?? false,
+      allowStrapCustomization: product.allowStrapCustomization ?? true,
+      allowCaseCustomization: product.allowCaseCustomization ?? true
+    });
   };
 
-  const handleUpdateProduct = (e) => {
+  const handleUpdateProduct = async (e) => {
     e.preventDefault();
-    const res = dispatch(editProduct(editingId, editForm));
-    if (res.success) {
+    const res = await dispatch(editProduct(editingId, editForm));
+    if (res && res.success) {
       alert('Product edited successfully!');
       setEditingId(null);
       setEditForm(null);
+    } else {
+      alert(res?.message || 'Failed to update product.');
     }
   };
 
@@ -323,17 +338,17 @@ const handleImageUpload = async (e) => {
     }
   };
 
-  const handleCreateCoupon = (e) => {
+  const handleCreateCoupon = async (e) => {
     e.preventDefault();
     if (!newCouponCode || !newCouponDiscount) return;
-    const res = dispatch(addCoupon(newCouponCode, newCouponDiscount, newCouponDesc));
-    if (res.success) {
+    const res = await dispatch(addCoupon(newCouponCode, newCouponDiscount, newCouponDesc));
+    if (res && res.success) {
       alert('Coupon code activated!');
       setNewCouponCode('');
       setNewCouponDiscount('');
       setNewCouponDesc('');
     } else {
-      alert(res.message);
+      alert(res?.message || 'Failed to add coupon.');
     }
   };
 
@@ -629,6 +644,66 @@ const handleImageUpload = async (e) => {
                   />
                 </div>
 
+                {/* Customizable Toggle for New Product */}
+                <div className="md:col-span-2 flex flex-col bg-luxury-dark border border-white/10 rounded p-3 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-white">Customizable</p>
+                      <p className="text-[9px] text-gray-500 mt-0.5">Show in Bespoke Atelier / Customization tab</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const val = !newProduct.customizable;
+                        setNewProduct({ 
+                          ...newProduct, 
+                          customizable: val,
+                          allowStrapCustomization: val ? (newProduct.allowStrapCustomization ?? true) : false,
+                          allowCaseCustomization: val ? (newProduct.allowCaseCustomization ?? true) : false
+                        });
+                      }}
+                      className={`w-12 h-6 rounded-full transition-all duration-300 cursor-pointer relative ${
+                        newProduct.customizable ? 'bg-luxury-gold' : 'bg-white/10'
+                      }`}
+                    >
+                      <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
+                        newProduct.customizable ? 'left-6' : 'left-0.5'
+                      }`} />
+                    </button>
+                  </div>
+
+                  {/* Checkboxes shown ONLY when Customizable is checked */}
+                  {newProduct.customizable && (
+                    <div className="pt-2 border-t border-white/5 space-y-2">
+                      <p className="text-[9px] font-bold uppercase tracking-widest text-luxury-gold mb-1">Tailoring Capabilities</p>
+                      <div className="flex items-center space-x-2.5">
+                        <input
+                          type="checkbox"
+                          id="newAllowStrapCustomization"
+                          checked={newProduct.allowStrapCustomization ?? true}
+                          onChange={(e) => setNewProduct({ ...newProduct, allowStrapCustomization: e.target.checked })}
+                          className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                        />
+                        <label htmlFor="newAllowStrapCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                          Allow Strap Customization
+                        </label>
+                      </div>
+                      <div className="flex items-center space-x-2.5">
+                        <input
+                          type="checkbox"
+                          id="newAllowCaseCustomization"
+                          checked={newProduct.allowCaseCustomization ?? true}
+                          onChange={(e) => setNewProduct({ ...newProduct, allowCaseCustomization: e.target.checked })}
+                          className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                        />
+                        <label htmlFor="newAllowCaseCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                          Allow Case Finish Customization
+                        </label>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 <button
                   type="submit"
                   className="md:col-span-2 py-3 bg-luxury-gold text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold-dark transition"
@@ -723,22 +798,63 @@ const handleImageUpload = async (e) => {
                   </div>
 
                   {/* Customizable Toggle */}
-                  <div className="flex items-center justify-between bg-luxury-dark border border-white/10 rounded p-3">
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-white">Customizable</p>
-                      <p className="text-[9px] text-gray-500 mt-0.5">Show in Bespoke Atelier / Customization tab</p>
+                  <div className="flex flex-col bg-luxury-dark border border-white/10 rounded p-3 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-white">Customizable</p>
+                        <p className="text-[9px] text-gray-500 mt-0.5">Show in Bespoke Atelier / Customization tab</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const val = !editForm.customizable;
+                          setEditForm({ 
+                            ...editForm, 
+                            customizable: val,
+                            allowStrapCustomization: val ? (editForm.allowStrapCustomization ?? true) : false,
+                            allowCaseCustomization: val ? (editForm.allowCaseCustomization ?? true) : false
+                          });
+                        }}
+                        className={`w-12 h-6 rounded-full transition-all duration-300 cursor-pointer relative ${
+                          editForm.customizable ? 'bg-luxury-gold' : 'bg-white/10'
+                        }`}
+                      >
+                        <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
+                          editForm.customizable ? 'left-6' : 'left-0.5'
+                        }`} />
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setEditForm({ ...editForm, customizable: !editForm.customizable })}
-                      className={`w-12 h-6 rounded-full transition-all duration-300 cursor-pointer relative ${
-                        editForm.customizable ? 'bg-luxury-gold' : 'bg-white/10'
-                      }`}
-                    >
-                      <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
-                        editForm.customizable ? 'left-6' : 'left-0.5'
-                      }`} />
-                    </button>
+
+                    {/* Checkboxes shown ONLY when Customizable is checked */}
+                    {editForm.customizable && (
+                      <div className="pt-2 border-t border-white/5 space-y-2">
+                        <p className="text-[9px] font-bold uppercase tracking-widest text-luxury-gold mb-1">Tailoring Capabilities</p>
+                        <div className="flex items-center space-x-2.5">
+                          <input
+                            type="checkbox"
+                            id="allowStrapCustomization"
+                            checked={editForm.allowStrapCustomization ?? true}
+                            onChange={(e) => setEditForm({ ...editForm, allowStrapCustomization: e.target.checked })}
+                            className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                          />
+                          <label htmlFor="allowStrapCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                            Allow Strap Customization
+                          </label>
+                        </div>
+                        <div className="flex items-center space-x-2.5">
+                          <input
+                            type="checkbox"
+                            id="allowCaseCustomization"
+                            checked={editForm.allowCaseCustomization ?? true}
+                            onChange={(e) => setEditForm({ ...editForm, allowCaseCustomization: e.target.checked })}
+                            className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                          />
+                          <label htmlFor="allowCaseCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                            Allow Case Finish Customization
+                          </label>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 pt-2">
@@ -864,6 +980,8 @@ const handleImageUpload = async (e) => {
                               ? 'border-red-500 text-red-400'
                               : o.status === 'Shipped'
                               ? 'border-sky-500 text-sky-400'
+                              : o.status === 'Exchange/Refund Requested'
+                              ? 'border-purple-500 text-purple-450'
                               : 'border-yellow-500 text-yellow-450'
                           }`}
                         >
@@ -872,6 +990,7 @@ const handleImageUpload = async (e) => {
                           <option value="Shipped">Shipped</option>
                           <option value="Delivered">Delivered</option>
                           <option value="Cancelled">Cancelled</option>
+                          <option value="Exchange/Refund Requested">Exchange/Refund Requested</option>
                         </select>
                       </td>
                     </tr>
