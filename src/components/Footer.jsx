@@ -471,6 +471,24 @@ export default function Footer({ onPageChange }) {
         </div>
       </div>
 
+      {/* ══════════════════════════════════════════════════════
+          GIANT BRANDING BANNER (TISSOT STYLE)
+      ══════════════════════════════════════════════════════ */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 pt-2">
+        <div className="flex items-center justify-center space-x-6 sm:space-x-8 md:space-x-12 select-none pointer-events-none opacity-90">
+          <img 
+            src="/assets/logo_icon.png" 
+            alt="KHRONIQ Logo" 
+            className="h-16 sm:h-28 lg:h-40 object-contain filter drop-shadow-[0_0_15px_rgba(197,168,128,0.2)]" 
+          />
+          <img 
+            src="/assets/logo_text.png" 
+            alt="KHRONIQ" 
+            className="h-14 sm:h-24 lg:h-36 object-contain filter drop-shadow-[0_0_15px_rgba(197,168,128,0.2)]" 
+          />
+        </div>
+      </div>
+
       {/* thin gold bottom line */}
       <div style={{
         height:'1.5px',

@@ -10,8 +10,9 @@ import {
   useInView,
   animate,
   useScroll,
+  AnimatePresence,
 } from 'framer-motion';
-import { Star, Award, ArrowRight, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Star, Award, ArrowRight, ChevronDown, ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
 
 /* ─────────────────────────────────────────────────────────────────────
    ANIMATED COUNTER
@@ -362,6 +363,189 @@ function CollectionCard({ col, idx, onPageChange }) {
 /* ═══════════════════════════════════════════════════════════════════════
    HOME PAGE
 ═══════════════════════════════════════════════════════════════════════ */
+/* ─────────────────────────────────────────────────────────────────────
+   LIFESTYLE SHOWCASE SLIDER
+   ───────────────────────────────────────────────────────────────────── */
+function LifestyleShowcaseSlider({ products, onPageChange }) {
+  const slides = [
+    {
+      name: 'CRESCENT - BROWN',
+      fullName: 'Khroniq Crescent Brown',
+      lifestyleImg: '/assets/crescent_lifestyle.png',
+      productImg: '/assets/crescent_product.png',
+    },
+    {
+      name: 'GENTLEMAN - BLUE',
+      fullName: 'Khroniq Gentleman Blue',
+      lifestyleImg: '/assets/gentleman_lifestyle.png',
+      productImg: '/assets/gentleman_product.png',
+    },
+    {
+      name: 'AUREX',
+      fullName: 'Khroniq Aurex Green',
+      lifestyleImg: '/assets/aurex_lifestyle.png',
+      productImg: '/assets/aurex_product.png',
+    }
+  ];
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  // Auto-play timer
+  useEffect(() => {
+    if (!isPlaying) return;
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [isPlaying, slides.length]);
+
+  const handlePrev = () => {
+    setIsPlaying(false);
+    setActiveIndex((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  const handleNext = () => {
+    setIsPlaying(false);
+    setActiveIndex((prev) => (prev + 1) % slides.length);
+  };
+
+  const togglePlay = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  const currentSlide = slides[activeIndex];
+
+  const handleDetailsClick = () => {
+    const matched = products.find(p => p.name === currentSlide.fullName);
+    if (matched) {
+      onPageChange('product-detail', { id: matched.id || matched._id });
+    } else {
+      onPageChange('shop');
+    }
+  };
+
+  return (
+    <section className="w-full bg-white border-t border-luxury-text/8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[550px] lg:h-[650px] overflow-hidden">
+        
+        {/* Left Column: Lifestyle Image Showcase */}
+        <div className="relative overflow-hidden h-[450px] lg:h-full bg-neutral-900">
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={`lifestyle-${activeIndex}`}
+              src={currentSlide.lifestyleImg}
+              alt={currentSlide.name}
+              initial={{ opacity: 0, scale: 1.04 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </AnimatePresence>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent z-[1]" />
+        </div>
+
+        {/* Right Column: Split Product Showcase & Controls */}
+        <div className="flex flex-col h-[550px] lg:h-full">
+          
+          {/* Top Half: Black Product Display */}
+          <div className="relative bg-black flex-1 flex items-center justify-center overflow-hidden min-h-[300px]">
+            <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]" />
+            
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`product-container-${activeIndex}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute inset-0 flex items-center justify-center p-8"
+              >
+                <motion.img
+                  src={currentSlide.productImg}
+                  alt={currentSlide.name}
+                  animate={isPlaying ? {
+                    y: [0, -6, 0],
+                    rotate: [0, 1.2, -1.2, 0]
+                  } : {
+                    y: 0,
+                    rotate: 0
+                  }}
+                  transition={{
+                    y: { repeat: Infinity, duration: 6, ease: "easeInOut" },
+                    rotate: { repeat: Infinity, duration: 12, ease: "easeInOut" }
+                  }}
+                  className="max-w-[65%] max-h-[90%] object-contain filter drop-shadow-[0_15px_30px_rgba(255,255,255,0.18)]"
+                />
+              </motion.div>
+            </AnimatePresence>
+
+            <button
+              onClick={togglePlay}
+              className="absolute bottom-6 right-6 z-20 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white flex items-center justify-center hover:bg-white hover:text-black transition duration-300 shadow-md cursor-pointer"
+              aria-label={isPlaying ? "Pause autoplay" : "Play autoplay"}
+            >
+              {isPlaying ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" className="ml-0.5" />}
+            </button>
+          </div>
+
+          {/* Bottom Half: Details & Navigation */}
+          <div className="p-8 lg:p-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 bg-white border-t border-black/5 flex-shrink-0">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-black/95 rounded-sm p-1.5 flex items-center justify-center flex-shrink-0 shadow-sm">
+                <img 
+                  src={currentSlide.productImg} 
+                  alt={currentSlide.name} 
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div className="space-y-0.5">
+                <h3 className="font-serif text-lg font-bold text-black tracking-widest uppercase">
+                  {currentSlide.name}
+                </h3>
+                <button
+                  onClick={handleDetailsClick}
+                  className="text-xs font-bold text-luxury-gold-dark hover:text-luxury-gold transition duration-200 underline underline-offset-4 tracking-widest uppercase cursor-pointer"
+                >
+                  Details
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={handlePrev}
+                className={`w-12 h-12 flex items-center justify-center border border-black/15 hover:border-black transition duration-300 font-bold cursor-pointer rounded-sm ${
+                  activeIndex === 2 ? 'bg-white text-black' : 'bg-black text-white hover:bg-neutral-800'
+                }`}
+                aria-label="Previous slide"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <span className="text-xs font-black tracking-[0.25em] text-neutral-800 min-w-[45px] text-center">
+                {activeIndex + 1} / {slides.length}
+              </span>
+              <button 
+                onClick={handleNext}
+                className={`w-12 h-12 flex items-center justify-center border border-black/15 hover:border-black transition duration-300 font-bold cursor-pointer rounded-sm ${
+                  activeIndex === 2 ? 'bg-black text-white hover:bg-neutral-800' : 'bg-white text-black'
+                }`}
+                aria-label="Next slide"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
 export default function Home({ onPageChange }) {
   const products = useSelector(state => state.watch.products);
 
@@ -557,7 +741,7 @@ export default function Home({ onPageChange }) {
             {/* Heading — both lines same depth */}
             <motion.div initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.85, delay: 0.16, ease: [0.22, 1, 0.36, 1] }} className="select-none cursor-default">
               <div className="font-cinzel font-bold text-4xl sm:text-5xl md:text-7xl tracking-wider text-white uppercase leading-tight">
-                Time to Reach
+                Born from the
               </div>
               <div className="font-cinzel font-bold text-4xl sm:text-5xl md:text-7xl tracking-wider uppercase leading-tight mt-1">
                 <span style={{
@@ -565,7 +749,7 @@ export default function Home({ onPageChange }) {
                   WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
                   filter: 'drop-shadow(0 0 15px rgba(4,120,87,0.35)) drop-shadow(0 0 35px rgba(2,44,34,0.15))',
                   display: 'inline-block',
-                }}>Your Star</span>
+                }}>movement of Time</span>
               </div>
             </motion.div>
 
@@ -783,7 +967,7 @@ export default function Home({ onPageChange }) {
         >
           {[...Array(8)].map((_, i) => (
             <React.Fragment key={i}>
-              <span style={{ color: '#ffffff', fontFamily: 'Georgia, serif', letterSpacing: '0.18em' }} className="text-2xl sm:text-3xl font-bold uppercase mx-10 whitespace-nowrap shrink-0">
+              <span style={{ color: '#ffffff', fontFamily: 'Georgia, serif', letterSpacing: '0.18em' }} className="text-sm sm:text-base font-bold uppercase mx-10 whitespace-nowrap shrink-0">
                 Born From The Movement Of Time
               </span>
               <LogoMark className="h-9 w-9 mx-4 shrink-0 opacity-95" />
@@ -791,6 +975,9 @@ export default function Home({ onPageChange }) {
           ))}
         </motion.div>
       </div>
+
+      {/* ══════════ LIFESTYLE SHOWCASE SLIDER ══════════ */}
+      <LifestyleShowcaseSlider products={products} onPageChange={onPageChange} />
 
       {/* ══════════ FEATURED PRODUCTS ══════════ */}
       <div className="space-y-10 pb-12">

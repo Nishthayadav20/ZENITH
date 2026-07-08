@@ -44,10 +44,10 @@ body {
   overflow-x: hidden;
 }
 
-/* Custom Scrollbar - Completely Hidden / Transparent */
+/* Custom Scrollbar */
 html {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: var(--color-luxury-gold) transparent; /* Firefox */
 }
 
 ::-webkit-scrollbar {

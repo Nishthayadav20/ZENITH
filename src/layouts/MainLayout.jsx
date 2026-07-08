@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import CartDrawer from '../components/CartDrawer';
+import ScrollToTop from '../components/ScrollToTop';
 
 export default function MainLayout({ children, onPageChange, currentPage }) {
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
@@ -29,6 +30,9 @@ export default function MainLayout({ children, onPageChange, currentPage }) {
 
       {/* Footer */}
       <Footer onPageChange={onPageChange} />
+
+      {/* Scroll to Top Scroller */}
+      <ScrollToTop />
     </div>
   );
 }

@@ -136,7 +136,7 @@ const seedDatabase = async () => {
 
     // 1. Seed Products
     const productCount = await Product.countDocuments();
-    if (productCount < 8) {
+    if (productCount < 11) {
       const initialProducts = [
         {
           name: 'Khroniq Heritage Rose Gold',
@@ -288,6 +288,60 @@ const seedDatabase = async () => {
             strap: 'Black Rubber Strap',
             waterResistance: '100m (10 ATM)',
             glass: 'Sapphire Crystal'
+          },
+          reviews: []
+        },
+        {
+          name: 'Khroniq Crescent Brown',
+          image: '/assets/crescent_product.png',
+          brand: 'KHRONIQ',
+          price: 3200,
+          stock: 6,
+          category: 'Heritage',
+          gender: 'men',
+          description: 'An elite timekeeping masterpiece featuring a warm rose gold case, intricate multi-dial chronograph display, and a textured brown leather strap. Blending classic styling with robust mechanics.',
+          specs: {
+            movement: 'Automatic Chronograph',
+            case: 'Rose Gold Steel (42mm)',
+            strap: 'Brown Alligator Leather',
+            waterResistance: '100m (10 ATM)',
+            glass: 'Scratch-Resistant Sapphire'
+          },
+          reviews: []
+        },
+        {
+          name: 'Khroniq Gentleman Blue',
+          image: '/assets/gentleman_product.png',
+          brand: 'KHRONIQ',
+          price: 4100,
+          stock: 7,
+          category: 'Defy',
+          gender: 'men',
+          description: 'A high-end skeleton watch displaying mechanical gears inside a polished steel case, matched with a luxurious deep blue textured leather strap. A perfect statement of engineering art.',
+          specs: {
+            movement: 'Skeleton Automatic Movement',
+            case: 'Brushed Steel (41mm)',
+            strap: 'Blue Alligator Leather',
+            waterResistance: '100m (10 ATM)',
+            glass: 'Double Anti-Reflective Sapphire'
+          },
+          reviews: []
+        },
+        {
+          name: 'Khroniq Aurex Green',
+          image: '/assets/aurex_product.png',
+          brand: 'KHRONIQ',
+          price: 4500,
+          stock: 8,
+          category: 'Khronomaster',
+          gender: 'men',
+          description: 'A luxury steel bracelet timepiece presenting an elegant deep emerald green textured dial, framed within a distinctive octagonal bezel. Crafted for the vanguard of modern design.',
+          specs: {
+            movement: 'High-Frequency Automatic',
+            case: 'Integrated Stainless Steel (40mm)',
+            strap: 'Brushed Steel Link Bracelet',
+            waterResistance: '100m (10 ATM)',
+            glass: 'Domed Sapphire Crystal'
           },
           reviews: []
         }
