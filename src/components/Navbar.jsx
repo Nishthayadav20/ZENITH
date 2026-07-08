@@ -90,7 +90,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
   const headerClass = `${
     isHome ? 'fixed' : 'sticky'
   } top-0 left-0 right-0 z-50 transition-all duration-300 transform ${
-    visible ? 'translate-y-0' : '-translate-y-full'
+    visible ? 'translate-y-0' : 'translate-y-0 md:-translate-y-full'
   } ${
     isHome 
       ? (scrolled ? 'bg-black/95 backdrop-blur-md shadow-md' : 'bg-transparent')

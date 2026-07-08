@@ -305,3 +305,21 @@ input:focus, select:focus, textarea:focus {
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
+/* Prevent automatic zoom-in on mobile text inputs and establish robust overflow-x constraints */
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+html, body, #root {
+  overflow-x: hidden;
+  max-width: 100%;
+  position: relative;
+}
+
