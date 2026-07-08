@@ -18,6 +18,14 @@ import {
   CheckCircle2, LogOut, Newspaper
 } from 'lucide-react';
 
+const PRESET_STRAPS = [
+  { name: 'Tan Leather', image: '/assets/strap_leather_tan.jpg' },
+  { name: 'Diamond Silver Link', image: '/assets/strap_silver_diamond.jpg' },
+  { name: 'Classic Gold Chain', image: '/assets/strap_gold_chain.jpg' },
+  { name: 'Forest Green Rubber', image: '/assets/strap_rubber_green.jpg' },
+  { name: 'Brushed Steel Link', image: '/assets/strap_steel_link.jpg' }
+];
+
 export default function Admin({ onPageChange }) {
   const dispatch = useDispatch();
   const products = useSelector(state => state.watch.products);
@@ -662,7 +670,63 @@ export default function Admin({ onPageChange }) {
                           </label>
                         </div>
                         {newProduct.allowStrapCustomization && (
-                          <div className="pl-6 space-y-2 border-l border-white/10 my-2">
+                          <div className="pl-6 space-y-3 border-l border-white/10 my-2">
+                            {/* Preset Dropdown */}
+                            <div className="space-y-1">
+                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Preset Straps Catalog</label>
+                              <select
+                                onChange={(e) => {
+                                  const selected = PRESET_STRAPS.find(s => s.name === e.target.value);
+                                  if (selected) {
+                                    setNewProduct({
+                                      ...newProduct,
+                                      customizationOptions: {
+                                        ...newProduct.customizationOptions,
+                                        customStrapName: selected.name,
+                                        customStrapImage: selected.image
+                                      }
+                                    });
+                                  }
+                                }}
+                                className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
+                              >
+                                <option value="">-- Or Choose Already Uploaded Strap --</option>
+                                {PRESET_STRAPS.map(s => (
+                                  <option key={s.name} value={s.name}>{s.name}</option>
+                                ))}
+                              </select>
+                            </div>
+
+                            {/* Preset Straps Clickable List */}
+                            <div className="space-y-1">
+                              <label className="text-[7px] text-gray-500 font-semibold uppercase tracking-wider block font-sans">Present Straps (Click to Select)</label>
+                              <div className="flex gap-2 overflow-x-auto pb-1 max-w-full scrollbar-thin">
+                                {PRESET_STRAPS.map(s => (
+                                  <button
+                                    key={s.name}
+                                    type="button"
+                                    onClick={() => setNewProduct({
+                                      ...newProduct,
+                                      customizationOptions: {
+                                        ...newProduct.customizationOptions,
+                                        customStrapName: s.name,
+                                        customStrapImage: s.image
+                                      }
+                                    })}
+                                    className={`flex items-center space-x-1.5 p-1 rounded border text-[9px] font-medium transition cursor-pointer flex-shrink-0 ${
+                                      newProduct.customizationOptions?.customStrapName === s.name
+                                        ? 'border-luxury-gold text-luxury-gold bg-luxury-gold/5'
+                                        : 'border-white/5 text-gray-400 hover:border-white/20'
+                                    }`}
+                                  >
+                                    <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded" />
+                                    <span>{s.name}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Custom Name input */}
                             <div className="space-y-1">
                               <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Custom Strap Name</label>
                               <input
@@ -679,8 +743,10 @@ export default function Admin({ onPageChange }) {
                                 className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
                               />
                             </div>
+
+                            {/* Image Upload for new straps */}
                             <div className="space-y-1">
-                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Strap Image (Upload from Computer)</label>
+                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Upload Image for New Straps</label>
                               <input
                                 type="file"
                                 accept="image/*"
@@ -688,13 +754,18 @@ export default function Admin({ onPageChange }) {
                                 className="text-[10px] text-gray-400 file:mr-3 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20 cursor-pointer"
                               />
                               {newProduct.customizationOptions?.customStrapImage && (
-                                <div className="mt-1 flex items-center space-x-2">
+                                <div className="mt-1.5 flex items-center space-x-2 bg-black/20 p-1.5 rounded border border-white/5">
                                   <img
                                     src={newProduct.customizationOptions.customStrapImage}
                                     alt="Strap Preview"
-                                    className="w-8 h-8 object-cover rounded border border-white/10"
+                                    className="w-10 h-10 object-contain rounded border border-white/10 bg-luxury-dark/40"
                                   />
-                                  <span className="text-[8px] text-emerald-500 font-semibold">✓ Image Selected</span>
+                                  <div>
+                                    <p className="text-[9px] text-emerald-500 font-bold uppercase tracking-wider">Strap Selected</p>
+                                    <p className="text-[8px] text-gray-400 truncate max-w-[200px]">
+                                      {newProduct.customizationOptions.customStrapName || 'Unnamed'}
+                                    </p>
+                                  </div>
                                 </div>
                               )}
                             </div>
@@ -900,7 +971,63 @@ export default function Admin({ onPageChange }) {
                             </label>
                           </div>
                           {editForm.allowStrapCustomization && (
-                            <div className="pl-6 space-y-2 border-l border-white/10 my-2">
+                            <div className="pl-6 space-y-3 border-l border-white/10 my-2">
+                              {/* Preset Dropdown */}
+                              <div className="space-y-1">
+                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Preset Straps Catalog</label>
+                                <select
+                                  onChange={(e) => {
+                                    const selected = PRESET_STRAPS.find(s => s.name === e.target.value);
+                                    if (selected) {
+                                      setEditForm({
+                                        ...editForm,
+                                        customizationOptions: {
+                                          ...editForm.customizationOptions,
+                                          customStrapName: selected.name,
+                                          customStrapImage: selected.image
+                                        }
+                                      });
+                                    }
+                                  }}
+                                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
+                                >
+                                  <option value="">-- Or Choose Already Uploaded Strap --</option>
+                                  {PRESET_STRAPS.map(s => (
+                                    <option key={s.name} value={s.name}>{s.name}</option>
+                                  ))}
+                                </select>
+                              </div>
+
+                              {/* Preset Straps Clickable List */}
+                              <div className="space-y-1">
+                                <label className="text-[7px] text-gray-500 font-semibold uppercase tracking-wider block font-sans">Present Straps (Click to Select)</label>
+                                <div className="flex gap-2 overflow-x-auto pb-1 max-w-full scrollbar-thin">
+                                  {PRESET_STRAPS.map(s => (
+                                    <button
+                                      key={s.name}
+                                      type="button"
+                                      onClick={() => setEditForm({
+                                        ...editForm,
+                                        customizationOptions: {
+                                          ...editForm.customizationOptions,
+                                          customStrapName: s.name,
+                                          customStrapImage: s.image
+                                        }
+                                      })}
+                                      className={`flex items-center space-x-1.5 p-1 rounded border text-[9px] font-medium transition cursor-pointer flex-shrink-0 ${
+                                        editForm.customizationOptions?.customStrapName === s.name
+                                          ? 'border-luxury-gold text-luxury-gold bg-luxury-gold/5'
+                                          : 'border-white/5 text-gray-400 hover:border-white/20'
+                                      }`}
+                                    >
+                                      <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded" />
+                                      <span>{s.name}</span>
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* Custom Name input */}
                               <div className="space-y-1">
                                 <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Custom Strap Name</label>
                                 <input
@@ -917,8 +1044,10 @@ export default function Admin({ onPageChange }) {
                                   className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
                                 />
                               </div>
+
+                              {/* Image Upload for new straps */}
                               <div className="space-y-1">
-                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Strap Image (Upload from Computer)</label>
+                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Upload Image for New Straps</label>
                                 <input
                                   type="file"
                                   accept="image/*"
@@ -926,13 +1055,18 @@ export default function Admin({ onPageChange }) {
                                   className="text-[10px] text-gray-400 file:mr-3 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20 cursor-pointer"
                                 />
                                 {editForm.customizationOptions?.customStrapImage && (
-                                  <div className="mt-1 flex items-center space-x-2">
+                                  <div className="mt-1.5 flex items-center space-x-2 bg-black/20 p-1.5 rounded border border-white/5">
                                     <img
                                       src={editForm.customizationOptions.customStrapImage}
                                       alt="Strap Preview"
-                                      className="w-8 h-8 object-cover rounded border border-white/10"
+                                      className="w-10 h-10 object-contain rounded border border-white/10 bg-luxury-dark/40"
                                     />
-                                    <span className="text-[8px] text-emerald-500 font-semibold">✓ Image Selected</span>
+                                    <div>
+                                      <p className="text-[9px] text-emerald-500 font-bold uppercase tracking-wider">Strap Selected</p>
+                                      <p className="text-[8px] text-gray-400 truncate max-w-[200px]">
+                                        {editForm.customizationOptions.customStrapName || 'Unnamed'}
+                                      </p>
+                                    </div>
                                   </div>
                                 )}
                               </div>

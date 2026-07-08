@@ -14,7 +14,19 @@ const FALLBACK_DIAL_COLORS = [
   { label: 'Crimson Red',    value: '#6b1515', textDark: false },
 ];
 
-const FALLBACK_STRAPS = ['Alligator Leather', 'Steel Bracelet', 'Rubber Sport', 'Satin Fabric', 'Titanium Mesh'];
+const STRAP_IMAGES = {
+  'Tan Leather': '/assets/strap_leather_tan.jpg',
+  'Diamond Silver Link': '/assets/strap_silver_diamond.jpg',
+  'Classic Gold Chain': '/assets/strap_gold_chain.jpg',
+  'Forest Green Rubber': '/assets/strap_rubber_green.jpg',
+  'Brushed Steel Link': '/assets/strap_steel_link.jpg',
+  'Alligator Leather': '/assets/strap_leather_tan.jpg',
+  'Steel Bracelet': '/assets/strap_steel_link.jpg',
+  'Rubber Sport': '/assets/strap_rubber_green.jpg',
+  'Satin Fabric': '/assets/strap_silver_diamond.jpg',
+  'Titanium Mesh': '/assets/strap_steel_link.jpg'
+};
+
 const FALLBACK_FINISHES = ['Polished', 'Brushed', 'PVD Black', 'Rose Gold PVD', 'Matte Grey'];
 
 // ─── Utility ─────────────────────────────────────────────────────────────────
@@ -23,8 +35,12 @@ function buildOptions(product) {
   const dialColors = (opts.dialColors?.length ? opts.dialColors : FALLBACK_DIAL_COLORS.map(d => d.value))
     .map(v => FALLBACK_DIAL_COLORS.find(d => d.value === v) || { label: v, value: v, textDark: false });
   
-  // Custom strap options
-  const strapMaterials = [...(opts.strapMaterials?.length ? opts.strapMaterials : FALLBACK_STRAPS)];
+  // Custom strap options (Women: first three, Men: 1, 4, 5)
+  const defaultStraps = product.gender === 'women'
+    ? ['Tan Leather', 'Diamond Silver Link', 'Classic Gold Chain']
+    : ['Tan Leather', 'Forest Green Rubber', 'Brushed Steel Link'];
+
+  const strapMaterials = [...(opts.strapMaterials?.length ? opts.strapMaterials : defaultStraps)];
   if (opts.customStrapName && !strapMaterials.includes(opts.customStrapName)) {
     strapMaterials.push(opts.customStrapName);
   }
@@ -419,22 +435,36 @@ export default function Customization({ onPageChange, params }) {
             {selectedProduct.allowStrapCustomization !== false && (
               <div className="space-y-3">
                 <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-muted">
-                  Strap Material — <span className="text-white">{strapMaterial}</span>
+                  Strap Option
                 </h3>
-                <div className="flex flex-wrap gap-2">
-                  {options.strapMaterials.map((mat) => (
-                    <button
-                      key={mat}
-                      onClick={() => setStrapMaterial(mat)}
-                      className={`px-3 py-2 text-xs font-bold rounded border transition-all cursor-pointer ${
-                        strapMaterial === mat
-                          ? 'border-luxury-gold bg-luxury-gold/10 text-luxury-gold'
-                          : 'border-white/10 text-luxury-muted hover:border-white/30 hover:text-white'
-                      }`}
-                    >
-                      {mat}
-                    </button>
-                  ))}
+                <div className="grid grid-cols-3 gap-3">
+                  {options.strapMaterials.map((mat) => {
+                    const imgUrl = (mat === options.customStrapName && options.customStrapImage) 
+                      ? options.customStrapImage 
+                      : (STRAP_IMAGES[mat] || '/assets/strap_leather_tan.jpg');
+                    return (
+                      <button
+                        key={mat}
+                        onClick={() => setStrapMaterial(mat)}
+                        className={`flex flex-col items-center p-2.5 rounded border transition-all cursor-pointer bg-luxury-dark/40 ${
+                          strapMaterial === mat
+                            ? 'border-luxury-gold text-luxury-gold shadow-[0_0_15px_rgba(200,169,106,0.1)]'
+                            : 'border-white/5 text-luxury-muted hover:border-white/20 hover:text-white'
+                        }`}
+                      >
+                        <div className="w-full h-20 bg-luxury-dark/80 rounded border border-white/5 overflow-hidden flex items-center justify-center p-1.5 mb-2">
+                          <img
+                            src={imgUrl}
+                            alt={mat}
+                            className="max-h-full max-w-full object-contain rounded-sm"
+                          />
+                        </div>
+                        <span className="text-[8px] font-bold uppercase tracking-widest text-center leading-tight">
+                          {mat}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
