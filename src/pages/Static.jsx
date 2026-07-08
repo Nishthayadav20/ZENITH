@@ -265,7 +265,7 @@ export default function Static({ params, _onPageChange }) {
               <section className="space-y-2">
                 <h4 className="font-bold text-luxury-text uppercase text-[10px] tracking-wider">1. Privacy and Data Protection</h4>
                 <p>
-                  At KHRONIQ Watches, we are dedicated to protecting your client profile data. Any personal details, address books, and purchase order invoices collected are managed under strict Indian data protection laws and international General Data Protection Regulation (GDPR) guidelines. We enforce SSL encryption blocks on all security gateways.
+                  At KHRONIQ, we are dedicated to protecting your client profile data. Any personal details, address books, and purchase order invoices collected are managed under strict Indian data protection laws and international General Data Protection Regulation (GDPR) guidelines. We enforce SSL encryption blocks on all security gateways.
                 </p>
               </section>
 

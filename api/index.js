@@ -68,7 +68,7 @@ app.use('/api/brand-updates', brandUpdateRoutes);
 
 // Base Endpoint
 app.get('/api', (req, res) => {
-  res.json({ message: 'Welcome to the KHRONIQ Watches API' });
+  res.json({ message: 'Welcome to the KHRONIQ API' });
 });
 
 // Diagnostics Endpoint

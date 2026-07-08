@@ -442,7 +442,7 @@ export default function Footer({ onPageChange }) {
           <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
             <LogoMark className="w-3.5 h-3.5" />
             <p style={{ fontSize:'0.62rem', color:'rgba(200,190,175,0.38)', letterSpacing:'0.08em' }}>
-              © 2026 KHRONIQ Watches. All Rights Reserved. A TRUE KNOCK GROUP PRODUCT.
+              © 2026 KHRONIQ. All Rights Reserved. A TRUE KNOCK GROUP PRODUCT.
             </p>
           </div>
 
