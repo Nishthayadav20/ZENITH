@@ -63,7 +63,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
     setWatchSearchText(purchase.name);
     setSelectedPurchase(purchase);
     setSerialCode(purchase.serialNumber);
-    setSpecialClaimCode(purchase.specialCode);
+    setSpecialClaimCode(''); // Leave empty so user puts the special code manually
     setShowDropdown(false);
     setErrorMsg('');
   };
@@ -164,7 +164,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Owner Name */}
               <div className="space-y-1.5">
-                <label className="text-[8px] text-gray-500 font-bold uppercase tracking-widest block">Full Name</label>
+                <label className="text-[8px] text-white font-bold uppercase tracking-widest block">Full Name</label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
                     <User size={12} />
@@ -182,7 +182,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Owner Email */}
               <div className="space-y-1.5">
-                <label className="text-[8px] text-gray-500 font-bold uppercase tracking-widest block">Email Address</label>
+                <label className="text-[8px] text-white font-bold uppercase tracking-widest block">Email Address</label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
                     <QrCode size={12} />
@@ -224,7 +224,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Watch Name Dropdown Input */}
               <div className="space-y-1.5 relative">
-                <label className="text-[8px] text-gray-500 font-bold uppercase tracking-widest block">Name of Watch</label>
+                <label className="text-[8px] text-white font-bold uppercase tracking-widest block">Name of Watch</label>
                 <div className="relative">
                   <input
                     type="text"
@@ -280,7 +280,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Serial Code */}
               <div className="space-y-1.5">
-                <label className="text-[8px] text-gray-500 font-bold uppercase tracking-widest block">Serial Code of Purchase</label>
+                <label className="text-[8px] text-white font-bold uppercase tracking-widest block">Serial Code of Purchase</label>
                 <input
                   type="text"
                   required
@@ -293,7 +293,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Special Code to Claim Warranty */}
               <div className="space-y-1.5">
-                <label className="text-[8px] text-gray-500 font-bold uppercase tracking-widest block">Special Code to Claim Warranty</label>
+                <label className="text-[8px] text-white font-bold uppercase tracking-widest block">Special Code to Claim Warranty</label>
                 <input
                   type="text"
                   required
