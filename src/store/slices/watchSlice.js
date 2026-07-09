@@ -282,7 +282,7 @@ const initialState = {
   orders: [],
   coupons: [],
   currentUser: null,
-  currentCurrency: loadSaved('khroniq_currency', 'USD')
+  currentCurrency: loadSaved('khroniq_currency', 'INR')
 };
 
 // Helper for standard API headers
@@ -377,7 +377,7 @@ export const {
   setCurrencyAction
 } = watchSlice.actions;
 
-export const selectCurrentCurrency = state => state.watch.currentCurrency || 'USD';
+export const selectCurrentCurrency = state => state.watch.currentCurrency || 'INR';
 
 export const formatPrice = (price, currency) => {
   const numPrice = Number(price) || 0;
