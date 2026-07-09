@@ -1,6 +1,6 @@
 import express from 'express';
-import Category from '../models/Category.js';
-import { protect, adminOnly } from '../middleware/auth.js';
+import Category from '../_models/Category.js';
+import { protect, adminOnly } from '../_middleware/auth.js';
 
 const router = express.Router();
 

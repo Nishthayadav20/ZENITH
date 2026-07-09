@@ -1,6 +1,6 @@
 import express from 'express';
-import upload from '../middleware/upload.js';
-import { protect, adminOnly } from '../middleware/auth.js';
+import upload from '../_middleware/upload.js';
+import { protect, adminOnly } from '../_middleware/auth.js';
 
 const router = express.Router();
 

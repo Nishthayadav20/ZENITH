@@ -1,9 +1,9 @@
 import express from 'express';
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
-import Product from '../models/Product.js';
-import Order from '../models/Order.js';
-import { protect } from '../middleware/auth.js';
+import Product from '../_models/Product.js';
+import Order from '../_models/Order.js';
+import { protect } from '../_middleware/auth.js';
 import sendEmail from '../utils/sendEmail.js';
 
 const router = express.Router();

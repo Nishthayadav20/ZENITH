@@ -754,8 +754,6 @@ export const requestExchangeRefund = (orderId) => async (dispatch) => {
   } catch (error) {
     return { success: false, message: 'Failed to request Exchange/Refund. Server error.' };
   }
-};
-  }
-};
+}
 
 export default watchSlice.reducer;
