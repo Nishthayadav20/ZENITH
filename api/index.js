@@ -17,6 +17,7 @@ import couponRoutes from './_routes/coupons.js';
 import cartRoutes from './_routes/cart.js';
 import wishlistRoutes from './_routes/wishlist.js';
 import brandUpdateRoutes from './_routes/brandUpdates.js';
+import warrantyRoutes from './_routes/warranty.js';
 
 dotenv.config();
 
@@ -65,6 +66,7 @@ app.use('/api/coupons', couponRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/brand-updates', brandUpdateRoutes);
+app.use('/api/warranty', warrantyRoutes);
 
 // Base Endpoint
 app.get('/api', (req, res) => {
