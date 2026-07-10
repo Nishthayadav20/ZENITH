@@ -123,10 +123,18 @@ export default function Checkout({ params, onPageChange }) {
     }
 
     // Call Redux dispatcher to place the order
+    const giftingOptions = isGiftingJourney ? {
+      isGifting: true,
+      occasion: giftOccasion,
+      note: giftNote,
+      packaging: packagingType
+    } : { isGifting: false };
+
     const result = await dispatch(placeOrder(
       shippingForm,
       { method: paymentMethod, cardNumber: cardForm.cardNumber || 'UPI' },
-      appliedCoupon
+      appliedCoupon,
+      giftingOptions
     ));
 
     if (result && result.success) {

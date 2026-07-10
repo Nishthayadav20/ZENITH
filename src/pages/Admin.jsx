@@ -20,7 +20,7 @@ import {
 import { 
   BarChart3, Plus, Edit, Trash2, Check, X, Tag, Star, 
   Package, AlertTriangle, ShieldAlert, ArrowLeft, ArrowUpRight,
-  CheckCircle2, LogOut, Newspaper, BookOpen
+  CheckCircle2, LogOut, Newspaper, BookOpen, Gift
 } from 'lucide-react';
 
 const PRESET_STRAPS = [
@@ -1503,7 +1503,14 @@ export default function Admin({ onPageChange }) {
                 <tbody className="divide-y divide-white/5 text-gray-300">
                   {orders.map((o) => (
                     <tr key={o.id} className="hover:bg-white/5 transition">
-                      <td className="p-4 font-mono font-bold text-white tracking-wider uppercase">{o.id}</td>
+                      <td className="p-4 font-mono font-bold text-white tracking-wider uppercase">
+                        <div className="flex items-center gap-1.5">
+                          <span>{o.id}</span>
+                          {o.giftingOptions?.isGifting && (
+                            <Gift size={13} className="text-luxury-gold animate-pulse" title={`Gifting Order: ${o.giftingOptions.occasion}`} />
+                          )}
+                        </div>
+                      </td>
                       <td className="p-4">
                         <p className="text-white font-semibold">{o.userName}</p>
                         <p className="text-[10px] text-gray-500 mt-0.5">{o.userEmail}</p>
@@ -1512,6 +1519,16 @@ export default function Admin({ onPageChange }) {
                         <p className="truncate text-gray-300 font-light" title={o.items.map(item => `${item.name} (x${item.quantity})`).join(', ')}>
                           {o.items.map(item => `${item.name} (x${item.quantity})`).join(', ')}
                         </p>
+                        {o.giftingOptions?.isGifting && (
+                          <div className="mt-1 text-[10px] text-luxury-gold space-y-0.5 bg-luxury-gold/5 border border-luxury-gold/20 p-2 rounded">
+                            <p className="font-bold uppercase tracking-wider">🎁 Curated Gift Order</p>
+                            <p><span className="font-semibold text-gray-400">Occasion:</span> {o.giftingOptions.occasion}</p>
+                            <p><span className="font-semibold text-gray-400">Packaging:</span> {o.giftingOptions.packaging === 'couple' ? 'Couple Packaging' : 'Single Packaging'}</p>
+                            {o.giftingOptions.note && (
+                              <p className="italic text-gray-300 mt-1 border-t border-white/5 pt-1">"{o.giftingOptions.note}"</p>
+                            )}
+                          </div>
+                        )}
                       </td>
                       <td className="p-4 font-bold text-luxury-gold">{formatPrice(o.total, currentCurrency)}</td>
                       <td className="p-4">

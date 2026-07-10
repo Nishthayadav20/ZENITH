@@ -29,7 +29,13 @@ const orderSchema = new mongoose.Schema({
   },
   status: { type: String, enum: ['Paid', 'Pending', 'Processing', 'Cancelled', 'Shipped', 'Exchange/Refund Requested'], default: 'Paid' },
   date: { type: String, default: () => new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) },
-  time: { type: String, default: () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
+  time: { type: String, default: () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) },
+  giftingOptions: {
+    isGifting: { type: Boolean, default: false },
+    occasion: { type: String },
+    note: { type: String },
+    packaging: { type: String }
+  }
 }, {
   timestamps: true,
   toJSON: { virtuals: true },

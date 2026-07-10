@@ -733,7 +733,7 @@ export const toggleWishlist = (productId) => async (dispatch, getState) => {
   dispatch(toggleWishlistAction(productId));
 };
 
-export const placeOrder = (shippingDetails, paymentDetails, appliedCoupon) => async (dispatch, getState) => {
+export const placeOrder = (shippingDetails, paymentDetails, appliedCoupon, giftingOptions) => async (dispatch, getState) => {
   const { products, cart, currentUser } = getState().watch;
   if (!currentUser) return { success: false, message: 'Please log in to checkout.' };
   if (cart.length === 0) return { success: false, message: 'Cart is empty' };
@@ -767,7 +767,8 @@ export const placeOrder = (shippingDetails, paymentDetails, appliedCoupon) => as
         discount,
         total,
         shippingDetails,
-        paymentDetails
+        paymentDetails,
+        giftingOptions
       })
     });
     const data = await res.json();
