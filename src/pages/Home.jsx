@@ -579,17 +579,11 @@ export default function Home({ onPageChange }) {
   // --- CAROUSEL SLIDER STATE & LOGIC ---
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleCards, setVisibleCards] = useState(4);
-  const [showUpdates, setShowUpdates] = useState(false);
+  const [showUpdates, setShowUpdates] = useState(true);
   const [brandUpdates, setBrandUpdates] = useState([]);
   const [hoveredProduct, setHoveredProduct] = useState(null);
   const updatesRef = useRef(null);
-  const updatesInView = useInView(updatesRef, { once: true, margin: '-100px' });
-
-  useEffect(() => {
-    if (updatesInView) {
-      setShowUpdates(true);
-    }
-  }, [updatesInView]);
+  const updatesInView = useInView(updatesRef, { once: true, margin: '-45px' });
 
   const hoverTimeoutRef = useRef(null);
 
@@ -1156,8 +1150,8 @@ export default function Home({ onPageChange }) {
                       key={idx}
                       className="flex items-start gap-3"
                       initial={{ x: -15, opacity: 0 }}
-                      animate={showUpdates ? { x: 0, opacity: 1 } : { x: -15, opacity: 0 }}
-                      transition={{ delay: showUpdates ? idx * 0.08 : 0, duration: 0.3 }}
+                      animate={updatesInView ? { x: 0, opacity: 1 } : { x: -15, opacity: 0 }}
+                      transition={{ delay: updatesInView ? idx * 0.08 : 0, duration: 0.3 }}
                     >
                       <span className="w-1.5 h-1.5 rounded-full bg-luxury-gold mt-2 flex-shrink-0" />
                       <div>
