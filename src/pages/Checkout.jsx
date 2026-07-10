@@ -54,6 +54,7 @@ export default function Checkout({ params, onPageChange }) {
   const [paymentMethod, setPaymentMethod] = useState('card'); // card | upi
   const [giftPackage, setGiftPackage] = useState('standard'); // standard | gift-box | luxury
   const [giftNote, setGiftNote] = useState('');
+  const [giftOccasion, setGiftOccasion] = useState('birthday'); // anniversary | birthday | retirement | other
   const [cardForm, setCardForm] = useState({
     cardNumber: '',
     expiry: '',
@@ -256,17 +257,52 @@ export default function Checkout({ params, onPageChange }) {
           {/* Payment Details */}
           <div className="lg:col-span-7 space-y-5">
 
+            {/* Gift Occasion Selector */}
+            <div className="bg-luxury-gray border border-white/5 p-5 rounded-md space-y-3">
+              <div className="flex items-center gap-2 border-b border-white/5 pb-3">
+                <Gift size={13} className="text-luxury-gold" />
+                <h3 className="text-xs font-bold tracking-widest text-white uppercase">Select Gifting Occasion</h3>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {[
+                  { id: 'anniversary', label: 'Anniversary', emoji: '💕' },
+                  { id: 'birthday', label: 'Birthday', emoji: '🎂' },
+                  { id: 'retirement', label: 'Retirement', emoji: '💼' },
+                  { id: 'other', label: 'Other Occasion', emoji: '✨' },
+                ].map((occ) => (
+                  <button
+                    key={occ.id}
+                    type="button"
+                    onClick={() => setGiftOccasion(occ.id)}
+                    className={`relative p-4 rounded border text-center transition-all duration-200 cursor-pointer ${
+                      giftOccasion === occ.id
+                        ? 'border-luxury-gold bg-luxury-gold/5'
+                        : 'border-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    {giftOccasion === occ.id && (
+                      <Check size={10} className="absolute top-2 right-2 text-luxury-gold" strokeWidth={3} />
+                    )}
+                    <span className="text-lg block mb-1">{occ.emoji}</span>
+                    <p className={`text-[10px] font-bold tracking-wide uppercase ${
+                      giftOccasion === occ.id ? 'text-luxury-gold' : 'text-white'
+                    }`}>{occ.label}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Gift Packaging Picker */}
             <div className="bg-luxury-gray border border-white/5 p-5 rounded-md space-y-4">
               <div className="flex items-center gap-2 border-b border-white/5 pb-3">
                 <Gift size={13} className="text-luxury-gold" />
-                <h3 className="text-xs font-bold tracking-widest text-white uppercase">Gift Packaging</h3>
+                <h3 className="text-xs font-bold tracking-widest text-white uppercase">Gift Packaging Style</h3>
               </div>
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { id: 'standard', label: 'Standard', price: 'Free', desc: 'Classic black box' },
-                  { id: 'gift-box', label: 'Gift Box', price: '+ ₹499', desc: 'Ribbon & note card' },
-                  { id: 'luxury', label: 'Luxury', price: '+ ₹999', desc: 'Leather case + engraving' },
+                  { id: 'standard', label: 'Standard', price: 'Free', desc: giftOccasion === 'anniversary' ? 'Includes 2 watches, a gift card, and couple packaging' : 'Includes 1 watch, a gift card, and single packaging' },
+                  { id: 'gift-box', label: 'Gift Box', price: '+ ₹499', desc: giftOccasion === 'anniversary' ? 'Ribbon, 2 watches, gift card, and couple packaging' : 'Ribbon, 1 watch, gift card, and single packaging' },
+                  { id: 'luxury', label: 'Luxury', price: '+ ₹999', desc: giftOccasion === 'anniversary' ? 'Leather case, 2 watches, gift card, and couple packaging' : 'Leather case, 1 watch, gift card, and single packaging' },
                 ].map((pkg) => (
                   <button
                     key={pkg.id}
@@ -285,7 +321,7 @@ export default function Checkout({ params, onPageChange }) {
                       giftPackage === pkg.id ? 'text-luxury-gold' : 'text-white'
                     }`}>{pkg.label}</p>
                     <p className="text-[10px] text-luxury-gold/80 font-semibold mt-0.5">{pkg.price}</p>
-                    <p className="text-[10px] text-gray-500 mt-1 leading-snug">{pkg.desc}</p>
+                    <p className="text-[9px] text-gray-500 mt-1 leading-normal">{pkg.desc}</p>
                   </button>
                 ))}
               </div>
