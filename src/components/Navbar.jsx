@@ -166,102 +166,28 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                       {link.label}
                     </button>
                     
-                    {/* MEGA MENU DROPDOWN - FULL SCREEN WIDE */}
-                    <div className="fixed left-0 right-0 w-screen bg-white text-neutral-900 border-y border-neutral-100 shadow-[0_20px_40px_rgba(0,0,0,0.15)] p-0 hidden group-hover:block z-50 text-left transition-all duration-300 top-[80px] left-0">
-                      <div className="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-10">
-                        {/* Left Column: Category selectors */}
-                        <div className="col-span-3 border-r border-neutral-100 pr-6 flex flex-col space-y-3">
-                          <button
-                            type="button"
-                            onMouseEnter={() => setActiveSubMenu('price')}
-                            className={`w-full text-left px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-widest flex items-center justify-between transition duration-200 ${
-                              activeSubMenu === 'price' ? 'bg-neutral-100 text-neutral-950 font-black scale-[1.02]' : 'text-neutral-500 hover:bg-neutral-50'
-                            }`}
-                          >
-                            <span>Shop By Price</span>
-                            <span className="text-[10px]">&rarr;</span>
-                          </button>
-                          <button
-                            type="button"
-                            onMouseEnter={() => setActiveSubMenu('recipient')}
-                            className={`w-full text-left px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-widest flex items-center justify-between transition duration-200 ${
-                              activeSubMenu === 'recipient' ? 'bg-neutral-100 text-neutral-950 font-black scale-[1.02]' : 'text-neutral-500 hover:bg-neutral-50'
-                            }`}
-                          >
-                            <span>Watches For Recipient</span>
-                            <span className="text-[10px]">&rarr;</span>
-                          </button>
-                        </div>
-
-                        {/* Middle Column: Sub-menu items */}
-                        <div className="col-span-5 px-6">
-                          {activeSubMenu === 'price' && (
-                            <div className="space-y-6">
-                              <h4 className="text-[10px] font-black tracking-[0.25em] text-neutral-400 uppercase">Shop By Price</h4>
-                              <div className="grid grid-cols-2 gap-4">
-                                {[
-                                  { label: 'Under ₹50,000', maxPrice: 1000 },
-                                  { label: '₹50,000 - ₹1,00,000', maxPrice: 2000 },
-                                  { label: '₹1,00,000 - ₹2,00,000', maxPrice: 4500 },
-                                  { label: 'Above ₹2,00,000', maxPrice: 6000 },
-                                ].map((p) => (
-                                  <button
-                                    key={p.label}
-                                    onClick={() => {
-                                      onPageChange('shop', { maxPrice: p.maxPrice });
-                                    }}
-                                    className="text-left text-xs text-neutral-600 hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
-                                  >
-                                    {p.label}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-
-                          {activeSubMenu === 'recipient' && (
-                            <div className="space-y-6">
-                              <h4 className="text-[10px] font-black tracking-[0.25em] text-neutral-400 uppercase">Watches For Recipient</h4>
-                              <div className="grid grid-cols-2 gap-y-4 gap-x-6">
-                                {[
-                                  { label: 'Watches For Bride', filter: { gender: 'women', search: 'Bride' } },
-                                  { label: 'Watches For Groom', filter: { gender: 'men', search: 'Groom' } },
-                                  { label: 'Watches For Mother', filter: { gender: 'women', search: 'Mother' } },
-                                  { label: 'Watches For Father', filter: { gender: 'men', search: 'Father' } },
-                                  { label: 'Watches For Brother', filter: { gender: 'men', search: 'Brother' } },
-                                  { label: 'Watches For Sister', filter: { gender: 'women', search: 'Sister' } },
-                                ].map((r) => (
-                                  <button
-                                    key={r.label}
-                                    onClick={() => {
-                                      onPageChange('shop', r.filter);
-                                    }}
-                                    className="text-left text-xs text-neutral-600 hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
-                                  >
-                                    {r.label}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Right Column: Looking for a Gift card */}
-                        <div className="col-span-4 relative overflow-hidden rounded-xl bg-neutral-900 text-white flex flex-col justify-between p-6 min-h-[220px] shadow-lg group/gift">
-                          <div className="absolute inset-0 bg-cover bg-center opacity-50 scale-100 group-hover/gift:scale-105 transition duration-700" style={{ backgroundImage: "url('/assets/media__1783681299347.png')" }} />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                          <div className="relative z-10 space-y-1">
-                            <span className="text-[9px] font-bold tracking-[0.3em] uppercase text-luxury-gold">Curated Gifting</span>
-                            <h4 className="font-serif text-2xl font-black tracking-wider leading-tight text-white mt-1">LOOKING<br/>for<br/>A GIFT?</h4>
-                          </div>
-                          <button
-                            onClick={() => onPageChange('gifting')}
-                            className="relative z-10 w-full py-3 bg-white text-neutral-900 font-black text-xs uppercase tracking-widest rounded-lg hover:bg-luxury-gold hover:text-white transition duration-300 shadow-md cursor-pointer"
-                          >
-                            Shop Gifting Solutions
-                          </button>
-                        </div>
-                      </div>
+                    {/* CLEAN DROPDOWN - DIRECTLY BENEATH GIFTING */}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-52 bg-[#111111] border border-white/10 rounded shadow-xl py-2 hidden group-hover:block transition duration-200 z-50 text-left">
+                      {[
+                        { label: 'Watches For Bride', filter: { gender: 'women', search: 'Bride' } },
+                        { label: 'Watches For Groom', filter: { gender: 'men', search: 'Groom' } },
+                        { label: 'Watches For Mother', filter: { gender: 'women', search: 'Mother' } },
+                        { label: 'Watches For Father', filter: { gender: 'men', search: 'Father' } },
+                        { label: 'Watches For Brother', filter: { gender: 'men', search: 'Brother' } },
+                        { label: 'Watches For Sister', filter: { gender: 'women', search: 'Sister' } },
+                        { label: 'Watches For Friend', filter: { search: 'Friend' } },
+                      ].map((sub) => (
+                        <button
+                          key={sub.label}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onPageChange('shop', sub.filter);
+                          }}
+                          className="w-full text-left px-4 py-2.5 hover:bg-white/10 text-gray-300 hover:text-white transition text-[11px] font-bold uppercase tracking-wider cursor-pointer block"
+                        >
+                          {sub.label}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 );
