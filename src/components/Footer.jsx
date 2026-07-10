@@ -47,6 +47,7 @@ const NAV_COLS = [
       { label: 'The Manufacture',page: 'static', args: { view: 'about' } },
       { label: 'Sustainability', page: 'static', args: { view: 'about' } },
       { label: 'Blogs & Editorial', page: 'static', args: { view: 'blogs' } },
+      { label: 'Terms & Conditions', page: 'static', args: { view: 'policies' } },
     ],
   },
 ];
