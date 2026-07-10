@@ -388,7 +388,7 @@ export default function Footer({ onPageChange }) {
             </div>
 
             <p style={{ fontSize:'0.68rem', color:'rgba(200,190,175,0.5)', lineHeight:1.7, marginBottom:'1.25rem' }}>
-              concierge@<br />khroniq-watches.com
+              concierge@<br />khroniq.com
             </p>
 
             {/* Clock-hours decoration */}
