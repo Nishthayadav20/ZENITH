@@ -402,7 +402,7 @@ export default function Admin({ onPageChange }) {
   const outOfStockCount = products.filter(p => p.stock === 0).length;
   const totalSubscribersMock = 148;
 
-  // Calculate dynamic category sales
+  // Calculate dynamic category sales (case-insensitive category mapping)
   const categories = ['Khronomaster', 'Defy', 'Heritage', 'Elite'];
   const categorySales = {
     Khronomaster: 0,
@@ -414,14 +414,16 @@ export default function Admin({ onPageChange }) {
   orders.filter(o => o.status !== 'Cancelled').forEach(o => {
     o.items?.forEach(item => {
       const prod = products.find(p => p.id === item.productId || p._id === item.productId);
-      const cat = prod?.category || 'Heritage';
+      const rawCat = (prod?.category || 'Heritage').trim().toLowerCase();
       const itemPrice = Number(item.price) || 0;
       const itemQty = Number(item.quantity) || 1;
-      if (categorySales[cat] !== undefined) {
-        categorySales[cat] += itemPrice * itemQty;
-      } else {
-        categorySales[cat] = itemPrice * itemQty;
-      }
+      
+      let mappedCat = 'Heritage';
+      if (rawCat === 'khronomaster') mappedCat = 'Khronomaster';
+      else if (rawCat === 'defy') mappedCat = 'Defy';
+      else if (rawCat === 'elite') mappedCat = 'Elite';
+      
+      categorySales[mappedCat] += itemPrice * itemQty;
     });
   });
 
@@ -672,14 +674,14 @@ export default function Admin({ onPageChange }) {
             <div className="relative pt-4 flex flex-col items-center w-full min-h-[260px]">
               <svg width="100%" height="240" viewBox="0 0 600 240" className="overflow-visible font-sans">
                 {/* Horizontal Guide Lines */}
-                <line x1="55" y1="40" x2="550" y2="40" stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
-                <line x1="55" y1="90" x2="550" y2="90" stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
-                <line x1="55" y1="140" x2="550" y2="140" stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
-                <line x1="55" y1="190" x2="550" y2="190" stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
+                <line x1="55" y1="40" x2="550" y2="40" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
+                <line x1="55" y1="90" x2="550" y2="90" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
+                <line x1="55" y1="140" x2="550" y2="140" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
+                <line x1="55" y1="190" x2="550" y2="190" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
                 
                 {/* Axes */}
-                <line x1="55" y1="190" x2="550" y2="190" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
-                <line x1="55" y1="40" x2="55" y2="190" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
+                <line x1="55" y1="190" x2="550" y2="190" stroke="rgba(0,0,0,0.15)" strokeWidth="1" />
+                <line x1="55" y1="40" x2="55" y2="190" stroke="rgba(0,0,0,0.15)" strokeWidth="1" />
 
                 {/* Bars - Mocking Category Sales: Khronomaster, Defy, Heritage, Elite */}
                 {categories.map((cat, idx) => {
@@ -688,8 +690,8 @@ export default function Admin({ onPageChange }) {
                   const yPos = 190 - barHeight;
                   const xPos = 90 + idx * 120;
                   
-                  // Color palette: Gold, Red, White, Bronze
-                  const colors = ['#c5a880', '#ef4444', '#f3f4f6', '#a68a60'];
+                  // Color palette: Gold, Red, Emerald Green, Charcoal
+                  const colors = ['#c5a880', '#ef4444', '#065f46', '#4b5563'];
                   const barColor = colors[idx % colors.length];
 
                   return (
@@ -733,7 +735,7 @@ export default function Admin({ onPageChange }) {
                       <text
                         x={xPos + 20}
                         y={yPos - 6}
-                        fill="#ffffff"
+                        fill="#1a1a1a"
                         fontSize="8"
                         textAnchor="middle"
                         className="font-mono font-bold"
@@ -745,10 +747,10 @@ export default function Admin({ onPageChange }) {
                 })}
 
                 {/* Y-axis Labels */}
-                <text x="47" y="44" fill="rgba(255,255,255,0.4)" fontSize="8" textAnchor="end">{formatPrice(maxVal, currentCurrency)}</text>
-                <text x="47" y="94" fill="rgba(255,255,255,0.4)" fontSize="8" textAnchor="end">{formatPrice(maxVal * 0.66, currentCurrency)}</text>
-                <text x="47" y="144" fill="rgba(255,255,255,0.4)" fontSize="8" textAnchor="end">{formatPrice(maxVal * 0.33, currentCurrency)}</text>
-                <text x="47" y="194" fill="rgba(255,255,255,0.4)" fontSize="8" textAnchor="end">{formatPrice(0, currentCurrency)}</text>
+                <text x="47" y="44" fill="rgba(0,0,0,0.5)" fontSize="8" textAnchor="end">{formatPrice(maxVal, currentCurrency)}</text>
+                <text x="47" y="94" fill="rgba(0,0,0,0.5)" fontSize="8" textAnchor="end">{formatPrice(maxVal * 0.66, currentCurrency)}</text>
+                <text x="47" y="144" fill="rgba(0,0,0,0.5)" fontSize="8" textAnchor="end">{formatPrice(maxVal * 0.33, currentCurrency)}</text>
+                <text x="47" y="194" fill="rgba(0,0,0,0.5)" fontSize="8" textAnchor="end">{formatPrice(0, currentCurrency)}</text>
 
                 {/* X-axis Labels */}
                 {categories.map((cat, idx) => (
@@ -756,7 +758,7 @@ export default function Admin({ onPageChange }) {
                     key={cat}
                     x={110 + idx * 120} 
                     y="210" 
-                    fill="rgba(255,255,255,0.6)" 
+                    fill="rgba(0,0,0,0.7)" 
                     fontSize="9" 
                     fontWeight="bold"
                     textAnchor="middle"
