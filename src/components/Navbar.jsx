@@ -226,9 +226,9 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                               <div className="grid grid-cols-2 gap-x-12 gap-y-4">
                                 <div className="flex flex-col space-y-3.5">
                                   {[
-                                    { label: 'Watches For Bride', filter: { gender: 'women', search: 'Bride' } },
-                                    { label: 'Watches For Mother', filter: { gender: 'women', search: 'Mother' } },
-                                    { label: 'Watches For Brother', filter: { gender: 'men', search: 'Brother' } },
+                                    { label: 'Watches For Bride', filter: { gender: 'women' } },
+                                    { label: 'Watches For Mother', filter: { gender: 'women' } },
+                                    { label: 'Watches For Brother', filter: { gender: 'men' } },
                                   ].map((r) => (
                                     <button
                                       key={r.label}
@@ -243,9 +243,9 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                                 </div>
                                 <div className="flex flex-col space-y-3.5">
                                   {[
-                                    { label: 'Watches For Groom', filter: { gender: 'men', search: 'Groom' } },
-                                    { label: 'Watches For Father', filter: { gender: 'men', search: 'Father' } },
-                                    { label: 'Watches For Sister', filter: { gender: 'women', search: 'Sister' } },
+                                    { label: 'Watches For Groom', filter: { gender: 'men' } },
+                                    { label: 'Watches For Father', filter: { gender: 'men' } },
+                                    { label: 'Watches For Sister', filter: { gender: 'women' } },
                                   ].map((r) => (
                                     <button
                                       key={r.label}
