@@ -157,16 +157,8 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                 <button
                   key={idx}
                   onClick={() => handleNavLinkClick(link)}
-                  className={`whitespace-nowrap transition duration-200 cursor-pointer ${
-                    link.page === 'gifting'
-                      ? `px-3 py-1 rounded-full border ${
-                          currentPage === 'gifting'
-                            ? 'bg-luxury-gold-dark border-luxury-gold-dark text-white'
-                            : 'border-luxury-gold/50 text-luxury-gold hover:bg-luxury-gold/10'
-                        }`
-                      : `${textColorClass} ${
-                          currentPage === link.page ? 'text-luxury-gold' : ''
-                        }`
+                  className={`whitespace-nowrap transition duration-200 cursor-pointer ${textColorClass} ${
+                    currentPage === link.page ? 'text-luxury-gold' : ''
                   }`}
                 >
                   {link.label}
