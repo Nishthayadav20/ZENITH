@@ -121,7 +121,7 @@ export default function Checkout({ params, onPageChange }) {
 
     if (result && result.success) {
       setOrderReceipt(result.order);
-      setStep(3);
+      setStep(4);
       
       // Fire confetti celebration!
       confetti({
@@ -151,14 +151,21 @@ export default function Checkout({ params, onPageChange }) {
           <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
             step >= 2 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
           }`}>2</span>
-          <span className={`text-xs font-bold tracking-wider uppercase ${step >= 2 ? 'text-white' : 'text-gray-500'}`}>Payment</span>
+          <span className={`text-xs font-bold tracking-wider uppercase ${step >= 2 ? 'text-white' : 'text-gray-500'}`}>Gifting</span>
         </div>
         <div className="w-12 h-[1px] bg-white/10" />
         <div className="flex items-center space-x-2">
           <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-            step === 3 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+            step >= 3 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
           }`}>3</span>
-          <span className={`text-xs font-bold tracking-wider uppercase ${step === 3 ? 'text-white' : 'text-gray-500'}`}>Receipt</span>
+          <span className={`text-xs font-bold tracking-wider uppercase ${step >= 3 ? 'text-white' : 'text-gray-500'}`}>Payment</span>
+        </div>
+        <div className="w-12 h-[1px] bg-white/10" />
+        <div className="flex items-center space-x-2">
+          <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+            step === 4 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+          }`}>4</span>
+          <span className={`text-xs font-bold tracking-wider uppercase ${step === 4 ? 'text-white' : 'text-gray-500'}`}>Receipt</span>
         </div>
       </div>
 
@@ -238,7 +245,7 @@ export default function Checkout({ params, onPageChange }) {
                 type="submit"
                 className="w-full py-4 bg-white text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold hover:text-luxury-dark transition flex items-center justify-center space-x-2 cursor-pointer"
               >
-                <span>Continue to Payment</span>
+                <span>Continue to Gifting</span>
                 <ArrowRight size={14} />
               </button>
             </form>
@@ -251,10 +258,10 @@ export default function Checkout({ params, onPageChange }) {
         </div>
       )}
 
-      {/* Step 2: Payment Method Form */}
+      {/* Step 2: Gifting Details Form */}
       {step === 2 && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Payment Details */}
+          {/* Gifting Details */}
           <div className="lg:col-span-7 space-y-5">
 
             {/* Gift Occasion Selector */}
@@ -347,129 +354,161 @@ export default function Checkout({ params, onPageChange }) {
               </div>
             </div>
 
-            <div className="bg-luxury-gray border border-white/5 p-6 sm:p-8 rounded-md space-y-6">
-            <h2 className="text-sm font-bold tracking-widest text-white uppercase border-b border-white/5 pb-3">Payment Portal</h2>
-            
-            {/* Toggle Payment Method */}
-            <div className="grid grid-cols-2 gap-4">
+            {/* Step 2 navigation buttons */}
+            <div className="flex space-x-4 pt-4">
               <button
                 type="button"
-                onClick={() => setPaymentMethod('card')}
-                className={`py-3.5 rounded border text-xs font-bold uppercase flex flex-col items-center justify-center space-y-2 cursor-pointer transition ${
-                  paymentMethod === 'card' 
-                    ? 'border-luxury-gold bg-luxury-gold/5 text-luxury-gold' 
-                    : 'border-white/10 text-gray-400 hover:border-white/20'
-                }`}
+                onClick={() => { setStep(1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                className="py-4 px-6 border border-white/10 text-white font-bold text-xs tracking-widest uppercase hover:border-white transition w-1/3 cursor-pointer"
               >
-                <CreditCard size={18} />
-                <span>Credit Card</span>
+                Back
               </button>
-              
               <button
                 type="button"
-                onClick={() => setPaymentMethod('upi')}
-                className={`py-3.5 rounded border text-xs font-bold uppercase flex flex-col items-center justify-center space-y-2 cursor-pointer transition ${
-                  paymentMethod === 'upi' 
-                    ? 'border-luxury-gold bg-luxury-gold/5 text-luxury-gold' 
-                    : 'border-white/10 text-gray-400 hover:border-white/20'
-                }`}
+                onClick={() => { setStep(3); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                className="flex-1 py-4 bg-white text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold hover:text-luxury-dark transition flex items-center justify-center space-x-2 cursor-pointer"
               >
-                <Landmark size={18} />
-                <span>UPI / QR Scan</span>
+                <span>Continue to Payment</span>
+                <ArrowRight size={14} />
               </button>
             </div>
+          </div>
 
-            {/* Methods forms */}
-            <form onSubmit={handlePaymentSubmit} className="space-y-4">
-              {paymentMethod === 'card' ? (
-                <div className="space-y-4">
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Cardholder Name</label>
-                    <input
-                      type="text"
-                      required
-                      value={cardForm.cardName}
-                      onChange={(e) => setCardForm({ ...cardForm, cardName: e.target.value })}
-                      placeholder="John Doe"
-                      className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
-                    />
-                  </div>
+          {/* Right Summary */}
+          <div className="lg:col-span-5 space-y-6">
+            <CheckoutSummary cartItems={cartItemsWithDetails} subtotal={subtotal} discount={discount} total={total} zipCode={shippingForm.zipCode} />
+          </div>
+        </div>
+      )}
 
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Card Number</label>
-                    <input
-                      type="text"
-                      required
-                      maxLength="16"
-                      value={cardForm.cardNumber}
-                      onChange={(e) => setCardForm({ ...cardForm, cardNumber: e.target.value })}
-                      placeholder="4111222233334444"
-                      className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold font-mono"
-                    />
-                  </div>
+      {/* Step 3: Payment Portal Form */}
+      {step === 3 && (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Payment Details */}
+          <div className="lg:col-span-7 space-y-5">
+            <div className="bg-luxury-gray border border-white/5 p-6 sm:p-8 rounded-md space-y-6">
+              <h2 className="text-sm font-bold tracking-widest text-white uppercase border-b border-white/5 pb-3">Payment Portal</h2>
+              
+              {/* Toggle Payment Method */}
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('card')}
+                  className={`py-3.5 rounded border text-xs font-bold uppercase flex flex-col items-center justify-center space-y-2 cursor-pointer transition ${
+                    paymentMethod === 'card' 
+                      ? 'border-luxury-gold bg-luxury-gold/5 text-luxury-gold' 
+                      : 'border-white/10 text-gray-400 hover:border-white/20'
+                  }`}
+                >
+                  <CreditCard size={18} />
+                  <span>Credit Card</span>
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('upi')}
+                  className={`py-3.5 rounded border text-xs font-bold uppercase flex flex-col items-center justify-center space-y-2 cursor-pointer transition ${
+                    paymentMethod === 'upi' 
+                      ? 'border-luxury-gold bg-luxury-gold/5 text-luxury-gold' 
+                      : 'border-white/10 text-gray-400 hover:border-white/20'
+                  }`}
+                >
+                  <Landmark size={18} />
+                  <span>UPI / QR Scan</span>
+                </button>
+              </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+              {/* Methods forms */}
+              <form onSubmit={handlePaymentSubmit} className="space-y-4">
+                {paymentMethod === 'card' ? (
+                  <div className="space-y-4">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Expiry Date</label>
+                      <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Cardholder Name</label>
                       <input
                         type="text"
                         required
-                        maxLength="5"
-                        value={cardForm.expiry}
-                        onChange={(e) => setCardForm({ ...cardForm, expiry: e.target.value })}
-                        placeholder="MM/YY"
-                        className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold font-mono"
+                        value={cardForm.cardName}
+                        onChange={(e) => setCardForm({ ...cardForm, cardName: e.target.value })}
+                        placeholder="John Doe"
+                        className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
                       />
                     </div>
-                    
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">CVV</label>
-                      <input
-                        type="password"
-                        required
-                        maxLength="3"
-                        value={cardForm.cvv}
-                        onChange={(e) => setCardForm({ ...cardForm, cvv: e.target.value })}
-                        placeholder="***"
-                        className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold font-mono"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="border border-white/5 rounded-md p-6 bg-luxury-dark text-center space-y-4">
-                  <span className="bg-white/5 border border-white/10 text-[9px] font-bold text-gray-300 px-3 py-1.5 tracking-widest uppercase rounded">
-                    UPI Instant Transfer
-                  </span>
-                  <p className="text-gray-400 text-xs max-w-sm mx-auto font-light leading-relaxed">
-                    Upon clicking place order, scan the generated gateway QR code on your mobile device to complete payment.
-                  </p>
-                  
-                  {/* Mock QR Code */}
-                  <div className="h-40 w-40 bg-white border border-luxury-gold/50 mx-auto rounded p-2 flex items-center justify-center shadow-lg relative">
-                    <div className="h-36 w-36 bg-contain bg-center opacity-90" style={{ backgroundImage: "url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=khroniqwatches@bank')" }} />
-                  </div>
-                  <span className="text-[9px] font-mono text-gray-500 uppercase">PAYEE: KHRONIQWATCHES@BANK</span>
-                </div>
-              )}
 
-              <div className="flex space-x-4 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setStep(1)}
-                  className="py-4 px-6 border border-white/10 text-white font-bold text-xs tracking-widest uppercase hover:border-white transition w-1/3 cursor-pointer"
-                >
-                  Back
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 py-4 bg-luxury-red hover:bg-red-700 text-white font-bold text-xs tracking-widest uppercase transition flex items-center justify-center space-x-2 cursor-pointer"
-                >
-                  <ShieldCheck size={16} />
-                  <span>Authorize Order</span>
-                </button>
-              </div>
-            </form>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Card Number</label>
+                      <input
+                        type="text"
+                        required
+                        maxLength="16"
+                        value={cardForm.cardNumber}
+                        onChange={(e) => setCardForm({ ...cardForm, cardNumber: e.target.value })}
+                        placeholder="4111222233334444"
+                        className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold font-mono"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Expiry Date</label>
+                        <input
+                          type="text"
+                          required
+                          maxLength="5"
+                          value={cardForm.expiry}
+                          onChange={(e) => setCardForm({ ...cardForm, expiry: e.target.value })}
+                          placeholder="MM/YY"
+                          className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold font-mono"
+                        />
+                      </div>
+                      
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">CVV</label>
+                        <input
+                          type="password"
+                          required
+                          maxLength="3"
+                          value={cardForm.cvv}
+                          onChange={(e) => setCardForm({ ...cardForm, cvv: e.target.value })}
+                          placeholder="***"
+                          className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold font-mono"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="border border-white/5 rounded-md p-6 bg-luxury-dark text-center space-y-4">
+                    <span className="bg-white/5 border border-white/10 text-[9px] font-bold text-gray-300 px-3 py-1.5 tracking-widest uppercase rounded">
+                      UPI Instant Transfer
+                    </span>
+                    <p className="text-gray-400 text-xs max-w-sm mx-auto font-light leading-relaxed">
+                      Upon clicking place order, scan the generated gateway QR code on your mobile device to complete payment.
+                    </p>
+                    
+                    {/* Mock QR Code */}
+                    <div className="h-40 w-40 bg-white border border-luxury-gold/50 mx-auto rounded p-2 flex items-center justify-center shadow-lg relative">
+                      <div className="h-36 w-36 bg-contain bg-center opacity-90" style={{ backgroundImage: "url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=khroniqwatches@bank')" }} />
+                    </div>
+                    <span className="text-[9px] font-mono text-gray-500 uppercase">PAYEE: KHRONIQWATCHES@BANK</span>
+                  </div>
+                )}
+
+                <div className="flex space-x-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => { setStep(2); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    className="py-4 px-6 border border-white/10 text-white font-bold text-xs tracking-widest uppercase hover:border-white transition w-1/3 cursor-pointer"
+                  >
+                    Back
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-4 bg-luxury-red hover:bg-red-700 text-white font-bold text-xs tracking-widest uppercase transition flex items-center justify-center space-x-2 cursor-pointer"
+                  >
+                    <ShieldCheck size={16} />
+                    <span>Authorize Order</span>
+                  </button>
+                </div>
+              </form>
             </div>{/* end payment panel inner */}
           </div>{/* end lg:col-span-7 */}
 
@@ -480,8 +519,8 @@ export default function Checkout({ params, onPageChange }) {
         </div>
       )}
 
-      {/* Step 3: Success Screen */}
-      {step === 3 && orderReceipt && (
+      {/* Step 4: Success Screen */}
+      {step === 4 && orderReceipt && (
         <div className="bg-luxury-gray border border-white/5 rounded-md p-8 sm:p-12 text-center max-w-2xl mx-auto space-y-8">
           
           <div className="h-20 w-20 rounded-full bg-emerald-400/10 border border-emerald-400/35 flex items-center justify-center mx-auto text-emerald-400">
