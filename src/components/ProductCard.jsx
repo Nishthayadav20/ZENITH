@@ -71,7 +71,7 @@ export default function ProductCard({ product, onPageChange, showRemove = false 
     <div
       ref={cardRef}
       onClick={(e) => {
-        if (e.target.closest('.wishlist-btn')) return;
+        if (e.target.closest('.action-btn')) return;
         onPageChange('product-detail', { id: product.id });
       }}
       onMouseMove={handleMove}
@@ -113,77 +113,6 @@ export default function ProductCard({ product, onPageChange, showRemove = false 
           )}
         </div>
 
-        {/* ── Wishlist heart button ── */}
-        <div className="wishlist-btn absolute top-3 right-3 z-20" style={{ transform: 'translateZ(30px)' }}>
-          <motion.button
-            onClick={handleWishlistToggle}
-            className="relative p-2.5 focus:outline-none"
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.8 }}
-          >
-            {/* Heart burst rings on add */}
-            <AnimatePresence>
-              {isWishlisted && (
-                <>
-                  <motion.span
-                    key="ring1"
-                    className="absolute inset-0 rounded-full border-2 border-red-500 pointer-events-none"
-                    initial={{ scale: 0.6, opacity: 0.8 }}
-                    animate={{ scale: 2.2, opacity: 0 }}
-                    exit={{}}
-                    transition={{ duration: 0.55, ease: 'easeOut' }}
-                  />
-                  <motion.span
-                    key="ring2"
-                    className="absolute inset-0 rounded-full border border-red-300 pointer-events-none"
-                    initial={{ scale: 0.6, opacity: 0.6 }}
-                    animate={{ scale: 2.8, opacity: 0 }}
-                    exit={{}}
-                    transition={{ duration: 0.7, delay: 0.08, ease: 'easeOut' }}
-                  />
-                </>
-              )}
-            </AnimatePresence>
-
-            {/* Heart icon */}
-            <motion.div
-              animate={
-                isWishlisted
-                  ? { scale: [1, 1.5, 0.9, 1.15, 1], rotate: [0, -12, 10, -5, 0] }
-                  : { scale: 1, rotate: 0 }
-              }
-              transition={{ duration: 0.45, ease: 'easeOut' }}
-            >
-              <Heart
-                size={18}
-                fill={isWishlisted ? '#e10600' : 'none'}
-                stroke={isWishlisted ? '#e10600' : '#a3a3a3'}
-                style={{ filter: isWishlisted ? 'drop-shadow(0 0 6px rgba(225,6,0,0.5))' : 'none' }}
-              />
-            </motion.div>
-          </motion.button>
-
-          {/* Floating toast pill */}
-          <AnimatePresence>
-            {toast && (
-              <motion.div
-                key={toast}
-                className="absolute top-[-10px] right-9 whitespace-nowrap rounded-full px-3 py-1 text-[10px] font-bold tracking-wide shadow-lg pointer-events-none z-30"
-                style={{
-                  background: toast === 'added' ? '#e10600' : '#6b7280',
-                  color: '#fff',
-                }}
-                initial={{ opacity: 0, x: 8, scale: 0.85 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: 8, scale: 0.85 }}
-                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-              >
-                {toast === 'added' ? '❤️ Wishlisted' : 'Removed'}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
         {/* Details */}
         <div
           className="pt-3 pb-2 bg-transparent space-y-1 flex flex-col justify-between flex-1 transition-opacity duration-300"
@@ -201,19 +130,62 @@ export default function ProductCard({ product, onPageChange, showRemove = false 
             </h3>
             <p className="text-[11px] text-luxury-muted font-normal tracking-wide">{specLine}</p>
           </div>
-          <p
-            className="text-luxury-text text-xs sm:text-sm font-semibold pt-1 transition-transform duration-300"
-            style={{
-              transform: isHovered ? 'scale(1.04)' : 'scale(1)',
-              transformOrigin: 'left center',
-            }}
-          >
-            {formatPrice(product.price, currentCurrency)}
-          </p>
+
+          <div className="flex items-center justify-between pt-1">
+            <p
+              className="text-luxury-text text-xs sm:text-sm font-semibold transition-transform duration-300"
+              style={{
+                transform: isHovered ? 'scale(1.04)' : 'scale(1)',
+                transformOrigin: 'left center',
+              }}
+            >
+              {formatPrice(product.price, currentCurrency)}
+            </p>
+            
+            {/* Cart and Wishlist Action Buttons */}
+            <div className="flex items-center space-x-1.5 ml-2">
+              {/* Wishlist Heart Button */}
+              <button
+                onClick={handleWishlistToggle}
+                className="action-btn p-1.5 text-neutral-500 hover:text-luxury-red transition duration-200 cursor-pointer rounded-full hover:bg-neutral-100 dark:hover:bg-white/5 relative flex items-center justify-center"
+                title="Add to Wishlist"
+              >
+                <Heart
+                  size={15}
+                  fill={isWishlisted ? '#e10600' : 'none'}
+                  stroke={isWishlisted ? '#e10600' : '#737373'}
+                />
+                
+                {/* Wishlist burst animation */}
+                <AnimatePresence>
+                  {isWishlisted && (
+                    <motion.span
+                      key="burst"
+                      className="absolute inset-0 rounded-full border border-red-500 pointer-events-none"
+                      initial={{ scale: 0.8, opacity: 1 }}
+                      animate={{ scale: 2, opacity: 0 }}
+                      exit={{}}
+                      transition={{ duration: 0.4 }}
+                    />
+                  )}
+                </AnimatePresence>
+              </button>
+
+              {/* Cart Button */}
+              <button
+                onClick={handleAddToCart}
+                className="action-btn p-1.5 text-neutral-500 hover:text-luxury-gold transition duration-200 cursor-pointer rounded-full hover:bg-neutral-100 dark:hover:bg-white/5 flex items-center justify-center"
+                title="Add to Cart"
+              >
+                <ShoppingBag size={15} />
+              </button>
+            </div>
+          </div>
+
           {showRemove && (
             <button
               onClick={handleWishlistToggle}
-              className="wishlist-btn mt-2.5 w-full py-2 bg-transparent border border-red-500/25 text-red-500 hover:bg-red-500 hover:text-white text-[10px] font-bold tracking-widest uppercase transition duration-300 cursor-pointer rounded-sm"
+              className="action-btn mt-2.5 w-full py-2 bg-transparent border border-red-500/25 text-red-500 hover:bg-red-500 hover:text-white text-[10px] font-bold tracking-widest uppercase transition duration-300 cursor-pointer rounded-sm"
             >
               Remove
             </button>
