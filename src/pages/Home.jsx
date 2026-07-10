@@ -675,7 +675,7 @@ export default function Home({ onPageChange }) {
   ];
 
   const marqueeA = ['Swadeshi Luxury', 'Indian Engineered', 'Make In India Pride', 'Sapphire Crystal', 'High-Beat Caliber', 'In-House Assembly'];
-  const marqueeB = ['Water Resistant 200m', 'Limited Edition Masterpiece', 'Indo-Swiss Caliber DNA', 'Excellence Redefined', 'State-of-the-Art Indian Manufacture', 'Precision Horology'];
+  const marqueeB = ['True Knock Group Product', 'Limited Edition Masterpiece', 'Khroniq Caliber Craftsmanship', 'Excellence Redefined', 'State-of-the-Art Indian Manufacture', 'Precision Made in India'];
   const stats = [
     { raw: '100', suffix: '%', label: 'Swadeshi Design' },
     { raw: '2026', suffix: '', label: 'Indian Launch' },
@@ -833,7 +833,7 @@ export default function Home({ onPageChange }) {
             </SlideReveal>
             <Reveal dir="left" delay={0.2}>
               <p className="text-luxury-muted text-sm leading-relaxed max-w-md">
-                Engineered for extreme conditions, the Khronomaster Professional pushes boundaries with water resistance up to 600m and the legendary El Primero caliber. Built to inspire confidence at every depth.
+                Engineered with Indian precision, the Khronomaster Professional pushes boundaries with components from the True Knock Group and the legendary Khroniq caliber. Built to inspire confidence for every Indian connoisseur.
               </p>
             </Reveal>
             <Reveal dir="left" delay={0.3}>

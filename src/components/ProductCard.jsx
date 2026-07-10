@@ -65,7 +65,7 @@ export default function ProductCard({ product, onPageChange, showRemove = false 
   if (product.specs?.case) specItems.push(product.specs.case);
   if (product.specs?.movement) specItems.push(product.specs.movement);
   if (product.specs?.strap) specItems.push(product.specs.strap);
-  const specLine = specItems.length > 0 ? specItems.join(' • ') : 'Swiss Quartz';
+  const specLine = specItems.length > 0 ? specItems.join(' • ') : 'Khroniq Caliber';
 
   return (
     <div

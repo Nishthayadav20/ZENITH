@@ -34,7 +34,7 @@ export default function Static({ params, _onPageChange }) {
   const faqData = [
     {
       q: "What warranty comes with my Khroniq timepiece?",
-      a: "Every Khroniq watch purchased through our platform is backed by a 3-Year International Swiss Warranty. This covers any manufacturing defect or caliber calibration issues. You can register your watch through the customer profile portal."
+      a: "Every Khroniq watch purchased through our platform is backed by a 3-Year Indian Warranty from the True Knock Group. This covers any manufacturing defect or caliber calibration issues. You can register your watch through the customer profile portal."
     },
     {
       q: "How does priority secure shipping operate?",
