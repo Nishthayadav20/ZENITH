@@ -343,11 +343,11 @@ html, body, #root {
 }
 .warranty-portal-input {
   background-color: #ffffff !important;
-  color: #374151 !important; /* Dark grey */
+  color: #000000 !important; /* Black */
   border: 1px solid rgba(0, 0, 0, 0.2) !important;
 }
 .warranty-portal-input::placeholder {
-  color: #6b7280 !important; /* Dark grey placeholder */
-  opacity: 1 !important;
+  color: #000000 !important; /* Black placeholder */
+  opacity: 0.6 !important;
 }
 

@@ -355,8 +355,8 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
         {/* Drawer Header */}
         <div className="flex justify-between items-center border-b border-white/5 pb-4">
           <div className="flex items-center space-x-2">
-            <ShieldCheck className="w-6 h-6" style={{ color: '#ffbc8b' }} />
-            <h3 className="text-sm font-bold uppercase tracking-widest" style={{ color: '#ffbc8b' }}>Warranty Portal</h3>
+            <ShieldCheck className="w-6 h-6" style={{ color: '#ffffff' }} />
+            <h3 className="text-sm font-bold uppercase tracking-widest" style={{ color: '#ffffff' }}>Warranty Portal</h3>
           </div>
           <button 
             onClick={onClose} 
@@ -379,13 +379,13 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
           {/* STEP 1: Enter Name & Email */}
           {step === 'details' && (
             <form onSubmit={handleRetrievePurchases} className="space-y-4 text-sm">
-              <p className="text-xs leading-relaxed font-normal uppercase tracking-wider" style={{ color: '#ffbc8b' }}>
+              <p className="text-xs leading-relaxed font-normal uppercase tracking-wider" style={{ color: '#ffffff' }}>
                 Enter your billing details to retrieve your watch purchases from the manufacture database.
               </p>
 
               {/* Owner Name */}
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffbc8b' }}>Full Name</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffffff' }}>Full Name</label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center" style={{ color: '#6b7280' }}>
                     <User size={12} />
@@ -403,7 +403,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Owner Email */}
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffbc8b' }}>Email Address</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffffff' }}>Email Address</label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center" style={{ color: '#6b7280' }}>
                     <QrCode size={12} />
@@ -423,7 +423,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
               <div className="grid grid-cols-2 gap-4">
                 {/* Country Search Select */}
                 <div className="space-y-1.5 relative">
-                  <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffbc8b' }}>Country</label>
+                  <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffffff' }}>Country</label>
                   <input
                     type="text"
                     required
@@ -478,7 +478,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
                 {/* State Select / Text input */}
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffbc8b' }}>State</label>
+                  <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffffff' }}>State</label>
                   {selectedCountry === 'India' ? (
                     <select
                       value={selectedState}
@@ -504,7 +504,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Phone Number */}
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffbc8b' }}>Phone Number</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffffff' }}>Phone Number</label>
                 <div className="flex space-x-2">
                   <div className="bg-white text-gray-700 font-mono text-sm px-3 py-2.5 rounded border border-gray-300 flex items-center justify-center min-w-[55px]" style={{ backgroundColor: '#ffffff', color: '#374151' }}>
                     {ALL_COUNTRIES.find(c => c.name === selectedCountry)?.code || '+91'}
@@ -537,12 +537,12 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
           {step === 'watch-select' && (
             <form onSubmit={handleClaimWarranty} className="space-y-4 text-sm">
               <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                <p className="text-xs uppercase tracking-widest font-bold" style={{ color: '#ffbc8b' }}>Billing matches: {purchases.length} Found</p>
+                <p className="text-xs uppercase tracking-widest font-bold" style={{ color: '#ffffff' }}>Billing matches: {purchases.length} Found</p>
                 <button 
                   type="button" 
                   onClick={() => setStep('details')}
                   className="hover:underline text-xs uppercase font-bold"
-                  style={{ color: '#ffbc8b' }}
+                  style={{ color: '#ffffff' }}
                 >
                   Change Owner
                 </button>
@@ -550,7 +550,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Watch Name Dropdown Input */}
               <div className="space-y-1.5 relative">
-                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffbc8b' }}>Name of Watch</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffffff' }}>Name of Watch</label>
                 <div className="relative">
                   <input
                     type="text"
@@ -597,16 +597,16 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                     className="w-14 h-14 object-cover rounded bg-black/40 border border-white/5"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: '#ffbc8b' }}>Purchase Match</p>
+                    <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: '#ffffff' }}>Purchase Match</p>
                     <p className="font-bold truncate text-xs" style={{ color: '#ffffff' }}>{selectedPurchase.name}</p>
-                    <p className="text-[10px]" style={{ color: '#ffbc8b' }}>Purchased on {selectedPurchase.date}</p>
+                    <p className="text-[10px]" style={{ color: '#ffffff' }}>Purchased on {selectedPurchase.date}</p>
                   </div>
                 </div>
               )}
 
               {/* Serial Code */}
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffbc8b' }}>Serial Code of Purchase</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffffff' }}>Serial Code of Purchase</label>
                 <input
                   type="text"
                   required
@@ -619,7 +619,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Special Code to Claim Warranty */}
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffbc8b' }}>Special Code to Claim Warranty</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffffff' }}>Special Code to Claim Warranty</label>
                 <input
                   type="text"
                   required
