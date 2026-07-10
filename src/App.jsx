@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import Admin from './pages/Admin';
 import Static from './pages/Static';
 import Customization from './pages/Customization';
+import Gifting from './pages/Gifting';
 import { fetchProducts, fetchCoupons, fetchUserProfile } from './store/slices/watchSlice';
 import ResetPassword from './pages/ResetPassword';
 
@@ -66,6 +67,8 @@ function AppContent() {
         return <ResetPassword params={pageParams} onPageChange={handlePageChange} />;
       case 'customization':
         return <Customization onPageChange={handlePageChange} params={pageParams} />;
+      case 'gifting':
+        return <Gifting onPageChange={handlePageChange} />;
       default:
         return <Home onPageChange={handlePageChange} />;
     }
