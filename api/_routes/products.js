@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
 // @desc    Create a product
 // @access  Private/Admin
 router.post('/', protect, adminOnly, async (req, res) => {
-  const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization } = req.body;
+  const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization, allowDialCustomization } = req.body;
 
   try {
     const product = new Product({
@@ -43,6 +43,7 @@ router.post('/', protect, adminOnly, async (req, res) => {
       customizable: customizable || false,
       allowStrapCustomization: allowStrapCustomization !== undefined ? allowStrapCustomization : true,
       allowCaseCustomization: allowCaseCustomization !== undefined ? allowCaseCustomization : true,
+      allowDialCustomization: allowDialCustomization !== undefined ? allowDialCustomization : true,
       customizationOptions: req.body.customizationOptions,
       reviews: []
     });
@@ -59,7 +60,7 @@ router.post('/', protect, adminOnly, async (req, res) => {
 // @desc    Update a product
 // @access  Private/Admin
 router.put('/:id', protect, adminOnly, async (req, res) => {
-  const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization } = req.body;
+  const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization, allowDialCustomization } = req.body;
 
   try {
     const product = await Product.findById(req.params.id);
@@ -89,6 +90,7 @@ router.put('/:id', protect, adminOnly, async (req, res) => {
     if (customizable !== undefined) product.customizable = customizable;
     if (allowStrapCustomization !== undefined) product.allowStrapCustomization = allowStrapCustomization;
     if (allowCaseCustomization !== undefined) product.allowCaseCustomization = allowCaseCustomization;
+    if (allowDialCustomization !== undefined) product.allowDialCustomization = allowDialCustomization;
     if (req.body.customizationOptions !== undefined) {
       product.customizationOptions = req.body.customizationOptions;
     }

@@ -67,6 +67,7 @@ export default function Admin({ onPageChange }) {
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     customizationOptions: {
       dialColors: [],
       strapMaterials: [],
@@ -729,7 +730,8 @@ export default function Admin({ onPageChange }) {
                           ...newProduct, 
                           customizable: val,
                           allowStrapCustomization: val ? (newProduct.allowStrapCustomization ?? true) : false,
-                          allowCaseCustomization: val ? (newProduct.allowCaseCustomization ?? true) : false
+                          allowCaseCustomization: val ? (newProduct.allowCaseCustomization ?? true) : false,
+                          allowDialCustomization: val ? (newProduct.allowDialCustomization ?? true) : false
                         });
                       }}
                       className={`w-12 h-6 rounded-full transition-all duration-300 cursor-pointer relative ${
@@ -886,26 +888,41 @@ export default function Admin({ onPageChange }) {
                         )}
                       </div>
 
-                      {/* Available Dial Colors Selector */}
-                      <div className="space-y-1.5 pt-2 border-t border-white/5">
-                        <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block font-sans">Available Dial Colors</label>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                          {DIAL_COLOR_PRESETS.map(color => {
-                            const isChecked = (newProduct.customizationOptions?.dialColors || []).includes(color.hex);
-                            return (
-                              <label key={color.hex} className="flex items-center space-x-2 p-1.5 rounded border border-white/5 bg-luxury-dark/80 cursor-pointer hover:border-white/10 select-none">
-                                <input
-                                  type="checkbox"
-                                  checked={isChecked}
-                                  onChange={() => handleDialColorCheckboxChange(color.hex, false)}
-                                  className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
-                                />
-                                <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: color.hex }} />
-                                <span className="text-[10px] text-gray-300 font-medium">{color.name}</span>
-                              </label>
-                            );
-                          })}
+                      <div className="space-y-2">
+                        <div className="flex items-center space-x-2.5">
+                          <input
+                            type="checkbox"
+                            id="newAllowDialCustomization"
+                            checked={newProduct.allowDialCustomization ?? true}
+                            onChange={(e) => setNewProduct({ ...newProduct, allowDialCustomization: e.target.checked })}
+                            className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                          />
+                          <label htmlFor="newAllowDialCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                            Allow Dial Color Customization
+                          </label>
                         </div>
+                        {newProduct.allowDialCustomization && (
+                          <div className="pl-6 space-y-1.5 border-l border-white/10 my-2">
+                            <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block font-sans">Available Dial Colors</label>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                              {DIAL_COLOR_PRESETS.map(color => {
+                                const isChecked = (newProduct.customizationOptions?.dialColors || []).includes(color.hex);
+                                return (
+                                  <label key={color.hex} className="flex items-center space-x-2 p-1.5 rounded border border-white/5 bg-luxury-dark/80 cursor-pointer hover:border-white/10 select-none">
+                                    <input
+                                      type="checkbox"
+                                      checked={isChecked}
+                                      onChange={() => handleDialColorCheckboxChange(color.hex, false)}
+                                      className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
+                                    />
+                                    <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: color.hex }} />
+                                    <span className="text-[10px] text-gray-300 font-medium">{color.name}</span>
+                                  </label>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -1019,7 +1036,8 @@ export default function Admin({ onPageChange }) {
                             ...editForm, 
                             customizable: val,
                             allowStrapCustomization: val ? (editForm.allowStrapCustomization ?? true) : false,
-                            allowCaseCustomization: val ? (editForm.allowCaseCustomization ?? true) : false
+                            allowCaseCustomization: val ? (editForm.allowCaseCustomization ?? true) : false,
+                            allowDialCustomization: val ? (editForm.allowDialCustomization ?? true) : false
                           });
                         }}
                         className={`w-12 h-6 rounded-full transition-all duration-300 cursor-pointer relative ${
@@ -1176,26 +1194,41 @@ export default function Admin({ onPageChange }) {
                           )}
                         </div>
 
-                        {/* Available Dial Colors Selector */}
-                        <div className="space-y-1.5 pt-2 border-t border-white/5">
-                          <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block font-sans">Available Dial Colors</label>
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                            {DIAL_COLOR_PRESETS.map(color => {
-                              const isChecked = (editForm.customizationOptions?.dialColors || []).includes(color.hex);
-                              return (
-                                <label key={color.hex} className="flex items-center space-x-2 p-1.5 rounded border border-white/5 bg-luxury-dark/80 cursor-pointer hover:border-white/10 select-none">
-                                  <input
-                                    type="checkbox"
-                                    checked={isChecked}
-                                    onChange={() => handleDialColorCheckboxChange(color.hex, true)}
-                                    className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
-                                  />
-                                  <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: color.hex }} />
-                                  <span className="text-[10px] text-gray-300 font-medium">{color.name}</span>
-                                </label>
-                              );
-                            })}
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2.5">
+                            <input
+                              type="checkbox"
+                              id="allowDialCustomization"
+                              checked={editForm.allowDialCustomization ?? true}
+                              onChange={(e) => setEditForm({ ...editForm, allowDialCustomization: e.target.checked })}
+                              className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                            />
+                            <label htmlFor="allowDialCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                              Allow Dial Color Customization
+                            </label>
                           </div>
+                          {editForm.allowDialCustomization && (
+                            <div className="pl-6 space-y-1.5 border-l border-white/10 my-2">
+                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block font-sans">Available Dial Colors</label>
+                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                {DIAL_COLOR_PRESETS.map(color => {
+                                  const isChecked = (editForm.customizationOptions?.dialColors || []).includes(color.hex);
+                                  return (
+                                    <label key={color.hex} className="flex items-center space-x-2 p-1.5 rounded border border-white/5 bg-luxury-dark/80 cursor-pointer hover:border-white/10 select-none">
+                                      <input
+                                        type="checkbox"
+                                        checked={isChecked}
+                                        onChange={() => handleDialColorCheckboxChange(color.hex, true)}
+                                        className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
+                                      />
+                                      <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: color.hex }} />
+                                      <span className="text-[10px] text-gray-300 font-medium">{color.name}</span>
+                                    </label>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}

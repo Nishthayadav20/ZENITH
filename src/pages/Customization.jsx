@@ -381,7 +381,7 @@ export default function Customization({ onPageChange, params }) {
             <div className="dark-panel bg-[#111111] rounded-xl border border-white/5 p-5 space-y-3 text-xs text-white/90">
               <p className="text-white font-bold text-[11px] uppercase tracking-widest mb-3">Your Configuration</p>
               {[
-                ['Dial Color',     dialColor?.label   || '—', true],
+                ['Dial Color',     dialColor?.label   || '—', selectedProduct.allowDialCustomization !== false],
                 ['Strap Material', strapMaterial      || '—', selectedProduct.allowStrapCustomization !== false],
                 ['Case Finish',    caseFinish         || '—', selectedProduct.allowCaseCustomization !== false],
                 ['Engraving',      engraving || 'None',   options.engravingAllowed],
@@ -407,30 +407,32 @@ export default function Customization({ onPageChange, params }) {
             </div>
 
             {/* Dial Color */}
-            <div className="space-y-3">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-muted">
-                Dial Color — <span className="text-white">{dialColor?.label}</span>
-              </h3>
-              <div className="flex flex-wrap gap-3">
-                {options.dialColors.map((color) => (
-                  <button
-                    key={color.value}
-                    onClick={() => setDialColor(color)}
-                    title={color.label}
-                    className="relative w-10 h-10 rounded-full border-2 transition-all duration-200 cursor-pointer"
-                    style={{
-                      background: color.value,
-                      borderColor: dialColor?.value === color.value ? '#c8a96a' : 'transparent',
-                      boxShadow: dialColor?.value === color.value ? '0 0 0 3px rgba(200,169,106,0.3)' : 'none',
-                    }}
-                  >
-                    {dialColor?.value === color.value && (
-                      <Check size={14} className="absolute inset-0 m-auto" style={{ color: color.textDark ? '#000' : '#fff' }} />
-                    )}
-                  </button>
-                ))}
+            {selectedProduct.allowDialCustomization !== false && (
+              <div className="space-y-3">
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-muted">
+                  Dial Color — <span className="text-white">{dialColor?.label}</span>
+                </h3>
+                <div className="flex flex-wrap gap-3">
+                  {options.dialColors.map((color) => (
+                    <button
+                      key={color.value}
+                      onClick={() => setDialColor(color)}
+                      title={color.label}
+                      className="relative w-10 h-10 rounded-full border-2 transition-all duration-200 cursor-pointer"
+                      style={{
+                        background: color.value,
+                        borderColor: dialColor?.value === color.value ? '#c8a96a' : 'transparent',
+                        boxShadow: dialColor?.value === color.value ? '0 0 0 3px rgba(200,169,106,0.3)' : 'none',
+                      }}
+                    >
+                      {dialColor?.value === color.value && (
+                        <Check size={14} className="absolute inset-0 m-auto" style={{ color: color.textDark ? '#000' : '#fff' }} />
+                      )}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Strap Material */}
             {selectedProduct.allowStrapCustomization !== false && (

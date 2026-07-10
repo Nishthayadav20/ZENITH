@@ -32,6 +32,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: [
       { id: 'rev-1', userName: 'John Doe', rating: 5, comment: 'Exquisite design, feels very premium and heavy. Highly recommend!', date: '2026-06-15', status: 'approved' },
       { id: 'rev-2', userName: 'Alice Smith', rating: 4, comment: 'Elegant dial, but the bracelet needed adjustment. Overall beautiful watch.', date: '2026-06-20', status: 'approved' }
@@ -58,6 +59,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: [
       { id: 'rev-3', userName: 'Marc V.', rating: 5, comment: 'The El Primero movement is flawless. The black ceramic case is scratchproof!', date: '2026-05-10', status: 'approved' }
     ]
@@ -83,6 +85,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: [
       { id: 'rev-4', userName: 'David K.', rating: 4, comment: 'Classic dress watch. Super thin and fits under any cuff.', date: '2026-06-01', status: 'approved' }
     ]
@@ -108,6 +111,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: [
       { id: 'rev-5', userName: 'Sarah L.', rating: 5, comment: 'Sturdy yet elegant. Ideal everyday luxury watch.', date: '2026-06-25', status: 'approved' }
     ]
@@ -133,6 +137,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: []
   },
   {
@@ -156,6 +161,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: []
   },
   {
@@ -179,6 +185,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: []
   },
   {
@@ -202,6 +209,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: []
   },
   {
@@ -225,6 +233,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: []
   },
   {
@@ -248,6 +257,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: []
   },
   {
@@ -271,6 +281,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: []
   }
 ];
