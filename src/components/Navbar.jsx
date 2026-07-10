@@ -176,7 +176,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                             type="button"
                             onMouseEnter={() => setActiveSubMenu('price')}
                             className={`w-full text-left px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-widest flex items-center justify-between transition duration-200 ${
-                              activeSubMenu === 'price' ? 'bg-white/20 backdrop-blur-sm border border-neutral-900/20 text-neutral-950 font-black scale-[1.02]' : 'text-neutral-500 hover:bg-neutral-900/5 border border-transparent'
+                              activeSubMenu === 'price' ? 'bg-white/20 backdrop-blur-sm border border-neutral-900/20 text-black font-black scale-[1.02]' : 'text-neutral-700 hover:text-black hover:bg-neutral-900/5 border border-transparent'
                             }`}
                           >
                             <span>Shop By Price</span>
@@ -186,7 +186,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                             type="button"
                             onMouseEnter={() => setActiveSubMenu('recipient')}
                             className={`w-full text-left px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-widest flex items-center justify-between transition duration-200 ${
-                              activeSubMenu === 'recipient' ? 'bg-white/20 backdrop-blur-sm border border-neutral-900/20 text-neutral-950 font-black scale-[1.02]' : 'text-neutral-500 hover:bg-neutral-900/5 border border-transparent'
+                              activeSubMenu === 'recipient' ? 'bg-white/20 backdrop-blur-sm border border-neutral-900/20 text-black font-black scale-[1.02]' : 'text-neutral-700 hover:text-black hover:bg-neutral-900/5 border border-transparent'
                             }`}
                           >
                             <span>Watches For Recipient</span>
@@ -198,7 +198,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                         <div className="col-span-5 px-6">
                           {activeSubMenu === 'price' && (
                             <div className="space-y-6">
-                              <h4 className="text-[10px] font-black tracking-[0.25em] text-neutral-400 uppercase">Shop By Price</h4>
+                              <h4 className="text-[10px] font-black tracking-[0.25em] text-black uppercase">Shop By Price</h4>
                               <div className="grid grid-cols-2 gap-4">
                                 {[
                                   { label: 'Under ₹50,000', maxPrice: 1000 },
@@ -212,7 +212,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                                       setMegaMenuForceClosed(true);
                                       onPageChange('shop', { maxPrice: p.maxPrice });
                                     }}
-                                    className="text-left text-xs text-neutral-800 hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
+                                    className="text-left text-xs text-black hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
                                   >
                                     {p.label}
                                   </button>
@@ -223,7 +223,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
 
                           {activeSubMenu === 'recipient' && (
                             <div className="space-y-6">
-                              <h4 className="text-[10px] font-black tracking-[0.25em] text-neutral-400 uppercase">Watches For Recipient</h4>
+                              <h4 className="text-[10px] font-black tracking-[0.25em] text-black uppercase">Watches For Recipient</h4>
                               {/* 2 Column Recipient Layout to match screenshot */}
                               <div className="grid grid-cols-2 gap-x-12 gap-y-4">
                                 <div className="flex flex-col space-y-3.5">
@@ -238,7 +238,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                                         setMegaMenuForceClosed(true);
                                         onPageChange('shop', r.filter);
                                       }}
-                                      className="text-left text-xs text-neutral-800 hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
+                                      className="text-left text-xs text-black hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
                                     >
                                       {r.label}
                                     </button>
@@ -256,7 +256,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                                         setMegaMenuForceClosed(true);
                                         onPageChange('shop', r.filter);
                                       }}
-                                      className="text-left text-xs text-neutral-800 hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
+                                      className="text-left text-xs text-black hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
                                     >
                                       {r.label}
                                     </button>
