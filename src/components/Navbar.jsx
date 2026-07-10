@@ -23,6 +23,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
   const [lastScrollY, setLastScrollY] = useState(0);
   const currentCurrency = useSelector(selectCurrentCurrency);
   const [currencyOpen, setCurrencyOpen] = useState(false);
+  const [activeSubMenu, setActiveSubMenu] = useState('recipient');
 
   const currencyMap = {
     INR: { symbol: '₹', label: 'Indian Currency (Rupees)' },
@@ -70,7 +71,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
     { label: 'HOME', page: 'home' },
     { label: 'MEN', page: 'shop', filter: { gender: 'men' } },
     { label: 'WOMEN', page: 'shop', filter: { gender: 'women' } },
-    { label: 'SHOP ALL', page: 'shop' },
+    { label: 'WATCHES', page: 'shop', megaMenu: true },
     { label: 'KHRONOMASTER', page: 'shop', filter: { category: 'Khronomaster' } },
     { label: 'CUSTOMIZE', page: 'customization' },
     { label: '🎁 GIFTING', page: 'gifting' },
@@ -148,6 +149,115 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                           {sub.label}
                         </button>
                       ))}
+                    </div>
+                  </div>
+                );
+              }
+
+              if (link.megaMenu) {
+                return (
+                  <div key={idx} className="relative group py-2">
+                    <button
+                      onClick={() => handleNavLinkClick(link)}
+                      className={`whitespace-nowrap transition duration-200 cursor-pointer uppercase font-black tracking-wider ${textColorClass} ${
+                        currentPage === link.page ? 'text-luxury-gold' : ''
+                      }`}
+                    >
+                      {link.label}
+                    </button>
+                    
+                    {/* MEGA MENU DROPDOWN */}
+                    <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-[720px] bg-white text-neutral-900 border border-gray-200 rounded shadow-2xl p-6 hidden group-hover:flex z-50 gap-6 text-left">
+                      {/* Left Column: Category selectors */}
+                      <div className="w-[200px] border-r border-gray-100 pr-4 flex flex-col space-y-2">
+                        <button
+                          type="button"
+                          onMouseEnter={() => setActiveSubMenu('price')}
+                          className={`w-full text-left px-3 py-2.5 rounded text-xs font-bold uppercase tracking-wider flex items-center justify-between transition ${
+                            activeSubMenu === 'price' ? 'bg-gray-100 text-neutral-950 font-black' : 'text-gray-500 hover:bg-gray-50'
+                          }`}
+                        >
+                          <span>Shop By Price</span>
+                          <span>&gt;</span>
+                        </button>
+                        <button
+                          type="button"
+                          onMouseEnter={() => setActiveSubMenu('recipient')}
+                          className={`w-full text-left px-3 py-2.5 rounded text-xs font-bold uppercase tracking-wider flex items-center justify-between transition ${
+                            activeSubMenu === 'recipient' ? 'bg-gray-100 text-neutral-950 font-black' : 'text-gray-500 hover:bg-gray-50'
+                          }`}
+                        >
+                          <span>Watches For Recipient</span>
+                          <span>&gt;</span>
+                        </button>
+                      </div>
+
+                      {/* Middle Column: Sub-menu items */}
+                      <div className="flex-1 px-4">
+                        {activeSubMenu === 'price' && (
+                          <div className="space-y-4">
+                            <h4 className="text-[10px] font-black tracking-widest text-gray-400 uppercase">Shop By Price</h4>
+                            <div className="flex flex-col space-y-2.5">
+                              {[
+                                { label: 'Under ₹50,000', maxPrice: 1000 },
+                                { label: '₹50,000 - ₹1,00,000', maxPrice: 2000 },
+                                { label: '₹1,00,000 - ₹2,00,000', maxPrice: 4500 },
+                                { label: 'Above ₹2,00,000', maxPrice: 6000 },
+                              ].map((p) => (
+                                <button
+                                  key={p.label}
+                                  onClick={() => {
+                                    onPageChange('shop', { maxPrice: p.maxPrice });
+                                  }}
+                                  className="text-left text-xs text-gray-600 hover:text-neutral-900 transition font-bold uppercase tracking-wider cursor-pointer"
+                                >
+                                  {p.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {activeSubMenu === 'recipient' && (
+                          <div className="space-y-4">
+                            <h4 className="text-[10px] font-black tracking-widest text-gray-400 uppercase">Watches For Recipient</h4>
+                            <div className="flex flex-col space-y-2.5">
+                              {[
+                                { label: 'Watches For Bride', filter: { gender: 'women', search: 'Bride' } },
+                                { label: 'Watches For Groom', filter: { gender: 'men', search: 'Groom' } },
+                                { label: 'Watches For Mother', filter: { gender: 'women', search: 'Mother' } },
+                                { label: 'Watches For Father', filter: { gender: 'men', search: 'Father' } },
+                                { label: 'Watches For Brother', filter: { gender: 'men', search: 'Brother' } },
+                                { label: 'Watches For Sister', filter: { gender: 'women', search: 'Sister' } },
+                              ].map((r) => (
+                                <button
+                                  key={r.label}
+                                  onClick={() => {
+                                    onPageChange('shop', r.filter);
+                                  }}
+                                  className="text-left text-xs text-gray-600 hover:text-neutral-900 transition font-bold uppercase tracking-wider cursor-pointer"
+                                >
+                                  {r.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Right Column: Looking for a Gift card */}
+                      <div className="w-[220px] relative overflow-hidden rounded bg-red-950/90 text-white flex flex-col justify-between p-5 border border-red-900/30">
+                        <div className="absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: "url('/assets/media__1783681299347.png')" }} />
+                        <div className="relative z-10 space-y-1">
+                          <h4 className="font-serif text-lg font-black tracking-wider leading-tight">LOOKING<br/>for<br/>A GIFT?</h4>
+                        </div>
+                        <button
+                          onClick={() => onPageChange('gifting')}
+                          className="relative z-10 w-full py-2 bg-white text-red-950 font-black text-[10px] uppercase tracking-widest rounded hover:bg-gray-100 transition cursor-pointer"
+                        >
+                          Shop Now
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );

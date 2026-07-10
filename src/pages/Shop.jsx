@@ -31,6 +31,9 @@ export default function Shop({ onPageChange, filterParams }) {
     } else if (filterParams?.search !== undefined) {
       setSearchQuery(filterParams.search);
     }
+    if (filterParams?.maxPrice) {
+      setPriceRange(filterParams.maxPrice);
+    }
   }, [filterParams]);
 
   // Reset page when filters or sorting changes
