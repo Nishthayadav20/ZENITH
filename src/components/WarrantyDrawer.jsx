@@ -167,7 +167,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffbc8b' }}>Full Name</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center" style={{ color: '#6b7280' }}>
                     <User size={12} />
                   </span>
                   <input
@@ -185,7 +185,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffbc8b' }}>Email Address</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center" style={{ color: '#6b7280' }}>
                     <QrCode size={12} />
                   </span>
                   <input
