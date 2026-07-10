@@ -285,7 +285,7 @@ export default function Checkout({ params, onPageChange }) {
                     )}
                     <span className="text-lg block mb-1">{occ.emoji}</span>
                     <p className={`text-[10px] font-bold tracking-wide uppercase ${
-                      giftOccasion === occ.id ? 'text-luxury-gold' : 'text-white'
+                      giftOccasion === occ.id ? 'text-luxury-gold' : 'text-neutral-800'
                     }`}>{occ.label}</p>
                   </button>
                 ))}
