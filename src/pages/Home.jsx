@@ -582,6 +582,14 @@ export default function Home({ onPageChange }) {
   const [showUpdates, setShowUpdates] = useState(false);
   const [brandUpdates, setBrandUpdates] = useState([]);
   const [hoveredProduct, setHoveredProduct] = useState(null);
+  const updatesRef = useRef(null);
+  const updatesInView = useInView(updatesRef, { once: true, margin: '-100px' });
+
+  useEffect(() => {
+    if (updatesInView) {
+      setShowUpdates(true);
+    }
+  }, [updatesInView]);
 
   const hoverTimeoutRef = useRef(null);
 
@@ -1089,7 +1097,7 @@ export default function Home({ onPageChange }) {
 
 
         {/* ══════════ SPLIT VIDEO SHOWCASE SECTION ══════════ */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={updatesRef}>
           <motion.section
             className="flex flex-col lg:flex-row gap-8 items-center justify-between py-12"
             initial={{ opacity: 0, y: 48 }}
