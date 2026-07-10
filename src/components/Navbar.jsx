@@ -167,27 +167,29 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                     </button>
                     
                     {/* CLEAN DROPDOWN - DIRECTLY BENEATH GIFTING */}
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-52 bg-[#111111] border border-white/10 rounded shadow-xl py-2 hidden group-hover:block transition duration-200 z-50 text-left">
-                      {[
-                        { label: 'Watches For Bride', filter: { gender: 'women', search: 'Bride' } },
-                        { label: 'Watches For Groom', filter: { gender: 'men', search: 'Groom' } },
-                        { label: 'Watches For Mother', filter: { gender: 'women', search: 'Mother' } },
-                        { label: 'Watches For Father', filter: { gender: 'men', search: 'Father' } },
-                        { label: 'Watches For Brother', filter: { gender: 'men', search: 'Brother' } },
-                        { label: 'Watches For Sister', filter: { gender: 'women', search: 'Sister' } },
-                        { label: 'Watches For Friend', filter: { search: 'Friend' } },
-                      ].map((sub) => (
-                        <button
-                          key={sub.label}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onPageChange('shop', sub.filter);
-                          }}
-                          className="w-full text-left px-4 py-2.5 hover:bg-white/10 text-gray-300 hover:text-white transition text-[11px] font-bold uppercase tracking-wider cursor-pointer block"
-                        >
-                          {sub.label}
-                        </button>
-                      ))}
+                    <div className="absolute top-[85%] left-1/2 -translate-x-1/2 pt-4 w-52 hidden group-hover:block z-50 text-left">
+                      <div className="bg-black/85 backdrop-blur-lg border border-white/10 rounded-lg shadow-2xl py-2 overflow-hidden">
+                        {[
+                          { label: 'Watches For Bride', filter: { gender: 'women', search: 'Bride' } },
+                          { label: 'Watches For Groom', filter: { gender: 'men', search: 'Groom' } },
+                          { label: 'Watches For Mother', filter: { gender: 'women', search: 'Mother' } },
+                          { label: 'Watches For Father', filter: { gender: 'men', search: 'Father' } },
+                          { label: 'Watches For Brother', filter: { gender: 'men', search: 'Brother' } },
+                          { label: 'Watches For Sister', filter: { gender: 'women', search: 'Sister' } },
+                          { label: 'Watches For Friend', filter: { search: 'Friend' } },
+                        ].map((sub) => (
+                          <button
+                            key={sub.label}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onPageChange('shop', sub.filter);
+                            }}
+                            className="w-full text-left px-4 py-2.5 hover:bg-white/10 text-gray-300 hover:text-luxury-gold transition text-[11px] font-bold uppercase tracking-wider cursor-pointer block"
+                          >
+                            {sub.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 );
