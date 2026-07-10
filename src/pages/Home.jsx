@@ -759,7 +759,8 @@ export default function Home({ onPageChange }) {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.85, delay: 0.46 }}
               className="pt-4 flex flex-col sm:flex-row justify-center sm:justify-start items-center gap-4">
               <MagBtn onClick={() => onPageChange('shop')}
-                className="px-8 py-4 bg-luxury-gold-dark text-white text-xs font-bold tracking-widest uppercase hover:bg-luxury-gold transition-colors duration-150 w-full sm:w-auto cursor-pointer border border-luxury-gold-dark">
+                className="px-8 py-4 text-white text-xs font-bold tracking-widest uppercase hover:opacity-90 transition duration-150 w-full sm:w-auto cursor-pointer border"
+                style={{ backgroundColor: '#0f4605', borderColor: '#0f4605' }}>
                 Explore Timepieces
               </MagBtn>
               <MagBtn onClick={() => onPageChange('shop', { category: 'Khronomaster' })}
