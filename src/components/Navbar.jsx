@@ -73,7 +73,6 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
     { label: 'SHOP ALL', page: 'shop' },
     { label: 'KHRONOMASTER', page: 'shop', filter: { category: 'Khronomaster' } },
     { label: 'CUSTOMIZE', page: 'customization' },
-    { label: 'FAQ', page: 'static', args: { view: 'faq' }, dropdown: true },
     { label: '🎁 GIFTING', page: 'gifting' },
   ];
 

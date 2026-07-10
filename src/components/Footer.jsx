@@ -347,29 +347,76 @@ export default function Footer({ onPageChange }) {
                 <div style={{ width:'20px', height:'1.5px', background:'#c5a880' }} />
               </div>
               <ul style={{ listStyle:'none', margin:0, padding:0, display:'flex', flexDirection:'column', gap:'0.6rem' }}>
-                {links.map(({ label, page, args }) => (
-                  <li key={label}>
-                    <button
-                      onClick={() => onPageChange(page, args)}
-                      style={{
-                        background:'none', border:'none', padding:0,
-                        fontSize:'0.72rem', color:'rgba(200,190,175,0.55)',
-                        cursor:'pointer', transition:'color 0.25s',
-                        display:'flex', alignItems:'center', gap:'6px',
-                        fontFamily:'inherit',
-                      }}
-                      onMouseEnter={e => { e.currentTarget.style.color='#c5a880'; }}
-                      onMouseLeave={e => { e.currentTarget.style.color='rgba(200,190,175,0.55)'; }}
-                    >
-                      <span style={{
-                        display:'inline-block', width:'14px', height:'1px',
-                        background:'currentColor', flexShrink:0,
-                        transition:'width 0.3s',
-                      }} className="link-dash" />
-                      {label}
-                    </button>
-                  </li>
-                ))}
+                {links.map(({ label, page, args }) => {
+                  if (label === 'FAQ') {
+                    return (
+                      <li key={label} className="relative group">
+                        <button
+                          onClick={() => onPageChange(page, args)}
+                          style={{
+                            background:'none', border:'none', padding:0,
+                            fontSize:'0.72rem', color:'rgba(200,190,175,0.55)',
+                            cursor:'pointer', transition:'color 0.25s',
+                            display:'flex', alignItems:'center', gap:'6px',
+                            fontFamily:'inherit',
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.color='#c5a880'; }}
+                          onMouseLeave={e => { e.currentTarget.style.color='rgba(200,190,175,0.55)'; }}
+                        >
+                          <span style={{
+                            display:'inline-block', width:'14px', height:'1px',
+                            background:'currentColor', flexShrink:0,
+                            transition:'width 0.3s',
+                          }} className="link-dash" />
+                          {label}
+                        </button>
+                        <div className="absolute bottom-full left-0 mb-2 w-48 bg-[#111111] border border-white/10 rounded shadow-2xl py-2 hidden group-hover:block transition duration-200 z-50 text-left">
+                          {[
+                            { label: 'Our Story', view: 'about' },
+                            { label: 'Boutique Contact', view: 'contact' },
+                            { label: 'Client FAQ', view: 'faq' },
+                            { label: 'Blogs & Editorial', view: 'blogs' },
+                            { label: 'Legal Policies', view: 'policies' }
+                          ].map((sub) => (
+                            <button
+                              key={sub.view}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onPageChange('static', { view: sub.view });
+                              }}
+                              className="w-full text-left px-4 py-2 hover:bg-white/10 text-gray-300 hover:text-white transition text-[11px] font-bold uppercase tracking-wider cursor-pointer block"
+                            >
+                              {sub.label}
+                            </button>
+                          ))}
+                        </div>
+                      </li>
+                    );
+                  }
+                  return (
+                    <li key={label}>
+                      <button
+                        onClick={() => onPageChange(page, args)}
+                        style={{
+                          background:'none', border:'none', padding:0,
+                          fontSize:'0.72rem', color:'rgba(200,190,175,0.55)',
+                          cursor:'pointer', transition:'color 0.25s',
+                          display:'flex', alignItems:'center', gap:'6px',
+                          fontFamily:'inherit',
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.color='#c5a880'; }}
+                        onMouseLeave={e => { e.currentTarget.style.color='rgba(200,190,175,0.55)'; }}
+                      >
+                        <span style={{
+                          display:'inline-block', width:'14px', height:'1px',
+                          background:'currentColor', flexShrink:0,
+                          transition:'width 0.3s',
+                        }} className="link-dash" />
+                        {label}
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}
