@@ -696,7 +696,7 @@ export default function Home({ onPageChange }) {
         {/* Video — deepest layer, drifts opposite */}
         <motion.div className="absolute inset-0 z-0" style={{ x: vidX, y: vidY, scale: 1.06 }}>
           <video autoPlay loop muted playsInline className="object-cover w-full h-full brightness-[0.87]" style={{ objectPosition: '30% 50%' }}>
-            <source src="/assets/background.mp4" type="video/mp4" />
+            <source src="/assets/homepage_bg.mp4" type="video/mp4" />
           </video>
           <div className="absolute inset-0 bg-black/28" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.65)_100%)]" />
