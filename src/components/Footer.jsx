@@ -50,9 +50,9 @@ const NAV_COLS = [
 ];
 
 const BADGES = [
-  { icon: ShieldCheck, label: 'Swiss Guarantee',   sub: '3-Year International Warranty' },
+  { icon: ShieldCheck, label: 'Indian Guarantee',   sub: '3-Year Premium Warranty' },
   { icon: Award,       label: 'Master Craftsmanship', sub: 'Hand-finished movements' },
-  { icon: Gem,         label: 'Certified Authentic', sub: 'Original Swiss components' },
+  { icon: Gem,         label: 'Certified Swadeshi', sub: 'Crafted with Indian Pride' },
 ];
 
 const SOCIALS = [
@@ -168,7 +168,7 @@ export default function Footer({ onPageChange }) {
               </h2>
 
               <p style={{ fontSize:'0.82rem', lineHeight:1.85, color:'rgba(200,190,175,0.65)', maxWidth:'420px' }}>
-                Since 1865, KHRONIQ has been crafting exceptional timepieces for those who dare to dream.
+                Crafted with Swadeshi pride, KHRONIQ designs exceptional timepieces for those who dare to dream.
                 Every second counts — make it extraordinary.
               </p>
 
@@ -442,7 +442,7 @@ export default function Footer({ onPageChange }) {
           <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
             <LogoMark className="w-3.5 h-3.5" />
             <p style={{ fontSize:'0.62rem', color:'rgba(200,190,175,0.38)', letterSpacing:'0.08em' }}>
-              © 2026 KHRONIQ Watches. All Rights Reserved. Inspired by Swiss Precision.
+              © 2026 KHRONIQ. All Rights Reserved. A TRUE KNOCK GROUP PRODUCT.
             </p>
           </div>
 
@@ -468,6 +468,24 @@ export default function Footer({ onPageChange }) {
             ))}
           </div>
 
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════
+          GIANT BRANDING BANNER (TISSOT STYLE)
+      ══════════════════════════════════════════════════════ */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 pt-2">
+        <div className="flex items-center justify-center space-x-6 sm:space-x-8 md:space-x-12 select-none pointer-events-none opacity-90">
+          <img 
+            src="/assets/logo_icon.png" 
+            alt="KHRONIQ Logo" 
+            className="h-16 sm:h-28 lg:h-40 object-contain filter drop-shadow-[0_0_15px_rgba(197,168,128,0.2)]" 
+          />
+          <img 
+            src="/assets/logo_text.png" 
+            alt="KHRONIQ" 
+            className="h-14 sm:h-24 lg:h-36 object-contain filter drop-shadow-[0_0_15px_rgba(197,168,128,0.2)]" 
+          />
         </div>
       </div>
 

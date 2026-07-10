@@ -90,7 +90,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
   const headerClass = `${
     isHome ? 'fixed' : 'sticky'
   } top-0 left-0 right-0 z-50 transition-all duration-300 transform ${
-    visible ? 'translate-y-0' : '-translate-y-full'
+    visible ? 'translate-y-0' : 'translate-y-0 md:-translate-y-full'
   } ${
     isHome 
       ? (scrolled ? 'bg-black/95 backdrop-blur-md shadow-md' : 'bg-transparent')
@@ -149,9 +149,9 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
           </div>
 
           {/* Right Icons */}
-          <div className="flex items-center space-x-5 text-white">
-            {/* Search Icon / Bar */}
-            <div className="relative flex items-center">
+          <div className="flex items-center space-x-4 md:space-x-5 text-white">
+            {/* Search Icon / Bar (Desktop Only) */}
+            <div className="hidden md:flex relative items-center">
               {searchOpen ? (
                 <form onSubmit={handleSearchSubmit} className="flex items-center">
                   <input
@@ -184,8 +184,8 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
               )}
             </div>
 
-            {/* Profile / Admin Icon */}
-            <div className="flex items-center">
+            {/* Profile / Admin Icon (Desktop Only) */}
+            <div className="hidden md:flex items-center">
               {currentUser ? (
                 <button
                   onClick={() => onPageChange(currentUser.role === 'admin' ? 'admin' : 'profile')}
@@ -212,10 +212,10 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
               )}
             </div>
 
-            {/* Wishlist Icon */}
+            {/* Wishlist Icon (Desktop Only) */}
             <button 
               onClick={() => onPageChange(currentUser ? 'profile' : 'login', currentUser ? { tab: 'wishlist' } : null)}
-              className="relative transition cursor-pointer hover:text-luxury-gold"
+              className="hidden md:block relative transition cursor-pointer hover:text-luxury-gold"
               title="Wishlist"
             >
               <Heart size={24} />
@@ -226,8 +226,8 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
               )}
             </button>
 
-            {/* Currency Selector Dropdown */}
-            <div className="relative">
+            {/* Currency Selector Dropdown (Desktop Only) */}
+            <div className="hidden md:block relative">
               <button 
                 onClick={() => setCurrencyOpen(!currencyOpen)}
                 className="flex items-center justify-center w-10 h-10 rounded-full border border-white/20 hover:border-luxury-gold hover:text-luxury-gold transition cursor-pointer text-lg font-black"
@@ -256,7 +256,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
               )}
             </div>
 
-            {/* Cart Icon */}
+            {/* Cart Icon (Always Visible) */}
             <button 
               onClick={onCartOpen}
               className="relative transition cursor-pointer hover:text-luxury-gold"
@@ -276,6 +276,21 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
       {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (
         <div className="md:hidden glass border-t border-luxury-text/10 py-4 px-6 space-y-4 flex flex-col">
+          {/* Search bar inside mobile drawer */}
+          <form onSubmit={handleSearchSubmit} className="flex items-center bg-white border border-luxury-text/10 rounded-md p-1.5 mb-2">
+            <input
+              type="text"
+              placeholder="Search watches..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-transparent text-luxury-text text-xs px-2 focus:outline-none"
+            />
+            <button type="submit" className="text-luxury-muted hover:text-luxury-gold p-1">
+              <Search size={14} />
+            </button>
+          </form>
+
+          {/* Navigation links */}
           {navLinks.map((link, idx) => (
             <button
               key={idx}
@@ -285,10 +300,73 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
               {link.label}
             </button>
           ))}
+
+          {/* Profile & Account options */}
+          <div className="pt-2 border-t border-luxury-text/5 flex flex-col space-y-3">
+            {currentUser ? (
+              <button
+                onClick={() => {
+                  onPageChange(currentUser.role === 'admin' ? 'admin' : 'profile');
+                  setMobileMenuOpen(false);
+                }}
+                className="text-left text-sm text-luxury-text font-bold uppercase tracking-wider flex items-center space-x-2"
+              >
+                <User size={16} />
+                <span>{currentUser.role === 'admin' ? 'Admin Portal' : 'My Account'}</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  onPageChange('login');
+                  setMobileMenuOpen(false);
+                }}
+                className="text-left text-sm text-luxury-text font-bold uppercase tracking-wider flex items-center space-x-2"
+              >
+                <User size={16} />
+                <span>Login / Register</span>
+              </button>
+            )}
+
+            {/* Wishlist */}
+            <button
+              onClick={() => {
+                onPageChange(currentUser ? 'profile' : 'login', currentUser ? { tab: 'wishlist' } : null);
+                setMobileMenuOpen(false);
+              }}
+              className="text-left text-sm text-luxury-text font-bold uppercase tracking-wider flex items-center space-x-2"
+            >
+              <Heart size={16} />
+              <span>Wishlist ({wishlist.length})</span>
+            </button>
+
+            {/* Currency Selector inside mobile drawer */}
+            <div className="py-2">
+              <p className="text-[10px] text-luxury-muted uppercase font-bold tracking-wider mb-1.5">Select Currency</p>
+              <div className="flex space-x-2">
+                {Object.entries(currencyMap).map(([code, details]) => (
+                  <button
+                    key={code}
+                    onClick={() => {
+                      dispatch(setCurrencyAction(code));
+                      setMobileMenuOpen(false);
+                    }}
+                    className={`px-3 py-1 rounded border text-xs font-semibold ${
+                      currentCurrency === code 
+                        ? 'border-luxury-gold bg-luxury-gold/5 text-luxury-gold' 
+                        : 'border-luxury-text/10 text-luxury-text'
+                    }`}
+                  >
+                    {details.symbol} {code}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
           {currentUser && (
             <button
               onClick={handleLogout}
-              className="text-left text-sm text-luxury-red hover:text-red-400 transition py-2 font-medium tracking-widest cursor-pointer"
+              className="text-left text-sm text-luxury-red hover:text-red-400 transition py-2 font-medium tracking-widest cursor-pointer border-t border-luxury-text/5 pt-3"
             >
               LOGOUT
             </button>

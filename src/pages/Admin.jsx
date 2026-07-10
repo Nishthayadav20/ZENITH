@@ -19,6 +19,24 @@ import {
   CheckCircle2, LogOut, Newspaper
 } from 'lucide-react';
 
+const PRESET_STRAPS = [
+  { name: 'Tan Leather', image: '/assets/strap_leather_tan.jpg' },
+  { name: 'Diamond Silver Link', image: '/assets/strap_silver_diamond.jpg' },
+  { name: 'Classic Gold Chain', image: '/assets/strap_gold_chain.jpg' },
+  { name: 'Forest Green Rubber', image: '/assets/strap_rubber_green.jpg' },
+  { name: 'Brushed Steel Link', image: '/assets/strap_steel_link.jpg' }
+];
+
+const DIAL_COLOR_PRESETS = [
+  { name: 'Midnight Black', hex: '#0a0a0f' },
+  { name: 'Pearl White', hex: '#f5f0e8' },
+  { name: 'Navy Blue', hex: '#1a2a4a' },
+  { name: 'Forest Green', hex: '#1c3a2a' },
+  { name: 'Champagne Gold', hex: '#c8a96a' },
+  { name: 'Crimson Red', hex: '#6b1515' },
+  { name: 'Beige Dial', hex: '#f5f5dc' }
+];
+
 export default function Admin({ onPageChange }) {
   const dispatch = useDispatch();
   const products = useSelector(state => state.watch.products);
@@ -49,7 +67,15 @@ export default function Admin({ onPageChange }) {
     },
     customizable: true,
     allowStrapCustomization: true,
-    allowCaseCustomization: true
+    allowCaseCustomization: true,
+    customizationOptions: {
+      dialColors: [],
+      strapMaterials: [],
+      customStrapName: '',
+      customStrapImage: '',
+      customCaseName: '',
+      customCaseColor: '#ffffff'
+    }
   });
 
   // Edit Product Form State
@@ -81,6 +107,91 @@ export default function Admin({ onPageChange }) {
   const [newUpdate, setNewUpdate] = useState({ title: '', detail: '', approved: true });
   const [editingUpdateId, setEditingUpdateId] = useState(null);
   const [editUpdateForm, setEditUpdateForm] = useState(null);
+
+  const handleStrapImageChange = (e, isEdit = false) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (isEdit) {
+          setEditForm(prev => ({
+            ...prev,
+            customizationOptions: {
+              ...prev.customizationOptions,
+              customStrapImage: reader.result
+            }
+          }));
+        } else {
+          setNewProduct(prev => ({
+            ...prev,
+            customizationOptions: {
+              ...prev.customizationOptions,
+              customStrapImage: reader.result
+            }
+          }));
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleStrapCheckboxChange = (strapName, isEdit = false) => {
+    const target = isEdit ? editForm : newProduct;
+    const currentStraps = target.customizationOptions?.strapMaterials || [];
+    let updatedStraps;
+    if (currentStraps.includes(strapName)) {
+      updatedStraps = currentStraps.filter(s => s !== strapName);
+    } else {
+      updatedStraps = [...currentStraps, strapName];
+    }
+    
+    if (isEdit) {
+      setEditForm({
+        ...editForm,
+        customizationOptions: {
+          ...editForm.customizationOptions,
+          strapMaterials: updatedStraps
+        }
+      });
+    } else {
+      setNewProduct({
+        ...newProduct,
+        customizationOptions: {
+          ...newProduct.customizationOptions,
+          strapMaterials: updatedStraps
+        }
+      });
+    }
+  };
+
+  const handleDialColorCheckboxChange = (colorHex, isEdit = false) => {
+    const target = isEdit ? editForm : newProduct;
+    const currentColors = target.customizationOptions?.dialColors || [];
+    let updatedColors;
+    if (currentColors.includes(colorHex)) {
+      updatedColors = currentColors.filter(c => c !== colorHex);
+    } else {
+      updatedColors = [...currentColors, colorHex];
+    }
+    
+    if (isEdit) {
+      setEditForm({
+        ...editForm,
+        customizationOptions: {
+          ...editForm.customizationOptions,
+          dialColors: updatedColors
+        }
+      });
+    } else {
+      setNewProduct({
+        ...newProduct,
+        customizationOptions: {
+          ...newProduct.customizationOptions,
+          dialColors: updatedColors
+        }
+      });
+    }
+  };
 
   const fetchAdminUpdates = async () => {
     try {
@@ -293,7 +404,16 @@ const handleImageUpload = async (e) => {
       alert('Please fill out Name, Price and Stock.');
       return;
     }
-    const res = await dispatch(addProduct(newProduct));
+    // Auto append custom fields
+    let customOpts = { ...(newProduct.customizationOptions || {}) };
+    if (customOpts.customStrapName && !customOpts.strapMaterials?.includes(customOpts.customStrapName)) {
+      customOpts.strapMaterials = [...(customOpts.strapMaterials || []), customOpts.customStrapName];
+    }
+    const finalProduct = {
+      ...newProduct,
+      customizationOptions: customOpts
+    };
+    const res = await dispatch(addProduct(finalProduct));
     if (res && res.success) {
       alert('Product created successfully!');
       setShowAddForm(false);
@@ -303,7 +423,15 @@ const handleImageUpload = async (e) => {
         specs: { movement: 'Automatic', case: '40mm', strap: 'Leather', waterResistance: '50m', glass: 'Sapphire' },
         customizable: true,
         allowStrapCustomization: true,
-        allowCaseCustomization: true
+        allowCaseCustomization: true,
+        customizationOptions: {
+          dialColors: [],
+          strapMaterials: [],
+          customStrapName: '',
+          customStrapImage: '',
+          customCaseName: '',
+          customCaseColor: '#ffffff'
+        }
       });
     } else {
       alert(res?.message || 'Failed to create product.');
@@ -316,13 +444,29 @@ const handleImageUpload = async (e) => {
       ...product, 
       customizable: product.customizable ?? false,
       allowStrapCustomization: product.allowStrapCustomization ?? true,
-      allowCaseCustomization: product.allowCaseCustomization ?? true
+      allowCaseCustomization: product.allowCaseCustomization ?? true,
+      customizationOptions: {
+        dialColors: product.customizationOptions?.dialColors || [],
+        strapMaterials: product.customizationOptions?.strapMaterials || [],
+        customStrapName: product.customizationOptions?.customStrapName || '',
+        customStrapImage: product.customizationOptions?.customStrapImage || '',
+        customCaseName: product.customizationOptions?.customCaseName || '',
+        customCaseColor: product.customizationOptions?.customCaseColor || '#ffffff'
+      }
     });
   };
 
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
-    const res = await dispatch(editProduct(editingId, editForm));
+    let customOpts = { ...(editForm.customizationOptions || {}) };
+    if (customOpts.customStrapName && !customOpts.strapMaterials?.includes(customOpts.customStrapName)) {
+      customOpts.strapMaterials = [...(customOpts.strapMaterials || []), customOpts.customStrapName];
+    }
+    const finalProduct = {
+      ...editForm,
+      customizationOptions: customOpts
+    };
+    const res = await dispatch(editProduct(editingId, finalProduct));
     if (res && res.success) {
       alert('Product edited successfully!');
       setEditingId(null);
@@ -674,31 +818,168 @@ const handleImageUpload = async (e) => {
 
                   {/* Checkboxes shown ONLY when Customizable is checked */}
                   {newProduct.customizable && (
-                    <div className="pt-2 border-t border-white/5 space-y-2">
+                    <div className="pt-2 border-t border-white/5 space-y-3">
                       <p className="text-[9px] font-bold uppercase tracking-widest text-luxury-gold mb-1">Tailoring Capabilities</p>
-                      <div className="flex items-center space-x-2.5">
-                        <input
-                          type="checkbox"
-                          id="newAllowStrapCustomization"
-                          checked={newProduct.allowStrapCustomization ?? true}
-                          onChange={(e) => setNewProduct({ ...newProduct, allowStrapCustomization: e.target.checked })}
-                          className="w-4 h-4 accent-luxury-gold cursor-pointer"
-                        />
-                        <label htmlFor="newAllowStrapCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
-                          Allow Strap Customization
-                        </label>
+                      
+                      <div className="space-y-2">
+                        <div className="flex items-center space-x-2.5">
+                          <input
+                            type="checkbox"
+                            id="newAllowStrapCustomization"
+                            checked={newProduct.allowStrapCustomization ?? true}
+                            onChange={(e) => setNewProduct({ ...newProduct, allowStrapCustomization: e.target.checked })}
+                            className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                          />
+                          <label htmlFor="newAllowStrapCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                            Allow Strap Customization
+                          </label>
+                        </div>
+                        {newProduct.allowStrapCustomization && (
+                          <div className="pl-6 space-y-3 border-l border-white/10 my-2">
+                            {/* Preset Straps Selectors (Multiple Checkboxes) */}
+                            <div className="space-y-1.5">
+                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Enable Preset Straps</label>
+                              <div className="grid grid-cols-2 gap-2">
+                                {PRESET_STRAPS.map(s => {
+                                  const isChecked = (newProduct.customizationOptions?.strapMaterials || []).includes(s.name);
+                                  return (
+                                    <label key={s.name} className="flex items-center space-x-2 p-1.5 rounded border border-white/5 bg-luxury-dark/85 cursor-pointer hover:border-white/10 select-none">
+                                      <input
+                                        type="checkbox"
+                                        checked={isChecked}
+                                        onChange={() => handleStrapCheckboxChange(s.name, false)}
+                                        className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
+                                      />
+                                      <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded" />
+                                      <span className="text-[10px] text-gray-300 font-medium">{s.name}</span>
+                                    </label>
+                                  );
+                                })}
+                              </div>
+                            </div>
+
+                            {/* Custom Name input for another strap */}
+                            <div className="space-y-1 pt-2 border-t border-white/5">
+                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Add Custom Strap Name (Optional)</label>
+                              <input
+                                type="text"
+                                placeholder="e.g. Alligator Leather"
+                                value={newProduct.customizationOptions?.customStrapName || ''}
+                                onChange={(e) => setNewProduct({
+                                  ...newProduct,
+                                  customizationOptions: {
+                                    ...newProduct.customizationOptions,
+                                    customStrapName: e.target.value
+                                  }
+                                })}
+                                className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
+                              />
+                            </div>
+
+                            {/* Image Upload for new straps */}
+                            <div className="space-y-1">
+                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Upload Custom Strap Image</label>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => handleStrapImageChange(e, false)}
+                                className="text-[10px] text-gray-400 file:mr-3 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20 cursor-pointer"
+                              />
+                              {newProduct.customizationOptions?.customStrapImage && (
+                                <div className="mt-1.5 flex items-center space-x-2 bg-black/20 p-1.5 rounded border border-white/5">
+                                  <img
+                                    src={newProduct.customizationOptions.customStrapImage}
+                                    alt="Strap Preview"
+                                    className="w-10 h-10 object-contain rounded border border-white/10 bg-luxury-dark/40"
+                                  />
+                                  <div>
+                                    <p className="text-[9px] text-emerald-500 font-bold uppercase tracking-wider">Custom Strap Loaded</p>
+                                    <p className="text-[8px] text-gray-400 truncate max-w-[200px]">
+                                      {newProduct.customizationOptions.customStrapName || 'Unnamed'}
+                                    </p>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      <div className="flex items-center space-x-2.5">
-                        <input
-                          type="checkbox"
-                          id="newAllowCaseCustomization"
-                          checked={newProduct.allowCaseCustomization ?? true}
-                          onChange={(e) => setNewProduct({ ...newProduct, allowCaseCustomization: e.target.checked })}
-                          className="w-4 h-4 accent-luxury-gold cursor-pointer"
-                        />
-                        <label htmlFor="newAllowCaseCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
-                          Allow Case Finish Customization
-                        </label>
+
+                      <div className="space-y-2">
+                        <div className="flex items-center space-x-2.5">
+                          <input
+                            type="checkbox"
+                            id="newAllowCaseCustomization"
+                            checked={newProduct.allowCaseCustomization ?? true}
+                            onChange={(e) => setNewProduct({ ...newProduct, allowCaseCustomization: e.target.checked })}
+                            className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                          />
+                          <label htmlFor="newAllowCaseCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                            Allow Case Finish Customization
+                          </label>
+                        </div>
+                        {newProduct.allowCaseCustomization && (
+                          <div className="pl-6 space-y-2 border-l border-white/10 my-2">
+                            <div className="space-y-1">
+                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Custom Case Name</label>
+                              <input
+                                type="text"
+                                placeholder="e.g. Matte Gold"
+                                value={newProduct.customizationOptions?.customCaseName || ''}
+                                onChange={(e) => setNewProduct({
+                                  ...newProduct,
+                                  customizationOptions: {
+                                    ...newProduct.customizationOptions,
+                                    customCaseName: e.target.value
+                                  }
+                                })}
+                                className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Case Color Option</label>
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  type="color"
+                                  value={newProduct.customizationOptions?.customCaseColor || '#ffffff'}
+                                  onChange={(e) => setNewProduct({
+                                    ...newProduct,
+                                    customizationOptions: {
+                                      ...newProduct.customizationOptions,
+                                      customCaseColor: e.target.value
+                                    }
+                                  })}
+                                  className="w-8 h-8 rounded border-0 bg-transparent cursor-pointer"
+                                />
+                                <span className="text-xs text-gray-300 font-mono">
+                                  {newProduct.customizationOptions?.customCaseColor || '#ffffff'}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Available Dial Colors Selector */}
+                      <div className="space-y-1.5 pt-2 border-t border-white/5">
+                        <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block font-sans">Available Dial Colors</label>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                          {DIAL_COLOR_PRESETS.map(color => {
+                            const isChecked = (newProduct.customizationOptions?.dialColors || []).includes(color.hex);
+                            return (
+                              <label key={color.hex} className="flex items-center space-x-2 p-1.5 rounded border border-white/5 bg-luxury-dark/80 cursor-pointer hover:border-white/10 select-none">
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={() => handleDialColorCheckboxChange(color.hex, false)}
+                                  className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
+                                />
+                                <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: color.hex }} />
+                                <span className="text-[10px] text-gray-300 font-medium">{color.name}</span>
+                              </label>
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
                   )}
@@ -827,31 +1108,168 @@ const handleImageUpload = async (e) => {
 
                     {/* Checkboxes shown ONLY when Customizable is checked */}
                     {editForm.customizable && (
-                      <div className="pt-2 border-t border-white/5 space-y-2">
+                      <div className="pt-2 border-t border-white/5 space-y-3">
                         <p className="text-[9px] font-bold uppercase tracking-widest text-luxury-gold mb-1">Tailoring Capabilities</p>
-                        <div className="flex items-center space-x-2.5">
-                          <input
-                            type="checkbox"
-                            id="allowStrapCustomization"
-                            checked={editForm.allowStrapCustomization ?? true}
-                            onChange={(e) => setEditForm({ ...editForm, allowStrapCustomization: e.target.checked })}
-                            className="w-4 h-4 accent-luxury-gold cursor-pointer"
-                          />
-                          <label htmlFor="allowStrapCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
-                            Allow Strap Customization
-                          </label>
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2.5">
+                            <input
+                              type="checkbox"
+                              id="allowStrapCustomization"
+                              checked={editForm.allowStrapCustomization ?? true}
+                              onChange={(e) => setEditForm({ ...editForm, allowStrapCustomization: e.target.checked })}
+                              className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                            />
+                            <label htmlFor="allowStrapCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                              Allow Strap Customization
+                            </label>
+                          </div>
+                          {editForm.allowStrapCustomization && (
+                            <div className="pl-6 space-y-3 border-l border-white/10 my-2">
+                              {/* Preset Straps Selectors (Multiple Checkboxes) */}
+                              <div className="space-y-1.5">
+                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Enable Preset Straps</label>
+                                <div className="grid grid-cols-2 gap-2">
+                                  {PRESET_STRAPS.map(s => {
+                                    const isChecked = (editForm.customizationOptions?.strapMaterials || []).includes(s.name);
+                                    return (
+                                      <label key={s.name} className="flex items-center space-x-2 p-1.5 rounded border border-white/5 bg-luxury-dark/85 cursor-pointer hover:border-white/10 select-none">
+                                        <input
+                                          type="checkbox"
+                                          checked={isChecked}
+                                          onChange={() => handleStrapCheckboxChange(s.name, true)}
+                                          className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
+                                        />
+                                        <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded" />
+                                        <span className="text-[10px] text-gray-300 font-medium">{s.name}</span>
+                                      </label>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+
+                              {/* Custom Name input for another strap */}
+                              <div className="space-y-1 pt-2 border-t border-white/5">
+                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Add Custom Strap Name (Optional)</label>
+                                <input
+                                  type="text"
+                                  placeholder="e.g. Alligator Leather"
+                                  value={editForm.customizationOptions?.customStrapName || ''}
+                                  onChange={(e) => setEditForm({
+                                    ...editForm,
+                                    customizationOptions: {
+                                      ...editForm.customizationOptions,
+                                      customStrapName: e.target.value
+                                    }
+                                  })}
+                                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
+                                />
+                              </div>
+
+                              {/* Image Upload for new straps */}
+                              <div className="space-y-1">
+                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Upload Custom Strap Image</label>
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={(e) => handleStrapImageChange(e, true)}
+                                  className="text-[10px] text-gray-400 file:mr-3 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20 cursor-pointer"
+                                />
+                                {editForm.customizationOptions?.customStrapImage && (
+                                  <div className="mt-1.5 flex items-center space-x-2 bg-black/20 p-1.5 rounded border border-white/5">
+                                    <img
+                                      src={editForm.customizationOptions.customStrapImage}
+                                      alt="Strap Preview"
+                                      className="w-10 h-10 object-contain rounded border border-white/10 bg-luxury-dark/40"
+                                    />
+                                    <div>
+                                      <p className="text-[9px] text-emerald-500 font-bold uppercase tracking-wider">Custom Strap Loaded</p>
+                                      <p className="text-[8px] text-gray-400 truncate max-w-[200px]">
+                                        {editForm.customizationOptions.customStrapName || 'Unnamed'}
+                                      </p>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
                         </div>
-                        <div className="flex items-center space-x-2.5">
-                          <input
-                            type="checkbox"
-                            id="allowCaseCustomization"
-                            checked={editForm.allowCaseCustomization ?? true}
-                            onChange={(e) => setEditForm({ ...editForm, allowCaseCustomization: e.target.checked })}
-                            className="w-4 h-4 accent-luxury-gold cursor-pointer"
-                          />
-                          <label htmlFor="allowCaseCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
-                            Allow Case Finish Customization
-                          </label>
+
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2.5">
+                            <input
+                              type="checkbox"
+                              id="allowCaseCustomization"
+                              checked={editForm.allowCaseCustomization ?? true}
+                              onChange={(e) => setEditForm({ ...editForm, allowCaseCustomization: e.target.checked })}
+                              className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                            />
+                            <label htmlFor="allowCaseCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                              Allow Case Finish Customization
+                            </label>
+                          </div>
+                          {editForm.allowCaseCustomization && (
+                            <div className="pl-6 space-y-2 border-l border-white/10 my-2">
+                              <div className="space-y-1">
+                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Custom Case Name</label>
+                                <input
+                                  type="text"
+                                  placeholder="e.g. Matte Gold"
+                                  value={editForm.customizationOptions?.customCaseName || ''}
+                                  onChange={(e) => setEditForm({
+                                    ...editForm,
+                                    customizationOptions: {
+                                      ...editForm.customizationOptions,
+                                      customCaseName: e.target.value
+                                    }
+                                  })}
+                                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Case Color Option</label>
+                                <div className="flex items-center space-x-2">
+                                  <input
+                                    type="color"
+                                    value={editForm.customizationOptions?.customCaseColor || '#ffffff'}
+                                    onChange={(e) => setEditForm({
+                                      ...editForm,
+                                      customizationOptions: {
+                                        ...editForm.customizationOptions,
+                                        customCaseColor: e.target.value
+                                      }
+                                    })}
+                                    className="w-8 h-8 rounded border-0 bg-transparent cursor-pointer"
+                                  />
+                                  <span className="text-xs text-gray-300 font-mono">
+                                    {editForm.customizationOptions?.customCaseColor || '#ffffff'}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Available Dial Colors Selector */}
+                        <div className="space-y-1.5 pt-2 border-t border-white/5">
+                          <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block font-sans">Available Dial Colors</label>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            {DIAL_COLOR_PRESETS.map(color => {
+                              const isChecked = (editForm.customizationOptions?.dialColors || []).includes(color.hex);
+                              return (
+                                <label key={color.hex} className="flex items-center space-x-2 p-1.5 rounded border border-white/5 bg-luxury-dark/80 cursor-pointer hover:border-white/10 select-none">
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={() => handleDialColorCheckboxChange(color.hex, true)}
+                                    className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
+                                  />
+                                  <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: color.hex }} />
+                                  <span className="text-[10px] text-gray-300 font-medium">{color.name}</span>
+                                </label>
+                              );
+                            })}
+                          </div>
                         </div>
                       </div>
                     )}

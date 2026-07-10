@@ -12,9 +12,22 @@ const FALLBACK_DIAL_COLORS = [
   { label: 'Forest Green',   value: '#1c3a2a', textDark: false },
   { label: 'Champagne Gold', value: '#c8a96a', textDark: true  },
   { label: 'Crimson Red',    value: '#6b1515', textDark: false },
+  { label: 'Beige Dial',     value: '#f5f5dc', textDark: true  },
 ];
 
-const FALLBACK_STRAPS = ['Alligator Leather', 'Steel Bracelet', 'Rubber Sport', 'Satin Fabric', 'Titanium Mesh'];
+const STRAP_IMAGES = {
+  'Tan Leather': '/assets/strap_leather_tan.jpg',
+  'Diamond Silver Link': '/assets/strap_silver_diamond.jpg',
+  'Classic Gold Chain': '/assets/strap_gold_chain.jpg',
+  'Forest Green Rubber': '/assets/strap_rubber_green.jpg',
+  'Brushed Steel Link': '/assets/strap_steel_link.jpg',
+  'Alligator Leather': '/assets/strap_leather_tan.jpg',
+  'Steel Bracelet': '/assets/strap_steel_link.jpg',
+  'Rubber Sport': '/assets/strap_rubber_green.jpg',
+  'Satin Fabric': '/assets/strap_silver_diamond.jpg',
+  'Titanium Mesh': '/assets/strap_steel_link.jpg'
+};
+
 const FALLBACK_FINISHES = ['Polished', 'Brushed', 'PVD Black', 'Rose Gold PVD', 'Matte Grey'];
 
 // ─── Utility ─────────────────────────────────────────────────────────────────
@@ -22,27 +35,72 @@ function buildOptions(product) {
   const opts = product.customizationOptions || {};
   const dialColors = (opts.dialColors?.length ? opts.dialColors : FALLBACK_DIAL_COLORS.map(d => d.value))
     .map(v => FALLBACK_DIAL_COLORS.find(d => d.value === v) || { label: v, value: v, textDark: false });
-  const strapMaterials = opts.strapMaterials?.length ? opts.strapMaterials : FALLBACK_STRAPS;
-  const caseFinishes   = opts.caseFinishes?.length   ? opts.caseFinishes   : FALLBACK_FINISHES;
+  
+  // Custom strap options (Women: first three, Men: 1, 4, 5)
+  const defaultStraps = product.gender === 'women'
+    ? ['Tan Leather', 'Diamond Silver Link', 'Classic Gold Chain']
+    : ['Tan Leather', 'Forest Green Rubber', 'Brushed Steel Link'];
+
+  const strapMaterials = [...(opts.strapMaterials?.length ? opts.strapMaterials : defaultStraps)];
+  if (opts.customStrapName && !strapMaterials.includes(opts.customStrapName)) {
+    strapMaterials.push(opts.customStrapName);
+  }
+  
+  // Custom case finishes
+  const caseFinishes = [...(opts.caseFinishes?.length ? opts.caseFinishes : FALLBACK_FINISHES)];
+  if (opts.customCaseName && !caseFinishes.includes(opts.customCaseName)) {
+    caseFinishes.push(opts.customCaseName);
+  }
+
   const engravingAllowed = opts.engravingAllowed ?? true;
-  return { dialColors, strapMaterials, caseFinishes, engravingAllowed };
+  return { 
+    dialColors, 
+    strapMaterials, 
+    caseFinishes, 
+    engravingAllowed,
+    customStrapName: opts.customStrapName || '',
+    customStrapImage: opts.customStrapImage || '',
+    customCaseName: opts.customCaseName || '',
+    customCaseColor: opts.customCaseColor || ''
+  };
 }
 
 // ─── Watch Face Preview ───────────────────────────────────────────────────────
-function WatchPreview({ product, dialColor, finish, engraving }) {
-  const finishTone = finish?.toLowerCase().includes('black') ? '#1a1a1a'
-    : finish?.toLowerCase().includes('rose') ? '#c8856a'
-    : finish?.toLowerCase().includes('matte') ? '#555'
-    : finish?.toLowerCase().includes('brushed') ? '#888'
-    : '#c0c0c0';
+function WatchPreview({ product, dialColor, finish, engraving, strapImage, caseColor }) {
+  const finishTone = caseColor || (
+    finish?.toLowerCase().includes('black') ? '#1a1a1a'
+      : finish?.toLowerCase().includes('rose') ? '#c8856a'
+      : finish?.toLowerCase().includes('matte') ? '#555'
+      : finish?.toLowerCase().includes('brushed') ? '#888'
+      : '#c0c0c0'
+  );
 
   return (
     <div className="relative flex items-center justify-center" style={{ minHeight: 300 }}>
       {/* Glow */}
       <div
         className="absolute rounded-full blur-3xl opacity-30 w-56 h-56"
-        style={{ background: dialColor?.value || '#c8a96a' }}
+        style={{ background: dialColor?.value || '#c8a96a', zIndex: 1 }}
       />
+
+      {/* Strap band */}
+      {strapImage && (
+        <div className="absolute animate-fade-in" style={{
+          width: 44,
+          height: 290,
+          backgroundImage: `url(${strapImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          borderRadius: 4,
+          boxShadow: '0 0 15px rgba(0,0,0,0.6)',
+          zIndex: 2
+        }} />
+      )}
+
+      {/* Lug top */}
+      <div className="absolute" style={{ width: 26, height: 28, top: 14, left: '50%', transform: 'translateX(-50%)', background: finishTone, borderRadius: '4px 4px 0 0', opacity: 0.9, zIndex: 3 }} />
+      {/* Lug bottom */}
+      <div className="absolute" style={{ width: 26, height: 28, bottom: 14, left: '50%', transform: 'translateX(-50%)', background: finishTone, borderRadius: '0 0 4px 4px', opacity: 0.9, zIndex: 3 }} />
 
       {/* Case / Bezel */}
       <div
@@ -53,6 +111,7 @@ function WatchPreview({ product, dialColor, finish, engraving }) {
           background: `radial-gradient(circle at 35% 35%, ${finishTone}dd, ${finishTone}66)`,
           border: `6px solid ${finishTone}`,
           boxShadow: `0 0 40px ${finishTone}55, inset 0 2px 4px rgba(255,255,255,0.15)`,
+          zIndex: 4
         }}
       >
         {/* Crystal */}
@@ -134,11 +193,6 @@ function WatchPreview({ product, dialColor, finish, engraving }) {
           )}
         </div>
       </div>
-
-      {/* Lug top */}
-      <div className="absolute" style={{ width: 26, height: 28, top: 14, left: '50%', transform: 'translateX(-50%)', background: finishTone, borderRadius: '4px 4px 0 0', opacity: 0.9 }} />
-      {/* Lug bottom */}
-      <div className="absolute" style={{ width: 26, height: 28, bottom: 14, left: '50%', transform: 'translateX(-50%)', background: finishTone, borderRadius: '0 0 4px 4px', opacity: 0.9 }} />
     </div>
   );
 }
@@ -307,12 +361,14 @@ export default function Customization({ onPageChange, params }) {
 
           {/* ── LEFT: Live Preview ── */}
           <div className="space-y-6 sticky top-28">
-            <div className="dark-panel bg-[#0d0d0d] rounded-2xl border border-white/5 p-8 flex flex-col items-center gap-6">
+            <div className="dark-panel bg-[#0d0d0d] rounded-2xl border border-white/5 p-4 sm:p-8 flex flex-col items-center gap-6">
               <WatchPreview
                 product={selectedProduct}
                 dialColor={dialColor}
                 finish={caseFinish}
                 engraving={engraving}
+                strapImage={strapMaterial === options?.customStrapName ? options?.customStrapImage : (STRAP_IMAGES[strapMaterial] || '')}
+                caseColor={caseFinish === options?.customCaseName ? options?.customCaseColor : ''}
               />
               <div className="text-center space-y-1">
                 <p className="text-white font-bold text-lg">{selectedProduct.name}</p>
@@ -380,22 +436,36 @@ export default function Customization({ onPageChange, params }) {
             {selectedProduct.allowStrapCustomization !== false && (
               <div className="space-y-3">
                 <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-muted">
-                  Strap Material — <span className="text-white">{strapMaterial}</span>
+                  Strap Option
                 </h3>
-                <div className="flex flex-wrap gap-2">
-                  {options.strapMaterials.map((mat) => (
-                    <button
-                      key={mat}
-                      onClick={() => setStrapMaterial(mat)}
-                      className={`px-3 py-2 text-xs font-bold rounded border transition-all cursor-pointer ${
-                        strapMaterial === mat
-                          ? 'border-luxury-gold bg-luxury-gold/10 text-luxury-gold'
-                          : 'border-white/10 text-luxury-muted hover:border-white/30 hover:text-white'
-                      }`}
-                    >
-                      {mat}
-                    </button>
-                  ))}
+                <div className="grid grid-cols-3 gap-3">
+                  {options.strapMaterials.map((mat) => {
+                    const imgUrl = (mat === options.customStrapName && options.customStrapImage) 
+                      ? options.customStrapImage 
+                      : (STRAP_IMAGES[mat] || '/assets/strap_leather_tan.jpg');
+                    return (
+                      <button
+                        key={mat}
+                        onClick={() => setStrapMaterial(mat)}
+                        className={`flex flex-col items-center p-2.5 rounded border transition-all cursor-pointer bg-luxury-dark/40 ${
+                          strapMaterial === mat
+                            ? 'border-luxury-gold text-luxury-gold shadow-[0_0_15px_rgba(200,169,106,0.1)]'
+                            : 'border-white/5 text-luxury-muted hover:border-white/20 hover:text-white'
+                        }`}
+                      >
+                        <div className="w-full h-20 bg-luxury-dark/80 rounded border border-white/5 overflow-hidden flex items-center justify-center p-1.5 mb-2">
+                          <img
+                            src={imgUrl}
+                            alt={mat}
+                            className="max-h-full max-w-full object-contain rounded-sm"
+                          />
+                        </div>
+                        <span className="text-[8px] font-bold uppercase tracking-widest text-center leading-tight">
+                          {mat}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}

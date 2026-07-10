@@ -232,7 +232,7 @@ export default function Profile({ params, onPageChange }) {
   };
 
   const handleExchangeRefundClick = (order) => {
-    if (order.status === 'Shipped') {
+    if (order.status !== 'Delivered') {
       alert('Exchange/Refund requests can only be made after the order has been delivered.');
       return;
     }
@@ -366,8 +366,8 @@ export default function Profile({ params, onPageChange }) {
                             {order.status}
                           </span>
 
-                          {/* Cancellation Button (Before Dispatch: Pending, Paid, or Processing) */}
-                          {(order.status === 'Pending' || order.status === 'Paid' || order.status === 'Processing') && (
+                          {/* Cancellation Button (Before Dispatch: Pending only) */}
+                          {order.status === 'Pending' && (
                             <button
                               onClick={() => handleCancelOrder(order.id)}
                               className="text-[9px] text-luxury-red hover:text-red-400 font-bold uppercase border border-luxury-red/20 hover:border-luxury-red/50 px-2 py-1 rounded transition cursor-pointer"
@@ -376,8 +376,8 @@ export default function Profile({ params, onPageChange }) {
                             </button>
                           )}
 
-                          {/* Exchange/Refund Button (After Dispatch: Shipped or Delivered) */}
-                          {(order.status === 'Shipped' || order.status === 'Delivered') && (
+                          {/* Exchange/Refund Button (Available after payment) */}
+                          {(order.status === 'Paid' || order.status === 'Processing' || order.status === 'Shipped' || order.status === 'Delivered') && (
                             <button
                               onClick={() => handleExchangeRefundClick(order)}
                               className="text-[9px] text-purple-400 hover:text-purple-300 font-bold uppercase border border-purple-500/20 hover:border-purple-500/50 px-2 py-1 rounded transition cursor-pointer bg-purple-500/5"

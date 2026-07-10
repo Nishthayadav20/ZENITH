@@ -23,6 +23,7 @@ import uploadRoutes from './_routes/upload.js';
 import paymentRoutes from './_routes/payments.js';
 import adminRoutes from './_routes/admin.js';
 import brandUpdateRoutes from './_routes/brandUpdates.js';
+import warrantyRoutes from './_routes/warranty.js';
 
 
 // dotenv.config();
@@ -78,11 +79,12 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/brand-updates', brandUpdateRoutes);
+app.use('/api/warranty', warrantyRoutes);
 
 
 // Base Endpoint
 app.get('/api', (req, res) => {
-  res.json({ message: 'Welcome to the KHRONIQ Watches API' });
+  res.json({ message: 'Welcome to the KHRONIQ API' });
 });
 
 // Diagnostics Endpoint
@@ -107,6 +109,34 @@ const seedDatabase = async () => {
     // Migration: Update existing products with category 'Chronomaster' to 'Khronomaster'
     await Product.updateMany({ category: 'Chronomaster' }, { $set: { category: 'Khronomaster' } });
 
+    // Migration: Rebrand product movement references to remove "El Primero"
+    await Product.updateOne(
+      { name: 'Khroniq Khronomaster Black Edition' },
+      {
+        $set: {
+          description: 'High-precision luxury chronograph watch in matte black design with silver sub-dials and detailed tachymeter scale. Equipped with our signature high-precision movement caliber.',
+          'specs.movement': 'Khroniq Chronograph Caliber'
+        }
+      }
+    );
+    await Product.updateOne(
+      { name: 'Khroniq Khronomaster Open Heart' },
+      {
+        $set: {
+          description: 'An exquisite luxury timepiece featuring a dial opening revealing the high-frequency Khroniq balance wheel. Crafted with a polished steel case.',
+          'specs.movement': 'Khroniq Automatic Chronograph'
+        }
+      }
+    );
+    await Product.updateOne(
+      { name: 'Khroniq Defy Skyline Skeleton' },
+      {
+        $set: {
+          'specs.movement': 'Khroniq High-Frequency Automatic'
+        }
+      }
+    );
+
     // Migration: Ensure all current products default to customizable: true on startup
     const countCustomizable = await Product.countDocuments({ customizable: true });
     if (countCustomizable === 0) {
@@ -122,7 +152,7 @@ const seedDatabase = async () => {
 
     // 1. Seed Products
     const productCount = await Product.countDocuments();
-    if (productCount < 8) {
+    if (productCount < 11) {
       const initialProducts = [
         {
           name: 'Khroniq Heritage Rose Gold',
@@ -153,16 +183,16 @@ const seedDatabase = async () => {
           stock: 5,
           category: 'Khronomaster',
           gender: 'men',
-          description: 'High-precision luxury chronograph watch in matte black design with silver sub-dials and detailed tachymeter scale. Equipped with the legendary El Primero movement DNA.',
+          description: 'High-precision luxury chronograph watch in matte black design with silver sub-dials and detailed tachymeter scale. Equipped with our signature high-precision movement caliber.',
           specs: {
-            movement: 'El Primero Chronograph (36,000 vph)',
+            movement: 'Khroniq Chronograph Caliber',
             case: 'Matte Black Ceramic (42mm)',
             strap: 'Black Rubberized Steel Link',
             waterResistance: '100m (10 ATM)',
             glass: 'Double Anti-reflective Sapphire'
           },
           reviews: [
-            { userName: 'Marc V.', rating: 5, comment: 'The El Primero movement is flawless. The black ceramic case is scratchproof!', date: '2026-05-10', status: 'approved' }
+            { userName: 'Marc V.', rating: 5, comment: 'The Khroniq movement is flawless. The black ceramic case is scratchproof!', date: '2026-05-10', status: 'approved' }
           ]
         },
         {
@@ -213,9 +243,9 @@ const seedDatabase = async () => {
           stock: 6,
           category: 'Khronomaster',
           gender: 'men',
-          description: 'An exquisite luxury timepiece featuring a dial opening revealing the high-frequency El Primero balance wheel. Crafted with a polished steel case.',
+          description: 'An exquisite luxury timepiece featuring a dial opening revealing the high-frequency Khroniq balance wheel. Crafted with a polished steel case.',
           specs: {
-            movement: 'El Primero Automatic Chronograph',
+            movement: 'Khroniq Automatic Chronograph',
             case: 'Polished Steel (42mm)',
             strap: 'Alligator Leather Strap',
             waterResistance: '100m (10 ATM)',
@@ -269,11 +299,65 @@ const seedDatabase = async () => {
           gender: 'men',
           description: 'A modern architectural masterpiece featuring an openworked black skeleton dial inside a sharp octagonal steel case.',
           specs: {
-            movement: 'El Primero High-Frequency Automatic',
+            movement: 'Khroniq High-Frequency Automatic',
             case: 'Brushed Steel Octagonal (41mm)',
             strap: 'Black Rubber Strap',
             waterResistance: '100m (10 ATM)',
             glass: 'Sapphire Crystal'
+          },
+          reviews: []
+        },
+        {
+          name: 'Khroniq Crescent Brown',
+          image: '/assets/crescent_product.png',
+          brand: 'KHRONIQ',
+          price: 3200,
+          stock: 6,
+          category: 'Heritage',
+          gender: 'men',
+          description: 'An elite timekeeping masterpiece featuring a warm rose gold case, intricate multi-dial chronograph display, and a textured brown leather strap. Blending classic styling with robust mechanics.',
+          specs: {
+            movement: 'Automatic Chronograph',
+            case: 'Rose Gold Steel (42mm)',
+            strap: 'Brown Alligator Leather',
+            waterResistance: '100m (10 ATM)',
+            glass: 'Scratch-Resistant Sapphire'
+          },
+          reviews: []
+        },
+        {
+          name: 'Khroniq Gentleman Blue',
+          image: '/assets/gentleman_product.png',
+          brand: 'KHRONIQ',
+          price: 4100,
+          stock: 7,
+          category: 'Defy',
+          gender: 'men',
+          description: 'A high-end skeleton watch displaying mechanical gears inside a polished steel case, matched with a luxurious deep blue textured leather strap. A perfect statement of engineering art.',
+          specs: {
+            movement: 'Skeleton Automatic Movement',
+            case: 'Brushed Steel (41mm)',
+            strap: 'Blue Alligator Leather',
+            waterResistance: '100m (10 ATM)',
+            glass: 'Double Anti-Reflective Sapphire'
+          },
+          reviews: []
+        },
+        {
+          name: 'Khroniq Aurex Green',
+          image: '/assets/aurex_product.png',
+          brand: 'KHRONIQ',
+          price: 4500,
+          stock: 8,
+          category: 'Khronomaster',
+          gender: 'men',
+          description: 'A luxury steel bracelet timepiece presenting an elegant deep emerald green textured dial, framed within a distinctive octagonal bezel. Crafted for the vanguard of modern design.',
+          specs: {
+            movement: 'High-Frequency Automatic',
+            case: 'Integrated Stainless Steel (40mm)',
+            strap: 'Brushed Steel Link Bracelet',
+            waterResistance: '100m (10 ATM)',
+            glass: 'Domed Sapphire Crystal'
           },
           reviews: []
         }

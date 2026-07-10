@@ -99,7 +99,7 @@ export default function Shop({ onPageChange, filterParams }) {
       {/* Page Header */}
       <div className="border-b border-luxury-text/10 pb-6">
         <h1 className="font-serif text-3xl font-bold uppercase text-luxury-text tracking-widest">Khroniq Catalogue</h1>
-        <p className="text-luxury-muted text-xs mt-1">Discover precision Swiss timepieces engineered for ultimate endurance.</p>
+        <p className="text-luxury-muted text-xs mt-1">Discover precision Swadeshi timepieces engineered for ultimate endurance.</p>
       </div>
 
       {/* Main Grid: Filters & Products */}
