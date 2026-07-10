@@ -262,7 +262,7 @@ export default function Customization({ onPageChange, params }) {
           <div className="absolute inset-0 opacity-10"
             style={{ backgroundImage: 'radial-gradient(circle at 25% 50%, #c8a96a 0%, transparent 60%), radial-gradient(circle at 75% 50%, #c8a96a 0%, transparent 60%)' }} />
           <Paintbrush className="mx-auto mb-4 text-luxury-gold" size={40} />
-          <h1 className="font-serif text-4xl font-black tracking-widest text-white uppercase mb-3">
+          <h1 className="font-serif text-4xl font-black tracking-widest text-orange-500 uppercase mb-3">
             Bespoke Atelier
           </h1>
           <p className="text-white/50 text-sm max-w-xl mx-auto leading-relaxed">
