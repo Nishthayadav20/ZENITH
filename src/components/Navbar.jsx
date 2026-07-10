@@ -166,29 +166,118 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                       {link.label}
                     </button>
                     
-                    {/* CLEAN DROPDOWN - DIRECTLY BENEATH GIFTING */}
-                    <div className="absolute top-[85%] left-1/2 -translate-x-1/2 pt-4 w-52 hidden group-hover:block z-50 text-left">
-                      <div className="bg-black/85 backdrop-blur-lg border border-white/10 rounded-lg shadow-2xl py-2 overflow-hidden">
-                        {[
-                          { label: 'Watches For Bride', filter: { gender: 'women', search: 'Bride' } },
-                          { label: 'Watches For Groom', filter: { gender: 'men', search: 'Groom' } },
-                          { label: 'Watches For Mother', filter: { gender: 'women', search: 'Mother' } },
-                          { label: 'Watches For Father', filter: { gender: 'men', search: 'Father' } },
-                          { label: 'Watches For Brother', filter: { gender: 'men', search: 'Brother' } },
-                          { label: 'Watches For Sister', filter: { gender: 'women', search: 'Sister' } },
-                          { label: 'Watches For Friend', filter: { search: 'Friend' } },
-                        ].map((sub) => (
+                    {/* FULL SCREEN WIDE LIGHT GLASSMORPHIC (LIQUIFIED) MEGA MENU */}
+                    <div className="fixed left-0 right-0 w-screen bg-white/85 backdrop-blur-3xl border-y border-neutral-200/50 shadow-[0_20px_45px_rgba(0,0,0,0.12)] p-0 hidden group-hover:block z-50 text-left transition-all duration-300 top-[75px] left-0">
+                      <div className="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-10">
+                        {/* Left Column: Category selectors */}
+                        <div className="col-span-3 border-r border-neutral-200/40 pr-6 flex flex-col space-y-3">
                           <button
-                            key={sub.label}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onPageChange('shop', sub.filter);
-                            }}
-                            className="w-full text-left px-4 py-2.5 hover:bg-white/10 text-gray-300 hover:text-luxury-gold transition text-[11px] font-bold uppercase tracking-wider cursor-pointer block"
+                            type="button"
+                            onMouseEnter={() => setActiveSubMenu('price')}
+                            className={`w-full text-left px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-widest flex items-center justify-between transition duration-200 ${
+                              activeSubMenu === 'price' ? 'bg-neutral-900/10 text-neutral-950 font-black scale-[1.02]' : 'text-neutral-500 hover:bg-neutral-900/5'
+                            }`}
                           >
-                            {sub.label}
+                            <span>Shop By Price</span>
+                            <span className="text-[10px]">&rarr;</span>
                           </button>
-                        ))}
+                          <button
+                            type="button"
+                            onMouseEnter={() => setActiveSubMenu('recipient')}
+                            className={`w-full text-left px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-widest flex items-center justify-between transition duration-200 ${
+                              activeSubMenu === 'recipient' ? 'bg-neutral-900/10 text-neutral-950 font-black scale-[1.02]' : 'text-neutral-500 hover:bg-neutral-900/5'
+                            }`}
+                          >
+                            <span>Watches For Recipient</span>
+                            <span className="text-[10px]">&rarr;</span>
+                          </button>
+                        </div>
+
+                        {/* Middle Column: Sub-menu items */}
+                        <div className="col-span-5 px-6">
+                          {activeSubMenu === 'price' && (
+                            <div className="space-y-6">
+                              <h4 className="text-[10px] font-black tracking-[0.25em] text-neutral-400 uppercase">Shop By Price</h4>
+                              <div className="grid grid-cols-2 gap-4">
+                                {[
+                                  { label: 'Under ₹50,000', maxPrice: 1000 },
+                                  { label: '₹50,000 - ₹1,00,000', maxPrice: 2000 },
+                                  { label: '₹1,00,000 - ₹2,00,000', maxPrice: 4500 },
+                                  { label: 'Above ₹2,00,000', maxPrice: 6000 },
+                                ].map((p) => (
+                                  <button
+                                    key={p.label}
+                                    onClick={() => {
+                                      onPageChange('shop', { maxPrice: p.maxPrice });
+                                    }}
+                                    className="text-left text-xs text-neutral-800 hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
+                                  >
+                                    {p.label}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {activeSubMenu === 'recipient' && (
+                            <div className="space-y-6">
+                              <h4 className="text-[10px] font-black tracking-[0.25em] text-neutral-400 uppercase">Watches For Recipient</h4>
+                              {/* 2 Column Recipient Layout to match screenshot */}
+                              <div className="grid grid-cols-2 gap-x-12 gap-y-4">
+                                <div className="flex flex-col space-y-3.5">
+                                  {[
+                                    { label: 'Watches For Bride', filter: { gender: 'women', search: 'Bride' } },
+                                    { label: 'Watches For Mother', filter: { gender: 'women', search: 'Mother' } },
+                                    { label: 'Watches For Brother', filter: { gender: 'men', search: 'Brother' } },
+                                  ].map((r) => (
+                                    <button
+                                      key={r.label}
+                                      onClick={() => {
+                                        onPageChange('shop', r.filter);
+                                      }}
+                                      className="text-left text-xs text-neutral-800 hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
+                                    >
+                                      {r.label}
+                                    </button>
+                                  ))}
+                                </div>
+                                <div className="flex flex-col space-y-3.5">
+                                  {[
+                                    { label: 'Watches For Groom', filter: { gender: 'men', search: 'Groom' } },
+                                    { label: 'Watches For Father', filter: { gender: 'men', search: 'Father' } },
+                                    { label: 'Watches For Sister', filter: { gender: 'women', search: 'Sister' } },
+                                  ].map((r) => (
+                                    <button
+                                      key={r.label}
+                                      onClick={() => {
+                                        onPageChange('shop', r.filter);
+                                      }}
+                                      className="text-left text-xs text-neutral-800 hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
+                                    >
+                                      {r.label}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Right Column: Looking for a Gift card */}
+                        <div className="col-span-4 relative overflow-hidden rounded-xl bg-neutral-950 text-white flex flex-col justify-between p-6 min-h-[220px] shadow-lg group/gift">
+                          <div className="absolute inset-0 bg-cover bg-center opacity-60 scale-100 group-hover/gift:scale-105 transition duration-700" style={{ backgroundImage: "url('/assets/media__1783681299347.png')" }} />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                          <div className="relative z-10 space-y-1">
+                            <span className="text-[9px] font-bold tracking-[0.3em] uppercase text-luxury-gold">Curated Gifting</span>
+                            <h4 className="font-serif text-2xl font-black tracking-wider leading-tight text-white mt-1">LOOKING<br/>for<br/>A GIFT?</h4>
+                          </div>
+                          <button
+                            onClick={() => onPageChange('gifting')}
+                            className="relative z-10 w-full py-3 bg-white text-neutral-950 font-black text-xs uppercase tracking-widest rounded-lg hover:bg-luxury-gold hover:text-white transition duration-300 shadow-md cursor-pointer"
+                          >
+                            Shop Gifting Solutions
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
