@@ -1506,8 +1506,8 @@ export default function Admin({ onPageChange }) {
                       <td className="p-4 font-mono font-bold text-white tracking-wider uppercase">
                         <div className="flex items-center gap-1.5">
                           <span>{o.id}</span>
-                          {o.giftingOptions?.isGifting && (
-                            <Gift size={13} className="text-luxury-gold animate-pulse" title={`Gifting Order: ${o.giftingOptions.occasion}`} />
+                          {(o.giftingOptions?.isGifting || o.giftingOptions?.occasion || o.giftingOptions?.note) && (
+                            <Gift size={13} className="text-luxury-gold animate-pulse" title={`Gifting Order: ${o.giftingOptions.occasion || 'Yes'}`} />
                           )}
                         </div>
                       </td>
@@ -1519,11 +1519,11 @@ export default function Admin({ onPageChange }) {
                         <p className="truncate text-gray-300 font-light" title={o.items.map(item => `${item.name} (x${item.quantity})`).join(', ')}>
                           {o.items.map(item => `${item.name} (x${item.quantity})`).join(', ')}
                         </p>
-                        {o.giftingOptions?.isGifting && (
+                        {(o.giftingOptions?.isGifting || o.giftingOptions?.occasion || o.giftingOptions?.note) && (
                           <div className="mt-1 text-[10px] text-luxury-gold space-y-0.5 bg-luxury-gold/5 border border-luxury-gold/20 p-2 rounded">
                             <p className="font-bold uppercase tracking-wider">🎁 Curated Gift Order</p>
-                            <p><span className="font-semibold text-gray-400">Occasion:</span> {o.giftingOptions.occasion}</p>
-                            <p><span className="font-semibold text-gray-400">Packaging:</span> {o.giftingOptions.packaging === 'couple' ? 'Couple Packaging' : 'Single Packaging'}</p>
+                            {o.giftingOptions.occasion && <p><span className="font-semibold text-gray-400">Occasion:</span> {o.giftingOptions.occasion}</p>}
+                            {o.giftingOptions.packaging && <p><span className="font-semibold text-gray-400">Packaging:</span> {o.giftingOptions.packaging === 'couple' ? 'Couple Packaging' : 'Single Packaging'}</p>}
                             {o.giftingOptions.note && (
                               <p className="italic text-gray-300 mt-1 border-t border-white/5 pt-1">"{o.giftingOptions.note}"</p>
                             )}
