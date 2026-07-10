@@ -398,6 +398,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                     value={ownerName}
                     onChange={(e) => setOwnerName(e.target.value)}
                     className="w-full warranty-portal-input rounded p-2.5 pl-8 focus:outline-none transition"
+                    style={{ color: '#000000' }}
                   />
                 </div>
               </div>
@@ -416,6 +417,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                     value={ownerEmail}
                     onChange={(e) => setOwnerEmail(e.target.value)}
                     className="w-full warranty-portal-input rounded p-2.5 pl-8 focus:outline-none transition"
+                    style={{ color: '#000000' }}
                   />
                 </div>
               </div>
@@ -445,6 +447,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                       }
                     }}
                     className="w-full warranty-portal-input rounded p-2.5 focus:outline-none transition"
+                    style={{ color: '#000000' }}
                   />
                   {showCountryDropdown && (
                     <div className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-2xl max-h-40 overflow-y-auto z-[60] scrollbar-thin">
@@ -485,6 +488,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                       value={selectedState}
                       onChange={(e) => setSelectedState(e.target.value)}
                       className="w-full warranty-portal-input rounded p-2.5 focus:outline-none transition max-h-40 overflow-y-auto scrollbar-thin"
+                      style={{ color: '#000000' }}
                     >
                       {INDIAN_STATES.map((s) => (
                         <option key={s} value={s} style={{ color: '#000000' }}>{s}</option>
@@ -498,6 +502,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                       value={selectedState}
                       onChange={(e) => setSelectedState(e.target.value)}
                       className="w-full warranty-portal-input rounded p-2.5 focus:outline-none transition"
+                      style={{ color: '#000000' }}
                     />
                   )}
                 </div>
@@ -507,7 +512,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffffff' }}>Phone Number</label>
                 <div className="flex space-x-2">
-                  <div className="bg-white text-gray-700 font-mono text-sm px-3 py-2.5 rounded border border-gray-300 flex items-center justify-center min-w-[55px]" style={{ backgroundColor: '#ffffff', color: '#374151' }}>
+                  <div className="bg-white text-gray-700 font-mono text-sm px-3 py-2.5 rounded border border-gray-300 flex items-center justify-center min-w-[55px]" style={{ backgroundColor: '#ffffff', color: '#000000' }}>
                     {ALL_COUNTRIES.find(c => c.name === selectedCountry)?.code || '+91'}
                   </div>
                   <input
@@ -520,6 +525,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                       setPhoneNumber(val);
                     }}
                     className="flex-1 warranty-portal-input rounded p-2.5 focus:outline-none transition"
+                    style={{ color: '#000000' }}
                   />
                 </div>
               </div>
@@ -565,6 +571,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                       setSelectedPurchase(null);
                     }}
                     className="w-full warranty-portal-input rounded p-2.5 focus:outline-none transition"
+                    style={{ color: '#000000' }}
                   />
                   <span className="absolute inset-y-0 right-0 pr-3 flex items-center" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
                     <Search size={14} />
@@ -615,6 +622,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                   value={serialCode}
                   onChange={(e) => setSerialCode(e.target.value)}
                   className="w-full warranty-portal-input rounded p-2.5 focus:outline-none transition font-mono uppercase"
+                  style={{ color: '#000000' }}
                 />
               </div>
 
@@ -628,6 +636,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                   value={specialClaimCode}
                   onChange={(e) => setSpecialClaimCode(e.target.value)}
                   className="w-full warranty-portal-input rounded p-2.5 focus:outline-none transition font-mono uppercase"
+                  style={{ color: '#000000' }}
                 />
               </div>
 
