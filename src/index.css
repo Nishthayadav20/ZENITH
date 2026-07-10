@@ -21,8 +21,8 @@
   --color-luxury-dark: #ffffff; /* White cards */
   --color-luxury-bg: #ffffff; /* Full white */
   --color-luxury-gray: #ffffff; /* Full white */
-  --color-luxury-text: #201e1b; /* Charcoal primary text */
-  --color-luxury-muted: #6e675f; /* Muted taupe/gray */
+  --color-luxury-text: #0d0c0b; /* Much darker primary text */
+  --color-luxury-muted: #4a443e; /* Much darker muted text */
   
   --font-serif: 'Playfair Display', Georgia, serif;
   --font-sans: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
