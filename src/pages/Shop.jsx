@@ -25,11 +25,24 @@ export default function Shop({ onPageChange, filterParams }) {
     if (filterParams?.category) {
       setSelectedCategory(filterParams.category);
       setSelectedGender('All');
+      setSearchQuery('');
+      setSelectedMovement('All');
+      setSelectedStrap('All');
+      setPriceRange(6000);
     } else if (filterParams?.gender) {
       setSelectedGender(filterParams.gender);
       setSelectedCategory('All');
+      setSearchQuery('');
+      setSelectedMovement('All');
+      setSelectedStrap('All');
+      setPriceRange(6000);
     } else if (filterParams?.search !== undefined) {
       setSearchQuery(filterParams.search);
+      setSelectedCategory('All');
+      setSelectedGender('All');
+      setSelectedMovement('All');
+      setSelectedStrap('All');
+      setPriceRange(6000);
     }
     if (filterParams?.maxPrice) {
       setPriceRange(filterParams.maxPrice);
