@@ -306,6 +306,7 @@ function CollectionCard({ col, idx, onPageChange }) {
         <motion.img
           src={col.image} alt={col.name}
           className="w-full h-full object-cover"
+          style={col.imgStyle || {}}
           animate={{ scale: hov ? 1.1 : 1 }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         />
@@ -369,23 +370,19 @@ function CollectionCard({ col, idx, onPageChange }) {
 function LifestyleShowcaseSlider({ products, onPageChange }) {
   const slides = [
     {
-      name: 'CRESCENT - BROWN',
-      fullName: 'Khroniq Crescent Brown',
-      lifestyleImg: '/assets/crescent_lifestyle.png',
-      productImg: '/assets/crescent_product.png',
+      name: 'CRIMSON RED',
+      fullName: 'Khroniq Crimson Red',
+      lifestyleImg: '/assets/lifestyle_red.png',
+      productImg: '/assets/watch_red.jpg',
+      lifestyleStyle: { filter: 'brightness(0.82) contrast(1.1) saturate(1.05)', backgroundPosition: 'center 40%' },
     },
     {
-      name: 'GENTLEMAN - BLUE',
-      fullName: 'Khroniq Gentleman Blue',
-      lifestyleImg: '/assets/gentleman_lifestyle.png',
-      productImg: '/assets/gentleman_product.png',
+      name: 'EMERALD GREEN',
+      fullName: 'Khroniq Emerald Green',
+      lifestyleImg: '/assets/lifestyle_green.png',
+      productImg: '/assets/watch_green.jpg',
+      lifestyleStyle: { filter: 'brightness(0.78) contrast(1.12) saturate(1.08)', backgroundPosition: 'center 35%' },
     },
-    {
-      name: 'AUREX',
-      fullName: 'Khroniq Aurex Green',
-      lifestyleImg: '/assets/aurex_lifestyle.png',
-      productImg: '/assets/aurex_product.png',
-    }
   ];
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -432,15 +429,14 @@ function LifestyleShowcaseSlider({ products, onPageChange }) {
         {/* Left Column: Lifestyle Image Showcase */}
         <div className="relative overflow-hidden h-[450px] lg:h-full bg-neutral-900">
           <AnimatePresence mode="wait">
-            <motion.img
+            <motion.div
               key={`lifestyle-${activeIndex}`}
-              src={currentSlide.lifestyleImg}
-              alt={currentSlide.name}
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url('${currentSlide.lifestyleImg}')`, ...currentSlide.lifestyleStyle }}
               initial={{ opacity: 0, scale: 1.04 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-0 w-full h-full object-cover"
             />
           </AnimatePresence>
           <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent z-[1]" />
@@ -673,9 +669,9 @@ export default function Home({ onPageChange }) {
   const featured = products;
 
   const collections = [
-    { name: 'Khronomaster', image: '/assets/media__1782899491297.jpg', tagline: 'High-Frequency Chronographs', desc: 'Powered by our high-precision caliber calibers, blending robust authenticity with modern Indian design.', filter: { category: 'Khronomaster' }, accent: '#34d399' },
-    { name: 'Defy', image: '/assets/media__1782899491366.jpg', tagline: 'Futuristic Watchmaking', desc: 'Unmatched durability and architectural design built for the boundary-breakers.', filter: { category: 'Defy' }, accent: '#60a5fa' },
-    { name: 'Elite & Heritage', image: '/assets/media__1782899491225.jpg', tagline: 'Timeless Swadeshi Classics', desc: 'Elegant profiles, vintage inspirations, and dress chronometers suited for any formal setting.', filter: { category: 'Heritage' }, accent: '#c5a880' },
+    { name: 'Khronomaster', image: '/assets/watch_green.jpg', tagline: 'High-Frequency Chronographs', desc: 'Powered by our high-precision automatic caliber, blending robust authenticity with modern Indian design.', filter: { category: 'Heritage' }, accent: '#34d399', imgStyle: { filter: 'brightness(0.72) contrast(1.18) saturate(1.1)', objectPosition: 'center 30%' } },
+    { name: 'Defy', image: '/assets/watch_red.jpg', tagline: 'Futuristic Watchmaking', desc: 'Unmatched precision and bold architectural design built for the boundary-breakers.', filter: { category: 'Heritage' }, accent: '#f87171', imgStyle: { filter: 'brightness(0.65) contrast(1.22) saturate(0.9) hue-rotate(-10deg)', objectPosition: 'center 25%' } },
+    { name: 'Elite & Heritage', image: '/assets/watch_green.jpg', tagline: 'Timeless Swadeshi Classics', desc: 'Elegant profiles, vintage inspirations, and dress chronometers suited for any formal setting.', filter: { category: 'Heritage' }, accent: '#c5a880', imgStyle: { filter: 'brightness(0.6) contrast(1.3) sepia(0.25) saturate(0.85)', objectPosition: 'center 35%' } },
   ];
 
   const marqueeA = ['Swadeshi Luxury', 'Indian Engineered', 'Make In India Pride', 'Sapphire Crystal', 'High-Beat Caliber', 'In-House Assembly'];
@@ -851,27 +847,27 @@ export default function Home({ onPageChange }) {
             </Reveal>
           </div>
 
-          {/* Right — large hero image */}
+          {/* Right — large hero image: dramatic angled editorial shot */}
           <div className="relative overflow-hidden min-h-[420px] lg:min-h-0">
             <motion.div
               className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url('/assets/media__1782899491297.jpg')" }}
+              style={{ backgroundImage: "url('/assets/spotlight_red_angled.png')", backgroundPosition: 'center center' }}
               initial={{ scale: 1.08 }}
               whileInView={{ scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
               whileHover={{ scale: 1.04 }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-transparent to-transparent" />
           </div>
         </motion.div>
 
         {/* Bottom half — 2-up product mini grid */}
         <div className="grid grid-cols-2 border-t border-luxury-text/8">
           {[
-            { img: '/assets/media__1782899491320.jpg', label: 'Khronomaster El Primero', sub: 'High-Beat Chronograph' },
-            { img: '/assets/media__1782899491366.jpg', label: 'Defy Extreme', sub: 'Futuristic Architecture' },
-          ].map(({ img, label, sub }, i) => (
+            { img: '/assets/spotlight_green_side.png',   label: 'Khroniq Emerald Green', sub: 'Heritage Automatic', style: { backgroundPosition: 'center center' } },
+            { img: '/assets/spotlight_red_overhead.png', label: 'Khroniq Crimson Red',   sub: 'Heritage Automatic', style: { backgroundPosition: 'center center' } },
+          ].map(({ img, label, sub, style }, i) => (
             <motion.div
               key={i}
               onClick={() => onPageChange('shop')}
@@ -885,7 +881,7 @@ export default function Home({ onPageChange }) {
             >
               <motion.div
                 className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url('${img}')` }}
+                style={{ backgroundImage: `url('${img}')`, ...style }}
                 whileHover={{ scale: 1.06 }}
                 transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
               />
