@@ -111,7 +111,7 @@ export default function Shop({ onPageChange, filterParams }) {
   const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 px-4 sm:px-8 lg:px-12 py-8 max-w-[100vw] overflow-x-hidden">
       {/* Page Header */}
       <div className="border-b border-luxury-text/10 pb-6">
         <h1 className="font-serif text-3xl font-bold uppercase text-luxury-text tracking-widest">Khroniq Catalogue</h1>
