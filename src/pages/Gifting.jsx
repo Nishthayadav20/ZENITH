@@ -241,10 +241,12 @@ export default function Gifting({ onPageChange }) {
   }, []);
 
   const handleShopForRecipient = (recipient) => {
+    localStorage.setItem('khroniq_is_gifting_journey', 'true');
     onPageChange('shop', recipient.filter || {});
   };
 
   const handleCustomize = () => {
+    localStorage.setItem('khroniq_is_gifting_journey', 'true');
     onPageChange('customization', { reset: Date.now() });
   };
 
@@ -416,7 +418,10 @@ export default function Gifting({ onPageChange }) {
               <motion.button
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.96 }}
-                onClick={() => onPageChange('shop')}
+                onClick={() => {
+                  localStorage.setItem('khroniq_is_gifting_journey', 'true');
+                  onPageChange('shop');
+                }}
                 className="flex items-center justify-center gap-3 px-8 py-4 bg-luxury-gold-dark text-white text-xs font-black tracking-widest uppercase cursor-pointer border border-luxury-gold-dark hover:bg-luxury-gold transition-colors duration-200"
               >
                 <Gift size={15} />

@@ -41,8 +41,8 @@ export default function Checkout({ params, onPageChange }) {
   
   const appliedCoupon = params?.appliedCoupon || null;
 
-  // Form states
-  const [step, setStep] = useState(1); // 1: Shipping, 2: Payment, 3: Success
+  const isGiftingJourney = localStorage.getItem('khroniq_is_gifting_journey') === 'true';
+  const [step, setStep] = useState(isGiftingJourney ? 1 : 2); // 1: Gifting, 2: Shipping, 3: Payment, 4: Success
   const [shippingForm, setShippingForm] = useState({
     fullName: currentUser?.name || '',
     streetAddress: currentUser?.shippingAddress?.streetAddress || '',
@@ -130,6 +130,7 @@ export default function Checkout({ params, onPageChange }) {
     ));
 
     if (result && result.success) {
+      localStorage.removeItem('khroniq_is_gifting_journey');
       setOrderReceipt(result.order);
       setStep(4);
       
@@ -150,33 +151,60 @@ export default function Checkout({ params, onPageChange }) {
       
       {/* Checkout Progress Stepper */}
       <div className="flex items-center justify-center space-x-4 border-b border-white/5 pb-6">
-        <div className="flex items-center space-x-2">
-          <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-            step >= 1 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
-          }`}>1</span>
-          <span className={`text-xs font-bold tracking-wider uppercase ${step >= 1 ? 'text-white' : 'text-gray-500'}`}>Shipping</span>
-        </div>
-        <div className="w-12 h-[1px] bg-white/10" />
-        <div className="flex items-center space-x-2">
-          <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-            step >= 2 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
-          }`}>2</span>
-          <span className={`text-xs font-bold tracking-wider uppercase ${step >= 2 ? 'text-white' : 'text-gray-500'}`}>Gifting</span>
-        </div>
-        <div className="w-12 h-[1px] bg-white/10" />
-        <div className="flex items-center space-x-2">
-          <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-            step >= 3 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
-          }`}>3</span>
-          <span className={`text-xs font-bold tracking-wider uppercase ${step >= 3 ? 'text-white' : 'text-gray-500'}`}>Payment</span>
-        </div>
-        <div className="w-12 h-[1px] bg-white/10" />
-        <div className="flex items-center space-x-2">
-          <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-            step === 4 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
-          }`}>4</span>
-          <span className={`text-xs font-bold tracking-wider uppercase ${step === 4 ? 'text-white' : 'text-gray-500'}`}>Receipt</span>
-        </div>
+        {isGiftingJourney ? (
+          <>
+            <div className="flex items-center space-x-2">
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                step >= 1 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+              }`}>1</span>
+              <span className={`text-xs font-bold tracking-wider uppercase ${step >= 1 ? 'text-white' : 'text-gray-500'}`}>Gifting</span>
+            </div>
+            <div className="w-12 h-[1px] bg-white/10" />
+            <div className="flex items-center space-x-2">
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                step >= 2 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+              }`}>2</span>
+              <span className={`text-xs font-bold tracking-wider uppercase ${step >= 2 ? 'text-white' : 'text-gray-500'}`}>Shipping</span>
+            </div>
+            <div className="w-12 h-[1px] bg-white/10" />
+            <div className="flex items-center space-x-2">
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                step >= 3 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+              }`}>3</span>
+              <span className={`text-xs font-bold tracking-wider uppercase ${step >= 3 ? 'text-white' : 'text-gray-500'}`}>Payment</span>
+            </div>
+            <div className="w-12 h-[1px] bg-white/10" />
+            <div className="flex items-center space-x-2">
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                step === 4 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+              }`}>4</span>
+              <span className={`text-xs font-bold tracking-wider uppercase ${step === 4 ? 'text-white' : 'text-gray-500'}`}>Receipt</span>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="flex items-center space-x-2">
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                step >= 2 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+              }`}>1</span>
+              <span className={`text-xs font-bold tracking-wider uppercase ${step >= 2 ? 'text-white' : 'text-gray-500'}`}>Shipping</span>
+            </div>
+            <div className="w-12 h-[1px] bg-white/10" />
+            <div className="flex items-center space-x-2">
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                step >= 3 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+              }`}>2</span>
+              <span className={`text-xs font-bold tracking-wider uppercase ${step >= 3 ? 'text-white' : 'text-gray-500'}`}>Payment</span>
+            </div>
+            <div className="w-12 h-[1px] bg-white/10" />
+            <div className="flex items-center space-x-2">
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                step === 4 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+              }`}>3</span>
+              <span className={`text-xs font-bold tracking-wider uppercase ${step === 4 ? 'text-white' : 'text-gray-500'}`}>Receipt</span>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Step 1: Gifting Details Form */}
@@ -368,7 +396,14 @@ export default function Checkout({ params, onPageChange }) {
               <div className="flex space-x-4 pt-4">
                 <button
                   type="button"
-                  onClick={() => { setStep(1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  onClick={() => {
+                    if (isGiftingJourney) {
+                      setStep(1);
+                    } else {
+                      onPageChange('cart');
+                    }
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                   className="py-4 px-6 border border-white/10 text-white font-bold text-xs tracking-widest uppercase hover:border-white transition w-1/3 cursor-pointer"
                 >
                   Back

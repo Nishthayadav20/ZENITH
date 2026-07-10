@@ -235,6 +235,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                                     <button
                                       key={r.label}
                                       onClick={() => {
+                                        localStorage.setItem('khroniq_is_gifting_journey', 'true');
                                         setMegaMenuForceClosed(true);
                                         onPageChange('shop', r.filter);
                                       }}
@@ -253,6 +254,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                                     <button
                                       key={r.label}
                                       onClick={() => {
+                                        localStorage.setItem('khroniq_is_gifting_journey', 'true');
                                         setMegaMenuForceClosed(true);
                                         onPageChange('shop', r.filter);
                                       }}
