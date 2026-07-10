@@ -659,56 +659,6 @@ export default function Gifting({ onPageChange }) {
           </div>
         </div>
       </section>
-
-      {/* ══════ FINAL CTA ══════ */}
-      <section className="relative w-full py-32 px-4 overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #1a1508 0%, #0d0b08 40%, #12100a 100%)' }}>
-        {/* Gold radial glow */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-[600px] h-[400px] rounded-full"
-            style={{ background: 'radial-gradient(ellipse, rgba(197,168,128,0.22) 0%, transparent 70%)', filter: 'blur(50px)' }} />
-        </div>
-
-        <div className="relative z-10 max-w-3xl mx-auto text-center space-y-8">
-          <Reveal dir="scale" delay={0}>
-            <div className="w-16 h-16 rounded-full border-2 border-luxury-gold/40 flex items-center justify-center mx-auto"
-              style={{ background: 'rgba(197,168,128,0.1)' }}>
-              <Gift size={28} className="text-luxury-gold" />
-            </div>
-          </Reveal>
-          <SlideReveal delay={0.1}>
-            <h2 className="font-cinzel text-4xl sm:text-5xl font-bold text-white tracking-wide uppercase">
-              Begin the Gift Journey
-            </h2>
-          </SlideReveal>
-          <Reveal delay={0.2}>
-            <p className="text-white/55 text-sm sm:text-base leading-relaxed max-w-lg mx-auto">
-              From choosing the perfect timepiece to hand-delivering the emotion — Khroniq handles everything.
-              All you bring is the love.
-            </p>
-          </Reveal>
-          <Reveal delay={0.3} dir="up">
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button
-                whileHover={{ scale: 1.05, boxShadow: '0 20px 60px rgba(197,168,128,0.3)' }}
-                whileTap={{ scale: 0.96 }}
-                onClick={() => onPageChange('shop')}
-                className="flex items-center justify-center gap-3 px-10 py-4 bg-luxury-gold-dark text-white text-xs font-black tracking-widest uppercase cursor-pointer border border-luxury-gold-dark hover:bg-luxury-gold transition-colors duration-200"
-              >
-                <Gift size={16} /> Shop All Watches <ArrowRight size={14} />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.96 }}
-                onClick={handleCustomize}
-                className="flex items-center justify-center gap-3 px-10 py-4 border border-luxury-gold/30 text-luxury-gold text-xs font-black tracking-widest uppercase cursor-pointer hover:border-luxury-gold transition-colors duration-200"
-              >
-                <Sparkles size={16} /> Customize & Gift
-              </motion.button>
-            </div>
-          </Reveal>
-        </div>
-      </section>
     </div>
   );
 }
