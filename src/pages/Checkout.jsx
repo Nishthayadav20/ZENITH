@@ -53,6 +53,7 @@ export default function Checkout({ params, onPageChange }) {
   
   const [paymentMethod, setPaymentMethod] = useState('card'); // card | upi
   const [giftPackage, setGiftPackage] = useState('standard'); // standard | gift-box | luxury
+  const [giftNote, setGiftNote] = useState('');
   const [cardForm, setCardForm] = useState({
     cardNumber: '',
     expiry: '',
@@ -256,7 +257,7 @@ export default function Checkout({ params, onPageChange }) {
           <div className="lg:col-span-7 space-y-5">
 
             {/* Gift Packaging Picker */}
-            <div className="bg-luxury-gray border border-white/5 p-5 rounded-md space-y-3">
+            <div className="bg-luxury-gray border border-white/5 p-5 rounded-md space-y-4">
               <div className="flex items-center gap-2 border-b border-white/5 pb-3">
                 <Gift size={13} className="text-luxury-gold" />
                 <h3 className="text-xs font-bold tracking-widest text-white uppercase">Gift Packaging</h3>
@@ -287,6 +288,26 @@ export default function Checkout({ params, onPageChange }) {
                     <p className="text-[10px] text-gray-500 mt-1 leading-snug">{pkg.desc}</p>
                   </button>
                 ))}
+              </div>
+
+              {/* Gift Note Input field */}
+              <div className="space-y-2 mt-4 pt-4 border-t border-white/5">
+                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Write a Gift Note (Optional)</label>
+                <textarea
+                  value={giftNote}
+                  onChange={(e) => setGiftNote(e.target.value.slice(0, 260))}
+                  placeholder={`Dear [Name],\n\nEvery moment you wear this watch, know it carries our love and pride...`}
+                  rows={3}
+                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold resize-none"
+                  style={{
+                    fontFamily: 'Georgia, serif',
+                    color: 'rgba(255,255,255,0.9)',
+                  }}
+                />
+                <div className="flex justify-between text-[9px] text-gray-500">
+                  <span>{giftNote.length} / 260 characters</span>
+                  <span>Placed inside the watch box on premium cream card stock</span>
+                </div>
               </div>
             </div>
 

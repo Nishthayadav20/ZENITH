@@ -545,64 +545,6 @@ export default function Gifting({ onPageChange }) {
       </section>
 
 
-      {/* ══════ PERSONAL NOTE ══════ */}
-      <section className="w-full py-24 px-4 bg-[#0d0b08]">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-12 space-y-4">
-            <Reveal dir="down">
-              <p className="text-[10px] text-luxury-gold font-black tracking-[0.28em] uppercase">From the Heart</p>
-            </Reveal>
-            <SlideReveal delay={0.1}>
-              <h2 className="font-cinzel text-4xl font-bold text-white tracking-wide uppercase">
-                Write a Gift Note
-              </h2>
-            </SlideReveal>
-            <Reveal delay={0.2}>
-              <p className="text-white/50 text-sm max-w-xl mx-auto leading-relaxed">
-                Your words, penned in our signature ink on embossed cream card stock — placed inside the watch box.
-              </p>
-            </Reveal>
-          </div>
-
-          <Reveal dir="up" delay={0.1}>
-            <div className="relative rounded-2xl overflow-hidden border border-white/10"
-              style={{ background: 'rgba(255,255,255,0.04)' }}>
-              {/* decorative top bar */}
-              <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #c5a880, #f472b6, #34d399, #c5a880)' }} />
-
-              <div className="p-8 sm:p-10">
-                <div className="flex items-center gap-3 mb-6">
-                  <Heart size={18} className="text-luxury-gold" />
-                  <span className="text-white/60 text-xs font-black tracking-widest uppercase">Personal Dedication</span>
-                </div>
-                <textarea
-                  value={giftNote}
-                  onChange={e => setGiftNote(e.target.value.slice(0, 260))}
-                  placeholder={`Dear [Name],\n\nEvery moment you wear this watch, know it carries our love and pride...`}
-                  rows={6}
-                  className="w-full text-sm leading-relaxed font-light resize-none focus:outline-none"
-                  style={{
-                    fontFamily: 'Georgia, serif',
-                    background: 'transparent',
-                    backgroundColor: 'transparent',
-                    border: 'none',
-                    color: 'rgba(255,255,255,0.8)',
-                    outline: 'none',
-                    boxShadow: 'none',
-                  }}
-                />
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
-                  <span className="text-white/30 text-xs">{giftNote.length} / 260 characters</span>
-                  <span className="text-luxury-gold/60 text-xs font-light italic">
-                    {giftNote.length > 0 ? '✦ Note saved' : 'Start writing...'}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
       {/* ══════ WHY GIFT KHRONIQ ══════ */}
       <section className="w-full py-24 px-4 bg-[#111007]">
         <div className="max-w-7xl mx-auto">
