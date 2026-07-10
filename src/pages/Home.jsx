@@ -724,7 +724,7 @@ export default function Home({ onPageChange }) {
           className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-12 gap-8 items-center"
           style={{ x: contentX, y: contentY }}
         >
-          <div className="col-span-1 sm:col-span-8 space-y-6 text-center sm:text-left">
+          <div className="col-span-1 sm:col-span-8 space-y-6 text-center sm:text-left" style={{ transform: 'translate(-20px, 30px)' }}>
             {/* Badge */}
             <motion.div initial={{ opacity: 0, y: -26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }} className="flex justify-center sm:justify-start">
               <motion.span className="inline-flex items-center gap-2 border border-luxury-gold/45 text-luxury-gold px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-black/45 backdrop-blur-sm"
