@@ -135,12 +135,12 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
         {/* Drawer Header */}
         <div className="flex justify-between items-center border-b border-white/5 pb-4">
           <div className="flex items-center space-x-2">
-            <ShieldCheck className="text-orange-500 w-5 h-5" />
-            <h3 className="text-xs font-bold uppercase tracking-widest text-orange-500">Warranty Portal</h3>
+            <ShieldCheck className="text-white w-6 h-6" />
+            <h3 className="text-sm font-bold uppercase tracking-widest text-white">Warranty Portal</h3>
           </div>
           <button 
             onClick={onClose} 
-            className="text-gray-400 hover:text-white transition p-1 hover:bg-white/5 rounded-full cursor-pointer"
+            className="text-white hover:text-white/80 transition p-1 hover:bg-white/5 rounded-full cursor-pointer"
           >
             <X size={18} />
           </button>
@@ -157,16 +157,16 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
           {/* STEP 1: Enter Name & Email */}
           {step === 'details' && (
-            <form onSubmit={handleRetrievePurchases} className="space-y-4 text-xs">
-              <p className="text-[10px] text-gray-400 leading-relaxed font-light uppercase tracking-wider">
+            <form onSubmit={handleRetrievePurchases} className="space-y-4 text-sm">
+              <p className="text-xs text-white leading-relaxed font-normal uppercase tracking-wider">
                 Enter your billing details to retrieve your watch purchases from the manufacture database.
               </p>
 
               {/* Owner Name */}
               <div className="space-y-1.5">
-                <label className="text-[8px] text-orange-500 font-bold uppercase tracking-widest block">Full Name</label>
+                <label className="text-[10px] text-white font-bold uppercase tracking-widest block">Full Name</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-white/60">
                     <User size={12} />
                   </span>
                   <input
@@ -182,9 +182,9 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Owner Email */}
               <div className="space-y-1.5">
-                <label className="text-[8px] text-orange-500 font-bold uppercase tracking-widest block">Email Address</label>
+                <label className="text-[10px] text-white font-bold uppercase tracking-widest block">Email Address</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-white/60">
                     <QrCode size={12} />
                   </span>
                   <input
@@ -201,7 +201,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 bg-luxury-gold hover:bg-luxury-gold-dark disabled:bg-gray-700 disabled:text-gray-400 text-neutral-950 font-bold text-xs uppercase tracking-widest rounded transition cursor-pointer"
+                className="w-full py-2.5 bg-luxury-gold hover:bg-luxury-gold-dark disabled:bg-gray-700 disabled:text-gray-400 text-neutral-950 font-bold text-sm uppercase tracking-widest rounded transition cursor-pointer"
               >
                 {loading ? 'Retrieving Records...' : 'Retrieve Purchased Watches'}
               </button>
@@ -210,13 +210,13 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
           {/* STEP 2: Select Watch & Verify Codes */}
           {step === 'watch-select' && (
-            <form onSubmit={handleClaimWarranty} className="space-y-4 text-xs">
+            <form onSubmit={handleClaimWarranty} className="space-y-4 text-sm">
               <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                <p className="text-[9px] text-gray-400 uppercase tracking-widest font-bold">Billing matches: {purchases.length} Found</p>
+                <p className="text-xs text-white uppercase tracking-widest font-bold">Billing matches: {purchases.length} Found</p>
                 <button 
                   type="button" 
                   onClick={() => setStep('details')}
-                  className="text-luxury-gold hover:underline text-[9px] uppercase font-bold"
+                  className="text-white hover:underline text-xs uppercase font-bold"
                 >
                   Change Owner
                 </button>
@@ -224,7 +224,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Watch Name Dropdown Input */}
               <div className="space-y-1.5 relative">
-                <label className="text-[8px] text-orange-500 font-bold uppercase tracking-widest block">Name of Watch</label>
+                <label className="text-[10px] text-white font-bold uppercase tracking-widest block">Name of Watch</label>
                 <div className="relative">
                   <input
                     type="text"
@@ -239,7 +239,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                     }}
                     className="w-full bg-neutral-900 border border-white/10 rounded text-white p-2.5 focus:outline-none focus:border-luxury-gold transition"
                   />
-                  <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+                  <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-white/60">
                     <Search size={14} />
                   </span>
                 </div>
@@ -252,10 +252,10 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                         key={i}
                         type="button"
                         onClick={() => handleSelectWatch(p)}
-                        className="w-full text-left px-3 py-2 text-[10px] text-gray-300 hover:bg-luxury-gold/10 hover:text-luxury-gold transition border-b border-white/5 last:border-0 cursor-pointer flex items-center justify-between"
+                        className="w-full text-left px-3 py-2 text-xs text-white hover:bg-white/10 transition border-b border-white/5 last:border-0 cursor-pointer flex items-center justify-between"
                       >
                         <span>{p.name}</span>
-                        <span className="text-[8px] text-gray-500 font-mono">{p.orderId}</span>
+                        <span className="text-[10px] text-white/70 font-mono">{p.orderId}</span>
                       </button>
                     ))}
                   </div>
@@ -264,23 +264,23 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Watch Image Display Area */}
               {selectedPurchase && (
-                <div className="bg-neutral-900/80 border border-luxury-gold/20 rounded p-3 flex items-center space-x-3 animate-scale-in">
+                <div className="bg-neutral-900/80 border border-white/20 rounded p-3 flex items-center space-x-3 animate-scale-in">
                   <img 
                     src={selectedPurchase.image} 
                     alt={selectedPurchase.name} 
                     className="w-14 h-14 object-cover rounded bg-black/40 border border-white/5"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider">Purchase Match</p>
-                    <p className="text-white font-bold truncate text-[11px]">{selectedPurchase.name}</p>
-                    <p className="text-gray-500 text-[9px]">Purchased on {selectedPurchase.date}</p>
+                    <p className="text-[11px] text-white font-bold uppercase tracking-wider">Purchase Match</p>
+                    <p className="text-white font-bold truncate text-xs">{selectedPurchase.name}</p>
+                    <p className="text-white/70 text-[10px]">Purchased on {selectedPurchase.date}</p>
                   </div>
                 </div>
               )}
 
               {/* Serial Code */}
               <div className="space-y-1.5">
-                <label className="text-[8px] text-orange-500 font-bold uppercase tracking-widest block">Serial Code of Purchase</label>
+                <label className="text-[10px] text-white font-bold uppercase tracking-widest block">Serial Code of Purchase</label>
                 <input
                   type="text"
                   required
@@ -293,7 +293,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Special Code to Claim Warranty */}
               <div className="space-y-1.5">
-                <label className="text-[8px] text-orange-500 font-bold uppercase tracking-widest block">Special Code to Claim Warranty</label>
+                <label className="text-[10px] text-white font-bold uppercase tracking-widest block">Special Code to Claim Warranty</label>
                 <input
                   type="text"
                   required
@@ -307,7 +307,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
               <button
                 type="submit"
                 disabled={loading || !selectedPurchase}
-                className="w-full py-2.5 bg-luxury-gold hover:bg-luxury-gold-dark disabled:bg-gray-700 disabled:text-gray-400 text-neutral-950 font-bold text-xs uppercase tracking-widest rounded transition cursor-pointer"
+                className="w-full py-2.5 bg-luxury-gold hover:bg-luxury-gold-dark disabled:bg-gray-700 disabled:text-gray-400 text-neutral-950 font-bold text-sm uppercase tracking-widest rounded transition cursor-pointer"
               >
                 {loading ? 'Verifying Codes...' : 'Claim & Activate Warranty'}
               </button>
@@ -318,39 +318,39 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
           {step === 'verified' && verificationResult && (
             <div className="space-y-5 animate-scale-in text-center">
               <div className="flex flex-col items-center justify-center space-y-2">
-                <CheckCircle className="text-emerald-400 w-12 h-12" />
+                <CheckCircle className="text-white w-12 h-12" />
                 <h4 className="text-sm font-bold uppercase tracking-widest text-white">Warranty Claimed</h4>
-                <p className="text-[9px] text-emerald-400 font-mono tracking-widest uppercase bg-emerald-500/10 px-3 py-1 rounded-full">
+                <p className="text-xs text-white font-mono tracking-widest uppercase bg-white/10 px-3 py-1 rounded-full">
                   Status: {verificationResult.status}
                 </p>
               </div>
 
-              <div className="bg-neutral-900 border border-white/10 rounded p-4 text-left space-y-2.5 text-[11px] leading-relaxed">
+              <div className="bg-neutral-900 border border-white/10 rounded p-4 text-left space-y-2.5 text-xs leading-relaxed">
                 <div>
-                  <span className="text-gray-500 block text-[8px] uppercase tracking-wider font-bold">Watch Owner</span>
+                  <span className="text-white/60 block text-[10px] uppercase tracking-wider font-bold">Watch Owner</span>
                   <span className="text-white font-medium">{verificationResult.registeredTo}</span>
                 </div>
                 <div>
-                  <span className="text-gray-500 block text-[8px] uppercase tracking-wider font-bold">Model</span>
+                  <span className="text-white/60 block text-[10px] uppercase tracking-wider font-bold">Model</span>
                   <span className="text-white font-medium">{verificationResult.watchModel}</span>
                 </div>
                 <div>
-                  <span className="text-gray-500 block text-[8px] uppercase tracking-wider font-bold">Purchase Serial</span>
+                  <span className="text-white/60 block text-[10px] uppercase tracking-wider font-bold">Purchase Serial</span>
                   <span className="text-white font-mono">{verificationResult.serialNumber}</span>
                 </div>
                 <div>
-                  <span className="text-gray-500 block text-[8px] uppercase tracking-wider font-bold">Warranty Claim Code</span>
+                  <span className="text-white/60 block text-[10px] uppercase tracking-wider font-bold">Warranty Claim Code</span>
                   <span className="text-white font-mono">{verificationResult.claimCode}</span>
                 </div>
                 <div className="pt-2 border-t border-white/5">
-                  <span className="text-gray-500 block text-[8px] uppercase tracking-wider font-bold">Expiration Date</span>
-                  <span className="text-luxury-gold font-bold">{verificationResult.expiryDate}</span>
+                  <span className="text-white/60 block text-[10px] uppercase tracking-wider font-bold">Expiration Date</span>
+                  <span className="text-white font-bold">{verificationResult.expiryDate}</span>
                 </div>
               </div>
 
               <button
                 onClick={resetDrawer}
-                className="w-full py-2 bg-neutral-900 border border-white/15 hover:border-white/35 text-white font-bold text-xs uppercase tracking-widest rounded transition cursor-pointer"
+                className="w-full py-2 bg-neutral-900 border border-white/15 hover:border-white/35 text-white font-bold text-sm uppercase tracking-widest rounded transition cursor-pointer"
               >
                 Register Another Watch
               </button>
