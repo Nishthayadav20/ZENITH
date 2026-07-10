@@ -680,8 +680,8 @@ export default function Admin({ onPageChange }) {
                 <line x1="55" y1="300" x2="550" y2="300" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
                 
                 {/* Axes */}
-                <line x1="55" y1="300" x2="550" y2="300" stroke="rgba(0,0,0,0.15)" strokeWidth="1" />
-                <line x1="55" y1="50" x2="55" y2="300" stroke="rgba(0,0,0,0.15)" strokeWidth="1" />
+                <line x1="55" y1="300" x2="550" y2="300" stroke="#000000" strokeWidth="1.5" />
+                <line x1="55" y1="50" x2="55" y2="300" stroke="#000000" strokeWidth="1.5" />
 
                 {/* Bars - Mocking Category Sales: Khronomaster, Defy, Heritage, Elite */}
                 {categories.map((cat, idx) => {
@@ -735,7 +735,7 @@ export default function Admin({ onPageChange }) {
                       <text
                         x={xPos + 24}
                         y={yPos - 6}
-                        fill="#1a1a1a"
+                        fill="#000000"
                         fontSize="8"
                         textAnchor="middle"
                         className="font-mono font-bold"
@@ -747,10 +747,10 @@ export default function Admin({ onPageChange }) {
                 })}
 
                 {/* Y-axis Labels */}
-                <text x="47" y="54" fill="rgba(0,0,0,0.5)" fontSize="8" textAnchor="end">{formatPrice(maxVal, currentCurrency)}</text>
-                <text x="47" y="137" fill="rgba(0,0,0,0.5)" fontSize="8" textAnchor="end">{formatPrice(maxVal * 0.66, currentCurrency)}</text>
-                <text x="47" y="220" fill="rgba(0,0,0,0.5)" fontSize="8" textAnchor="end">{formatPrice(maxVal * 0.33, currentCurrency)}</text>
-                <text x="47" y="304" fill="rgba(0,0,0,0.5)" fontSize="8" textAnchor="end">{formatPrice(0, currentCurrency)}</text>
+                <text x="47" y="54" fill="#000000" fontSize="8" textAnchor="end" className="font-bold">{formatPrice(maxVal, currentCurrency)}</text>
+                <text x="47" y="137" fill="#000000" fontSize="8" textAnchor="end" className="font-bold">{formatPrice(maxVal * 0.66, currentCurrency)}</text>
+                <text x="47" y="220" fill="#000000" fontSize="8" textAnchor="end" className="font-bold">{formatPrice(maxVal * 0.33, currentCurrency)}</text>
+                <text x="47" y="304" fill="#000000" fontSize="8" textAnchor="end" className="font-bold">{formatPrice(0, currentCurrency)}</text>
 
                 {/* X-axis Labels */}
                 {categories.map((cat, idx) => (
@@ -758,7 +758,7 @@ export default function Admin({ onPageChange }) {
                     key={cat}
                     x={114 + idx * 120} 
                     y="322" 
-                    fill="rgba(0,0,0,0.7)" 
+                    fill="#000000" 
                     fontSize="9" 
                     fontWeight="bold"
                     textAnchor="middle"
