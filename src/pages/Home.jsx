@@ -760,7 +760,7 @@ export default function Home({ onPageChange }) {
               className="pt-4 flex flex-col sm:flex-row justify-center sm:justify-start items-center gap-4">
               <MagBtn onClick={() => onPageChange('shop')}
                 className="px-8 py-4 text-white text-xs font-bold tracking-widest uppercase hover:opacity-90 transition duration-150 w-full sm:w-auto cursor-pointer border"
-                style={{ backgroundColor: '#0f4605', borderColor: '#0f4605' }}>
+                style={{ background: 'linear-gradient(135deg, #047857 0%, #065f46 45%, #022c22 100%)', borderColor: '#047857' }}>
                 Explore Timepieces
               </MagBtn>
               <MagBtn onClick={() => onPageChange('shop', { category: 'Khronomaster' })}
