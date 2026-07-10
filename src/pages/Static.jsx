@@ -60,10 +60,13 @@ export default function Static({ params, _onPageChange }) {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex justify-center border-b border-luxury-text/10 max-w-4xl mx-auto">
+      <div className="flex flex-wrap justify-center border-b border-luxury-text/10 max-w-4xl mx-auto gap-y-1">
         {[
           { key: 'about', label: 'Our Story' },
           { key: 'contact', label: 'Boutique Contact' },
+          { key: 'shipping', label: 'Shipping Policy' },
+          { key: 'exchange', label: 'Exchange Policy' },
+          { key: 'refund', label: 'Refund Policy' },
           { key: 'faq', label: 'Client FAQ' },
           { key: 'blogs', label: 'Blogs & Editorial' },
           { key: 'policies', label: 'Legal Policies' }
@@ -237,6 +240,82 @@ export default function Static({ params, _onPageChange }) {
                   Reserve a personalized viewing session at our international salons located in Paris, Geneva, Tokyo, and New York.
                 </p>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* SHIPPING POLICY TAB */}
+        {activeTab === 'shipping' && (
+          <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
+            <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Shipping Policy</h3>
+            <div className="space-y-4">
+              <p>
+                We offer complementary insured priority shipping on all KHRONIQ acquisitions worldwide. Every shipment is carefully packaged in a secure, unbranded outer box to guarantee discretion and security.
+              </p>
+              <p>
+                <strong>Delivery Timelines:</strong>
+                <br />
+                - Ready Stock: Dispatched within 24-48 hours, arriving within 3-5 business days.
+                <br />
+                - Bespoke / Customized Pieces: Handcrafted to order; delivery takes approximately 4-6 weeks.
+              </p>
+              <p>
+                <strong>Secure Signature Required:</strong>
+                <br />
+                Due to the high value of our horological products, all shipments require a physical signature by an adult upon delivery. Packages will not be left at doorsteps or with neighbors under any circumstances.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* EXCHANGE POLICY TAB */}
+        {activeTab === 'exchange' && (
+          <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
+            <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Exchange Policy</h3>
+            <div className="space-y-4">
+              <p>
+                We strive for absolute satisfaction with every purchase. If your timepiece does not fit your expectation, we accommodate sizing and model exchanges.
+              </p>
+              <p>
+                <strong>Exchange Criteria:</strong>
+                <br />
+                - Ready-stock timepieces are eligible for exchange within 14 days of receipt.
+                <br />
+                - The watch must be unworn, unmodified, and in pristine condition with all protective seals, wrapping, and tags intact.
+              </p>
+              <p>
+                <strong>Bespoke Exclusions:</strong>
+                <br />
+                Customized or engraved watches are uniquely manufactured to your specifications and are not eligible for exchanges unless a clear manufacturing defect is present.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* REFUND POLICY TAB */}
+        {activeTab === 'refund' && (
+          <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
+            <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Refund Policy</h3>
+            <div className="space-y-4">
+              <p>
+                Our refund window is open for 14 days starting from the date of physical package receipt.
+              </p>
+              <p>
+                <strong>Refund Process:</strong>
+                <br />
+                1. Request a return through your customer profile or contact our Concierge Desk.
+                <br />
+                2. Our secure courier will coordinate a complimentary pick-up from your shipping address.
+                <br />
+                3. Once received at our manufacture, the timepiece undergoes a rigorous inspection.
+                <br />
+                4. Following approval, refunds are credited back to your original payment method within 7-10 business days.
+              </p>
+              <p>
+                <strong>Non-Refundable Items:</strong>
+                <br />
+                Any timepiece showing signs of wear, sizing modifications (e.g. link removal), or missing original box/papers cannot be refunded. Bespoke engraved or custom-configured watches are non-refundable.
+              </p>
             </div>
           </div>
         )}

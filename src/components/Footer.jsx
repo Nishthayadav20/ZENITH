@@ -34,7 +34,9 @@ const NAV_COLS = [
     links: [
       { label: 'Book an Appointment', page: 'static',  args: { view: 'contact' } },
       { label: 'Register My Watch',   page: 'profile', args: { tab: 'settings' } },
-      { label: 'Shipping & Returns',  page: 'static',  args: { view: 'faq' } },
+      { label: 'Shipping Policy',     page: 'static',  args: { view: 'shipping' } },
+      { label: 'Exchange Policy',     page: 'static',  args: { view: 'exchange' } },
+      { label: 'Refund Policy',       page: 'static',  args: { view: 'refund' } },
       { label: 'FAQ',                 page: 'static',  args: { view: 'faq' } },
     ],
   },
