@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { X, ShieldCheck, User, QrCode, Search, Award, CheckCircle } from 'lucide-react';
 
 const ALL_COUNTRIES = [
