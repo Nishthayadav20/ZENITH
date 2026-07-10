@@ -410,6 +410,30 @@ export default function Gifting({ onPageChange }) {
               transition={{ duration: 0.7, delay: 0.3 }} />
           </div>
 
+          {/* Gifting CTA Buttons (Start Journey / Customize) - Placed below title */}
+          <Reveal delay={0.2} dir="up">
+            <div className="mb-16 flex flex-col sm:flex-row gap-4 justify-center">
+              <motion.button
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={() => onPageChange('shop')}
+                className="flex items-center justify-center gap-3 px-8 py-4 bg-luxury-gold-dark text-white text-xs font-black tracking-widest uppercase cursor-pointer border border-luxury-gold-dark hover:bg-luxury-gold transition-colors duration-200"
+              >
+                <Gift size={15} />
+                Start Your Gift Journey
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={handleCustomize}
+                className="flex items-center justify-center gap-3 px-8 py-4 border border-luxury-gold/30 text-luxury-gold text-xs font-black tracking-widest uppercase cursor-pointer hover:border-luxury-gold/60 transition-colors duration-200"
+              >
+                <Sparkles size={15} />
+                Customize & Gift
+              </motion.button>
+            </div>
+          </Reveal>
+
           {/* 3×2 card grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {RECIPIENTS.map((rec, i) => {
@@ -517,30 +541,6 @@ export default function Gifting({ onPageChange }) {
               </motion.div>
             )}
           </AnimatePresence>
-
-          {/* Gifting CTA Buttons (Start Journey / Customize) - Placed Above Gift Note */}
-          <Reveal delay={0.2} dir="up">
-            <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
-                onClick={() => onPageChange('shop')}
-                className="flex items-center justify-center gap-3 px-8 py-4 bg-luxury-gold-dark text-white text-xs font-black tracking-widest uppercase cursor-pointer border border-luxury-gold-dark hover:bg-luxury-gold transition-colors duration-200"
-              >
-                <Gift size={15} />
-                Start Your Gift Journey
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
-                onClick={handleCustomize}
-                className="flex items-center justify-center gap-3 px-8 py-4 border border-luxury-gold/30 text-luxury-gold text-xs font-black tracking-widest uppercase cursor-pointer hover:border-luxury-gold/60 transition-colors duration-200"
-              >
-                <Sparkles size={15} />
-                Customize & Gift
-              </motion.button>
-            </div>
-          </Reveal>
         </div>
       </section>
 
