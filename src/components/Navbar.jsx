@@ -24,6 +24,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
   const currentCurrency = useSelector(selectCurrentCurrency);
   const [currencyOpen, setCurrencyOpen] = useState(false);
   const [activeSubMenu, setActiveSubMenu] = useState('recipient');
+  const [megaMenuForceClosed, setMegaMenuForceClosed] = useState(false);
 
   const currencyMap = {
     INR: { symbol: '₹', label: 'Indian Currency (Rupees)' },
@@ -156,7 +157,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
 
               if (link.megaMenu) {
                 return (
-                  <div key={idx} className="relative group py-2">
+                  <div key={idx} className="relative group py-2" onMouseEnter={() => setMegaMenuForceClosed(false)}>
                     <button
                       onClick={() => handleNavLinkClick(link)}
                       className={`whitespace-nowrap transition duration-200 cursor-pointer uppercase font-black tracking-wider ${textColorClass} ${
@@ -167,7 +168,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                     </button>
                     
                     {/* FULL SCREEN WIDE LIGHT GLASSMORPHIC (LIQUIFIED) MEGA MENU */}
-                    <div className="fixed left-0 right-0 w-screen bg-white/85 backdrop-blur-3xl border-y border-neutral-200/50 shadow-[0_20px_45px_rgba(0,0,0,0.12)] p-0 hidden group-hover:block z-50 text-left transition-all duration-300 top-[75px] left-0">
+                    <div className={`fixed left-0 right-0 w-screen bg-white/85 backdrop-blur-3xl border-y border-neutral-200/50 shadow-[0_20px_45px_rgba(0,0,0,0.12)] p-0 hidden group-hover:block z-50 text-left transition-all duration-300 top-[75px] left-0 ${megaMenuForceClosed ? '!hidden' : ''}`}>
                       <div className="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-10">
                         {/* Left Column: Category selectors */}
                         <div className="col-span-3 border-r border-neutral-200/40 pr-6 flex flex-col space-y-3">
@@ -175,7 +176,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                             type="button"
                             onMouseEnter={() => setActiveSubMenu('price')}
                             className={`w-full text-left px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-widest flex items-center justify-between transition duration-200 ${
-                              activeSubMenu === 'price' ? 'bg-neutral-900/10 text-neutral-950 font-black scale-[1.02]' : 'text-neutral-500 hover:bg-neutral-900/5'
+                              activeSubMenu === 'price' ? 'text-luxury-gold font-black scale-[1.02] bg-transparent' : 'text-neutral-500 hover:text-neutral-800 bg-transparent'
                             }`}
                           >
                             <span>Shop By Price</span>
@@ -185,7 +186,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                             type="button"
                             onMouseEnter={() => setActiveSubMenu('recipient')}
                             className={`w-full text-left px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-widest flex items-center justify-between transition duration-200 ${
-                              activeSubMenu === 'recipient' ? 'bg-neutral-900/10 text-neutral-950 font-black scale-[1.02]' : 'text-neutral-500 hover:bg-neutral-900/5'
+                              activeSubMenu === 'recipient' ? 'text-luxury-gold font-black scale-[1.02] bg-transparent' : 'text-neutral-500 hover:text-neutral-800 bg-transparent'
                             }`}
                           >
                             <span>Watches For Recipient</span>
@@ -208,6 +209,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                                   <button
                                     key={p.label}
                                     onClick={() => {
+                                      setMegaMenuForceClosed(true);
                                       onPageChange('shop', { maxPrice: p.maxPrice });
                                     }}
                                     className="text-left text-xs text-neutral-800 hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
@@ -233,6 +235,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                                     <button
                                       key={r.label}
                                       onClick={() => {
+                                        setMegaMenuForceClosed(true);
                                         onPageChange('shop', r.filter);
                                       }}
                                       className="text-left text-xs text-neutral-800 hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
@@ -250,6 +253,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                                     <button
                                       key={r.label}
                                       onClick={() => {
+                                        setMegaMenuForceClosed(true);
                                         onPageChange('shop', r.filter);
                                       }}
                                       className="text-left text-xs text-neutral-800 hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
