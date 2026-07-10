@@ -73,6 +73,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
     { label: 'SHOP ALL', page: 'shop' },
     { label: 'KHRONOMASTER', page: 'shop', filter: { category: 'Khronomaster' } },
     { label: 'CUSTOMIZE', page: 'customization' },
+    { label: 'FAQ', page: 'static', args: { view: 'faq' }, dropdown: true },
     { label: '🎁 GIFTING', page: 'gifting' },
   ];
 
@@ -117,25 +118,62 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
 
           {/* Left Navigation: Brand Links (Desktop) */}
           <nav className="hidden md:flex items-center gap-5 text-[11px] lg:text-xs font-black tracking-wider">
-            {navLinks.map((link, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleNavLinkClick(link)}
-                className={`whitespace-nowrap transition duration-200 cursor-pointer ${
-                  link.page === 'gifting'
-                    ? `px-3 py-1 rounded-full border ${
-                        currentPage === 'gifting'
-                          ? 'bg-luxury-gold-dark border-luxury-gold-dark text-white'
-                          : 'border-luxury-gold/50 text-luxury-gold hover:bg-luxury-gold/10'
-                      }`
-                    : `${textColorClass} ${
+            {navLinks.map((link, idx) => {
+              if (link.dropdown) {
+                return (
+                  <div key={idx} className="relative group py-2">
+                    <button
+                      onClick={() => handleNavLinkClick(link)}
+                      className={`whitespace-nowrap transition duration-200 cursor-pointer uppercase font-black tracking-wider ${textColorClass} ${
                         currentPage === link.page ? 'text-luxury-gold' : ''
-                      }`
-                }`}
-              >
-                {link.label}
-              </button>
-            ))}
+                      }`}
+                    >
+                      {link.label}
+                    </button>
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-48 bg-[#111111] border border-white/10 rounded shadow-xl py-2 hidden group-hover:block transition duration-200 z-50 text-left">
+                      {[
+                        { label: 'Our Story', view: 'about' },
+                        { label: 'Boutique Contact', view: 'contact' },
+                        { label: 'Client FAQ', view: 'faq' },
+                        { label: 'Blogs & Editorial', view: 'blogs' },
+                        { label: 'Legal Policies', view: 'policies' }
+                      ].map((sub) => (
+                        <button
+                          key={sub.view}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onPageChange('static', { view: sub.view });
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-white/10 text-gray-300 hover:text-white transition text-[11px] font-bold uppercase tracking-wider cursor-pointer block"
+                        >
+                          {sub.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <button
+                  key={idx}
+                  onClick={() => handleNavLinkClick(link)}
+                  className={`whitespace-nowrap transition duration-200 cursor-pointer ${
+                    link.page === 'gifting'
+                      ? `px-3 py-1 rounded-full border ${
+                          currentPage === 'gifting'
+                            ? 'bg-luxury-gold-dark border-luxury-gold-dark text-white'
+                            : 'border-luxury-gold/50 text-luxury-gold hover:bg-luxury-gold/10'
+                        }`
+                      : `${textColorClass} ${
+                          currentPage === link.page ? 'text-luxury-gold' : ''
+                        }`
+                  }`}
+                >
+                  {link.label}
+                </button>
+              );
+            })}
           </nav>
 
           {/* Center Logo */}
@@ -300,15 +338,44 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
           </form>
 
           {/* Navigation links */}
-          {navLinks.map((link, idx) => (
-            <button
-              key={idx}
-              onClick={() => handleNavLinkClick(link)}
-              className="text-left text-sm text-luxury-text hover:text-luxury-gold-dark transition py-2 font-medium tracking-widest cursor-pointer"
-            >
-              {link.label}
-            </button>
-          ))}
+          {navLinks.map((link, idx) => {
+            if (link.dropdown) {
+              return (
+                <div key={idx} className="flex flex-col space-y-1 py-1">
+                  <span className="text-left text-xs text-luxury-gold-dark font-extrabold tracking-widest block uppercase pt-2 pb-1 border-b border-white/5">
+                    {link.label}
+                  </span>
+                  {[
+                    { label: 'Our Story', view: 'about' },
+                    { label: 'Boutique Contact', view: 'contact' },
+                    { label: 'Client FAQ', view: 'faq' },
+                    { label: 'Blogs & Editorial', view: 'blogs' },
+                    { label: 'Legal Policies', view: 'policies' }
+                  ].map((sub) => (
+                    <button
+                      key={sub.view}
+                      onClick={() => {
+                        onPageChange('static', { view: sub.view });
+                        setMobileMenuOpen(false);
+                      }}
+                      className="text-left text-[11px] text-gray-400 hover:text-white transition pl-3 py-1.5 font-bold uppercase tracking-wider cursor-pointer"
+                    >
+                      {sub.label}
+                    </button>
+                  ))}
+                </div>
+              );
+            }
+            return (
+              <button
+                key={idx}
+                onClick={() => handleNavLinkClick(link)}
+                className="text-left text-sm text-luxury-text hover:text-luxury-gold-dark transition py-2 font-medium tracking-widest cursor-pointer"
+              >
+                {link.label}
+              </button>
+            );
+          })}
 
           {/* Profile & Account options */}
           <div className="pt-2 border-t border-luxury-text/5 flex flex-col space-y-3">

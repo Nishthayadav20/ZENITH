@@ -13,7 +13,8 @@ import {
   logoutUser,
   fetchBlogs,
   addBlog,
-  deleteBlog
+  deleteBlog,
+  updateBlog
 } from '../store/slices/watchSlice';
 import { 
   BarChart3, Plus, Edit, Trash2, Check, X, Tag, Star, 
@@ -101,6 +102,8 @@ export default function Admin({ onPageChange }) {
   // --- BLOGS ADMIN STATES & OPERATIONS ---
   const [showAddBlogForm, setShowAddBlogForm] = useState(false);
   const [newBlog, setNewBlog] = useState({ title: '', category: 'Horology', image: '', content: '', author: '' });
+  const [editingBlogId, setEditingBlogId] = useState(null);
+  const [editBlogForm, setEditBlogForm] = useState(null);
 
   const handleStrapImageChange = (e, isEdit = false) => {
     const file = e.target.files[0];
@@ -236,6 +239,33 @@ export default function Admin({ onPageChange }) {
       if (!res?.success) {
         alert(res?.message || 'Failed to delete blog post.');
       }
+    }
+  };
+
+  const handleEditBlogInit = (blog) => {
+    setEditingBlogId(blog.id || blog._id);
+    setEditBlogForm({
+      title: blog.title,
+      category: blog.category,
+      author: blog.author,
+      image: blog.image,
+      content: blog.content
+    });
+    setShowAddBlogForm(false);
+  };
+
+  const handleUpdateBlogSubmit = async (e) => {
+    e.preventDefault();
+    if (!editBlogForm.title || !editBlogForm.content) {
+      alert('Please fill out both Title and Content.');
+      return;
+    }
+    const res = await dispatch(updateBlog(editingBlogId, editBlogForm));
+    if (res?.success) {
+      setEditingBlogId(null);
+      setEditBlogForm(null);
+    } else {
+      alert(res?.message || 'Failed to update blog post.');
     }
   };
 
@@ -1814,6 +1844,93 @@ export default function Admin({ onPageChange }) {
             </div>
           )}
 
+          {/* Edit Blog Form */}
+          {editingBlogId && editBlogForm && (
+            <div className="bg-[#1a1a1a] border border-luxury-gold/20 p-6 rounded-md space-y-4">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-luxury-gold border-b border-white/5 pb-2">Edit Article</h4>
+              
+              <form onSubmit={handleUpdateBlogSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Article Title</label>
+                  <input
+                    type="text"
+                    required
+                    value={editBlogForm.title}
+                    onChange={(e) => setEditBlogForm({ ...editBlogForm, title: e.target.value })}
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
+                    placeholder="Article Title"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Category</label>
+                    <input
+                      type="text"
+                      required
+                      value={editBlogForm.category}
+                      onChange={(e) => setEditBlogForm({ ...editBlogForm, category: e.target.value })}
+                      className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
+                      placeholder="Category"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Author</label>
+                    <input
+                      type="text"
+                      value={editBlogForm.author}
+                      onChange={(e) => setEditBlogForm({ ...editBlogForm, author: e.target.value })}
+                      className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
+                      placeholder="Author"
+                    />
+                  </div>
+                </div>
+
+                <div className="md:col-span-2 space-y-1.5">
+                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Featured Image URL / Path</label>
+                  <input
+                    type="text"
+                    value={editBlogForm.image}
+                    onChange={(e) => setEditBlogForm({ ...editBlogForm, image: e.target.value })}
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
+                    placeholder="Image URL"
+                  />
+                </div>
+
+                <div className="md:col-span-2 space-y-1.5">
+                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Content</label>
+                  <textarea
+                    rows="6"
+                    required
+                    value={editBlogForm.content}
+                    onChange={(e) => setEditBlogForm({ ...editBlogForm, content: e.target.value })}
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none font-sans"
+                    placeholder="Write article details here..."
+                  />
+                </div>
+
+                <div className="md:col-span-2 flex space-x-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingBlogId(null);
+                      setEditBlogForm(null);
+                    }}
+                    className="flex-1 py-3 bg-transparent border border-white/10 text-white font-bold text-xs tracking-widest uppercase hover:bg-white/5 transition cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-3 bg-luxury-gold text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold-dark transition cursor-pointer"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
           {/* Blogs list */}
           <div className="space-y-4">
             <h4 className="text-xs font-bold uppercase tracking-widest text-white">Articles Database</h4>
@@ -1832,13 +1949,22 @@ export default function Admin({ onPageChange }) {
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="flex justify-between items-start gap-2">
                         <span className="text-[9px] font-bold text-luxury-gold uppercase tracking-wider">{blog.category} · By {blog.author}</span>
-                        <button
-                          onClick={() => handleDeleteBlog(blog.id || blog._id)}
-                          className="text-gray-400 hover:text-luxury-red transition rounded p-0.5"
-                          title="Delete Article"
-                        >
-                          <Trash2 size={13} />
-                        </button>
+                        <div className="flex items-center space-x-1">
+                          <button
+                            onClick={() => handleEditBlogInit(blog)}
+                            className="text-gray-400 hover:text-white transition rounded p-0.5"
+                            title="Edit Article"
+                          >
+                            <Edit size={13} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteBlog(blog.id || blog._id)}
+                            className="text-gray-400 hover:text-luxury-red transition rounded p-0.5"
+                            title="Delete Article"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
                       </div>
                       <h4 className="text-white text-sm font-bold truncate leading-tight">{blog.title}</h4>
                       <p className="text-[11px] text-gray-400 line-clamp-2 leading-normal">{blog.content}</p>

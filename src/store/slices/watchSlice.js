@@ -1027,4 +1027,23 @@ export const deleteBlog = (blogId) => async (dispatch) => {
   }
 };
 
+export const updateBlog = (blogId, blogData) => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/blogs/${blogId}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(blogData)
+    });
+    const data = await res.json();
+    if (data.success) {
+      dispatch(fetchBlogs());
+      return { success: true };
+    } else {
+      return { success: false, message: data.message };
+    }
+  } catch (error) {
+    return { success: false, message: 'Failed to update blog.' };
+  }
+};
+
 export default watchSlice.reducer;
