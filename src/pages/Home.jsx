@@ -93,7 +93,7 @@ function SlideReveal({ children, delay = 0 }) {
 /* ─────────────────────────────────────────────────────────────────────
    MAGNETIC BUTTON
 ───────────────────────────────────────────────────────────────────── */
-function MagBtn({ children, className, onClick }) {
+function MagBtn({ children, className, onClick, style = {} }) {
   const ref = useRef(null);
   const x = useMotionValue(0); const y = useMotionValue(0);
   const sx = useSpring(x, { stiffness: 280, damping: 20 });
@@ -105,7 +105,7 @@ function MagBtn({ children, className, onClick }) {
   };
   return (
     <motion.button ref={ref} onMouseMove={onMove} onMouseLeave={() => { x.set(0); y.set(0); }}
-      style={{ x: sx, y: sy }} whileTap={{ scale: 0.94 }}
+      style={{ ...style, x: sx, y: sy }} whileTap={{ scale: 0.94 }}
       className={className} onClick={onClick}>{children}</motion.button>
   );
 }
