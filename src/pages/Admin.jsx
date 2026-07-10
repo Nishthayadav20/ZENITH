@@ -671,23 +671,23 @@ export default function Admin({ onPageChange }) {
             </div>
 
             {/* Custom Interactive SVG Graph */}
-            <div className="relative pt-4 flex flex-col items-center w-full min-h-[260px]">
-              <svg width="100%" height="240" viewBox="0 0 600 240" className="overflow-visible font-sans">
+            <div className="relative pt-4 flex flex-col items-center w-full min-h-[380px]">
+              <svg width="100%" height="350" viewBox="0 0 600 350" className="overflow-visible font-sans">
                 {/* Horizontal Guide Lines */}
-                <line x1="55" y1="40" x2="550" y2="40" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
-                <line x1="55" y1="90" x2="550" y2="90" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
-                <line x1="55" y1="140" x2="550" y2="140" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
-                <line x1="55" y1="190" x2="550" y2="190" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
+                <line x1="55" y1="50" x2="550" y2="50" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
+                <line x1="55" y1="133" x2="550" y2="133" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
+                <line x1="55" y1="216" x2="550" y2="216" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
+                <line x1="55" y1="300" x2="550" y2="300" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
                 
                 {/* Axes */}
-                <line x1="55" y1="190" x2="550" y2="190" stroke="rgba(0,0,0,0.15)" strokeWidth="1" />
-                <line x1="55" y1="40" x2="55" y2="190" stroke="rgba(0,0,0,0.15)" strokeWidth="1" />
+                <line x1="55" y1="300" x2="550" y2="300" stroke="rgba(0,0,0,0.15)" strokeWidth="1" />
+                <line x1="55" y1="50" x2="55" y2="300" stroke="rgba(0,0,0,0.15)" strokeWidth="1" />
 
                 {/* Bars - Mocking Category Sales: Khronomaster, Defy, Heritage, Elite */}
                 {categories.map((cat, idx) => {
                   const val = displaySales[cat] || 0;
-                  const barHeight = (val / maxVal) * 130;
-                  const yPos = 190 - barHeight;
+                  const barHeight = (val / maxVal) * 250;
+                  const yPos = 300 - barHeight;
                   const xPos = 90 + idx * 120;
                   
                   // Color palette: Gold, Red, Emerald Green, Charcoal
@@ -698,7 +698,7 @@ export default function Admin({ onPageChange }) {
                     <g key={cat} className="group cursor-pointer">
                       {/* Hover value tooltip tag */}
                       <rect 
-                        x={xPos - 15} 
+                        x={xPos - 11} 
                         y={yPos - 22} 
                         width="70" 
                         height="16" 
@@ -708,7 +708,7 @@ export default function Admin({ onPageChange }) {
                         className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                       />
                       <text 
-                        x={xPos + 20} 
+                        x={xPos + 24} 
                         y={yPos - 11} 
                         fill="#c5a880" 
                         fontSize="8" 
@@ -723,7 +723,7 @@ export default function Admin({ onPageChange }) {
                       <rect 
                         x={xPos} 
                         y={yPos} 
-                        width="40" 
+                        width="48" 
                         height={barHeight} 
                         fill={barColor} 
                         opacity="0.8" 
@@ -733,7 +733,7 @@ export default function Admin({ onPageChange }) {
 
                       {/* Display value on top of bar */}
                       <text
-                        x={xPos + 20}
+                        x={xPos + 24}
                         y={yPos - 6}
                         fill="#1a1a1a"
                         fontSize="8"
@@ -747,17 +747,17 @@ export default function Admin({ onPageChange }) {
                 })}
 
                 {/* Y-axis Labels */}
-                <text x="47" y="44" fill="rgba(0,0,0,0.5)" fontSize="8" textAnchor="end">{formatPrice(maxVal, currentCurrency)}</text>
-                <text x="47" y="94" fill="rgba(0,0,0,0.5)" fontSize="8" textAnchor="end">{formatPrice(maxVal * 0.66, currentCurrency)}</text>
-                <text x="47" y="144" fill="rgba(0,0,0,0.5)" fontSize="8" textAnchor="end">{formatPrice(maxVal * 0.33, currentCurrency)}</text>
-                <text x="47" y="194" fill="rgba(0,0,0,0.5)" fontSize="8" textAnchor="end">{formatPrice(0, currentCurrency)}</text>
+                <text x="47" y="54" fill="rgba(0,0,0,0.5)" fontSize="8" textAnchor="end">{formatPrice(maxVal, currentCurrency)}</text>
+                <text x="47" y="137" fill="rgba(0,0,0,0.5)" fontSize="8" textAnchor="end">{formatPrice(maxVal * 0.66, currentCurrency)}</text>
+                <text x="47" y="220" fill="rgba(0,0,0,0.5)" fontSize="8" textAnchor="end">{formatPrice(maxVal * 0.33, currentCurrency)}</text>
+                <text x="47" y="304" fill="rgba(0,0,0,0.5)" fontSize="8" textAnchor="end">{formatPrice(0, currentCurrency)}</text>
 
                 {/* X-axis Labels */}
                 {categories.map((cat, idx) => (
                   <text 
                     key={cat}
-                    x={110 + idx * 120} 
-                    y="210" 
+                    x={114 + idx * 120} 
+                    y="322" 
                     fill="rgba(0,0,0,0.7)" 
                     fontSize="9" 
                     fontWeight="bold"

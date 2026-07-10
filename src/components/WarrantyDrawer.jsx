@@ -135,8 +135,8 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
         {/* Drawer Header */}
         <div className="flex justify-between items-center border-b border-white/5 pb-4">
           <div className="flex items-center space-x-2">
-            <ShieldCheck className="w-6 h-6" style={{ color: '#ffffff' }} />
-            <h3 className="text-sm font-bold uppercase tracking-widest" style={{ color: '#ffffff' }}>Warranty Portal</h3>
+            <ShieldCheck className="w-6 h-6" style={{ color: '#c5a880' }} />
+            <h3 className="text-sm font-bold uppercase tracking-widest" style={{ color: '#c5a880' }}>Warranty Portal</h3>
           </div>
           <button 
             onClick={onClose} 
