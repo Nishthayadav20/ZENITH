@@ -293,7 +293,27 @@ const initialState = {
   orders: [],
   coupons: [],
   currentUser: null,
-  currentCurrency: loadSaved('khroniq_currency', 'INR')
+  currentCurrency: loadSaved('khroniq_currency', 'INR'),
+  blogs: [
+    {
+      id: 'blog-1',
+      title: "The Art of Swadeshi Horology",
+      content: "Behind the scenes of KHRONIQ's Le Locle and Indian assembly processes, bringing high-precision chronometer watches to modern watch enthusiasts. Discover how we balance heritage design with modern components.",
+      author: "Vikram R. Mehta",
+      image: "/assets/gentleman_lifestyle.png",
+      category: "Horology",
+      date: "2026-07-01"
+    },
+    {
+      id: 'blog-2',
+      title: "Choosing the Right Case Finish",
+      content: "A guide on selecting between polished stainless steel, rose gold PVD, and matte ceramic finishes for your bespoke timepiece. Learn which finish best suits your daily attire and lifestyle.",
+      author: "Ananya Sharma",
+      image: "/assets/aurex_lifestyle.png",
+      category: "Guides",
+      date: "2026-07-05"
+    }
+  ]
 };
 
 // Helper for standard API headers
@@ -368,6 +388,9 @@ const watchSlice = createSlice({
     setCurrencyAction: (state, action) => {
       state.currentCurrency = action.payload;
       localStorage.setItem('khroniq_currency', action.payload);
+    },
+    setBlogsAction: (state, action) => {
+      state.blogs = action.payload;
     }
   }
 });
@@ -385,7 +408,8 @@ export const {
   setCouponsAction,
   setCartAction,
   setWishlistAction,
-  setCurrencyAction
+  setCurrencyAction,
+  setBlogsAction
 } = watchSlice.actions;
 
 export const selectCurrentCurrency = state => state.watch.currentCurrency || 'INR';
@@ -947,10 +971,59 @@ export const requestExchangeRefund = (orderId) => async (dispatch) => {
       dispatch(fetchOrders());
       return { success: true };
     } else {
-      return { success: false, message: data.message };
+      return { success: false, message: 'Failed to request Exchange/Refund. Server error.' };
     }
   } catch (error) {
     return { success: false, message: 'Failed to request Exchange/Refund. Server error.' };
+  }
+};
+
+export const fetchBlogs = () => async (dispatch) => {
+  try {
+    const res = await fetch('/api/blogs');
+    const data = await res.json();
+    if (data && data.success) {
+      dispatch(setBlogsAction(data.blogs));
+    }
+  } catch (error) {
+    console.error('Failed to fetch blogs from API:', error);
+  }
+};
+
+export const addBlog = (blogData) => async (dispatch) => {
+  try {
+    const res = await fetch('/api/blogs', {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(blogData)
+    });
+    const data = await res.json();
+    if (data.success) {
+      dispatch(fetchBlogs());
+      return { success: true };
+    } else {
+      return { success: false, message: data.message };
+    }
+  } catch (error) {
+    return { success: false, message: 'Failed to add blog.' };
+  }
+};
+
+export const deleteBlog = (blogId) => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/blogs/${blogId}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    });
+    const data = await res.json();
+    if (data.success) {
+      dispatch(fetchBlogs());
+      return { success: true };
+    } else {
+      return { success: false, message: data.message };
+    }
+  } catch (error) {
+    return { success: false, message: 'Failed to delete blog.' };
   }
 };
 

@@ -8,7 +8,8 @@ import cors from 'cors';
 import Product from './_models/Product.js';
 import User from './_models/User.js';
 import Coupon from './_models/Coupon.js';
-import BrandUpdate from './_models/BrandUpdate.js';
+import brandUpdateModel from './_models/BrandUpdate.js'; // Let's keep it clean
+import Blog from './_models/Blog.js';
 
 // Import Routes
 import authRoutes from './_routes/auth.js';
@@ -19,6 +20,7 @@ import cartRoutes from './_routes/cart.js';
 import wishlistRoutes from './_routes/wishlist.js';
 import brandUpdateRoutes from './_routes/brandUpdates.js';
 import warrantyRoutes from './_routes/warranty.js';
+import blogRoutes from './_routes/blogs.js';
 
 const app = express();
 
@@ -66,6 +68,7 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/brand-updates', brandUpdateRoutes);
 app.use('/api/warranty', warrantyRoutes);
+app.use('/api/blogs', blogRoutes);
 
 // Base Endpoint
 app.get('/api', (req, res) => {
@@ -187,6 +190,29 @@ const seedDatabase = async () => {
       ];
       await BrandUpdate.insertMany(initialUpdates);
       console.log('Database Seeding: Brand Updates successfully seeded!');
+    }
+
+    // 5. Seed Default Blogs
+    const blogCount = await Blog.countDocuments();
+    if (blogCount === 0) {
+      const initialBlogs = [
+        {
+          title: "The Art of Swadeshi Horology",
+          content: "Behind the scenes of KHRONIQ's Le Locle and Indian assembly processes, bringing high-precision chronometer watches to modern watch enthusiasts. Discover how we balance heritage design with modern components.",
+          author: "Vikram R. Mehta",
+          image: "/assets/gentleman_lifestyle.png",
+          category: "Horology"
+        },
+        {
+          title: "Choosing the Right Case Finish",
+          content: "A guide on selecting between polished stainless steel, rose gold PVD, and matte ceramic finishes for your bespoke timepiece. Learn which finish best suits your daily attire and lifestyle.",
+          author: "Ananya Sharma",
+          image: "/assets/aurex_lifestyle.png",
+          category: "Guides"
+        }
+      ];
+      await Blog.insertMany(initialBlogs);
+      console.log('Database Seeding: Default Blogs successfully seeded!');
     }
 
   } catch (error) {

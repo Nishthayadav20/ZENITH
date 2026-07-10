@@ -10,12 +10,15 @@ import {
   moderateReview,
   selectCurrentCurrency,
   formatPrice,
-  logoutUser
+  logoutUser,
+  fetchBlogs,
+  addBlog,
+  deleteBlog
 } from '../store/slices/watchSlice';
 import { 
   BarChart3, Plus, Edit, Trash2, Check, X, Tag, Star, 
   Package, AlertTriangle, ShieldAlert, ArrowLeft, ArrowUpRight,
-  CheckCircle2, LogOut, Newspaper
+  CheckCircle2, LogOut, Newspaper, BookOpen
 } from 'lucide-react';
 
 const PRESET_STRAPS = [
@@ -43,9 +46,10 @@ export default function Admin({ onPageChange }) {
   const coupons = useSelector(state => state.watch.coupons);
   const currentUser = useSelector(state => state.watch.currentUser);
   const currentCurrency = useSelector(selectCurrentCurrency);
+  const blogs = useSelector(state => state.watch.blogs || []);
 
   // Active Admin Sub-Tab
-  const [activeTab, setActiveTab] = useState('analytics'); // analytics | products | orders | coupons | reviews
+  const [activeTab, setActiveTab] = useState('analytics'); // analytics | products | orders | coupons | reviews | updates | blogs
 
   // Add Product Form State
   const [showAddForm, setShowAddForm] = useState(false);
@@ -93,6 +97,10 @@ export default function Admin({ onPageChange }) {
   const [newUpdate, setNewUpdate] = useState({ title: '', detail: '', approved: true });
   const [editingUpdateId, setEditingUpdateId] = useState(null);
   const [editUpdateForm, setEditUpdateForm] = useState(null);
+
+  // --- BLOGS ADMIN STATES & OPERATIONS ---
+  const [showAddBlogForm, setShowAddBlogForm] = useState(false);
+  const [newBlog, setNewBlog] = useState({ title: '', category: 'Horology', image: '', content: '', author: '' });
 
   const handleStrapImageChange = (e, isEdit = false) => {
     const file = e.target.files[0];
@@ -198,10 +206,38 @@ export default function Admin({ onPageChange }) {
   };
 
   useEffect(() => {
-    if (currentUser && currentUser.role === 'admin' && activeTab === 'updates') {
-      fetchAdminUpdates();
+    if (currentUser && currentUser.role === 'admin') {
+      if (activeTab === 'updates') {
+        fetchAdminUpdates();
+      } else if (activeTab === 'blogs') {
+        dispatch(fetchBlogs());
+      }
     }
-  }, [activeTab, currentUser]);
+  }, [activeTab, currentUser, dispatch]);
+
+  const handleCreateBlog = async (e) => {
+    e.preventDefault();
+    if (!newBlog.title || !newBlog.content) {
+      alert('Please fill out both Title and Content.');
+      return;
+    }
+    const res = await dispatch(addBlog(newBlog));
+    if (res?.success) {
+      setNewBlog({ title: '', category: 'Horology', image: '', content: '', author: '' });
+      setShowAddBlogForm(false);
+    } else {
+      alert(res?.message || 'Failed to create blog post.');
+    }
+  };
+
+  const handleDeleteBlog = async (blogId) => {
+    if (window.confirm('Are you sure you want to delete this blog post?')) {
+      const res = await dispatch(deleteBlog(blogId));
+      if (!res?.success) {
+        alert(res?.message || 'Failed to delete blog post.');
+      }
+    }
+  };
 
   const handleCreateUpdate = async (e) => {
     e.preventDefault();
@@ -492,6 +528,7 @@ export default function Admin({ onPageChange }) {
           { key: 'coupons', label: 'Coupon Builder', icon: Tag },
           { key: 'reviews', label: 'Reviews Manager', icon: Star },
           { key: 'updates', label: 'Brand Updates', icon: Newspaper },
+          { key: 'blogs', label: 'Blogs Editorial', icon: BookOpen },
         ].map((tab) => {
           const Icon = tab.icon;
           return (
@@ -1679,6 +1716,133 @@ export default function Admin({ onPageChange }) {
                       >
                         <Trash2 size={14} />
                       </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* --- TAB CONTENT: BLOGS EDITORIAL --- */}
+      {activeTab === 'blogs' && (
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-white">Blogs Editorial Manager</h3>
+            <button
+              onClick={() => setShowAddBlogForm(!showAddBlogForm)}
+              className="px-4 py-2 bg-white hover:bg-luxury-gold text-luxury-dark text-xs font-bold uppercase tracking-widest transition flex items-center space-x-1.5 cursor-pointer"
+            >
+              <Plus size={14} />
+              <span>{showAddBlogForm ? 'Close Form' : 'Write Blog'}</span>
+            </button>
+          </div>
+
+          {/* Add Blog Form */}
+          {showAddBlogForm && (
+            <div className="bg-luxury-gray border border-white/5 p-6 rounded-md space-y-4">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-white border-b border-white/5 pb-2">Publish New Article</h4>
+              
+              <form onSubmit={handleCreateBlog} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Article Title</label>
+                  <input
+                    type="text"
+                    required
+                    value={newBlog.title}
+                    onChange={(e) => setNewBlog({ ...newBlog, title: e.target.value })}
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
+                    placeholder="The Evolution of Mechanical Movements"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Category</label>
+                    <input
+                      type="text"
+                      required
+                      value={newBlog.category}
+                      onChange={(e) => setNewBlog({ ...newBlog, category: e.target.value })}
+                      className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
+                      placeholder="Horology"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Author</label>
+                    <input
+                      type="text"
+                      value={newBlog.author}
+                      onChange={(e) => setNewBlog({ ...newBlog, author: e.target.value })}
+                      className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
+                      placeholder="KHRONIQ Editorial"
+                    />
+                  </div>
+                </div>
+
+                <div className="md:col-span-2 space-y-1.5">
+                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Featured Image URL / Path</label>
+                  <input
+                    type="text"
+                    value={newBlog.image}
+                    onChange={(e) => setNewBlog({ ...newBlog, image: e.target.value })}
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
+                    placeholder="e.g. /assets/gentleman_lifestyle.png"
+                  />
+                </div>
+
+                <div className="md:col-span-2 space-y-1.5">
+                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Content</label>
+                  <textarea
+                    rows="6"
+                    required
+                    value={newBlog.content}
+                    onChange={(e) => setNewBlog({ ...newBlog, content: e.target.value })}
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none font-sans"
+                    placeholder="Write article details here..."
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="md:col-span-2 py-3 bg-luxury-gold text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold-dark transition"
+                >
+                  Publish Article
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* Blogs list */}
+          <div className="space-y-4">
+            <h4 className="text-xs font-bold uppercase tracking-widest text-white">Articles Database</h4>
+            
+            {blogs.length === 0 ? (
+              <p className="text-gray-400 text-xs italic p-6 text-center border border-dashed border-white/10 rounded">No blog posts found.</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {blogs.map((blog) => (
+                  <div key={blog.id || blog._id} className="bg-luxury-gray border border-white/5 p-4 rounded-md flex gap-4 items-start">
+                    <img 
+                      src={blog.image || '/assets/media__1782899491225.jpg'} 
+                      alt={blog.title} 
+                      className="w-20 h-20 object-cover rounded border border-white/10 bg-black flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <div className="flex justify-between items-start gap-2">
+                        <span className="text-[9px] font-bold text-luxury-gold uppercase tracking-wider">{blog.category} · By {blog.author}</span>
+                        <button
+                          onClick={() => handleDeleteBlog(blog.id || blog._id)}
+                          className="text-gray-400 hover:text-luxury-red transition rounded p-0.5"
+                          title="Delete Article"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                      <h4 className="text-white text-sm font-bold truncate leading-tight">{blog.title}</h4>
+                      <p className="text-[11px] text-gray-400 line-clamp-2 leading-normal">{blog.content}</p>
+                      <span className="text-[9px] text-gray-500 block pt-1">{blog.date}</span>
                     </div>
                   </div>
                 ))}
