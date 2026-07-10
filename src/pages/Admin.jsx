@@ -14,7 +14,8 @@ import {
   fetchBlogs,
   addBlog,
   deleteBlog,
-  updateBlog
+  updateBlog,
+  fetchOrders
 } from '../store/slices/watchSlice';
 import { 
   BarChart3, Plus, Edit, Trash2, Check, X, Tag, Star, 
@@ -210,6 +211,7 @@ export default function Admin({ onPageChange }) {
 
   useEffect(() => {
     if (currentUser && currentUser.role === 'admin') {
+      dispatch(fetchOrders());
       if (activeTab === 'updates') {
         fetchAdminUpdates();
       } else if (activeTab === 'blogs') {
@@ -667,8 +669,8 @@ export default function Admin({ onPageChange }) {
             </div>
 
             {/* Custom Interactive SVG Graph */}
-            <div className="relative pt-4 flex flex-col items-center">
-              <svg className="w-full h-64 overflow-visible font-sans" viewBox="0 0 600 240">
+            <div className="relative pt-4 flex flex-col items-center w-full min-h-[260px]">
+              <svg width="100%" height="240" viewBox="0 0 600 240" className="overflow-visible font-sans">
                 {/* Horizontal Guide Lines */}
                 <line x1="55" y1="40" x2="550" y2="40" stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
                 <line x1="55" y1="90" x2="550" y2="90" stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
