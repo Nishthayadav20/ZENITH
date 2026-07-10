@@ -11,7 +11,7 @@ import {
 import {
   Gift, Heart, Users, Star, ArrowRight, Sparkles,
   Clock, Package, Ribbon, ChevronDown, Check, Crown,
-  UserCheck, Baby, Briefcase,
+  Baby, Briefcase, User, UserRound,
 } from 'lucide-react';
 
 /* ─────────────────────────────────────────────────────────────────
@@ -131,24 +131,44 @@ const RECIPIENTS = [
     bgImg: '/assets/gifting/gift_partner.png',
   },
   {
-    id: 'friend',
-    icon: Users,
-    label: 'Friend',
-    desc: 'Celebrate the bond that stands the test of time.',
+    id: 'friend-him',
+    icon: User,
+    label: 'Friend (Him)',
+    desc: 'Celebrate the bond that stands the test of time — gift him a watch as bold as your friendship.',
     accent: '#60a5fa',
     gradient: 'from-blue-900/90 via-blue-800/70 to-indigo-900/80',
-    filter: {},
+    filter: { gender: 'men' },
     bgImg: '/assets/gifting/gift_friend.png',
   },
   {
-    id: 'sibling',
-    icon: UserCheck,
-    label: 'Sibling',
-    desc: 'A lifetime of shared memories — now with a lifelong watch.',
-    accent: '#a78bfa',
-    gradient: 'from-violet-900/90 via-purple-800/70 to-indigo-900/80',
-    filter: {},
+    id: 'friend-her',
+    icon: UserRound,
+    label: 'Friend (Her)',
+    desc: 'For the friend who lights up every room — gift her elegance she\'ll wear with pride.',
+    accent: '#2dd4bf',
+    gradient: 'from-teal-900/90 via-cyan-800/70 to-emerald-900/80',
+    filter: { gender: 'women' },
     bgImg: '/assets/gifting/gift_sibling.png',
+  },
+  {
+    id: 'brother',
+    icon: Users,
+    label: 'Brother',
+    desc: 'Your partner in mischief, your lifelong ally — give him time worth wearing.',
+    accent: '#818cf8',
+    gradient: 'from-indigo-900/90 via-violet-800/70 to-purple-900/80',
+    filter: { gender: 'men' },
+    bgImg: '/assets/gifting/gift_brother.png',
+  },
+  {
+    id: 'sister',
+    icon: Heart,
+    label: 'Sister',
+    desc: 'The first friend you ever had — celebrate her grace with a watch as elegant as she is.',
+    accent: '#f9a8d4',
+    gradient: 'from-rose-900/90 via-pink-800/70 to-fuchsia-900/80',
+    filter: { gender: 'women' },
+    bgImg: '/assets/gifting/gift_sister.png',
   },
   {
     id: 'boss',
@@ -162,38 +182,6 @@ const RECIPIENTS = [
   },
 ];
 
-/* ─────────────────────────────────────────────────────────────────
-   GIFT PACKAGES
-───────────────────────────────────────────────────────────────── */
-const PACKAGES = [
-  {
-    id: 'classic',
-    name: 'Classic Gift Box',
-    icon: Package,
-    price: 'Complimentary',
-    features: ['Premium matte-black box', 'Satin ribbon & seal', 'Handwritten note card', 'Khroniq authenticity booklet'],
-    accent: '#c5a880',
-    popular: false,
-  },
-  {
-    id: 'luxury',
-    name: 'Luxury Gift Set',
-    icon: Gift,
-    price: '+ ₹ 999',
-    features: ['Leather collector\'s case', 'Engraved name plate', 'Scented tissue wrap', 'Express 24-hr courier', 'Personal dedication card'],
-    accent: '#34d399',
-    popular: true,
-  },
-  {
-    id: 'bespoke',
-    name: 'Bespoke Experience',
-    icon: Star,
-    price: '+ ₹ 2,499',
-    features: ['Hand-stitched monogram box', 'Custom dial engraving', 'Vintage-style courier trunk', 'White-glove home delivery', 'Concierge gift note writing'],
-    accent: '#f472b6',
-    popular: false,
-  },
-];
 
 /* ─────────────────────────────────────────────────────────────────
    OCCASIONS
@@ -243,7 +231,6 @@ export default function Gifting({ onPageChange }) {
   const products = useSelector(state => state.watch.products);
   const [selectedRecipient, setSelectedRecipient] = useState(null);
   const [selectedOccasion, setSelectedOccasion] = useState(null);
-  const [selectedPackage, setSelectedPackage] = useState('luxury');
   const [giftNote, setGiftNote] = useState('');
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
@@ -533,112 +520,6 @@ export default function Gifting({ onPageChange }) {
         </div>
       </section>
 
-      {/* ══════ GIFT PACKAGING ══════ */}
-      <section className="w-full py-24 px-4 bg-[#111007] relative overflow-hidden">
-        {/* Ambient glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-60 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse, rgba(197,168,128,0.12) 0%, transparent 70%)' }} />
-
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 space-y-4">
-            <Reveal dir="down">
-              <p className="text-[10px] text-luxury-gold font-black tracking-[0.28em] uppercase">Presentation Matters</p>
-            </Reveal>
-            <SlideReveal delay={0.1}>
-              <h2 className="font-cinzel text-4xl sm:text-5xl font-bold text-white tracking-wide uppercase">
-                Choose Your Gift Set
-              </h2>
-            </SlideReveal>
-            <Reveal delay={0.2}>
-              <p className="text-white/50 text-sm max-w-xl mx-auto leading-relaxed">
-                Every Khroniq arrives in exceptional packaging. Upgrade the unboxing to match the emotion.
-              </p>
-            </Reveal>
-            <motion.div className="w-16 h-[2px] bg-luxury-gold-dark mx-auto"
-              initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.3 }} />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {PACKAGES.map((pkg, i) => {
-              const Icon = pkg.icon;
-              const isSelected = selectedPackage === pkg.id;
-              return (
-                <Reveal key={pkg.id} delay={i * 0.1} dir="up">
-                  <motion.div
-                    onClick={() => setSelectedPackage(pkg.id)}
-                    className={`relative rounded-2xl p-8 cursor-pointer border transition-all duration-300 ${
-                      isSelected
-                        ? 'border-opacity-60 shadow-2xl'
-                        : 'border-white/10 hover:border-white/20'
-                    }`}
-                    style={{
-                      background: isSelected
-                        ? `linear-gradient(135deg, ${pkg.accent}10 0%, rgba(17,16,7,0.95) 100%)`
-                        : 'rgba(255,255,255,0.03)',
-                      borderColor: isSelected ? pkg.accent : undefined,
-                      boxShadow: isSelected ? `0 20px 60px ${pkg.accent}18` : undefined,
-                    }}
-                    whileHover={{ y: -4 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {/* Popular badge */}
-                    {pkg.popular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[9px] font-black tracking-widest uppercase bg-luxury-gold-dark text-white whitespace-nowrap">
-                        ✦ Most Loved
-                      </div>
-                    )}
-
-                    {/* Selected indicator */}
-                    <AnimatePresence>
-                      {isSelected && (
-                        <motion.div
-                          initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
-                          className="absolute top-5 right-5 w-7 h-7 rounded-full flex items-center justify-center"
-                          style={{ background: pkg.accent }}
-                        >
-                          <Check size={12} className="text-white" strokeWidth={3} />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    {/* Icon */}
-                    <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6"
-                      style={{ background: `${pkg.accent}18`, border: `1px solid ${pkg.accent}40` }}>
-                      <Icon size={24} style={{ color: pkg.accent }} />
-                    </div>
-
-                    <h3 className="font-cinzel text-xl font-bold text-white tracking-wide mb-1">{pkg.name}</h3>
-                    <p className="text-luxury-gold text-sm font-black mb-6">{pkg.price}</p>
-
-                    <ul className="space-y-2.5">
-                      {pkg.features.map((feat, fi) => (
-                        <li key={fi} className="flex items-start gap-2.5 text-xs text-white/65 font-medium">
-                          <Check size={12} className="mt-0.5 flex-shrink-0" style={{ color: pkg.accent }} strokeWidth={3} />
-                          {feat}
-                        </li>
-                      ))}
-                    </ul>
-
-                    <motion.button
-                      onClick={(e) => { e.stopPropagation(); setSelectedPackage(pkg.id); }}
-                      className="mt-8 w-full py-3 text-xs font-black tracking-widest uppercase border transition-colors duration-200 cursor-pointer"
-                      style={{
-                        borderColor: pkg.accent,
-                        color: isSelected ? '#0d0b08' : pkg.accent,
-                        background: isSelected ? pkg.accent : 'transparent',
-                      }}
-                      whileHover={{ background: pkg.accent, color: '#0d0b08' }}
-                    >
-                      {isSelected ? '✓ Selected' : 'Select Package'}
-                    </motion.button>
-                  </motion.div>
-                </Reveal>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
       {/* ══════ PERSONAL NOTE ══════ */}
       <section className="w-full py-24 px-4 bg-[#0d0b08]">

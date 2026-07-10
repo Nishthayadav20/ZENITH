@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { placeOrder, selectCurrentCurrency, formatPrice } from '../store/slices/watchSlice';
 import confetti from 'canvas-confetti';
-import { CheckCircle2, CreditCard, Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, CreditCard, Landmark, ArrowRight, ShieldCheck, Gift, Check } from 'lucide-react';
 
 export function getExpectedDeliveryDate(zipCode) {
   if (!zipCode) return null;
@@ -52,6 +52,7 @@ export default function Checkout({ params, onPageChange }) {
   });
   
   const [paymentMethod, setPaymentMethod] = useState('card'); // card | upi
+  const [giftPackage, setGiftPackage] = useState('standard'); // standard | gift-box | luxury
   const [cardForm, setCardForm] = useState({
     cardNumber: '',
     expiry: '',
@@ -252,7 +253,44 @@ export default function Checkout({ params, onPageChange }) {
       {step === 2 && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Payment Details */}
-          <div className="lg:col-span-7 bg-luxury-gray border border-white/5 p-6 sm:p-8 rounded-md space-y-6">
+          <div className="lg:col-span-7 space-y-5">
+
+            {/* Gift Packaging Picker */}
+            <div className="bg-luxury-gray border border-white/5 p-5 rounded-md space-y-3">
+              <div className="flex items-center gap-2 border-b border-white/5 pb-3">
+                <Gift size={13} className="text-luxury-gold" />
+                <h3 className="text-xs font-bold tracking-widest text-white uppercase">Gift Packaging</h3>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { id: 'standard', label: 'Standard', price: 'Free', desc: 'Classic black box' },
+                  { id: 'gift-box', label: 'Gift Box', price: '+ ₹499', desc: 'Ribbon & note card' },
+                  { id: 'luxury', label: 'Luxury', price: '+ ₹999', desc: 'Leather case + engraving' },
+                ].map((pkg) => (
+                  <button
+                    key={pkg.id}
+                    type="button"
+                    onClick={() => setGiftPackage(pkg.id)}
+                    className={`relative p-3 rounded border text-left transition-all duration-200 cursor-pointer ${
+                      giftPackage === pkg.id
+                        ? 'border-luxury-gold bg-luxury-gold/5'
+                        : 'border-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    {giftPackage === pkg.id && (
+                      <Check size={10} className="absolute top-2 right-2 text-luxury-gold" strokeWidth={3} />
+                    )}
+                    <p className={`text-xs font-bold tracking-wide ${
+                      giftPackage === pkg.id ? 'text-luxury-gold' : 'text-white'
+                    }`}>{pkg.label}</p>
+                    <p className="text-[10px] text-luxury-gold/80 font-semibold mt-0.5">{pkg.price}</p>
+                    <p className="text-[10px] text-gray-500 mt-1 leading-snug">{pkg.desc}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-luxury-gray border border-white/5 p-6 sm:p-8 rounded-md space-y-6">
             <h2 className="text-sm font-bold tracking-widest text-white uppercase border-b border-white/5 pb-3">Payment Portal</h2>
             
             {/* Toggle Payment Method */}
@@ -375,7 +413,8 @@ export default function Checkout({ params, onPageChange }) {
                 </button>
               </div>
             </form>
-          </div>
+            </div>{/* end payment panel inner */}
+          </div>{/* end lg:col-span-7 */}
 
           {/* Right Summary */}
           <div className="lg:col-span-5 space-y-6">

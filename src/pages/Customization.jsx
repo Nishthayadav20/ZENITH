@@ -204,15 +204,16 @@ export default function Customization({ onPageChange, params }) {
   const currentCurrency = useSelector(selectCurrentCurrency);
 
   const customizableProducts = useMemo(() => {
-    const marked = products.filter(p => p.customizable);
-    // If no products are marked yet, show all products (all are customizable by default)
-    return marked.length > 0 ? marked : products;
+    return products.filter(p => p.customizable === true);
   }, [products]);
 
-  const allAreCustomizable = useMemo(
-    () => products.every(p => !p.customizable),
+  // Legacy: if admin has never touched the flag, all will be undefined — show all
+  const noneExplicitlySet = useMemo(
+    () => products.every(p => p.customizable === undefined || p.customizable === null),
     [products]
   );
+
+  const displayProducts = noneExplicitlySet ? products : customizableProducts;
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [dialColor,       setDialColor]       = useState(null);
@@ -272,7 +273,7 @@ export default function Customization({ onPageChange, params }) {
         </div>
 
         {/* Product grid */}
-        {customizableProducts.length === 0 ? (
+        {displayProducts.length === 0 ? (
           <div className="border border-dashed border-luxury-text/20 rounded-xl p-20 text-center space-y-4">
             <Sparkles size={36} className="mx-auto text-luxury-gold opacity-40" />
             <p className="text-luxury-muted text-sm">No customizable watches are available at the moment.</p>
@@ -288,18 +289,18 @@ export default function Customization({ onPageChange, params }) {
           <div>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xs font-bold uppercase tracking-widest text-luxury-muted">
-                {allAreCustomizable
-                  ? `All ${customizableProducts.length} models available for customisation`
-                  : `${customizableProducts.length} customisable models`}
+                {noneExplicitlySet
+                  ? `All ${displayProducts.length} models available for customisation`
+                  : `${displayProducts.length} model${displayProducts.length !== 1 ? 's' : ''} available for customisation`}
               </h2>
-              {allAreCustomizable && (
+              {noneExplicitlySet && (
                 <span className="text-[10px] text-luxury-gold/60 border border-luxury-gold/20 px-2.5 py-1 rounded">
                   Mark specific watches in Admin to restrict selection
                 </span>
               )}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {customizableProducts.map((product) => (
+              {displayProducts.map((product) => (
                 <motion.button
                   key={product.id}
                   onClick={() => handleSelectProduct(product)}
