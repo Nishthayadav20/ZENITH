@@ -434,8 +434,8 @@ export default function Gifting({ onPageChange }) {
             </div>
           </Reveal>
 
-          {/* 3×2 card grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* 4×2 card grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {RECIPIENTS.map((rec, i) => {
               const Icon = rec.icon;
               const isSelected = selectedRecipient === rec.id;
