@@ -88,6 +88,8 @@ export default function Admin({ onPageChange }) {
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState(null);
 
+  const [expandedNotes, setExpandedNotes] = useState({});
+
   // Add Coupon Form State
   const [newCouponCode, setNewCouponCode] = useState('');
   const [newCouponDiscount, setNewCouponDiscount] = useState('');
@@ -1525,7 +1527,20 @@ export default function Admin({ onPageChange }) {
                             {o.giftingOptions.occasion && <p><span className="font-semibold text-gray-400">Occasion:</span> {o.giftingOptions.occasion}</p>}
                             {o.giftingOptions.packaging && <p><span className="font-semibold text-gray-400">Packaging:</span> {o.giftingOptions.packaging === 'couple' ? 'Couple Packaging' : 'Single Packaging'}</p>}
                             {o.giftingOptions.note && (
-                              <p className="italic text-gray-300 mt-1 border-t border-white/5 pt-1">"{o.giftingOptions.note}"</p>
+                              <div className="mt-1.5 pt-1.5 border-t border-white/5">
+                                <button
+                                  type="button"
+                                  onClick={() => setExpandedNotes(prev => ({ ...prev, [o.id]: !prev[o.id] }))}
+                                  className="action-btn text-[9px] font-black tracking-widest uppercase bg-luxury-gold/20 hover:bg-luxury-gold/30 text-luxury-gold px-2 py-0.5 rounded cursor-pointer transition"
+                                >
+                                  NOTE {expandedNotes[o.id] ? '▲' : '▼'}
+                                </button>
+                                {expandedNotes[o.id] && (
+                                  <p className="italic text-gray-300 mt-1 bg-black/40 p-2 border border-white/5 rounded leading-relaxed whitespace-pre-wrap">
+                                    "{o.giftingOptions.note}"
+                                  </p>
+                                )}
+                              </div>
                             )}
                           </div>
                         )}
