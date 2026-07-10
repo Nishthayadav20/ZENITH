@@ -332,3 +332,21 @@ html, body, #root {
   position: relative;
 }
 
+/* Warranty Portal Custom Styles */
+.warranty-portal-label,
+.warranty-portal-title,
+.warranty-portal-text {
+  color: #ffffff !important;
+}
+.warranty-portal-muted {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.warranty-portal-input {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+}
+.warranty-portal-input::placeholder {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
