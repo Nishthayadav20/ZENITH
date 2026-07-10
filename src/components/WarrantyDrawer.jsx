@@ -135,14 +135,15 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
         {/* Drawer Header */}
         <div className="flex justify-between items-center border-b border-white/5 pb-4">
           <div className="flex items-center space-x-2">
-            <ShieldCheck className="text-white w-6 h-6" />
-            <h3 className="text-sm font-bold uppercase tracking-widest warranty-portal-title">Warranty Portal</h3>
+            <ShieldCheck className="w-6 h-6" style={{ color: '#ffffff' }} />
+            <h3 className="text-sm font-bold uppercase tracking-widest" style={{ color: '#ffffff' }}>Warranty Portal</h3>
           </div>
           <button 
             onClick={onClose} 
-            className="text-white hover:text-white/80 transition p-1 hover:bg-white/5 rounded-full cursor-pointer"
+            className="hover:text-white/80 transition p-1 hover:bg-white/5 rounded-full cursor-pointer"
+            style={{ color: '#ffffff' }}
           >
-            <X size={18} />
+            <X size={18} style={{ color: '#ffffff' }} />
           </button>
         </div>
 
@@ -158,15 +159,15 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
           {/* STEP 1: Enter Name & Email */}
           {step === 'details' && (
             <form onSubmit={handleRetrievePurchases} className="space-y-4 text-sm">
-              <p className="text-xs warranty-portal-muted leading-relaxed font-normal uppercase tracking-wider">
+              <p className="text-xs leading-relaxed font-normal uppercase tracking-wider" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                 Enter your billing details to retrieve your watch purchases from the manufacture database.
               </p>
 
               {/* Owner Name */}
               <div className="space-y-1.5">
-                <label className="text-[10px] warranty-portal-label font-bold uppercase tracking-widest block">Full Name</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffffff' }}>Full Name</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
                     <User size={12} />
                   </span>
                   <input
@@ -182,9 +183,9 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Owner Email */}
               <div className="space-y-1.5">
-                <label className="text-[10px] warranty-portal-label font-bold uppercase tracking-widest block">Email Address</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffffff' }}>Email Address</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
                     <QrCode size={12} />
                   </span>
                   <input
@@ -212,11 +213,12 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
           {step === 'watch-select' && (
             <form onSubmit={handleClaimWarranty} className="space-y-4 text-sm">
               <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                <p className="text-xs warranty-portal-text uppercase tracking-widest font-bold">Billing matches: {purchases.length} Found</p>
+                <p className="text-xs uppercase tracking-widest font-bold" style={{ color: '#ffffff' }}>Billing matches: {purchases.length} Found</p>
                 <button 
                   type="button" 
                   onClick={() => setStep('details')}
-                  className="warranty-portal-text hover:underline text-xs uppercase font-bold"
+                  className="hover:underline text-xs uppercase font-bold"
+                  style={{ color: '#ffffff' }}
                 >
                   Change Owner
                 </button>
@@ -224,7 +226,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Watch Name Dropdown Input */}
               <div className="space-y-1.5 relative">
-                <label className="text-[10px] warranty-portal-label font-bold uppercase tracking-widest block">Name of Watch</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffffff' }}>Name of Watch</label>
                 <div className="relative">
                   <input
                     type="text"
@@ -239,7 +241,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                     }}
                     className="w-full warranty-portal-input rounded p-2.5 focus:outline-none transition"
                   />
-                  <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400">
+                  <span className="absolute inset-y-0 right-0 pr-3 flex items-center" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
                     <Search size={14} />
                   </span>
                 </div>
@@ -271,16 +273,16 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                     className="w-14 h-14 object-cover rounded bg-black/40 border border-white/5"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[11px] warranty-portal-label font-bold uppercase tracking-wider">Purchase Match</p>
-                    <p className="warranty-portal-title font-bold truncate text-xs">{selectedPurchase.name}</p>
-                    <p className="warranty-portal-muted text-[10px]">Purchased on {selectedPurchase.date}</p>
+                    <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: '#ffffff' }}>Purchase Match</p>
+                    <p className="font-bold truncate text-xs" style={{ color: '#ffffff' }}>{selectedPurchase.name}</p>
+                    <p className="text-[10px]" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Purchased on {selectedPurchase.date}</p>
                   </div>
                 </div>
               )}
 
               {/* Serial Code */}
               <div className="space-y-1.5">
-                <label className="text-[10px] warranty-portal-label font-bold uppercase tracking-widest block">Serial Code of Purchase</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffffff' }}>Serial Code of Purchase</label>
                 <input
                   type="text"
                   required
@@ -293,7 +295,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Special Code to Claim Warranty */}
               <div className="space-y-1.5">
-                <label className="text-[10px] warranty-portal-label font-bold uppercase tracking-widest block">Special Code to Claim Warranty</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffffff' }}>Special Code to Claim Warranty</label>
                 <input
                   type="text"
                   required
@@ -318,33 +320,33 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
           {step === 'verified' && verificationResult && (
             <div className="space-y-5 animate-scale-in text-center">
               <div className="flex flex-col items-center justify-center space-y-2">
-                <CheckCircle className="text-white w-12 h-12" />
-                <h4 className="text-sm font-bold uppercase tracking-widest warranty-portal-title">Warranty Claimed</h4>
-                <p className="text-xs warranty-portal-title font-mono tracking-widest uppercase bg-white/10 px-3 py-1 rounded-full">
+                <CheckCircle className="w-12 h-12" style={{ color: '#ffffff' }} />
+                <h4 className="text-sm font-bold uppercase tracking-widest" style={{ color: '#ffffff' }}>Warranty Claimed</h4>
+                <p className="text-xs font-mono tracking-widest uppercase bg-white/10 px-3 py-1 rounded-full" style={{ color: '#ffffff' }}>
                   Status: {verificationResult.status}
                 </p>
               </div>
 
               <div className="bg-neutral-900 border border-white/10 rounded p-4 text-left space-y-2.5 text-xs leading-relaxed">
                 <div>
-                  <span className="warranty-portal-muted block text-[10px] uppercase tracking-wider font-bold">Watch Owner</span>
-                  <span className="warranty-portal-title font-medium">{verificationResult.registeredTo}</span>
+                  <span className="block text-[10px] uppercase tracking-wider font-bold" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Watch Owner</span>
+                  <span className="font-medium" style={{ color: '#ffffff' }}>{verificationResult.registeredTo}</span>
                 </div>
                 <div>
-                  <span className="warranty-portal-muted block text-[10px] uppercase tracking-wider font-bold">Model</span>
-                  <span className="warranty-portal-title font-medium">{verificationResult.watchModel}</span>
+                  <span className="block text-[10px] uppercase tracking-wider font-bold" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Model</span>
+                  <span className="font-medium" style={{ color: '#ffffff' }}>{verificationResult.watchModel}</span>
                 </div>
                 <div>
-                  <span className="warranty-portal-muted block text-[10px] uppercase tracking-wider font-bold">Purchase Serial</span>
-                  <span className="warranty-portal-title font-mono">{verificationResult.serialNumber}</span>
+                  <span className="block text-[10px] uppercase tracking-wider font-bold" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Purchase Serial</span>
+                  <span className="font-mono" style={{ color: '#ffffff' }}>{verificationResult.serialNumber}</span>
                 </div>
                 <div>
-                  <span className="warranty-portal-muted block text-[10px] uppercase tracking-wider font-bold">Warranty Claim Code</span>
-                  <span className="warranty-portal-title font-mono">{verificationResult.claimCode}</span>
+                  <span className="block text-[10px] uppercase tracking-wider font-bold" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Warranty Claim Code</span>
+                  <span className="font-mono" style={{ color: '#ffffff' }}>{verificationResult.claimCode}</span>
                 </div>
                 <div className="pt-2 border-t border-white/5">
-                  <span className="warranty-portal-muted block text-[10px] uppercase tracking-wider font-bold">Expiration Date</span>
-                  <span className="warranty-portal-title font-bold">{verificationResult.expiryDate}</span>
+                  <span className="block text-[10px] uppercase tracking-wider font-bold" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Expiration Date</span>
+                  <span className="font-bold" style={{ color: '#ffffff' }}>{verificationResult.expiryDate}</span>
                 </div>
               </div>
 
