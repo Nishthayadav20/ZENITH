@@ -1,6 +1,29 @@
 import React, { useState } from 'react';
 import { X, ShieldCheck, User, QrCode, Search, Award, CheckCircle } from 'lucide-react';
 
+const COUNTRY_DATA = [
+  {
+    name: 'India',
+    code: '+91',
+    states: ['Maharashtra', 'Delhi', 'Karnataka', 'Gujarat', 'Tamil Nadu', 'Uttar Pradesh', 'West Bengal']
+  },
+  {
+    name: 'United States',
+    code: '+1',
+    states: ['California', 'New York', 'Texas', 'Florida', 'Illinois', 'Washington']
+  },
+  {
+    name: 'United Kingdom',
+    code: '+44',
+    states: ['England', 'Scotland', 'Wales', 'Northern Ireland']
+  },
+  {
+    name: 'Germany',
+    code: '+49',
+    states: ['Bavaria', 'Berlin', 'Hamburg', 'Hesse', 'North Rhine-Westphalia']
+  }
+];
+
 export default function WarrantyDrawer({ isOpen, onClose }) {
   // Step tracker: 'details' -> 'watch-select' -> 'verified'
   const [step, setStep] = useState('details');
@@ -9,6 +32,11 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
   const [purchases, setPurchases] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Country, State, Phone variables
+  const [selectedCountry, setSelectedCountry] = useState('India');
+  const [selectedState, setSelectedState] = useState('Maharashtra');
+  const [phoneNumber, setPhoneNumber] = useState('');
 
   // Watch selection variables
   const [watchSearchText, setWatchSearchText] = useState('');
@@ -116,6 +144,9 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
     setSpecialClaimCode('');
     setVerificationResult(null);
     setErrorMsg('');
+    setSelectedCountry('India');
+    setSelectedState('Maharashtra');
+    setPhoneNumber('');
   };
 
   return (
@@ -195,6 +226,68 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                     value={ownerEmail}
                     onChange={(e) => setOwnerEmail(e.target.value)}
                     className="w-full warranty-portal-input rounded p-2.5 pl-8 focus:outline-none transition"
+                  />
+                </div>
+              </div>
+
+              {/* Country & State side by side */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Country Select */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffbc8b' }}>Country</label>
+                  <select
+                    value={selectedCountry}
+                    onChange={(e) => {
+                      const newCountry = e.target.value;
+                      setSelectedCountry(newCountry);
+                      const countryObj = COUNTRY_DATA.find(c => c.name === newCountry);
+                      if (countryObj && countryObj.states.length > 0) {
+                        setSelectedState(countryObj.states[0]);
+                      } else {
+                        setSelectedState('');
+                      }
+                    }}
+                    className="w-full warranty-portal-input rounded p-2.5 focus:outline-none transition"
+                  >
+                    {COUNTRY_DATA.map((c) => (
+                      <option key={c.name} value={c.name} style={{ color: '#000000' }}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* State Select */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffbc8b' }}>State</label>
+                  <select
+                    value={selectedState}
+                    onChange={(e) => setSelectedState(e.target.value)}
+                    className="w-full warranty-portal-input rounded p-2.5 focus:outline-none transition"
+                  >
+                    {(COUNTRY_DATA.find(c => c.name === selectedCountry)?.states || []).map((s) => (
+                      <option key={s} value={s} style={{ color: '#000000' }}>{s}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Phone Number */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest block" style={{ color: '#ffbc8b' }}>Phone Number</label>
+                <div className="flex space-x-2">
+                  <div className="bg-white text-gray-700 font-mono text-sm px-3 py-2.5 rounded border border-gray-300 flex items-center justify-center min-w-[55px]" style={{ backgroundColor: '#ffffff', color: '#374151' }}>
+                    {COUNTRY_DATA.find(c => c.name === selectedCountry)?.code || '+91'}
+                  </div>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="Enter phone number..."
+                    value={phoneNumber}
+                    onChange={(e) => {
+                      // Allow only numbers
+                      const val = e.target.value.replace(/\D/g, '');
+                      setPhoneNumber(val);
+                    }}
+                    className="flex-1 warranty-portal-input rounded p-2.5 focus:outline-none transition"
                   />
                 </div>
               </div>
