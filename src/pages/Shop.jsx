@@ -22,7 +22,16 @@ export default function Shop({ onPageChange, filterParams }) {
 
   // Listen to outer navigation category/gender updates
   useEffect(() => {
-    if (filterParams?.category) {
+    if (filterParams?.shopAll) {
+      // SHOP ALL clicked — reset everything, show all timepieces
+      setSearchQuery('');
+      setSelectedCategory('All');
+      setSelectedGender('All');
+      setSelectedMovement('All');
+      setSelectedStrap('All');
+      setPriceRange(6000);
+      setSortOption('featured');
+    } else if (filterParams?.category) {
       setSelectedCategory(filterParams.category);
       setSelectedGender('All');
       setSearchQuery('');

@@ -72,7 +72,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
     { label: 'HOME', page: 'home' },
     { label: 'MEN', page: 'shop', filter: { gender: 'men' } },
     { label: 'WOMEN', page: 'shop', filter: { gender: 'women' } },
-    { label: 'SHOP ALL', page: 'shop' },
+    { label: 'SHOP ALL', page: 'shop', filter: { shopAll: true } },
     { label: 'KHRONOMASTER', page: 'shop', filter: { category: 'Khronomaster' } },
     { label: 'CUSTOMIZE', page: 'customization' },
     { label: '🎁 GIFTING', page: 'gifting', megaMenu: true },
