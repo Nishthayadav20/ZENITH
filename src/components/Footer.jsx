@@ -341,13 +341,13 @@ export default function Footer({ onPageChange }) {
                           onClick={() => onPageChange(page, args)}
                           style={{
                             background:'none', border:'none', padding:0,
-                            fontSize:'0.72rem', color:'rgba(200,190,175,0.55)',
+                            fontSize:'0.72rem', color:'#ffffff',
                             cursor:'pointer', transition:'color 0.25s',
                             display:'flex', alignItems:'center', gap:'6px',
                             fontFamily:'inherit',
                           }}
                           onMouseEnter={e => { e.currentTarget.style.color='#c5a880'; }}
-                          onMouseLeave={e => { e.currentTarget.style.color='rgba(200,190,175,0.55)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.color='#ffffff'; }}
                         >
                           <span style={{
                             display:'inline-block', width:'14px', height:'1px',

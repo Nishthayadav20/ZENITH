@@ -361,12 +361,52 @@ function CollectionCard({ col, idx, onPageChange }) {
   );
 }
 
+/* ─────────────────────────────────────────────────────────────────────
+   HERO VIDEO CYCLER — plays video 1 → video 2 → video 1 … muted, no loop
+───────────────────────────────────────────────────────────────────── */
+const HERO_VIDEOS = ['/assets/hero_video_1.mp4', '/assets/hero_video_2.mp4'];
+
+function HeroVideoCycler() {
+  const [vidIdx, setVidIdx] = useState(0);
+  const [fade, setFade] = useState(true);
+  const vRef = useRef(null);
+
+  const handleEnded = useCallback(() => {
+    setFade(false);
+    setTimeout(() => {
+      setVidIdx(i => (i + 1) % HERO_VIDEOS.length);
+      setFade(true);
+    }, 350);
+  }, []);
+
+  useEffect(() => {
+    const v = vRef.current;
+    if (!v) return;
+    v.load();
+    v.play().catch(() => {});
+  }, [vidIdx]);
+
+  return (
+    <video
+      ref={vRef}
+      key={vidIdx}
+      muted
+      playsInline
+      onEnded={handleEnded}
+      className="object-cover w-full h-full brightness-[0.87]"
+      style={{ objectPosition: '30% 50%', opacity: fade ? 1 : 0, transition: 'opacity 0.35s ease' }}
+    >
+      <source src={HERO_VIDEOS[vidIdx]} type="video/mp4" />
+    </video>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════════════════
    HOME PAGE
 ═══════════════════════════════════════════════════════════════════════ */
 /* ─────────────────────────────────────────────────────────────────────
    LIFESTYLE SHOWCASE SLIDER
-   ───────────────────────────────────────────────────────────────────── */
+   ─────────────────────────────────────────────────────────────────────── */
 function LifestyleShowcaseSlider({ products, onPageChange }) {
   const slides = [
     {
@@ -695,11 +735,9 @@ export default function Home({ onPageChange }) {
         className="relative h-screen flex items-center justify-center overflow-hidden bg-[#1c1a17]"
         style={{ perspective: '1200px' }}
       >
-        {/* Video — deepest layer, drifts opposite */}
+        {/* Video — deepest layer, drifts opposite — cycles video 1 → video 2 → … */}
         <motion.div className="absolute inset-0 z-0" style={{ x: vidX, y: vidY, scale: 1.06 }}>
-          <video autoPlay loop muted playsInline className="object-cover w-full h-full brightness-[0.87]" style={{ objectPosition: '30% 50%' }}>
-            <source src="/assets/homepage_bg.mp4" type="video/mp4" />
-          </video>
+          <HeroVideoCycler />
           <div className="absolute inset-0 bg-black/28" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.65)_100%)]" />
         </motion.div>
@@ -981,18 +1019,29 @@ export default function Home({ onPageChange }) {
       {/* ══════════ FEATURED PRODUCTS ══════════ */}
       <div className="space-y-10 pb-12">
         <section
-          className="w-full py-14 space-y-10 transition-colors duration-500 ease-in-out dark-panel"
+          className="w-full py-14 space-y-10 dark-panel"
           style={{
             backgroundColor: hoveredProduct
               ? (() => {
-                  const cat = hoveredProduct.category?.toLowerCase() || '';
-                  return cat.includes('khronomaster') ? '#071c12'
-                    : cat.includes('defy')      ? '#060d1f'
-                    : cat.includes('heritage')  ? '#1c0e05'
-                    : cat.includes('elite')     ? '#1a1003'
-                    : '#12100a';
+                  const n = (hoveredProduct.name || '').toLowerCase();
+                  if (n.includes('crimson') || n.includes('red'))    return '#1a0506';
+                  if (n.includes('emerald') || n.includes('green'))  return '#021a0b';
+                  if (n.includes('navy') || n.includes('blue'))      return '#020b1a';
+                  if (n.includes('midnight') || n.includes('black')) return '#0a0a0f';
+                  if (n.includes('gold') || n.includes('champagne')) return '#1a1203';
+                  if (n.includes('rose') || n.includes('pink'))      return '#1a0511';
+                  if (n.includes('silver') || n.includes('white'))   return '#0d0d10';
+                  if (n.includes('brown') || n.includes('tan'))      return '#150c04';
+                  if (n.includes('purple') || n.includes('violet'))  return '#0e0618';
+                  const cat = (hoveredProduct.category || '').toLowerCase();
+                  if (cat.includes('khronomaster')) return '#071c12';
+                  if (cat.includes('defy'))         return '#060d1f';
+                  if (cat.includes('heritage'))     return '#1c0e05';
+                  if (cat.includes('elite'))        return '#1a1003';
+                  return '#12100a';
                 })()
               : '#000000',
+            transition: 'background-color 0.6s ease',
           }}
         >
           {/* Section header — text stays white on dark/black bg */}

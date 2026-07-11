@@ -183,19 +183,7 @@ const RECIPIENTS = [
 ];
 
 
-/* ─────────────────────────────────────────────────────────────────
-   OCCASIONS
-───────────────────────────────────────────────────────────────── */
-const OCCASIONS = [
-  { emoji: '🎂', label: 'Birthday' },
-  { emoji: '💒', label: 'Wedding' },
-  { emoji: '🎓', label: 'Graduation' },
-  { emoji: '🏆', label: 'Achievement' },
-  { emoji: '💼', label: 'Promotion' },
-  { emoji: '💕', label: 'Anniversary' },
-  { emoji: '🎊', label: 'Celebration' },
-  { emoji: '🙏', label: 'Thank You' },
-];
+
 
 /* ─────────────────────────────────────────────────────────────────
    TESTIMONIALS
@@ -230,7 +218,6 @@ const TESTIMONIALS = [
 export default function Gifting({ onPageChange }) {
   const products = useSelector(state => state.watch.products);
   const [selectedRecipient, setSelectedRecipient] = useState(null);
-  const [selectedOccasion, setSelectedOccasion] = useState(null);
   const [giftNote, setGiftNote] = useState('');
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
@@ -364,30 +351,7 @@ export default function Gifting({ onPageChange }) {
         </div>
       </section>
 
-      {/* ══════ OCCASIONS STRIP ══════ */}
-      <section className="w-full bg-[#0d0b08] border-y border-luxury-gold/15 py-8">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5">
-            {OCCASIONS.map((occ, i) => (
-              <motion.button
-                key={occ.label}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                onClick={() => setSelectedOccasion(selectedOccasion === occ.label ? null : occ.label)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer border ${
-                  selectedOccasion === occ.label
-                    ? 'bg-luxury-gold-dark border-luxury-gold-dark text-white shadow-lg shadow-luxury-gold/20'
-                    : 'border-white/15 text-white/60 hover:border-luxury-gold/50 hover:text-white'
-                }`}
-              >
-                <span className="text-base">{occ.emoji}</span>
-                <span>{occ.label}</span>
-              </motion.button>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* ══════ RECIPIENT GRID ══════ */}
       <section className="w-full bg-[#0d0b08] py-24 px-4">
