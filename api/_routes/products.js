@@ -22,13 +22,13 @@ router.get('/', async (req, res) => {
 // @desc    Create a product
 // @access  Private/Admin
 router.post('/', protect, adminOnly, async (req, res) => {
-  const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization } = req.body;
-
+const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization, warrantyMonths } = req.body;
   try {
     const product = new Product({
       name,
       price: Number(price),
       stock: Number(stock),
+      warrantyMonths: warrantyMonths !== undefined ? Number(warrantyMonths) : 12,
       category,
       gender,
       description,
@@ -59,8 +59,7 @@ router.post('/', protect, adminOnly, async (req, res) => {
 // @desc    Update a product
 // @access  Private/Admin
 router.put('/:id', protect, adminOnly, async (req, res) => {
-  const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization } = req.body;
-
+const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization, warrantyMonths } = req.body;
   try {
     const product = await Product.findById(req.params.id);
 
@@ -71,6 +70,7 @@ router.put('/:id', protect, adminOnly, async (req, res) => {
     product.name = name !== undefined ? name : product.name;
     product.price = price !== undefined ? Number(price) : product.price;
     product.stock = stock !== undefined ? Number(stock) : product.stock;
+    product.warrantyMonths = warrantyMonths !== undefined ? Number(warrantyMonths) : product.warrantyMonths;
     product.category = category !== undefined ? category : product.category;
     product.gender = gender !== undefined ? gender : product.gender;
     product.description = description !== undefined ? description : product.description;
@@ -157,10 +157,10 @@ router.post('/:id/reviews', protect, async (req, res) => {
 });
 
 // @route   PUT /api/products/:id/reviews/:reviewId
-// @desc    Moderate (approve/reject) a review
+// @desc    Moderate (approve/reject/hide) a review
 // @access  Private/Admin
 router.put('/:id/reviews/:reviewId', protect, adminOnly, async (req, res) => {
-  const { status } = req.body; // 'approved' or 'rejected'
+  const { status } = req.body; // 'approved', 'rejected', or 'hidden'
 
   try {
     const product = await Product.findById(req.params.id);

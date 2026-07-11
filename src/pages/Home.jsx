@@ -366,25 +366,25 @@ function CollectionCard({ col, idx, onPageChange }) {
 /* ─────────────────────────────────────────────────────────────────────
    LIFESTYLE SHOWCASE SLIDER
    ───────────────────────────────────────────────────────────────────── */
-function LifestyleShowcaseSlider({ products, onPageChange }) {
+function LifestyleShowcaseSlider({ products, onPageChange, homeImages  }) {
   const slides = [
     {
       name: 'CRESCENT - BROWN',
       fullName: 'Khroniq Crescent Brown',
-      lifestyleImg: '/assets/crescent_lifestyle.png',
-      productImg: '/assets/crescent_product.png',
+      lifestyleImg: homeImages.hero_slide1_lifestyle || '/assets/crescent_lifestyle.png',
+      productImg: homeImages.hero_slide1_product || '/assets/crescent_product.png',
     },
     {
       name: 'GENTLEMAN - BLUE',
       fullName: 'Khroniq Gentleman Blue',
-      lifestyleImg: '/assets/gentleman_lifestyle.png',
-      productImg: '/assets/gentleman_product.png',
+      lifestyleImg: homeImages.hero_slide2_lifestyle || '/assets/gentleman_lifestyle.png',
+      productImg: homeImages.hero_slide2_product || '/assets/gentleman_product.png',
     },
     {
       name: 'AUREX',
       fullName: 'Khroniq Aurex Green',
-      lifestyleImg: '/assets/aurex_lifestyle.png',
-      productImg: '/assets/aurex_product.png',
+      lifestyleImg: homeImages.hero_slide3_lifestyle || '/assets/aurex_lifestyle.png',
+      productImg: homeImages.hero_slide3_product || '/assets/aurex_product.png',
     }
   ];
 
@@ -399,6 +399,7 @@ function LifestyleShowcaseSlider({ products, onPageChange }) {
     }, 5000);
     return () => clearInterval(interval);
   }, [isPlaying, slides.length]);
+
 
   const handlePrev = () => {
     setIsPlaying(false);
@@ -548,6 +549,16 @@ function LifestyleShowcaseSlider({ products, onPageChange }) {
 
 export default function Home({ onPageChange }) {
   const products = useSelector(state => state.watch.products);
+  const [homeImages, setHomeImages] = useState({});
+
+  useEffect(() => {
+    fetch('/api/admin/media/public')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setHomeImages(data.media);
+      })
+      .catch(err => console.error('Failed to fetch homepage media:', err));
+  }, []);
 
   /* ── Hero unified parallax ── */
   const heroRef = useRef(null);
@@ -630,6 +641,8 @@ export default function Home({ onPageChange }) {
     fetchUpdates();
   }, []);
 
+
+
   const defaultUpdates = [
     { title: "Grand Boutique Launch", detail: "Geneva flagship store grand opening scheduled for October 15th." },
     { title: "Limited Titanium Caliber", detail: "Exclusive high-frequency titanium editions starting to ship next month." },
@@ -673,9 +686,9 @@ export default function Home({ onPageChange }) {
   const featured = products;
 
   const collections = [
-    { name: 'Khronomaster', image: '/assets/media__1782899491297.jpg', tagline: 'High-Frequency Chronographs', desc: 'Powered by our high-precision caliber calibers, blending robust authenticity with modern Indian design.', filter: { category: 'Khronomaster' }, accent: '#34d399' },
-    { name: 'Defy', image: '/assets/media__1782899491366.jpg', tagline: 'Futuristic Watchmaking', desc: 'Unmatched durability and architectural design built for the boundary-breakers.', filter: { category: 'Defy' }, accent: '#60a5fa' },
-    { name: 'Elite & Heritage', image: '/assets/media__1782899491225.jpg', tagline: 'Timeless Swadeshi Classics', desc: 'Elegant profiles, vintage inspirations, and dress chronometers suited for any formal setting.', filter: { category: 'Heritage' }, accent: '#c5a880' },
+    { name: 'Khronomaster', image: homeImages.collection_khronomaster || '/assets/media__1782899491297.jpg', tagline: 'High-Frequency Chronographs', desc: 'Powered by our high-precision caliber calibers, blending robust authenticity with modern Indian design.', filter: { category: 'Khronomaster' }, accent: '#34d399' },
+    { name: 'Defy', image: homeImages.collection_defy || '/assets/media__1782899491366.jpg', tagline: 'Futuristic Watchmaking', desc: 'Unmatched durability and architectural design built for the boundary-breakers.', filter: { category: 'Defy' }, accent: '#60a5fa' },
+    { name: 'Elite & Heritage', image: homeImages.collection_heritage || '/assets/media__1782899491225.jpg', tagline: 'Timeless Swadeshi Classics', desc: 'Elegant profiles, vintage inspirations, and dress chronometers suited for any formal setting.', filter: { category: 'Heritage' }, accent: '#c5a880' },
   ];
 
   const marqueeA = ['Swadeshi Luxury', 'Indian Engineered', 'Make In India Pride', 'Sapphire Crystal', 'High-Beat Caliber', 'In-House Assembly'];
@@ -802,8 +815,8 @@ export default function Home({ onPageChange }) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2">
-          <GenderPanel label="Men's Watches"   img="/assets/men_watches_beach.jpg"   gender="men"   delay={0}    accent="#c5a880" onPageChange={onPageChange} />
-          <GenderPanel label="Women's Watches" img="/assets/women_watches_beach.jpg" gender="women" delay={0.1}  accent="#34d399" onPageChange={onPageChange} />
+          <GenderPanel label="Men's Watches"   img={homeImages.gender_men || "/assets/men_watches_beach.jpg"}   gender="men"   delay={0}    accent="#c5a880" onPageChange={onPageChange} />
+          <GenderPanel label="Women's Watches" img={homeImages.gender_women || "/assets/women_watches_beach.jpg"} gender="women" delay={0.1}  accent="#34d399" onPageChange={onPageChange} />
         </div>
       </section>
 
@@ -855,7 +868,7 @@ export default function Home({ onPageChange }) {
           <div className="relative overflow-hidden min-h-[420px] lg:min-h-0">
             <motion.div
               className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url('/assets/media__1782899491297.jpg')" }}
+              style={{ backgroundImage: `url('${homeImages.dive_deeper_hero || '/assets/media__1782899491297.jpg'}')` }}
               initial={{ scale: 1.08 }}
               whileInView={{ scale: 1 }}
               viewport={{ once: true }}
@@ -869,8 +882,8 @@ export default function Home({ onPageChange }) {
         {/* Bottom half — 2-up product mini grid */}
         <div className="grid grid-cols-2 border-t border-luxury-text/8">
           {[
-            { img: '/assets/media__1782899491320.jpg', label: 'Khronomaster El Primero', sub: 'High-Beat Chronograph' },
-            { img: '/assets/media__1782899491366.jpg', label: 'Defy Extreme', sub: 'Futuristic Architecture' },
+            { img: homeImages.dive_deeper_tile1 || '/assets/media__1782899491320.jpg', label: 'Khronomaster El Primero', sub: 'High-Beat Chronograph' },
+            { img: homeImages.dive_deeper_tile2 || '/assets/media__1782899491366.jpg', label: 'Defy Extreme', sub: 'Futuristic Architecture' },
           ].map(({ img, label, sub }, i) => (
             <motion.div
               key={i}
@@ -977,7 +990,7 @@ export default function Home({ onPageChange }) {
       </div>
 
       {/* ══════════ LIFESTYLE SHOWCASE SLIDER ══════════ */}
-      <LifestyleShowcaseSlider products={products} onPageChange={onPageChange} />
+      <LifestyleShowcaseSlider products={products} onPageChange={onPageChange} homeImages={homeImages} />
 
       {/* ══════════ FEATURED PRODUCTS ══════════ */}
       <div className="space-y-10 pb-12">

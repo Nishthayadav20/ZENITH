@@ -84,25 +84,36 @@ router.post('/verify', protect, async (req, res) => {
       }
     }
 
-    // 3. Deduct stock
-    const dbItems = [];
-    for (const item of items) {
-      const product = await Product.findById(item.productId);
-      product.stock = Math.max(0, product.stock - item.quantity);
-      await product.save();
+    // Generate order ID first, so item serials can reference it
+const randomId = 'Z-' + Math.floor(100000 + Math.random() * 900000);
 
-      dbItems.push({
-        productId: item.productId,
-        name: product.name,
-        price: product.price,
-        quantity: item.quantity,
-        image: product.image
-      });
-    }
+// 3. Deduct stock & generate warranty codes
+const dbItems = [];
+let itemIndex = 0;
+for (const item of items) {
+  itemIndex++;
+  const product = await Product.findById(item.productId);
+  product.stock = Math.max(0, product.stock - item.quantity);
+  await product.save();
+
+  const serialNumber = `KHQ-${new Date().getFullYear()}-${randomId.replace('Z-', '')}-${String(itemIndex).padStart(2, '0')}`;
+  const claimCode = `CLM-${crypto.randomBytes(5).toString('hex').toUpperCase()}`;
+
+  dbItems.push({
+    productId: item.productId,
+    name: product.name,
+    price: product.price,
+    quantity: item.quantity,
+    image: product.image,
+    serialNumber,
+    claimCode,
+    warrantyClaimed: false,
+    warrantyMonths: product.warrantyMonths || 12
+  });
+}
+
 
     // 4. Create the order
-    const randomId = 'Z-' + Math.floor(100000 + Math.random() * 900000);
-
     const order = new Order({
       id: randomId,
       userEmail: req.user.email,
@@ -124,12 +135,20 @@ router.post('/verify', protect, async (req, res) => {
     // Send invoice email (non-blocking — don't fail the order if email fails)
     try {
       const itemsHtml = dbItems.map(item => `
-        <tr>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${item.name}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;text-align:center;">${item.quantity}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;text-align:right;">₹${item.price.toLocaleString()}</td>
-        </tr>
-      `).join('');
+  <tr>
+    <td style="padding:8px;border-bottom:1px solid #eee;">${item.name}</td>
+    <td style="padding:8px;border-bottom:1px solid #eee;text-align:center;">${item.quantity}</td>
+    <td style="padding:8px;border-bottom:1px solid #eee;text-align:right;">₹${item.price.toLocaleString()}</td>
+  </tr>
+`).join('');
+
+const warrantyHtml = dbItems.map(item => `
+  <tr>
+    <td style="padding:6px 8px;border-bottom:1px solid #eee;">${item.name}</td>
+    <td style="padding:6px 8px;border-bottom:1px solid #eee;font-family:monospace;">${item.serialNumber}</td>
+    <td style="padding:6px 8px;border-bottom:1px solid #eee;font-family:monospace;">${item.claimCode}</td>
+  </tr>
+`).join('');
 
       await sendEmail({
         to: req.user.email,
@@ -155,6 +174,19 @@ router.post('/verify', protect, async (req, res) => {
             <p><strong>Shipping to:</strong><br/>
             ${shippingDetails.fullName}<br/>
             ${shippingDetails.streetAddress}, ${shippingDetails.city}, ${shippingDetails.zipCode}</p>
+            <hr/>
+            <h3 style="margin-bottom:6px;">Warranty Registration Details</h3>
+            <p style="font-size:12px;color:#555;">Keep this email — you'll need the Claim Code to register your warranty on our site.</p>
+            <table style="width:100%;border-collapse:collapse;margin:10px 0;font-size:12px;">
+              <thead>
+                <tr>
+                  <th style="padding:6px 8px;text-align:left;border-bottom:2px solid #333;">Watch</th>
+                  <th style="padding:6px 8px;text-align:left;border-bottom:2px solid #333;">Serial Number</th>
+                  <th style="padding:6px 8px;text-align:left;border-bottom:2px solid #333;">Claim Code</th>
+                </tr>
+              </thead>
+              <tbody>${warrantyHtml}</tbody>
+            </table>
             <p style="color:#888;font-size:12px;">Payment ID: ${razorpay_payment_id}</p>
           </div>
         `

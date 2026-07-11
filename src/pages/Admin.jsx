@@ -16,7 +16,7 @@ import {
 import { 
   BarChart3, Plus, Edit, Trash2, Check, X, Tag, Star, 
   Package, AlertTriangle, ShieldAlert, ArrowLeft, ArrowUpRight,
-  CheckCircle2, LogOut, Newspaper
+  CheckCircle2, LogOut, Newspaper,ImagePlus
 } from 'lucide-react';
 
 const PRESET_STRAPS = [
@@ -54,6 +54,7 @@ export default function Admin({ onPageChange }) {
     name: '',
     price: '',
     stock: '',
+    warrantyMonths: 6,
     category: 'Khronomaster',
     gender: 'unisex',
     description: '',
@@ -108,32 +109,116 @@ export default function Admin({ onPageChange }) {
   const [editingUpdateId, setEditingUpdateId] = useState(null);
   const [editUpdateForm, setEditUpdateForm] = useState(null);
 
-  const handleStrapImageChange = (e, isEdit = false) => {
+  // --- MEDIA MANAGER STATES ---
+  const [mediaSection, setMediaSection] = useState('');
+  const [mediaFiles, setMediaFiles] = useState([]);
+  const [mediaList, setMediaList] = useState([]);
+  const [uploadingMedia, setUploadingMedia] = useState(false);
+
+
+  const HOMEPAGE_SECTIONS = [
+    { key: 'gender_men', label: "Shop by Gender — Men's Banner" },
+    { key: 'gender_women', label: "Shop by Gender — Women's Banner" },
+    { key: 'collection_khronomaster', label: 'Collection Tile — Khronomaster' },
+    { key: 'collection_defy', label: 'Collection Tile — Defy' },
+    { key: 'collection_heritage', label: 'Collection Tile — Elite & Heritage' },
+    { key: 'hero_slide1_lifestyle', label: 'Hero Slide 1 — Lifestyle Image' },
+    { key: 'hero_slide1_product', label: 'Hero Slide 1 — Product Image' },
+    { key: 'hero_slide2_lifestyle', label: 'Hero Slide 2 — Lifestyle Image' },
+    { key: 'hero_slide2_product', label: 'Hero Slide 2 — Product Image' },
+    { key: 'hero_slide3_lifestyle', label: 'Hero Slide 3 — Lifestyle Image' },
+    { key: 'hero_slide3_product', label: 'Hero Slide 3 — Product Image' },
+    { key: 'dive_deeper_hero', label: 'Dive Deeper — Hero Background' },
+    { key: 'dive_deeper_tile1', label: 'Dive Deeper — Khronomaster El Primero' },
+    { key: 'dive_deeper_tile2', label: 'Dive Deeper — Defy Extreme' }
+  ];
+
+  useEffect(() => {
+    if (currentUser?.role === 'admin' && activeTab === 'media') {
+      const token = localStorage.getItem('khroniq_token');
+      fetch('/api/admin/media', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            const lookup = {};
+            data.media.forEach(doc => {
+              if (!lookup[doc.section]) lookup[doc.section] = doc.url; // newest first, already sorted server-side
+            });
+            setMediaList(lookup);
+          }
+        })
+        .catch(err => console.error('Failed to fetch media:', err));
+    }
+  }, [currentUser, activeTab]);
+
+  const handleSectionImageUpload = async (e, sectionKey) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (isEdit) {
-          setEditForm(prev => ({
-            ...prev,
-            customizationOptions: {
-              ...prev.customizationOptions,
-              customStrapImage: reader.result
-            }
-          }));
-        } else {
-          setNewProduct(prev => ({
-            ...prev,
-            customizationOptions: {
-              ...prev.customizationOptions,
-              customStrapImage: reader.result
-            }
-          }));
-        }
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    setUploadingMedia(true);
+    const formData = new FormData();
+    formData.append('files', file);
+    formData.append('section', sectionKey);
+
+    try {
+      const token = localStorage.getItem('khroniq_token');
+      const res = await fetch('/api/admin/media', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData
+      });
+      const data = await res.json();
+      if (data.success && data.media?.[0]) {
+        setMediaList(prev => ({ ...prev, [sectionKey]: data.media[0].url }));
+      } else {
+        alert(data.message || 'Upload failed.');
+      }
+    } catch (err) {
+      console.error('Section image upload error:', err);
+      alert('Failed to upload image.');
+    } finally {
+      setUploadingMedia(false);
     }
   };
+
+  const handleStrapImageChange = async (e, isEdit = false) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append('image', file);
+
+  try {
+    const token = localStorage.getItem('khroniq_token');
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      if (isEdit) {
+        setEditForm(prev => ({
+          ...prev,
+          customizationOptions: { ...prev.customizationOptions, customStrapImage: data.imageUrl }
+        }));
+      } else {
+        setNewProduct(prev => ({
+          ...prev,
+          customizationOptions: { ...prev.customizationOptions, customStrapImage: data.imageUrl }
+        }));
+      }
+    } else {
+      alert(data.message || 'Strap image upload failed');
+    }
+  } catch (error) {
+    console.error('Strap image upload error:', error);
+    alert('Strap image upload failed');
+  }
+};
 
   const handleStrapCheckboxChange = (strapName, isEdit = false) => {
     const target = isEdit ? editForm : newProduct;
@@ -216,6 +301,7 @@ export default function Admin({ onPageChange }) {
       fetchAdminUpdates();
     }
   }, [activeTab, currentUser]);
+
 
   const handleCreateUpdate = async (e) => {
     e.preventDefault();
@@ -418,7 +504,7 @@ const handleImageUpload = async (e) => {
       alert('Product created successfully!');
       setShowAddForm(false);
       setNewProduct({
-        name: '', price: '', stock: '', category: 'Khronomaster', description: '',
+        name: '', price: '', stock: '', warrantyMonths: 12, category: 'Khronomaster', description: '',
         image: '/assets/media__1782899491225.jpg',
         specs: { movement: 'Automatic', case: '40mm', strap: 'Leather', waterResistance: '50m', glass: 'Sapphire' },
         customizable: true,
@@ -540,7 +626,9 @@ const handleImageUpload = async (e) => {
           { key: 'orders', label: 'Order Dispatcher', icon: CheckCircle2 },
           { key: 'coupons', label: 'Coupon Builder', icon: Tag },
           { key: 'reviews', label: 'Reviews Manager', icon: Star },
+          
           { key: 'updates', label: 'Brand Updates', icon: Newspaper },
+          { key: 'media', label: 'Homepage Media', icon: ImagePlus },
         ].map((tab) => {
           const Icon = tab.icon;
           return (
@@ -711,7 +799,7 @@ const handleImageUpload = async (e) => {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Price ($)</label>
                     <input
@@ -734,6 +822,18 @@ const handleImageUpload = async (e) => {
                       placeholder="8"
                     />
                   </div>
+                  <div className="space-y-1.5">
+  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Warranty Period (Months)</label>
+  <input
+    type="number"
+    required
+    min="0"
+    value={newProduct.warrantyMonths}
+    onChange={(e) => setNewProduct({ ...newProduct, warrantyMonths: e.target.value })}
+    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
+    placeholder="12"
+  />
+</div>
                 </div>
 
                 <div className="space-y-1.5">
@@ -1018,7 +1118,7 @@ const handleImageUpload = async (e) => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Price ($)</label>
                       <input
@@ -1040,6 +1140,19 @@ const handleImageUpload = async (e) => {
                       />
                     </div>
                   </div>
+                  <div className="space-y-1.5">
+  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Warranty Period (Months)</label>
+  <input
+    type="number"
+    required
+    min="0"
+    value={editForm.warrantyMonths}
+    onChange={(e) => setEditForm({ ...editForm, warrantyMonths: Number(e.target.value) })}
+    className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5"
+  />
+</div>
+
+                  
 
                   <div className="space-y-1.5">
                     <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Collection</label>
@@ -1352,7 +1465,7 @@ const handleImageUpload = async (e) => {
             </table>
           </div>
         </div>
-      )}
+      )} 
 
       {/* --- TAB CONTENT: ORDER DISPATCHER (MANAGE STATUSES) --- */}
       {activeTab === 'orders' && (
@@ -1725,6 +1838,39 @@ const handleImageUpload = async (e) => {
                 ))}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'media' && (
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-sm font-bold uppercase tracking-widest text-white">Homepage Media</h3>
+            <p className="text-gray-400 text-xs mt-1">Upload or replace the image used in each homepage section.</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {HOMEPAGE_SECTIONS.map((section) => (
+              <div key={section.key} className="bg-luxury-gray border border-white/10 rounded p-3 space-y-2">
+                <div className="w-full h-32 bg-luxury-dark rounded overflow-hidden flex items-center justify-center">
+                  {mediaList[section.key] ? (
+                    <img src={mediaList[section.key]} alt={section.label} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-[9px] text-gray-500 uppercase tracking-wider">No custom image set</span>
+                  )}
+                </div>
+                <p className="text-[10px] text-gray-300 font-semibold">{section.label}</p>
+                <label className="block w-full text-center py-2 bg-luxury-dark border border-white/10 hover:border-luxury-gold text-[9px] font-bold uppercase tracking-widest text-gray-300 rounded cursor-pointer transition">
+                  {uploadingMedia ? 'Uploading...' : 'Upload / Replace'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={uploadingMedia}
+                    onChange={(e) => handleSectionImageUpload(e, section.key)}
+                  />
+                </label>
+              </div>
+            ))}
           </div>
         </div>
       )}

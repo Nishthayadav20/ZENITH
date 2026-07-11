@@ -204,7 +204,7 @@ export default function ProductDetail({ params, onPageChange }) {
             <div className="flex flex-col items-center text-center p-2 space-y-1">
               <Shield size={18} className="text-luxury-gold-dark" />
               <span className="text-[9px] font-bold text-gray-800 tracking-widest uppercase">WARRANTY</span>
-              <p className="text-[9px] text-gray-500">3-Year Premium warranty</p>
+              <p className="text-[9px] text-gray-700 font-medium">{product.warrantyMonths || 12} Months Warranty</p>
             </div>
           </div>
         </div>

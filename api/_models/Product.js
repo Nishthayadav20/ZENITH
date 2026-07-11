@@ -21,6 +21,7 @@ const productSchema = new mongoose.Schema({
   brand: { type: String, default: 'KHRONIQ' },
   price: { type: Number, required: true },
   stock: { type: Number, required: true, default: 0 },
+  warrantyMonths: { type: Number, required: true, default: 12 },
   category: { type: String, required: true },
   gender: { type: String, enum: ['men', 'women', 'unisex'], default: 'unisex' },
   description: { type: String, required: true },

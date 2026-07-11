@@ -5,7 +5,16 @@ const orderItemSchema = new mongoose.Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   quantity: { type: Number, required: true },
-  image: { type: String, required: true }
+  image: { type: String, required: true },
+  serialNumber: { type: String },
+  claimCode: { type: String },
+  warrantyClaimed: { type: Boolean, default: false },
+  warrantyClaimedAt: { type: Date },
+  warrantyMonths: { type: Number, default: 12 },
+  warrantyCountry: { type: String },
+  warrantyState: { type: String },
+  warrantyPhoneNumber: { type: String }
+  
 });
 
 const orderSchema = new mongoose.Schema({
