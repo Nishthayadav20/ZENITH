@@ -32,7 +32,15 @@ router.get('/analytics', protect, adminOnly, async (req, res) => {
       {
         $lookup: {
           from: 'products',
-          let: { pid: { $toObjectId: '$items.productId' } },
+          let: {
+            pid: {
+              $cond: [
+                { $regexMatch: { input: { $toString: '$items.productId' }, regex: /^[0-9a-fA-F]{24}$/ } },
+                { $toObjectId: '$items.productId' },
+                null
+              ]
+            }
+          },
           pipeline: [{ $match: { $expr: { $eq: ['$_id', '$$pid'] } } }],
           as: 'productInfo'
         }
