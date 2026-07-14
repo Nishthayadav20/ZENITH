@@ -21,8 +21,8 @@
   --color-luxury-dark: #ffffff; /* White cards */
   --color-luxury-bg: #ffffff; /* Full white */
   --color-luxury-gray: #ffffff; /* Full white */
-  --color-luxury-text: #201e1b; /* Charcoal primary text */
-  --color-luxury-muted: #6e675f; /* Muted taupe/gray */
+  --color-luxury-text: #0d0c0b; /* Much darker primary text */
+  --color-luxury-muted: #4a443e; /* Much darker muted text */
   
   --font-serif: 'Playfair Display', Georgia, serif;
   --font-sans: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -330,5 +330,24 @@ html, body, #root {
   overflow-x: hidden;
   max-width: 100%;
   position: relative;
+}
+
+/* Warranty Portal Custom Styles */
+.warranty-portal-label,
+.warranty-portal-title,
+.warranty-portal-text {
+  color: #ffffff !important;
+}
+.warranty-portal-muted {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.warranty-portal-input {
+  background-color: #ffffff !important;
+  color: #000000 !important; /* Black */
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+}
+.warranty-portal-input::placeholder {
+  color: #000000 !important; /* Black placeholder */
+  opacity: 0.6 !important;
 }
 

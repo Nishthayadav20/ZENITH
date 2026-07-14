@@ -4,7 +4,7 @@ import jsPDF from 'jspdf';
 import { createRazorpayOrder, verifyRazorpayPayment, selectCurrentCurrency, formatPrice } from '../store/slices/watchSlice';
 
 import confetti from 'canvas-confetti';
-import { CheckCircle2, ArrowRight, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, CreditCard, Landmark, ArrowRight, ShieldCheck, Gift, Check } from 'lucide-react';
 
 export function getExpectedDeliveryDate(zipCode) {
   if (!zipCode) return null;
@@ -43,8 +43,8 @@ export default function Checkout({ params, onPageChange }) {
   
   const appliedCoupon = params?.appliedCoupon || null;
 
-  // Form states
-  const [step, setStep] = useState(1); // 1: Shipping, 2: Payment, 3: Success
+  const isGiftingJourney = localStorage.getItem('khroniq_is_gifting_journey') === 'true';
+  const [step, setStep] = useState(isGiftingJourney ? 1 : 2); // 1: Gifting, 2: Shipping, 3: Payment, 4: Success
   const [shippingForm, setShippingForm] = useState({
     fullName: currentUser?.name || '',
     streetAddress: currentUser?.shippingAddress?.streetAddress || '',
@@ -52,8 +52,27 @@ export default function Checkout({ params, onPageChange }) {
     zipCode: currentUser?.shippingAddress?.postalCode || '',
     country: currentUser?.shippingAddress?.country || 'United States'
   });
+const [processingPayment, setProcessingPayment] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('card'); // card | upi
+  const [giftPackage, setGiftPackage] = useState('standard'); // standard | gift-box | luxury
+  const [giftNote, setGiftNote] = useState('');
+  const [giftOccasion, setGiftOccasion] = useState('birthday'); // anniversary | birthday | retirement | other
+  const [packagingType, setPackagingType] = useState('single'); // single | couple
+  const [cardForm, setCardForm] = useState({
+    cardNumber: '',
+    expiry: '',
+    cvv: '',
+    cardName: currentUser?.name || ''
+  });
 
-  const [processingPayment, setProcessingPayment] = useState(false);
+  // Auto-set packaging type based on selected occasion (Anniversary -> couple, others -> single)
+  useEffect(() => {
+    if (giftOccasion === 'anniversary') {
+      setPackagingType('couple');
+    } else {
+      setPackagingType('single');
+    }
+  }, [giftOccasion]);
   const [orderReceipt, setOrderReceipt] = useState(null);
 
   // Sync shipping details once current user profile is fetched/loaded
@@ -88,7 +107,7 @@ export default function Checkout({ params, onPageChange }) {
       alert('Please fill out all shipping details.');
       return;
     }
-    setStep(2);
+    setStep(3);
   };
 
 const handleRazorpayPayment = async () => {
@@ -113,6 +132,13 @@ const handleRazorpayPayment = async () => {
 
     const { order, key_id } = orderRes;
 
+    const giftingOptions = isGiftingJourney ? {
+      isGifting: true,
+      occasion: giftOccasion,
+      note: giftNote,
+      packaging: packagingType
+    } : { isGifting: false };
+
     // 2. Open Razorpay's official checkout popup
     const options = {
       key: key_id,
@@ -131,7 +157,8 @@ const handleRazorpayPayment = async () => {
           subtotal,
           discount,
           total,
-          shippingDetails: shippingForm
+          shippingDetails: shippingForm,
+          giftingOptions
         }));
 
         setProcessingPayment(false);
@@ -164,7 +191,7 @@ const handleRazorpayPayment = async () => {
       }
     };
 
-    const rzp = new window.Razorpay(options);
+const rzp = new window.Razorpay(options);
     rzp.on('payment.failed', function () {
       alert('Payment failed. Please try again.');
       setProcessingPayment(false);
@@ -222,30 +249,178 @@ const handleRazorpayPayment = async () => {
       
       {/* Checkout Progress Stepper */}
       <div className="flex items-center justify-center space-x-4 border-b border-white/5 pb-6">
-        <div className="flex items-center space-x-2">
-          <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-            step >= 1 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
-          }`}>1</span>
-          <span className={`text-xs font-bold tracking-wider uppercase ${step >= 1 ? 'text-white' : 'text-gray-500'}`}>Shipping</span>
-        </div>
-        <div className="w-12 h-[1px] bg-white/10" />
-        <div className="flex items-center space-x-2">
-          <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-            step >= 2 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
-          }`}>2</span>
-          <span className={`text-xs font-bold tracking-wider uppercase ${step >= 2 ? 'text-white' : 'text-gray-500'}`}>Payment</span>
-        </div>
-        <div className="w-12 h-[1px] bg-white/10" />
-        <div className="flex items-center space-x-2">
-          <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-            step === 3 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
-          }`}>3</span>
-          <span className={`text-xs font-bold tracking-wider uppercase ${step === 3 ? 'text-white' : 'text-gray-500'}`}>Receipt</span>
-        </div>
+        {isGiftingJourney ? (
+          <>
+            <div className="flex items-center space-x-2">
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                step >= 1 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+              }`}>1</span>
+              <span className={`text-xs font-bold tracking-wider uppercase ${step >= 1 ? 'text-white' : 'text-gray-500'}`}>Gifting</span>
+            </div>
+            <div className="w-12 h-[1px] bg-white/10" />
+            <div className="flex items-center space-x-2">
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                step >= 2 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+              }`}>2</span>
+              <span className={`text-xs font-bold tracking-wider uppercase ${step >= 2 ? 'text-white' : 'text-gray-500'}`}>Shipping</span>
+            </div>
+            <div className="w-12 h-[1px] bg-white/10" />
+            <div className="flex items-center space-x-2">
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                step >= 3 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+              }`}>3</span>
+              <span className={`text-xs font-bold tracking-wider uppercase ${step >= 3 ? 'text-white' : 'text-gray-500'}`}>Payment</span>
+            </div>
+            <div className="w-12 h-[1px] bg-white/10" />
+            <div className="flex items-center space-x-2">
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                step === 4 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+              }`}>4</span>
+              <span className={`text-xs font-bold tracking-wider uppercase ${step === 4 ? 'text-white' : 'text-gray-500'}`}>Receipt</span>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="flex items-center space-x-2">
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                step >= 2 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+              }`}>1</span>
+              <span className={`text-xs font-bold tracking-wider uppercase ${step >= 2 ? 'text-white' : 'text-gray-500'}`}>Shipping</span>
+            </div>
+            <div className="w-12 h-[1px] bg-white/10" />
+            <div className="flex items-center space-x-2">
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                step >= 3 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+              }`}>2</span>
+              <span className={`text-xs font-bold tracking-wider uppercase ${step >= 3 ? 'text-white' : 'text-gray-500'}`}>Payment</span>
+            </div>
+            <div className="w-12 h-[1px] bg-white/10" />
+            <div className="flex items-center space-x-2">
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                step === 4 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+              }`}>3</span>
+              <span className={`text-xs font-bold tracking-wider uppercase ${step === 4 ? 'text-white' : 'text-gray-500'}`}>Receipt</span>
+            </div>
+          </>
+        )}
       </div>
 
-      {/* Step 1: Shipping Address Form */}
+      {/* Step 1: Gifting Details Form */}
       {step === 1 && (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Gifting Details */}
+          <div className="lg:col-span-7 space-y-5">
+
+            {/* Gift Occasion Selector */}
+            <div className="bg-luxury-gray border border-white/5 p-5 rounded-md space-y-3">
+              <div className="flex items-center gap-2 border-b border-white/5 pb-3">
+                <Gift size={13} className="text-luxury-gold" />
+                <h3 className="text-xs font-bold tracking-widest text-white uppercase">Select Gifting Occasion</h3>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {[
+                  { id: 'anniversary', label: 'Anniversary', emoji: '💕' },
+                  { id: 'birthday', label: 'Birthday', emoji: '🎂' },
+                  { id: 'retirement', label: 'Retirement', emoji: '💼' },
+                  { id: 'other', label: 'Other Occasion', emoji: '✨' },
+                ].map((occ) => (
+                  <button
+                    key={occ.id}
+                    type="button"
+                    onClick={() => setGiftOccasion(occ.id)}
+                    className={`relative p-4 rounded border text-center transition-all duration-200 cursor-pointer ${
+                      giftOccasion === occ.id
+                        ? 'border-luxury-gold bg-luxury-gold/5'
+                        : 'border-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    {giftOccasion === occ.id && (
+                      <Check size={10} className="absolute top-2 right-2 text-luxury-gold" strokeWidth={3} />
+                    )}
+                    <span className="text-lg block mb-1">{occ.emoji}</span>
+                    <p className={`text-[10px] font-bold tracking-wide uppercase ${
+                      giftOccasion === occ.id ? 'text-luxury-gold' : 'text-neutral-800'
+                    }`}>{occ.label}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Standard Gift Packaging (Single vs Couple options only) */}
+            <div className="bg-luxury-gray border border-white/5 p-5 rounded-md space-y-4">
+              <div className="flex items-center gap-2 border-b border-white/5 pb-3">
+                <Gift size={13} className="text-luxury-gold" />
+                <h3 className="text-xs font-bold tracking-widest text-white uppercase">Standard Gift Packaging</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { id: 'single', label: 'Single Packaging', desc: 'Includes 1 watch, a custom gift card, and single packaging.' },
+                  { id: 'couple', label: 'Couple Packaging', desc: 'Includes 2 watches, a custom gift card, and couple packaging.' },
+                ].map((pkg) => (
+                  <button
+                    key={pkg.id}
+                    type="button"
+                    onClick={() => setPackagingType(pkg.id)}
+                    className={`relative p-4 rounded border text-left transition-all duration-200 cursor-pointer ${
+                      packagingType === pkg.id
+                        ? 'border-luxury-gold bg-luxury-gold/5'
+                        : 'border-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    {packagingType === pkg.id && (
+                      <Check size={10} className="absolute top-2 right-2 text-luxury-gold" strokeWidth={3} />
+                    )}
+                    <p className={`text-xs font-bold tracking-wide uppercase ${
+                      packagingType === pkg.id ? 'text-luxury-gold' : 'text-white'
+                    }`}>{pkg.label}</p>
+                    <p className="text-[10px] text-gray-500 mt-1 leading-normal">{pkg.desc}</p>
+                  </button>
+                ))}
+              </div>
+
+              {/* Gift Note Input field */}
+              <div className="space-y-2 mt-4 pt-4 border-t border-white/5">
+                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Write a Gift Note (Optional)</label>
+                <textarea
+                  value={giftNote}
+                  onChange={(e) => setGiftNote(e.target.value.slice(0, 260))}
+                  placeholder={`Dear [Name],\n\nEvery moment you wear this watch, know it carries our love and pride...`}
+                  rows={3}
+                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold resize-none"
+                  style={{
+                    fontFamily: 'Georgia, serif',
+                    color: 'rgba(255,255,255,0.9)',
+                  }}
+                />
+                <div className="flex justify-between text-[9px] text-gray-500">
+                  <span>{giftNote.length} / 260 characters</span>
+                  <span>Placed inside the watch box on premium cream card stock</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 1 navigation buttons */}
+            <div className="pt-4">
+              <button
+                type="button"
+                onClick={() => { setStep(2); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                className="w-full py-4 bg-white text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold hover:text-luxury-dark transition flex items-center justify-center space-x-2 cursor-pointer"
+              >
+                <span>Continue to Shipping</span>
+                <ArrowRight size={14} />
+              </button>
+            </div>
+          </div>
+
+          {/* Right Summary */}
+          <div className="lg:col-span-5 space-y-6">
+            <CheckoutSummary cartItems={cartItemsWithDetails} subtotal={subtotal} discount={discount} total={total} zipCode={shippingForm.zipCode} />
+          </div>
+        </div>
+      )}
+
+      {/* Step 2: Shipping Address Form */}
+      {step === 2 && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Form */}
           <div className="lg:col-span-7 bg-luxury-gray border border-white/5 p-6 sm:p-8 rounded-md space-y-6">
@@ -316,13 +491,29 @@ const handleRazorpayPayment = async () => {
                 </select>
               </div>
 
-              <button
-                type="submit"
-                className="w-full py-4 bg-white text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold hover:text-luxury-dark transition flex items-center justify-center space-x-2 cursor-pointer"
-              >
-                <span>Continue to Payment</span>
-                <ArrowRight size={14} />
-              </button>
+<div className="flex space-x-4 pt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isGiftingJourney) {
+                      setStep(1);
+                    } else {
+                      onPageChange('cart');
+                    }
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="py-4 px-6 border border-white/10 text-white font-bold text-xs tracking-widest uppercase hover:border-white transition w-1/3 cursor-pointer"
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-4 bg-white text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold hover:text-luxury-dark transition flex items-center justify-center space-x-2 cursor-pointer"
+                >
+                  <span>Continue to Payment</span>
+                  <ArrowRight size={14} />
+                </button>
+              </div>
             </form>
           </div>
 
@@ -333,8 +524,8 @@ const handleRazorpayPayment = async () => {
         </div>
       )}
 
-      {/* Step 2: Payment via Razorpay */}
-      {step === 2 && (
+      {/* Step 3: Payment via Razorpay */}
+      {step === 3 && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-7 bg-luxury-gray border border-white/5 p-6 sm:p-8 rounded-md space-y-6">
             <h2 className="text-sm font-bold tracking-widest text-white uppercase border-b border-white/5 pb-3">Payment Portal</h2>
@@ -349,10 +540,10 @@ const handleRazorpayPayment = async () => {
               </p>
             </div>
 
-<div className="flex space-x-4 pt-4">
+            <div className="flex space-x-4 pt-4">
               <button
                 type="button"
-                onClick={() => setStep(1)}
+                onClick={() => setStep(2)}
                 disabled={processingPayment}
                 className="py-4 px-6 border border-white/10 text-white font-bold text-xs tracking-widest uppercase hover:border-white transition w-1/3 cursor-pointer disabled:opacity-50"
               >
@@ -368,10 +559,8 @@ const handleRazorpayPayment = async () => {
                 <span>{processingPayment ? 'Processing...' : `Pay ${formatPrice(total, currentCurrency)}`}</span>
               </button>
             </div>
-
-            {/* Methods forms */}
-            
           </div>
+          
 
           {/* Right Summary */}
           <div className="lg:col-span-5 space-y-6">
@@ -379,9 +568,12 @@ const handleRazorpayPayment = async () => {
           </div>
         </div>
       )}
+        
 
-      {/* Step 3: Success Screen */}
-      {step === 3 && orderReceipt && (
+      
+
+      {/* Step 4: Success Screen */}
+      {step === 4 && orderReceipt && (
         <div className="bg-luxury-gray border border-white/5 rounded-md p-8 sm:p-12 text-center max-w-2xl mx-auto space-y-8">
           
           <div className="h-20 w-20 rounded-full bg-emerald-400/10 border border-emerald-400/35 flex items-center justify-center mx-auto text-emerald-400">

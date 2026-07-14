@@ -23,6 +23,8 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
   const [lastScrollY, setLastScrollY] = useState(0);
   const currentCurrency = useSelector(selectCurrentCurrency);
   const [currencyOpen, setCurrencyOpen] = useState(false);
+  const [activeSubMenu, setActiveSubMenu] = useState('recipient');
+  const [megaMenuForceClosed, setMegaMenuForceClosed] = useState(false);
 
   const currencyMap = {
     INR: { symbol: '₹', label: 'Indian Currency (Rupees)' },
@@ -70,10 +72,10 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
     { label: 'HOME', page: 'home' },
     { label: 'MEN', page: 'shop', filter: { gender: 'men' } },
     { label: 'WOMEN', page: 'shop', filter: { gender: 'women' } },
-    { label: 'SHOP ALL', page: 'shop' },
+    { label: 'SHOP ALL', page: 'shop', filter: { shopAll: true } },
     { label: 'KHRONOMASTER', page: 'shop', filter: { category: 'Khronomaster' } },
     { label: 'CUSTOMIZE', page: 'customization' },
-    { label: '🎁 GIFTING', page: 'gifting' },
+    { label: '🎁 GIFTING', page: 'gifting', megaMenu: true },
   ];
 
   const handleNavLinkClick = (link) => {
@@ -117,25 +119,189 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
 
           {/* Left Navigation: Brand Links (Desktop) */}
           <nav className="hidden md:flex items-center gap-5 text-[11px] lg:text-xs font-black tracking-wider">
-            {navLinks.map((link, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleNavLinkClick(link)}
-                className={`whitespace-nowrap transition duration-200 cursor-pointer ${
-                  link.page === 'gifting'
-                    ? `px-3 py-1 rounded-full border ${
-                        currentPage === 'gifting'
-                          ? 'bg-luxury-gold-dark border-luxury-gold-dark text-white'
-                          : 'border-luxury-gold/50 text-luxury-gold hover:bg-luxury-gold/10'
-                      }`
-                    : `${textColorClass} ${
+            {navLinks.map((link, idx) => {
+              if (link.dropdown) {
+                return (
+                  <div key={idx} className="relative group py-2">
+                    <button
+                      onClick={() => handleNavLinkClick(link)}
+                      className={`whitespace-nowrap transition duration-200 cursor-pointer uppercase font-black tracking-wider ${textColorClass} ${
                         currentPage === link.page ? 'text-luxury-gold' : ''
-                      }`
-                }`}
-              >
-                {link.label}
-              </button>
-            ))}
+                      }`}
+                    >
+                      {link.label}
+                    </button>
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-48 bg-[#111111] border border-white/10 rounded shadow-xl py-2 hidden group-hover:block transition duration-200 z-50 text-left">
+                      {[
+                        { label: 'Our Story', view: 'about' },
+                        { label: 'Boutique Contact', view: 'contact' },
+                        { label: 'Client FAQ', view: 'faq' },
+                        { label: 'Blogs & Editorial', view: 'blogs' },
+                        { label: 'Legal Policies', view: 'policies' }
+                      ].map((sub) => (
+                        <button
+                          key={sub.view}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onPageChange('static', { view: sub.view });
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-white/10 text-gray-300 hover:text-white transition text-[11px] font-bold uppercase tracking-wider cursor-pointer block"
+                        >
+                          {sub.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+
+              if (link.megaMenu) {
+                return (
+                  <div key={idx} className="relative group h-20 flex items-center" onMouseEnter={() => setMegaMenuForceClosed(false)}>
+                    <button
+                      onClick={() => handleNavLinkClick(link)}
+                      className={`whitespace-nowrap transition duration-200 cursor-pointer uppercase font-black tracking-wider ${textColorClass} ${
+                        currentPage === link.page ? 'text-luxury-gold' : ''
+                      }`}
+                    >
+                      {link.label}
+                    </button>
+                    
+                    {/* FULL SCREEN WIDE LIGHT GLASSMORPHIC (LIQUIFIED) MEGA MENU */}
+                    <div className={`fixed left-0 right-0 w-screen bg-white/40 backdrop-blur-2xl border-y border-white/20 shadow-[0_25px_50px_rgba(0,0,0,0.15)] p-0 hidden group-hover:block z-50 text-left transition-all duration-300 top-[80px] left-0 ${megaMenuForceClosed ? '!hidden' : ''}`}>
+                      <div className="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-10">
+                        {/* Left Column: Category selectors */}
+                        <div className="col-span-3 border-r border-neutral-200/40 pr-6 flex flex-col space-y-3">
+                          <button
+                            type="button"
+                            onMouseEnter={() => setActiveSubMenu('price')}
+                            className={`w-full text-left px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-widest flex items-center justify-between transition duration-200 ${
+                              activeSubMenu === 'price' ? 'bg-white/20 backdrop-blur-sm border border-neutral-900/20 text-black font-black scale-[1.02]' : 'text-neutral-700 hover:text-black hover:bg-neutral-900/5 border border-transparent'
+                            }`}
+                          >
+                            <span>Shop By Price</span>
+                            <span className="text-[10px]">&rarr;</span>
+                          </button>
+                          <button
+                            type="button"
+                            onMouseEnter={() => setActiveSubMenu('recipient')}
+                            className={`w-full text-left px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-widest flex items-center justify-between transition duration-200 ${
+                              activeSubMenu === 'recipient' ? 'bg-white/20 backdrop-blur-sm border border-neutral-900/20 text-black font-black scale-[1.02]' : 'text-neutral-700 hover:text-black hover:bg-neutral-900/5 border border-transparent'
+                            }`}
+                          >
+                            <span>Watches For Recipient</span>
+                            <span className="text-[10px]">&rarr;</span>
+                          </button>
+                        </div>
+
+                        {/* Middle Column: Sub-menu items */}
+                        <div className="col-span-5 px-6">
+                          {activeSubMenu === 'price' && (
+                            <div className="space-y-6">
+                              <h4 className="text-[10px] font-black tracking-[0.25em] text-black uppercase">Shop By Price</h4>
+                              <div className="grid grid-cols-2 gap-4">
+                                {[
+                                  { label: 'Under ₹50,000', maxPrice: 1000 },
+                                  { label: '₹50,000 - ₹1,00,000', maxPrice: 2000 },
+                                  { label: '₹1,00,000 - ₹2,00,000', maxPrice: 4500 },
+                                  { label: 'Above ₹2,00,000', maxPrice: 6000 },
+                                ].map((p) => (
+                                  <button
+                                    key={p.label}
+                                    onClick={() => {
+                                      setMegaMenuForceClosed(true);
+                                      onPageChange('shop', { maxPrice: p.maxPrice });
+                                    }}
+                                    className="text-left text-xs text-black hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
+                                  >
+                                    {p.label}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {activeSubMenu === 'recipient' && (
+                            <div className="space-y-6">
+                              <h4 className="text-[10px] font-black tracking-[0.25em] text-black uppercase">Watches For Recipient</h4>
+                              {/* 2 Column Recipient Layout to match screenshot */}
+                              <div className="grid grid-cols-2 gap-x-12 gap-y-4">
+                                <div className="flex flex-col space-y-3.5">
+                                  {[
+                                    { label: 'Watches For Bride', filter: { gender: 'women' } },
+                                    { label: 'Watches For Mother', filter: { gender: 'women' } },
+                                    { label: 'Watches For Brother', filter: { gender: 'men' } },
+                                  ].map((r) => (
+                                    <button
+                                      key={r.label}
+                                      onClick={() => {
+                                        localStorage.setItem('khroniq_is_gifting_journey', 'true');
+                                        setMegaMenuForceClosed(true);
+                                        onPageChange('shop', r.filter);
+                                      }}
+                                      className="text-left text-xs text-black hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
+                                    >
+                                      {r.label}
+                                    </button>
+                                  ))}
+                                </div>
+                                <div className="flex flex-col space-y-3.5">
+                                  {[
+                                    { label: 'Watches For Groom', filter: { gender: 'men' } },
+                                    { label: 'Watches For Father', filter: { gender: 'men' } },
+                                    { label: 'Watches For Sister', filter: { gender: 'women' } },
+                                  ].map((r) => (
+                                    <button
+                                      key={r.label}
+                                      onClick={() => {
+                                        localStorage.setItem('khroniq_is_gifting_journey', 'true');
+                                        setMegaMenuForceClosed(true);
+                                        onPageChange('shop', r.filter);
+                                      }}
+                                      className="text-left text-xs text-black hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
+                                    >
+                                      {r.label}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Right Column: Looking for a Gift card */}
+                        <div className="col-span-4 relative overflow-hidden rounded-xl bg-neutral-950 text-white flex flex-col justify-between p-6 min-h-[220px] shadow-lg group/gift">
+                          <div className="absolute inset-0 bg-cover bg-center opacity-60 scale-100 group-hover/gift:scale-105 transition duration-700" style={{ backgroundImage: "url('/assets/media__1783681299347.png')" }} />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                          <div className="relative z-10 space-y-1">
+                            <span className="text-[9px] font-bold tracking-[0.3em] uppercase text-luxury-gold">Curated Gifting</span>
+                            <h4 className="font-serif text-2xl font-black tracking-wider leading-tight text-white mt-1">LOOKING<br/>for<br/>A GIFT?</h4>
+                          </div>
+                          <button
+                            onClick={() => onPageChange('gifting')}
+                            className="relative z-10 w-full py-3 bg-white text-neutral-950 font-black text-xs uppercase tracking-widest rounded-lg hover:bg-luxury-gold hover:text-white transition duration-300 shadow-md cursor-pointer"
+                          >
+                            Shop Gifting Solutions
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <button
+                  key={idx}
+                  onClick={() => handleNavLinkClick(link)}
+                  className={`whitespace-nowrap transition duration-200 cursor-pointer ${textColorClass} ${
+                    currentPage === link.page ? 'text-luxury-gold' : ''
+                  }`}
+                >
+                  {link.label}
+                </button>
+              );
+            })}
           </nav>
 
           {/* Center Logo */}
@@ -300,15 +466,44 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
           </form>
 
           {/* Navigation links */}
-          {navLinks.map((link, idx) => (
-            <button
-              key={idx}
-              onClick={() => handleNavLinkClick(link)}
-              className="text-left text-sm text-luxury-text hover:text-luxury-gold-dark transition py-2 font-medium tracking-widest cursor-pointer"
-            >
-              {link.label}
-            </button>
-          ))}
+          {navLinks.map((link, idx) => {
+            if (link.dropdown) {
+              return (
+                <div key={idx} className="flex flex-col space-y-1 py-1">
+                  <span className="text-left text-xs text-luxury-gold-dark font-extrabold tracking-widest block uppercase pt-2 pb-1 border-b border-white/5">
+                    {link.label}
+                  </span>
+                  {[
+                    { label: 'Our Story', view: 'about' },
+                    { label: 'Boutique Contact', view: 'contact' },
+                    { label: 'Client FAQ', view: 'faq' },
+                    { label: 'Blogs & Editorial', view: 'blogs' },
+                    { label: 'Legal Policies', view: 'policies' }
+                  ].map((sub) => (
+                    <button
+                      key={sub.view}
+                      onClick={() => {
+                        onPageChange('static', { view: sub.view });
+                        setMobileMenuOpen(false);
+                      }}
+                      className="text-left text-[11px] text-gray-400 hover:text-white transition pl-3 py-1.5 font-bold uppercase tracking-wider cursor-pointer"
+                    >
+                      {sub.label}
+                    </button>
+                  ))}
+                </div>
+              );
+            }
+            return (
+              <button
+                key={idx}
+                onClick={() => handleNavLinkClick(link)}
+                className="text-left text-sm text-luxury-text hover:text-luxury-gold-dark transition py-2 font-medium tracking-widest cursor-pointer"
+              >
+                {link.label}
+              </button>
+            );
+          })}
 
           {/* Profile & Account options */}
           <div className="pt-2 border-t border-luxury-text/5 flex flex-col space-y-3">

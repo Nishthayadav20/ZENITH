@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Compass, Mail, Phone, MapPin, Award, CheckCircle2, ChevronDown } from 'lucide-react';
+import { Compass, Mail, Phone, MapPin, Award, CheckCircle2, ChevronDown, BookOpen, ArrowRight, X } from 'lucide-react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchBlogs } from '../store/slices/watchSlice';
 
 export default function Static({ params, _onPageChange }) {
+  const dispatch = useDispatch();
+  const blogs = useSelector(state => state.watch.blogs || []);
   const [activeTab, setActiveTab] = useState(params?.view || 'about');
   const [expandedFaq, setExpandedFaq] = useState(null);
+  const [selectedBlog, setSelectedBlog] = useState(null);
+
+  useEffect(() => {
+    dispatch(fetchBlogs());
+  }, [dispatch]);
   
   // Form state for Contact Us
   const [contactForm, setContactForm] = useState({ name: '', email: '', subject: '', message: '' });
@@ -25,7 +34,7 @@ export default function Static({ params, _onPageChange }) {
   const faqData = [
     {
       q: "What warranty comes with my Khroniq timepiece?",
-      a: "Every Khroniq watch purchased through our platform is backed by a 3-Year International Swiss Warranty. This covers any manufacturing defect or caliber calibration issues. You can register your watch through the customer profile portal."
+      a: "Every Khroniq watch purchased through our platform is backed by a 3-Year Indian Warranty from the True Knock Group. This covers any manufacturing defect or caliber calibration issues. You can register your watch through the customer profile portal."
     },
     {
       q: "How does priority secure shipping operate?",
@@ -51,11 +60,15 @@ export default function Static({ params, _onPageChange }) {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex justify-center border-b border-luxury-text/10 max-w-4xl mx-auto">
+      <div className="flex flex-wrap justify-center border-b border-luxury-text/10 max-w-4xl mx-auto gap-y-1">
         {[
           { key: 'about', label: 'Our Story' },
           { key: 'contact', label: 'Boutique Contact' },
+          { key: 'shipping', label: 'Shipping Policy' },
+          { key: 'exchange', label: 'Exchange Policy' },
+          { key: 'refund', label: 'Refund Policy' },
           { key: 'faq', label: 'Client FAQ' },
+          { key: 'blogs', label: 'Blogs & Editorial' },
           { key: 'policies', label: 'Legal Policies' }
         ].map((tab) => (
           <button
@@ -231,6 +244,82 @@ export default function Static({ params, _onPageChange }) {
           </div>
         )}
 
+        {/* SHIPPING POLICY TAB */}
+        {activeTab === 'shipping' && (
+          <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
+            <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Shipping Policy</h3>
+            <div className="space-y-4">
+              <p>
+                We offer complementary insured priority shipping on all KHRONIQ acquisitions worldwide. Every shipment is carefully packaged in a secure, unbranded outer box to guarantee discretion and security.
+              </p>
+              <p>
+                <strong>Delivery Timelines:</strong>
+                <br />
+                - Ready Stock: Dispatched within 24-48 hours, arriving within 3-5 business days.
+                <br />
+                - Bespoke / Customized Pieces: Handcrafted to order; delivery takes approximately 4-6 weeks.
+              </p>
+              <p>
+                <strong>Secure Signature Required:</strong>
+                <br />
+                Due to the high value of our horological products, all shipments require a physical signature by an adult upon delivery. Packages will not be left at doorsteps or with neighbors under any circumstances.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* EXCHANGE POLICY TAB */}
+        {activeTab === 'exchange' && (
+          <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
+            <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Exchange Policy</h3>
+            <div className="space-y-4">
+              <p>
+                We strive for absolute satisfaction with every purchase. If your timepiece does not fit your expectation, we accommodate sizing and model exchanges.
+              </p>
+              <p>
+                <strong>Exchange Criteria:</strong>
+                <br />
+                - Ready-stock timepieces are eligible for exchange within 14 days of receipt.
+                <br />
+                - The watch must be unworn, unmodified, and in pristine condition with all protective seals, wrapping, and tags intact.
+              </p>
+              <p>
+                <strong>Bespoke Exclusions:</strong>
+                <br />
+                Customized or engraved watches are uniquely manufactured to your specifications and are not eligible for exchanges unless a clear manufacturing defect is present.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* REFUND POLICY TAB */}
+        {activeTab === 'refund' && (
+          <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
+            <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Refund Policy</h3>
+            <div className="space-y-4">
+              <p>
+                Our refund window is open for 14 days starting from the date of physical package receipt.
+              </p>
+              <p>
+                <strong>Refund Process:</strong>
+                <br />
+                1. Request a return through your customer profile or contact our Concierge Desk.
+                <br />
+                2. Our secure courier will coordinate a complimentary pick-up from your shipping address.
+                <br />
+                3. Once received at our manufacture, the timepiece undergoes a rigorous inspection.
+                <br />
+                4. Following approval, refunds are credited back to your original payment method within 7-10 business days.
+              </p>
+              <p>
+                <strong>Non-Refundable Items:</strong>
+                <br />
+                Any timepiece showing signs of wear, sizing modifications (e.g. link removal), or missing original box/papers cannot be refunded. Bespoke engraved or custom-configured watches are non-refundable.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* CLIENT FAQ TAB */}
         {activeTab === 'faq' && (
           <div className="space-y-6">
@@ -253,6 +342,88 @@ export default function Static({ params, _onPageChange }) {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* BLOGS & EDITORIAL TAB */}
+        {activeTab === 'blogs' && (
+          <div className="space-y-6">
+            <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Blogs & Editorial</h3>
+            
+            {blogs.length === 0 ? (
+              <p className="text-luxury-muted text-xs italic text-center p-6 border border-dashed border-luxury-text/10 rounded">No editorial posts available at this time.</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {blogs.map((blog) => (
+                  <div key={blog.id || blog._id} className="group border border-luxury-text/10 hover:border-luxury-gold-dark/40 rounded overflow-hidden flex flex-col bg-luxury-bg/5 transition duration-300">
+                    <div className="h-44 overflow-hidden relative bg-black">
+                      <img 
+                        src={blog.image || '/assets/media__1782899491225.jpg'} 
+                        alt={blog.title} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90"
+                      />
+                    </div>
+                    <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between text-[9px] font-bold text-luxury-gold-dark uppercase tracking-wider">
+                          <span>{blog.category}</span>
+                          <span className="text-luxury-muted/70">{blog.date}</span>
+                        </div>
+                        <h4 className="text-luxury-text font-serif font-bold text-base leading-snug group-hover:text-luxury-gold-dark transition">{blog.title}</h4>
+                        <p className="text-luxury-muted text-[11px] font-light leading-relaxed line-clamp-3">{blog.content}</p>
+                      </div>
+                      <button
+                        onClick={() => setSelectedBlog(blog)}
+                        className="text-[10px] font-bold text-luxury-gold-dark hover:text-luxury-text transition tracking-widest uppercase flex items-center gap-1 cursor-pointer self-start"
+                      >
+                        Read Article <ArrowRight size={10} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Read Blog Overlay Modal */}
+            {selectedBlog && (
+              <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+                <div className="bg-white border border-luxury-text/10 p-6 sm:p-8 rounded-md w-full max-w-2xl space-y-4 max-h-[90vh] overflow-y-auto relative">
+                  <button 
+                    onClick={() => setSelectedBlog(null)} 
+                    className="absolute top-4 right-4 text-luxury-muted hover:text-luxury-text p-1 cursor-pointer transition"
+                  >
+                    <X size={20} />
+                  </button>
+
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-center gap-2 text-[9px] font-bold text-luxury-gold-dark uppercase tracking-widest">
+                      <span>{selectedBlog.category}</span>
+                      <span>·</span>
+                      <span className="text-luxury-muted/70">By {selectedBlog.author}</span>
+                      <span>·</span>
+                      <span className="text-luxury-muted/70">{selectedBlog.date}</span>
+                    </div>
+
+                    <h2 className="font-serif text-2xl sm:text-3xl font-bold text-luxury-text leading-tight">{selectedBlog.title}</h2>
+                    <div className="w-12 h-[2px] bg-luxury-gold-dark mt-2" />
+
+                    {selectedBlog.image && (
+                      <div className="h-64 sm:h-80 w-full overflow-hidden rounded bg-black">
+                        <img 
+                          src={selectedBlog.image} 
+                          alt={selectedBlog.title} 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+
+                    <p className="text-luxury-muted text-xs leading-relaxed font-light whitespace-pre-wrap pt-2 font-sans">
+                      {selectedBlog.content}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

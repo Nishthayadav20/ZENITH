@@ -8,7 +8,8 @@ import cors from 'cors';
 import Product from './_models/Product.js';
 import User from './_models/User.js';
 import Coupon from './_models/Coupon.js';
-import BrandUpdate from './_models/BrandUpdate.js';
+import brandUpdateModel from './_models/BrandUpdate.js'; // Let's keep it clean
+import Blog from './_models/Blog.js';
 
 // Import Routes
 import authRoutes from './_routes/auth.js';
@@ -25,9 +26,7 @@ import paymentRoutes from './_routes/payments.js';
 import adminRoutes from './_routes/admin.js';
 import brandUpdateRoutes from './_routes/brandUpdates.js';
 import warrantyRoutes from './_routes/warranty.js';
-
-
-// dotenv.config();
+import blogRoutes from './_routes/blogs.js';
 
 const app = express();
 
@@ -35,21 +34,21 @@ const app = express();
 let dbConnectionError = null;
 const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/khroniq-watches';
 
-// Middleware to ensure DB connection and seeding
+// Single DB ready promise — resolves once connected & seeded
+let dbReadyResolve, dbReadyReject;
+const dbReady = new Promise((res, rej) => {
+  dbReadyResolve = res;
+  dbReadyReject = rej;
+});
+
+// Middleware: wait for DB to be ready before handling any request
 const ensureDb = async (req, res, next) => {
   try {
-    if (mongoose.connection.readyState !== 1) {
-      console.log('Connecting to MongoDB via middleware...');
-      await mongoose.connect(mongoURI);
-      console.log('Connected to MongoDB');
-      dbConnectionError = null;
-    }
-    await seedDatabase();
+    await dbReady;
     next();
   } catch (err) {
-    console.error('ensureDb connection error:', err);
-    dbConnectionError = err.message || err.toString();
-    next();
+    console.error('DB not ready:', err);
+    return res.status(503).json({ success: false, message: 'Database unavailable. Please try again shortly.' });
   }
 };
 
@@ -82,6 +81,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/brand-updates', brandUpdateRoutes);
 app.use('/api/warranty', warrantyRoutes);
+app.use('/api/blogs', blogRoutes);
 
 
 // Base Endpoint
@@ -108,258 +108,54 @@ app.get('/api/health', (req, res) => {
 // Database Seed Function
 const seedDatabase = async () => {
   try {
-    // Migration: Update existing products with category 'Chronomaster' to 'Khronomaster'
-    await Product.updateMany({ category: 'Chronomaster' }, { $set: { category: 'Khronomaster' } });
 
-    // Migration: Rebrand product movement references to remove "El Primero"
-    await Product.updateOne(
-      { name: 'Khroniq Khronomaster Black Edition' },
-      {
-        $set: {
-          description: 'High-precision luxury chronograph watch in matte black design with silver sub-dials and detailed tachymeter scale. Equipped with our signature high-precision movement caliber.',
-          'specs.movement': 'Khroniq Chronograph Caliber'
-        }
-      }
-    );
-    await Product.updateOne(
-      { name: 'Khroniq Khronomaster Open Heart' },
-      {
-        $set: {
-          description: 'An exquisite luxury timepiece featuring a dial opening revealing the high-frequency Khroniq balance wheel. Crafted with a polished steel case.',
-          'specs.movement': 'Khroniq Automatic Chronograph'
-        }
-      }
-    );
-    await Product.updateOne(
-      { name: 'Khroniq Defy Skyline Skeleton' },
-      {
-        $set: {
-          'specs.movement': 'Khroniq High-Frequency Automatic'
-        }
-      }
-    );
+    // 1. Seed Products — Clear all old products and seed only the 2 launch watches
+    const existingProducts = await Product.find({});
+    const launchWatchNames = ['Khroniq Crimson Red', 'Khroniq Emerald Green'];
+    const hasOldProducts = existingProducts.some(p => !launchWatchNames.includes(p.name));
 
-    // Migration: Ensure all current products default to customizable: true on startup
-    const countCustomizable = await Product.countDocuments({ customizable: true });
-    if (countCustomizable === 0) {
-      await Product.updateMany({}, { 
-        $set: { 
-          customizable: true,
-          allowStrapCustomization: true,
-          allowCaseCustomization: true
-        } 
-      });
-      console.log('Migrated existing products to customizable: true');
+    if (hasOldProducts) {
+      // Remove all products that are NOT the 2 launch watches
+      await Product.deleteMany({ name: { $nin: launchWatchNames } });
+      console.log('Database Migration: Removed all old products. Only launch watches remain.');
     }
 
-    // 1. Seed Products
     const productCount = await Product.countDocuments();
-    if (productCount < 11) {
+    if (productCount < 2) {
       const initialProducts = [
         {
-          name: 'Khroniq Heritage Rose Gold',
-          image: '/assets/media__1782899491225.jpg',
+          name: 'Khroniq Crimson Red',
+          image: '/assets/watch_red.jpg',
           brand: 'KHRONIQ',
-          price: 1250,
-          stock: 8,
+          price: 2499,
+          stock: 10,
           category: 'Heritage',
-          gender: 'women',
-          description: "A luxurious timeless classic watch featuring a stunning rose gold casing and index numerals, matching its premium metallic link bracelet. A tribute to Khroniq's heritage.",
-          specs: {
-            movement: 'Automatic Chronometer',
-            case: 'Rose Gold PVD Steel (40mm)',
-            strap: 'Rose Gold Stainless Steel Bracelet',
-            waterResistance: '50m (5 ATM)',
-            glass: 'Scratch-resistant Sapphire Crystal'
-          },
-          reviews: [
-            { userName: 'John Doe', rating: 5, comment: 'Exquisite design, feels very premium and heavy. Highly recommend!', date: '2026-06-15', status: 'approved' },
-            { userName: 'Alice Smith', rating: 4, comment: 'Elegant dial, but the bracelet needed adjustment. Overall beautiful watch.', date: '2026-06-20', status: 'approved' }
-          ]
-        },
-        {
-          name: 'Khroniq Khronomaster Black Edition',
-          image: '/assets/media__1782899491297.jpg',
-          brand: 'KHRONIQ',
-          price: 4800,
-          stock: 5,
-          category: 'Khronomaster',
-          gender: 'men',
-          description: 'High-precision luxury chronograph watch in matte black design with silver sub-dials and detailed tachymeter scale. Equipped with our signature high-precision movement caliber.',
-          specs: {
-            movement: 'Khroniq Chronograph Caliber',
-            case: 'Matte Black Ceramic (42mm)',
-            strap: 'Black Rubberized Steel Link',
-            waterResistance: '100m (10 ATM)',
-            glass: 'Double Anti-reflective Sapphire'
-          },
-          reviews: [
-            { userName: 'Marc V.', rating: 5, comment: 'The Khroniq movement is flawless. The black ceramic case is scratchproof!', date: '2026-05-10', status: 'approved' }
-          ]
-        },
-        {
-          name: 'Khroniq Elite Classic Brown',
-          image: '/assets/media__1782899491320.jpg',
-          brand: 'KHRONIQ',
-          price: 2100,
-          stock: 12,
-          category: 'Elite',
           gender: 'unisex',
-          description: 'An ultra-minimalist timepiece featuring an elegant cream white dial, gold baton markers, and a premium textured brown leather strap. Perfect for formal dress occasions.',
+          description: 'A bold, timeless statement piece featuring a deep crimson sunray dial with silver baton hour markers and a premium tan leather strap. The Crimson Red embodies passion and precision in every second.',
           specs: {
-            movement: 'Elite Ultra-Thin Automatic',
-            case: '18K Yellow Gold (39mm)',
-            strap: 'Brown Alligator Leather',
-            waterResistance: '30m (3 ATM)',
-            glass: 'Dome Sapphire Crystal'
-          },
-          reviews: [
-            { userName: 'David K.', rating: 4, comment: 'Classic dress watch. Super thin and fits under any cuff.', date: '2026-06-01', status: 'approved' }
-          ]
-        },
-        {
-          name: 'Khroniq Defy Automatic Steel',
-          image: '/assets/media__1782899491366.jpg',
-          brand: 'KHRONIQ',
-          price: 3450,
-          stock: 4,
-          category: 'Defy',
-          gender: 'men',
-          description: 'A robust, sporty luxury watch with a brushed stainless steel case, textured black dial, day-date automatic calendar, and deep brown premium leather strap overlay.',
-          specs: {
-            movement: 'Automatic Calendar Caliber',
-            case: 'Brushed Stainless Steel (41mm)',
-            strap: 'Brown Leather with Rubber Backing',
-            waterResistance: '100m (10 ATM)',
-            glass: 'Scratch-resistant Sapphire'
-          },
-          reviews: [
-            { userName: 'Sarah L.', rating: 5, comment: 'Sturdy yet elegant. Ideal everyday luxury watch.', date: '2026-06-25', status: 'approved' }
-          ]
-        },
-        {
-          name: 'Khroniq Khronomaster Open Heart',
-          image: '/assets/media__1782899491297.jpg',
-          brand: 'KHRONIQ',
-          price: 5200,
-          stock: 6,
-          category: 'Khronomaster',
-          gender: 'men',
-          description: 'An exquisite luxury timepiece featuring a dial opening revealing the high-frequency Khroniq balance wheel. Crafted with a polished steel case.',
-          specs: {
-            movement: 'Khroniq Automatic Chronograph',
-            case: 'Polished Steel (42mm)',
-            strap: 'Alligator Leather Strap',
-            waterResistance: '100m (10 ATM)',
-            glass: 'Domed Sapphire Crystal'
-          },
-          reviews: []
-        },
-        {
-          name: 'Khroniq Heritage Star Dial',
-          image: '/assets/media__1782899491225.jpg',
-          brand: 'KHRONIQ',
-          price: 3100,
-          stock: 4,
-          category: 'Heritage',
-          gender: 'women',
-          description: 'A dazzling feminine watch with a diamond-studded bezel and a guilloche mother-of-pearl dial. Elegant and graceful.',
-          specs: {
-            movement: 'Elite Automatic Caliber',
-            case: 'Steel with Diamond Bezel (37mm)',
-            strap: 'White Satin Strap',
-            waterResistance: '30m (3 ATM)',
-            glass: 'Sapphire Crystal'
-          },
-          reviews: []
-        },
-        {
-          name: 'Khroniq Elite Moonphase',
-          image: '/assets/media__1782899491320.jpg',
-          brand: 'KHRONIQ',
-          price: 2650,
-          stock: 7,
-          category: 'Elite',
-          gender: 'unisex',
-          description: 'A sophisticated dress watch displaying the moon phases at 6 o\'clock. Featuring a clean silver sunray dial and gold markers.',
-          specs: {
-            movement: 'Elite Moonphase Automatic',
-            case: 'Yellow Gold PVD (40mm)',
-            strap: 'Black Leather Strap',
+            movement: 'Khroniq Automatic Caliber',
+            case: 'Polished Stainless Steel (38mm)',
+            strap: 'Genuine Tan Leather',
             waterResistance: '50m (5 ATM)',
-            glass: 'Sapphire Crystal'
+            glass: 'Scratch-Resistant Sapphire Crystal'
           },
           reviews: []
         },
         {
-          name: 'Khroniq Defy Skyline Skeleton',
-          image: '/assets/media__1782899491366.jpg',
+          name: 'Khroniq Emerald Green',
+          image: '/assets/watch_green.jpg',
           brand: 'KHRONIQ',
-          price: 4100,
-          stock: 5,
-          category: 'Defy',
-          gender: 'men',
-          description: 'A modern architectural masterpiece featuring an openworked black skeleton dial inside a sharp octagonal steel case.',
-          specs: {
-            movement: 'Khroniq High-Frequency Automatic',
-            case: 'Brushed Steel Octagonal (41mm)',
-            strap: 'Black Rubber Strap',
-            waterResistance: '100m (10 ATM)',
-            glass: 'Sapphire Crystal'
-          },
-          reviews: []
-        },
-        {
-          name: 'Khroniq Crescent Brown',
-          image: '/assets/crescent_product.png',
-          brand: 'KHRONIQ',
-          price: 3200,
-          stock: 6,
+          price: 2499,
+          stock: 10,
           category: 'Heritage',
-          gender: 'men',
-          description: 'An elite timekeeping masterpiece featuring a warm rose gold case, intricate multi-dial chronograph display, and a textured brown leather strap. Blending classic styling with robust mechanics.',
+          gender: 'unisex',
+          description: 'An elegant expression of nature\'s finest hue — a rich emerald sunray dial with silver baton markers and a supple tan leather strap. The Emerald Green is crafted for those who dare to stand apart.',
           specs: {
-            movement: 'Automatic Chronograph',
-            case: 'Rose Gold Steel (42mm)',
-            strap: 'Brown Alligator Leather',
-            waterResistance: '100m (10 ATM)',
-            glass: 'Scratch-Resistant Sapphire'
-          },
-          reviews: []
-        },
-        {
-          name: 'Khroniq Gentleman Blue',
-          image: '/assets/gentleman_product.png',
-          brand: 'KHRONIQ',
-          price: 4100,
-          stock: 7,
-          category: 'Defy',
-          gender: 'men',
-          description: 'A high-end skeleton watch displaying mechanical gears inside a polished steel case, matched with a luxurious deep blue textured leather strap. A perfect statement of engineering art.',
-          specs: {
-            movement: 'Skeleton Automatic Movement',
-            case: 'Brushed Steel (41mm)',
-            strap: 'Blue Alligator Leather',
-            waterResistance: '100m (10 ATM)',
-            glass: 'Double Anti-Reflective Sapphire'
-          },
-          reviews: []
-        },
-        {
-          name: 'Khroniq Aurex Green',
-          image: '/assets/aurex_product.png',
-          brand: 'KHRONIQ',
-          price: 4500,
-          stock: 8,
-          category: 'Khronomaster',
-          gender: 'men',
-          description: 'A luxury steel bracelet timepiece presenting an elegant deep emerald green textured dial, framed within a distinctive octagonal bezel. Crafted for the vanguard of modern design.',
-          specs: {
-            movement: 'High-Frequency Automatic',
-            case: 'Integrated Stainless Steel (40mm)',
-            strap: 'Brushed Steel Link Bracelet',
-            waterResistance: '100m (10 ATM)',
-            glass: 'Domed Sapphire Crystal'
+            movement: 'Khroniq Automatic Caliber',
+            case: 'Polished Stainless Steel (38mm)',
+            strap: 'Genuine Tan Leather',
+            waterResistance: '50m (5 ATM)',
+            glass: 'Scratch-Resistant Sapphire Crystal'
           },
           reviews: []
         }
@@ -398,7 +194,7 @@ const seedDatabase = async () => {
     }
 
     // 4. Seed Default Brand Updates
-    const updateCount = await BrandUpdate.countDocuments();
+    const updateCount = await brandUpdateModel.countDocuments();
     if (updateCount === 0) {
       const initialUpdates = [
         { title: "Grand Boutique Launch", detail: "Geneva flagship store grand opening scheduled for October 15th.", approved: true },
@@ -406,8 +202,31 @@ const seedDatabase = async () => {
         { title: "Zero Carbon Milestone", detail: "Le Locle manufacture officially certified as a 100% net-zero operation.", approved: true },
         { title: "Lifetime Precision Care", detail: "Introducing extended lifetime service programs for certified chronometers.", approved: true }
       ];
-      await BrandUpdate.insertMany(initialUpdates);
+      await brandUpdateModel.insertMany(initialUpdates);
       console.log('Database Seeding: Brand Updates successfully seeded!');
+    }
+
+    // 5. Seed Default Blogs
+    const blogCount = await Blog.countDocuments();
+    if (blogCount === 0) {
+      const initialBlogs = [
+        {
+          title: "The Art of Swadeshi Horology",
+          content: "Behind the scenes of KHRONIQ's Le Locle and Indian assembly processes, bringing high-precision chronometer watches to modern watch enthusiasts. Discover how we balance heritage design with modern components.",
+          author: "Vikram R. Mehta",
+          image: "/assets/gentleman_lifestyle.png",
+          category: "Horology"
+        },
+        {
+          title: "Choosing the Right Case Finish",
+          content: "A guide on selecting between polished stainless steel, rose gold PVD, and matte ceramic finishes for your bespoke timepiece. Learn which finish best suits your daily attire and lifestyle.",
+          author: "Ananya Sharma",
+          image: "/assets/aurex_lifestyle.png",
+          category: "Guides"
+        }
+      ];
+      await Blog.insertMany(initialBlogs);
+      console.log('Database Seeding: Default Blogs successfully seeded!');
     }
 
   } catch (error) {
@@ -415,16 +234,19 @@ const seedDatabase = async () => {
   }
 };
 
-// Non-blocking background database connection startup
+// Connect once at startup — resolve dbReady when done
 mongoose.connect(mongoURI)
   .then(async () => {
-    console.log('Successfully connected to MongoDB in background');
+    console.log('Successfully connected to MongoDB');
     dbConnectionError = null;
     await seedDatabase();
+    dbReadyResolve();
+    
   })
   .catch((err) => {
-    console.error('MongoDB background connection error:', err);
+    console.error('MongoDB connection error:', err);
     dbConnectionError = err.message || err.toString();
+    dbReadyReject(err);
   });
 
 const PORT = process.env.PORT || 5000;

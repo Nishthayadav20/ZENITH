@@ -35,6 +35,7 @@ const productSchema = new mongoose.Schema({
   customizable: { type: Boolean, default: true },
   allowStrapCustomization: { type: Boolean, default: true },
   allowCaseCustomization: { type: Boolean, default: true },
+  allowDialCustomization: { type: Boolean, default: true },
   customizationOptions: {
     dialColors: [{ type: String }],
     strapMaterials: [{ type: String }],

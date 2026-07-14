@@ -93,7 +93,7 @@ function SlideReveal({ children, delay = 0 }) {
 /* ─────────────────────────────────────────────────────────────────────
    MAGNETIC BUTTON
 ───────────────────────────────────────────────────────────────────── */
-function MagBtn({ children, className, onClick }) {
+function MagBtn({ children, className, onClick, style = {} }) {
   const ref = useRef(null);
   const x = useMotionValue(0); const y = useMotionValue(0);
   const sx = useSpring(x, { stiffness: 280, damping: 20 });
@@ -105,7 +105,7 @@ function MagBtn({ children, className, onClick }) {
   };
   return (
     <motion.button ref={ref} onMouseMove={onMove} onMouseLeave={() => { x.set(0); y.set(0); }}
-      style={{ x: sx, y: sy }} whileTap={{ scale: 0.94 }}
+      style={{ ...style, x: sx, y: sy }} whileTap={{ scale: 0.94 }}
       className={className} onClick={onClick}>{children}</motion.button>
   );
 }
@@ -306,6 +306,7 @@ function CollectionCard({ col, idx, onPageChange }) {
         <motion.img
           src={col.image} alt={col.name}
           className="w-full h-full object-cover"
+          style={col.imgStyle || {}}
           animate={{ scale: hov ? 1.1 : 1 }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         />
@@ -360,31 +361,67 @@ function CollectionCard({ col, idx, onPageChange }) {
   );
 }
 
+/* ─────────────────────────────────────────────────────────────────────
+   HERO VIDEO CYCLER — plays video 1 → video 2 → video 1 … muted, no loop
+───────────────────────────────────────────────────────────────────── */
+const HERO_VIDEOS = ['/assets/hero_video_1.mp4', '/assets/hero_video_2.mp4'];
+
+function HeroVideoCycler() {
+  const [vidIdx, setVidIdx] = useState(0);
+  const [fade, setFade] = useState(true);
+  const vRef = useRef(null);
+
+  const handleEnded = useCallback(() => {
+    setFade(false);
+    setTimeout(() => {
+      setVidIdx(i => (i + 1) % HERO_VIDEOS.length);
+      setFade(true);
+    }, 350);
+  }, []);
+
+  useEffect(() => {
+    const v = vRef.current;
+    if (!v) return;
+    v.load();
+    v.play().catch(() => {});
+  }, [vidIdx]);
+
+  return (
+    <video
+      ref={vRef}
+      key={vidIdx}
+      muted
+      playsInline
+      onEnded={handleEnded}
+      className="object-cover w-full h-full brightness-[0.87]"
+      style={{ objectPosition: '30% 50%', opacity: fade ? 1 : 0, transition: 'opacity 0.35s ease' }}
+    >
+      <source src={HERO_VIDEOS[vidIdx]} type="video/mp4" />
+    </video>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════════════════
    HOME PAGE
 ═══════════════════════════════════════════════════════════════════════ */
 /* ─────────────────────────────────────────────────────────────────────
    LIFESTYLE SHOWCASE SLIDER
-   ───────────────────────────────────────────────────────────────────── */
-function LifestyleShowcaseSlider({ products, onPageChange, homeImages  }) {
+───────────────────────────────────────────────────────────────────── */
+function LifestyleShowcaseSlider({ products, onPageChange, homeImages }) {
   const slides = [
     {
-      name: 'CRESCENT - BROWN',
-      fullName: 'Khroniq Crescent Brown',
-      lifestyleImg: homeImages.hero_slide1_lifestyle || '/assets/crescent_lifestyle.png',
-      productImg: homeImages.hero_slide1_product || '/assets/crescent_product.png',
+      name: 'CRIMSON RED',
+      fullName: 'Khroniq Crimson Red',
+      lifestyleImg: homeImages.hero_slide1_lifestyle || '/assets/lifestyle_red.png',
+      productImg: homeImages.hero_slide1_product || '/assets/watch_red.jpg',
+      lifestyleStyle: { filter: 'brightness(0.82) contrast(1.1) saturate(1.05)', backgroundPosition: 'center 40%' },
     },
     {
-      name: 'GENTLEMAN - BLUE',
-      fullName: 'Khroniq Gentleman Blue',
-      lifestyleImg: homeImages.hero_slide2_lifestyle || '/assets/gentleman_lifestyle.png',
-      productImg: homeImages.hero_slide2_product || '/assets/gentleman_product.png',
-    },
-    {
-      name: 'AUREX',
-      fullName: 'Khroniq Aurex Green',
-      lifestyleImg: homeImages.hero_slide3_lifestyle || '/assets/aurex_lifestyle.png',
-      productImg: homeImages.hero_slide3_product || '/assets/aurex_product.png',
+      name: 'EMERALD GREEN',
+      fullName: 'Khroniq Emerald Green',
+      lifestyleImg: homeImages.hero_slide2_lifestyle || '/assets/lifestyle_green.png',
+      productImg: homeImages.hero_slide2_product || '/assets/watch_green.jpg',
+      lifestyleStyle: { filter: 'brightness(0.78) contrast(1.12) saturate(1.08)', backgroundPosition: 'center 35%' },
     }
   ];
 
@@ -433,15 +470,14 @@ function LifestyleShowcaseSlider({ products, onPageChange, homeImages  }) {
         {/* Left Column: Lifestyle Image Showcase */}
         <div className="relative overflow-hidden h-[450px] lg:h-full bg-neutral-900">
           <AnimatePresence mode="wait">
-            <motion.img
+            <motion.div
               key={`lifestyle-${activeIndex}`}
-              src={currentSlide.lifestyleImg}
-              alt={currentSlide.name}
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url('${currentSlide.lifestyleImg}')`, ...currentSlide.lifestyleStyle }}
               initial={{ opacity: 0, scale: 1.04 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-0 w-full h-full object-cover"
             />
           </AnimatePresence>
           <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent z-[1]" />
@@ -594,9 +630,11 @@ export default function Home({ onPageChange }) {
   // --- CAROUSEL SLIDER STATE & LOGIC ---
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleCards, setVisibleCards] = useState(4);
-  const [showUpdates, setShowUpdates] = useState(false);
+  const [showUpdates, setShowUpdates] = useState(true);
   const [brandUpdates, setBrandUpdates] = useState([]);
   const [hoveredProduct, setHoveredProduct] = useState(null);
+  const updatesRef = useRef(null);
+  const updatesInView = useInView(updatesRef, { once: true, margin: '-45px' });
 
   const hoverTimeoutRef = useRef(null);
 
@@ -686,13 +724,13 @@ export default function Home({ onPageChange }) {
   const featured = products;
 
   const collections = [
-    { name: 'Khronomaster', image: homeImages.collection_khronomaster || '/assets/media__1782899491297.jpg', tagline: 'High-Frequency Chronographs', desc: 'Powered by our high-precision caliber calibers, blending robust authenticity with modern Indian design.', filter: { category: 'Khronomaster' }, accent: '#34d399' },
-    { name: 'Defy', image: homeImages.collection_defy || '/assets/media__1782899491366.jpg', tagline: 'Futuristic Watchmaking', desc: 'Unmatched durability and architectural design built for the boundary-breakers.', filter: { category: 'Defy' }, accent: '#60a5fa' },
-    { name: 'Elite & Heritage', image: homeImages.collection_heritage || '/assets/media__1782899491225.jpg', tagline: 'Timeless Swadeshi Classics', desc: 'Elegant profiles, vintage inspirations, and dress chronometers suited for any formal setting.', filter: { category: 'Heritage' }, accent: '#c5a880' },
+{ name: 'Khronomaster', image: homeImages.collection_khronomaster || '/assets/watch_green.jpg', tagline: 'High-Frequency Chronographs', desc: 'Powered by our high-precision automatic caliber, blending robust authenticity with modern Indian design.', filter: { category: 'Heritage' }, accent: '#34d399', imgStyle: { filter: 'brightness(0.72) contrast(1.18) saturate(1.1)', objectPosition: 'center 30%' } },
+    { name: 'Defy', image: homeImages.collection_defy || '/assets/watch_red.jpg', tagline: 'Futuristic Watchmaking', desc: 'Unmatched precision and bold architectural design built for the boundary-breakers.', filter: { category: 'Heritage' }, accent: '#f87171', imgStyle: { filter: 'brightness(0.65) contrast(1.22) saturate(0.9) hue-rotate(-10deg)', objectPosition: 'center 25%' } },
+    { name: 'Elite & Heritage', image: homeImages.collection_heritage || '/assets/watch_green.jpg', tagline: 'Timeless Swadeshi Classics', desc: 'Elegant profiles, vintage inspirations, and dress chronometers suited for any formal setting.', filter: { category: 'Heritage' }, accent: '#c5a880', imgStyle: { filter: 'brightness(0.6) contrast(1.3) sepia(0.25) saturate(0.85)', objectPosition: 'center 35%' } },
   ];
 
   const marqueeA = ['Swadeshi Luxury', 'Indian Engineered', 'Make In India Pride', 'Sapphire Crystal', 'High-Beat Caliber', 'In-House Assembly'];
-  const marqueeB = ['Water Resistant 200m', 'Limited Edition Masterpiece', 'Indo-Swiss Caliber DNA', 'Excellence Redefined', 'State-of-the-Art Indian Manufacture', 'Precision Horology'];
+  const marqueeB = ['True Knock Group Product', 'Limited Edition Masterpiece', 'Khroniq Caliber Craftsmanship', 'Excellence Redefined', 'State-of-the-Art Indian Manufacture', 'Precision Made in India'];
   const stats = [
     { raw: '100', suffix: '%', label: 'Swadeshi Design' },
     { raw: '2026', suffix: '', label: 'Indian Launch' },
@@ -710,11 +748,9 @@ export default function Home({ onPageChange }) {
         className="relative h-screen flex items-center justify-center overflow-hidden bg-[#1c1a17]"
         style={{ perspective: '1200px' }}
       >
-        {/* Video — deepest layer, drifts opposite */}
+        {/* Video — deepest layer, drifts opposite — cycles video 1 → video 2 → … */}
         <motion.div className="absolute inset-0 z-0" style={{ x: vidX, y: vidY, scale: 1.06 }}>
-          <video autoPlay loop muted playsInline className="object-cover w-full h-full brightness-[0.87]">
-            <source src="/assets/background.mp4" type="video/mp4" />
-          </video>
+          <HeroVideoCycler />
           <div className="absolute inset-0 bg-black/28" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.65)_100%)]" />
         </motion.div>
@@ -741,7 +777,7 @@ export default function Home({ onPageChange }) {
           className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-12 gap-8 items-center"
           style={{ x: contentX, y: contentY }}
         >
-          <div className="col-span-1 sm:col-span-8 space-y-6 text-center sm:text-left">
+          <div className="col-span-1 sm:col-span-8 space-y-6 text-center sm:text-left" style={{ transform: 'translate(-20px, 30px)' }}>
             {/* Badge */}
             <motion.div initial={{ opacity: 0, y: -26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }} className="flex justify-center sm:justify-start">
               <motion.span className="inline-flex items-center gap-2 border border-luxury-gold/45 text-luxury-gold px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-black/45 backdrop-blur-sm"
@@ -776,7 +812,8 @@ export default function Home({ onPageChange }) {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.85, delay: 0.46 }}
               className="pt-4 flex flex-col sm:flex-row justify-center sm:justify-start items-center gap-4">
               <MagBtn onClick={() => onPageChange('shop')}
-                className="px-8 py-4 bg-luxury-gold-dark text-white text-xs font-bold tracking-widest uppercase hover:bg-luxury-gold transition-colors duration-150 w-full sm:w-auto cursor-pointer border border-luxury-gold-dark">
+                className="px-8 py-4 text-white text-xs font-bold tracking-widest uppercase hover:opacity-90 transition duration-150 w-full sm:w-auto cursor-pointer border"
+                style={{ background: 'linear-gradient(135deg, #047857 0%, #065f46 45%, #022c22 100%)', borderColor: '#047857' }}>
                 Explore Timepieces
               </MagBtn>
               <MagBtn onClick={() => onPageChange('shop', { category: 'Khronomaster' })}
@@ -849,7 +886,7 @@ export default function Home({ onPageChange }) {
             </SlideReveal>
             <Reveal dir="left" delay={0.2}>
               <p className="text-luxury-muted text-sm leading-relaxed max-w-md">
-                Engineered for extreme conditions, the Khronomaster Professional pushes boundaries with water resistance up to 600m and the legendary El Primero caliber. Built to inspire confidence at every depth.
+                Engineered with Indian precision, the Khronomaster Professional pushes boundaries with components from the True Knock Group and the legendary Khroniq caliber. Built to inspire confidence for every Indian connoisseur.
               </p>
             </Reveal>
             <Reveal dir="left" delay={0.3}>
@@ -864,27 +901,27 @@ export default function Home({ onPageChange }) {
             </Reveal>
           </div>
 
-          {/* Right — large hero image */}
+          {/* Right — large hero image: dramatic angled editorial shot */}
           <div className="relative overflow-hidden min-h-[420px] lg:min-h-0">
             <motion.div
               className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url('${homeImages.dive_deeper_hero || '/assets/media__1782899491297.jpg'}')` }}
+              style={{ backgroundImage: `url('${homeImages.dive_deeper_hero || '/assets/spotlight_red_angled.png'}')`, backgroundPosition: 'center center' }}
               initial={{ scale: 1.08 }}
               whileInView={{ scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
               whileHover={{ scale: 1.04 }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-transparent to-transparent" />
           </div>
         </motion.div>
 
         {/* Bottom half — 2-up product mini grid */}
         <div className="grid grid-cols-2 border-t border-luxury-text/8">
           {[
-            { img: homeImages.dive_deeper_tile1 || '/assets/media__1782899491320.jpg', label: 'Khronomaster El Primero', sub: 'High-Beat Chronograph' },
-            { img: homeImages.dive_deeper_tile2 || '/assets/media__1782899491366.jpg', label: 'Defy Extreme', sub: 'Futuristic Architecture' },
-          ].map(({ img, label, sub }, i) => (
+            { img: homeImages.dive_deeper_tile1 || '/assets/spotlight_green_side.png', label: 'Khroniq Emerald Green', sub: 'Heritage Automatic', style: { backgroundPosition: 'center center' } },
+            { img: homeImages.dive_deeper_tile2 || '/assets/spotlight_red_overhead.png', label: 'Khroniq Crimson Red',   sub: 'Heritage Automatic', style: { backgroundPosition: 'center center' } },
+          ].map(({ img, label, sub, style }, i) => (
             <motion.div
               key={i}
               onClick={() => onPageChange('shop')}
@@ -898,7 +935,7 @@ export default function Home({ onPageChange }) {
             >
               <motion.div
                 className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url('${img}')` }}
+                style={{ backgroundImage: `url('${img}')`, ...style }}
                 whileHover={{ scale: 1.06 }}
                 transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
               />
@@ -995,18 +1032,29 @@ export default function Home({ onPageChange }) {
       {/* ══════════ FEATURED PRODUCTS ══════════ */}
       <div className="space-y-10 pb-12">
         <section
-          className="w-full py-14 space-y-10 transition-colors duration-500 ease-in-out dark-panel"
+          className="w-full py-14 space-y-10 dark-panel"
           style={{
             backgroundColor: hoveredProduct
               ? (() => {
-                  const cat = hoveredProduct.category?.toLowerCase() || '';
-                  return cat.includes('khronomaster') ? '#071c12'
-                    : cat.includes('defy')      ? '#060d1f'
-                    : cat.includes('heritage')  ? '#1c0e05'
-                    : cat.includes('elite')     ? '#1a1003'
-                    : '#12100a';
+                  const n = (hoveredProduct.name || '').toLowerCase();
+                  if (n.includes('crimson') || n.includes('red'))    return '#1a0506';
+                  if (n.includes('emerald') || n.includes('green'))  return '#021a0b';
+                  if (n.includes('navy') || n.includes('blue'))      return '#020b1a';
+                  if (n.includes('midnight') || n.includes('black')) return '#0a0a0f';
+                  if (n.includes('gold') || n.includes('champagne')) return '#1a1203';
+                  if (n.includes('rose') || n.includes('pink'))      return '#1a0511';
+                  if (n.includes('silver') || n.includes('white'))   return '#0d0d10';
+                  if (n.includes('brown') || n.includes('tan'))      return '#150c04';
+                  if (n.includes('purple') || n.includes('violet'))  return '#0e0618';
+                  const cat = (hoveredProduct.category || '').toLowerCase();
+                  if (cat.includes('khronomaster')) return '#071c12';
+                  if (cat.includes('defy'))         return '#060d1f';
+                  if (cat.includes('heritage'))     return '#1c0e05';
+                  if (cat.includes('elite'))        return '#1a1003';
+                  return '#12100a';
                 })()
               : '#000000',
+            transition: 'background-color 0.6s ease',
           }}
         >
           {/* Section header — text stays white on dark/black bg */}
@@ -1105,7 +1153,7 @@ export default function Home({ onPageChange }) {
 
 
         {/* ══════════ SPLIT VIDEO SHOWCASE SECTION ══════════ */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={updatesRef}>
           <motion.section
             className="flex flex-col lg:flex-row gap-8 items-center justify-between py-12"
             initial={{ opacity: 0, y: 48 }}
@@ -1164,8 +1212,8 @@ export default function Home({ onPageChange }) {
                       key={idx}
                       className="flex items-start gap-3"
                       initial={{ x: -15, opacity: 0 }}
-                      animate={showUpdates ? { x: 0, opacity: 1 } : { x: -15, opacity: 0 }}
-                      transition={{ delay: showUpdates ? idx * 0.08 : 0, duration: 0.3 }}
+                      animate={updatesInView ? { x: 0, opacity: 1 } : { x: -15, opacity: 0 }}
+                      transition={{ delay: updatesInView ? idx * 0.08 : 0, duration: 0.3 }}
                     >
                       <span className="w-1.5 h-1.5 rounded-full bg-luxury-gold mt-2 flex-shrink-0" />
                       <div>

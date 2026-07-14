@@ -32,6 +32,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: [
       { id: 'rev-1', userName: 'John Doe', rating: 5, comment: 'Exquisite design, feels very premium and heavy. Highly recommend!', date: '2026-06-15', status: 'approved' },
       { id: 'rev-2', userName: 'Alice Smith', rating: 4, comment: 'Elegant dial, but the bracelet needed adjustment. Overall beautiful watch.', date: '2026-06-20', status: 'approved' }
@@ -58,6 +59,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: [
       { id: 'rev-3', userName: 'Marc V.', rating: 5, comment: 'The El Primero movement is flawless. The black ceramic case is scratchproof!', date: '2026-05-10', status: 'approved' }
     ]
@@ -83,6 +85,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: [
       { id: 'rev-4', userName: 'David K.', rating: 4, comment: 'Classic dress watch. Super thin and fits under any cuff.', date: '2026-06-01', status: 'approved' }
     ]
@@ -108,6 +111,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: [
       { id: 'rev-5', userName: 'Sarah L.', rating: 5, comment: 'Sturdy yet elegant. Ideal everyday luxury watch.', date: '2026-06-25', status: 'approved' }
     ]
@@ -133,6 +137,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: []
   },
   {
@@ -156,6 +161,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: []
   },
   {
@@ -179,6 +185,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: []
   },
   {
@@ -202,6 +209,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: []
   },
   {
@@ -225,6 +233,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: []
   },
   {
@@ -248,6 +257,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: []
   },
   {
@@ -271,6 +281,7 @@ const getMockProducts = () => [
     customizable: true,
     allowStrapCustomization: true,
     allowCaseCustomization: true,
+    allowDialCustomization: true,
     reviews: []
   }
 ];
@@ -282,7 +293,27 @@ const initialState = {
   orders: [],
   coupons: [],
   currentUser: null,
-  currentCurrency: loadSaved('khroniq_currency', 'INR')
+  currentCurrency: loadSaved('khroniq_currency', 'INR'),
+  blogs: [
+    {
+      id: 'blog-1',
+      title: "The Art of Swadeshi Horology",
+      content: "Behind the scenes of KHRONIQ's Le Locle and Indian assembly processes, bringing high-precision chronometer watches to modern watch enthusiasts. Discover how we balance heritage design with modern components.",
+      author: "Vikram R. Mehta",
+      image: "/assets/gentleman_lifestyle.png",
+      category: "Horology",
+      date: "2026-07-01"
+    },
+    {
+      id: 'blog-2',
+      title: "Choosing the Right Case Finish",
+      content: "A guide on selecting between polished stainless steel, rose gold PVD, and matte ceramic finishes for your bespoke timepiece. Learn which finish best suits your daily attire and lifestyle.",
+      author: "Ananya Sharma",
+      image: "/assets/aurex_lifestyle.png",
+      category: "Guides",
+      date: "2026-07-05"
+    }
+  ]
 };
 
 // Helper for standard API headers
@@ -357,6 +388,9 @@ const watchSlice = createSlice({
     setCurrencyAction: (state, action) => {
       state.currentCurrency = action.payload;
       localStorage.setItem('khroniq_currency', action.payload);
+    },
+    setBlogsAction: (state, action) => {
+      state.blogs = action.payload;
     }
   }
 });
@@ -374,7 +408,8 @@ export const {
   setCouponsAction,
   setCartAction,
   setWishlistAction,
-  setCurrencyAction
+  setCurrencyAction,
+  setBlogsAction
 } = watchSlice.actions;
 
 export const selectCurrentCurrency = state => state.watch.currentCurrency || 'INR';
@@ -698,7 +733,7 @@ export const toggleWishlist = (productId) => async (dispatch, getState) => {
   dispatch(toggleWishlistAction(productId));
 };
 
-export const placeOrder = (shippingDetails, paymentDetails, appliedCoupon) => async (dispatch, getState) => {
+export const placeOrder = (shippingDetails, paymentDetails, appliedCoupon, giftingOptions) => async (dispatch, getState) => {
   const { products, cart, currentUser } = getState().watch;
   if (!currentUser) return { success: false, message: 'Please log in to checkout.' };
   if (cart.length === 0) return { success: false, message: 'Cart is empty' };
@@ -732,7 +767,8 @@ export const placeOrder = (shippingDetails, paymentDetails, appliedCoupon) => as
         discount,
         total,
         shippingDetails,
-        paymentDetails
+        paymentDetails,
+        giftingOptions
       })
     });
     const data = await res.json();
@@ -1021,11 +1057,79 @@ export const requestExchangeRefund = (orderId) => async (dispatch) => {
       dispatch(fetchOrders());
       return { success: true };
     } else {
-      return { success: false, message: data.message };
+      return { success: false, message: 'Failed to request Exchange/Refund. Server error.' };
     }
   } catch (error) {
     return { success: false, message: 'Failed to request Exchange/Refund. Server error.' };
   }
 }
+
+export const fetchBlogs = () => async (dispatch) => {
+  try {
+    const res = await fetch('/api/blogs');
+    const data = await res.json();
+    if (data && data.success) {
+      dispatch(setBlogsAction(data.blogs));
+    }
+  } catch (error) {
+    console.error('Failed to fetch blogs from API:', error);
+  }
+};
+
+export const addBlog = (blogData) => async (dispatch) => {
+  try {
+    const res = await fetch('/api/blogs', {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(blogData)
+    });
+    const data = await res.json();
+    if (data.success) {
+      dispatch(fetchBlogs());
+      return { success: true };
+    } else {
+      return { success: false, message: data.message };
+    }
+  } catch (error) {
+    return { success: false, message: 'Failed to add blog.' };
+  }
+};
+
+export const deleteBlog = (blogId) => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/blogs/${blogId}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    });
+    const data = await res.json();
+    if (data.success) {
+      dispatch(fetchBlogs());
+      return { success: true };
+    } else {
+      return { success: false, message: data.message };
+    }
+  } catch (error) {
+    return { success: false, message: 'Failed to delete blog.' };
+  }
+};
+
+export const updateBlog = (blogId, blogData) => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/blogs/${blogId}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(blogData)
+    });
+    const data = await res.json();
+    if (data.success) {
+      dispatch(fetchBlogs());
+      return { success: true };
+    } else {
+      return { success: false, message: data.message };
+    }
+  } catch (error) {
+    return { success: false, message: 'Failed to update blog.' };
+  }
+};
 
 export default watchSlice.reducer;

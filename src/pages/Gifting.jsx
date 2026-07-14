@@ -11,7 +11,7 @@ import {
 import {
   Gift, Heart, Users, Star, ArrowRight, Sparkles,
   Clock, Package, Ribbon, ChevronDown, Check, Crown,
-  UserCheck, Baby, Briefcase,
+  Baby, Briefcase, User, UserRound,
 } from 'lucide-react';
 
 /* ─────────────────────────────────────────────────────────────────
@@ -131,24 +131,44 @@ const RECIPIENTS = [
     bgImg: '/assets/gifting/gift_partner.png',
   },
   {
-    id: 'friend',
-    icon: Users,
-    label: 'Friend',
-    desc: 'Celebrate the bond that stands the test of time.',
+    id: 'friend-him',
+    icon: User,
+    label: 'Friend (Him)',
+    desc: 'Celebrate the bond that stands the test of time — gift him a watch as bold as your friendship.',
     accent: '#60a5fa',
     gradient: 'from-blue-900/90 via-blue-800/70 to-indigo-900/80',
-    filter: {},
+    filter: { gender: 'men' },
     bgImg: '/assets/gifting/gift_friend.png',
   },
   {
-    id: 'sibling',
-    icon: UserCheck,
-    label: 'Sibling',
-    desc: 'A lifetime of shared memories — now with a lifelong watch.',
-    accent: '#a78bfa',
-    gradient: 'from-violet-900/90 via-purple-800/70 to-indigo-900/80',
-    filter: {},
+    id: 'friend-her',
+    icon: UserRound,
+    label: 'Friend (Her)',
+    desc: 'For the friend who lights up every room — gift her elegance she\'ll wear with pride.',
+    accent: '#2dd4bf',
+    gradient: 'from-teal-900/90 via-cyan-800/70 to-emerald-900/80',
+    filter: { gender: 'women' },
     bgImg: '/assets/gifting/gift_sibling.png',
+  },
+  {
+    id: 'brother',
+    icon: Users,
+    label: 'Brother',
+    desc: 'Your partner in mischief, your lifelong ally — give him time worth wearing.',
+    accent: '#818cf8',
+    gradient: 'from-indigo-900/90 via-violet-800/70 to-purple-900/80',
+    filter: { gender: 'men' },
+    bgImg: '/assets/gifting/gift_brother.png',
+  },
+  {
+    id: 'sister',
+    icon: Heart,
+    label: 'Sister',
+    desc: 'The first friend you ever had — celebrate her grace with a watch as elegant as she is.',
+    accent: '#f9a8d4',
+    gradient: 'from-rose-900/90 via-pink-800/70 to-fuchsia-900/80',
+    filter: { gender: 'women' },
+    bgImg: '/assets/gifting/gift_sister.png',
   },
   {
     id: 'boss',
@@ -162,52 +182,8 @@ const RECIPIENTS = [
   },
 ];
 
-/* ─────────────────────────────────────────────────────────────────
-   GIFT PACKAGES
-───────────────────────────────────────────────────────────────── */
-const PACKAGES = [
-  {
-    id: 'classic',
-    name: 'Classic Gift Box',
-    icon: Package,
-    price: 'Complimentary',
-    features: ['Premium matte-black box', 'Satin ribbon & seal', 'Handwritten note card', 'Khroniq authenticity booklet'],
-    accent: '#c5a880',
-    popular: false,
-  },
-  {
-    id: 'luxury',
-    name: 'Luxury Gift Set',
-    icon: Gift,
-    price: '+ ₹ 999',
-    features: ['Leather collector\'s case', 'Engraved name plate', 'Scented tissue wrap', 'Express 24-hr courier', 'Personal dedication card'],
-    accent: '#34d399',
-    popular: true,
-  },
-  {
-    id: 'bespoke',
-    name: 'Bespoke Experience',
-    icon: Star,
-    price: '+ ₹ 2,499',
-    features: ['Hand-stitched monogram box', 'Custom dial engraving', 'Vintage-style courier trunk', 'White-glove home delivery', 'Concierge gift note writing'],
-    accent: '#f472b6',
-    popular: false,
-  },
-];
 
-/* ─────────────────────────────────────────────────────────────────
-   OCCASIONS
-───────────────────────────────────────────────────────────────── */
-const OCCASIONS = [
-  { emoji: '🎂', label: 'Birthday' },
-  { emoji: '💒', label: 'Wedding' },
-  { emoji: '🎓', label: 'Graduation' },
-  { emoji: '🏆', label: 'Achievement' },
-  { emoji: '💼', label: 'Promotion' },
-  { emoji: '💕', label: 'Anniversary' },
-  { emoji: '🎊', label: 'Celebration' },
-  { emoji: '🙏', label: 'Thank You' },
-];
+
 
 /* ─────────────────────────────────────────────────────────────────
    TESTIMONIALS
@@ -242,8 +218,6 @@ const TESTIMONIALS = [
 export default function Gifting({ onPageChange }) {
   const products = useSelector(state => state.watch.products);
   const [selectedRecipient, setSelectedRecipient] = useState(null);
-  const [selectedOccasion, setSelectedOccasion] = useState(null);
-  const [selectedPackage, setSelectedPackage] = useState('luxury');
   const [giftNote, setGiftNote] = useState('');
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
@@ -254,10 +228,12 @@ export default function Gifting({ onPageChange }) {
   }, []);
 
   const handleShopForRecipient = (recipient) => {
+    localStorage.setItem('khroniq_is_gifting_journey', 'true');
     onPageChange('shop', recipient.filter || {});
   };
 
   const handleCustomize = () => {
+    localStorage.setItem('khroniq_is_gifting_journey', 'true');
     onPageChange('customization', { reset: Date.now() });
   };
 
@@ -375,30 +351,7 @@ export default function Gifting({ onPageChange }) {
         </div>
       </section>
 
-      {/* ══════ OCCASIONS STRIP ══════ */}
-      <section className="w-full bg-[#0d0b08] border-y border-luxury-gold/15 py-8">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5">
-            {OCCASIONS.map((occ, i) => (
-              <motion.button
-                key={occ.label}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                onClick={() => setSelectedOccasion(selectedOccasion === occ.label ? null : occ.label)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer border ${
-                  selectedOccasion === occ.label
-                    ? 'bg-luxury-gold-dark border-luxury-gold-dark text-white shadow-lg shadow-luxury-gold/20'
-                    : 'border-white/15 text-white/60 hover:border-luxury-gold/50 hover:text-white'
-                }`}
-              >
-                <span className="text-base">{occ.emoji}</span>
-                <span>{occ.label}</span>
-              </motion.button>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* ══════ RECIPIENT GRID ══════ */}
       <section className="w-full bg-[#0d0b08] py-24 px-4">
@@ -423,8 +376,35 @@ export default function Gifting({ onPageChange }) {
               transition={{ duration: 0.7, delay: 0.3 }} />
           </div>
 
-          {/* 3×2 card grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Gifting CTA Buttons (Start Journey / Customize) - Placed below title */}
+          <Reveal delay={0.2} dir="up">
+            <div className="mb-16 flex flex-col sm:flex-row gap-4 justify-center">
+              <motion.button
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={() => {
+                  localStorage.setItem('khroniq_is_gifting_journey', 'true');
+                  onPageChange('shop');
+                }}
+                className="flex items-center justify-center gap-3 px-8 py-4 bg-luxury-gold-dark text-white text-xs font-black tracking-widest uppercase cursor-pointer border border-luxury-gold-dark hover:bg-luxury-gold transition-colors duration-200"
+              >
+                <Gift size={15} />
+                Start Your Gift Journey
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={handleCustomize}
+                className="flex items-center justify-center gap-3 px-8 py-4 border border-luxury-gold/30 text-luxury-gold text-xs font-black tracking-widest uppercase cursor-pointer hover:border-luxury-gold/60 transition-colors duration-200"
+              >
+                <Sparkles size={15} />
+                Customize & Gift
+              </motion.button>
+            </div>
+          </Reveal>
+
+          {/* 4×2 card grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {RECIPIENTS.map((rec, i) => {
               const Icon = rec.icon;
               const isSelected = selectedRecipient === rec.id;
@@ -533,194 +513,6 @@ export default function Gifting({ onPageChange }) {
         </div>
       </section>
 
-      {/* ══════ GIFT PACKAGING ══════ */}
-      <section className="w-full py-24 px-4 bg-[#111007] relative overflow-hidden">
-        {/* Ambient glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-60 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse, rgba(197,168,128,0.12) 0%, transparent 70%)' }} />
-
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 space-y-4">
-            <Reveal dir="down">
-              <p className="text-[10px] text-luxury-gold font-black tracking-[0.28em] uppercase">Presentation Matters</p>
-            </Reveal>
-            <SlideReveal delay={0.1}>
-              <h2 className="font-cinzel text-4xl sm:text-5xl font-bold text-white tracking-wide uppercase">
-                Choose Your Gift Set
-              </h2>
-            </SlideReveal>
-            <Reveal delay={0.2}>
-              <p className="text-white/50 text-sm max-w-xl mx-auto leading-relaxed">
-                Every Khroniq arrives in exceptional packaging. Upgrade the unboxing to match the emotion.
-              </p>
-            </Reveal>
-            <motion.div className="w-16 h-[2px] bg-luxury-gold-dark mx-auto"
-              initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.3 }} />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {PACKAGES.map((pkg, i) => {
-              const Icon = pkg.icon;
-              const isSelected = selectedPackage === pkg.id;
-              return (
-                <Reveal key={pkg.id} delay={i * 0.1} dir="up">
-                  <motion.div
-                    onClick={() => setSelectedPackage(pkg.id)}
-                    className={`relative rounded-2xl p-8 cursor-pointer border transition-all duration-300 ${
-                      isSelected
-                        ? 'border-opacity-60 shadow-2xl'
-                        : 'border-white/10 hover:border-white/20'
-                    }`}
-                    style={{
-                      background: isSelected
-                        ? `linear-gradient(135deg, ${pkg.accent}10 0%, rgba(17,16,7,0.95) 100%)`
-                        : 'rgba(255,255,255,0.03)',
-                      borderColor: isSelected ? pkg.accent : undefined,
-                      boxShadow: isSelected ? `0 20px 60px ${pkg.accent}18` : undefined,
-                    }}
-                    whileHover={{ y: -4 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {/* Popular badge */}
-                    {pkg.popular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[9px] font-black tracking-widest uppercase bg-luxury-gold-dark text-white whitespace-nowrap">
-                        ✦ Most Loved
-                      </div>
-                    )}
-
-                    {/* Selected indicator */}
-                    <AnimatePresence>
-                      {isSelected && (
-                        <motion.div
-                          initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
-                          className="absolute top-5 right-5 w-7 h-7 rounded-full flex items-center justify-center"
-                          style={{ background: pkg.accent }}
-                        >
-                          <Check size={12} className="text-white" strokeWidth={3} />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    {/* Icon */}
-                    <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6"
-                      style={{ background: `${pkg.accent}18`, border: `1px solid ${pkg.accent}40` }}>
-                      <Icon size={24} style={{ color: pkg.accent }} />
-                    </div>
-
-                    <h3 className="font-cinzel text-xl font-bold text-white tracking-wide mb-1">{pkg.name}</h3>
-                    <p className="text-luxury-gold text-sm font-black mb-6">{pkg.price}</p>
-
-                    <ul className="space-y-2.5">
-                      {pkg.features.map((feat, fi) => (
-                        <li key={fi} className="flex items-start gap-2.5 text-xs text-white/65 font-medium">
-                          <Check size={12} className="mt-0.5 flex-shrink-0" style={{ color: pkg.accent }} strokeWidth={3} />
-                          {feat}
-                        </li>
-                      ))}
-                    </ul>
-
-                    <motion.button
-                      onClick={(e) => { e.stopPropagation(); setSelectedPackage(pkg.id); }}
-                      className="mt-8 w-full py-3 text-xs font-black tracking-widest uppercase border transition-colors duration-200 cursor-pointer"
-                      style={{
-                        borderColor: pkg.accent,
-                        color: isSelected ? '#0d0b08' : pkg.accent,
-                        background: isSelected ? pkg.accent : 'transparent',
-                      }}
-                      whileHover={{ background: pkg.accent, color: '#0d0b08' }}
-                    >
-                      {isSelected ? '✓ Selected' : 'Select Package'}
-                    </motion.button>
-                  </motion.div>
-                </Reveal>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════ PERSONAL NOTE ══════ */}
-      <section className="w-full py-24 px-4 bg-[#0d0b08]">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-12 space-y-4">
-            <Reveal dir="down">
-              <p className="text-[10px] text-luxury-gold font-black tracking-[0.28em] uppercase">From the Heart</p>
-            </Reveal>
-            <SlideReveal delay={0.1}>
-              <h2 className="font-cinzel text-4xl font-bold text-white tracking-wide uppercase">
-                Write a Gift Note
-              </h2>
-            </SlideReveal>
-            <Reveal delay={0.2}>
-              <p className="text-white/50 text-sm max-w-xl mx-auto leading-relaxed">
-                Your words, penned in our signature ink on embossed cream card stock — placed inside the watch box.
-              </p>
-            </Reveal>
-          </div>
-
-          <Reveal dir="up" delay={0.1}>
-            <div className="relative rounded-2xl overflow-hidden border border-white/10"
-              style={{ background: 'rgba(255,255,255,0.04)' }}>
-              {/* decorative top bar */}
-              <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #c5a880, #f472b6, #34d399, #c5a880)' }} />
-
-              <div className="p-8 sm:p-10">
-                <div className="flex items-center gap-3 mb-6">
-                  <Heart size={18} className="text-luxury-gold" />
-                  <span className="text-white/60 text-xs font-black tracking-widest uppercase">Personal Dedication</span>
-                </div>
-                <textarea
-                  value={giftNote}
-                  onChange={e => setGiftNote(e.target.value.slice(0, 260))}
-                  placeholder={`Dear [Name],\n\nEvery moment you wear this watch, know it carries our love and pride...`}
-                  rows={6}
-                  className="w-full text-sm leading-relaxed font-light resize-none focus:outline-none"
-                  style={{
-                    fontFamily: 'Georgia, serif',
-                    background: 'transparent',
-                    backgroundColor: 'transparent',
-                    border: 'none',
-                    color: 'rgba(255,255,255,0.8)',
-                    outline: 'none',
-                    boxShadow: 'none',
-                  }}
-                />
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
-                  <span className="text-white/30 text-xs">{giftNote.length} / 260 characters</span>
-                  <span className="text-luxury-gold/60 text-xs font-light italic">
-                    {giftNote.length > 0 ? '✦ Note saved' : 'Start writing...'}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </Reveal>
-
-          {/* CTA */}
-          <Reveal delay={0.2} dir="up">
-            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
-                onClick={() => onPageChange('shop')}
-                className="flex items-center justify-center gap-3 px-8 py-4 bg-luxury-gold-dark text-white text-xs font-black tracking-widest uppercase cursor-pointer border border-luxury-gold-dark hover:bg-luxury-gold transition-colors duration-200"
-              >
-                <Gift size={15} />
-                Start Your Gift Journey
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
-                onClick={handleCustomize}
-                className="flex items-center justify-center gap-3 px-8 py-4 border border-luxury-gold/30 text-luxury-gold text-xs font-black tracking-widest uppercase cursor-pointer hover:border-luxury-gold/60 transition-colors duration-200"
-              >
-                <Sparkles size={15} />
-                Customize & Gift
-              </motion.button>
-            </div>
-          </Reveal>
-        </div>
-      </section>
 
       {/* ══════ WHY GIFT KHRONIQ ══════ */}
       <section className="w-full py-24 px-4 bg-[#111007]">
@@ -834,56 +626,6 @@ export default function Gifting({ onPageChange }) {
               ))}
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ══════ FINAL CTA ══════ */}
-      <section className="relative w-full py-32 px-4 overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #1a1508 0%, #0d0b08 40%, #12100a 100%)' }}>
-        {/* Gold radial glow */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-[600px] h-[400px] rounded-full"
-            style={{ background: 'radial-gradient(ellipse, rgba(197,168,128,0.22) 0%, transparent 70%)', filter: 'blur(50px)' }} />
-        </div>
-
-        <div className="relative z-10 max-w-3xl mx-auto text-center space-y-8">
-          <Reveal dir="scale" delay={0}>
-            <div className="w-16 h-16 rounded-full border-2 border-luxury-gold/40 flex items-center justify-center mx-auto"
-              style={{ background: 'rgba(197,168,128,0.1)' }}>
-              <Gift size={28} className="text-luxury-gold" />
-            </div>
-          </Reveal>
-          <SlideReveal delay={0.1}>
-            <h2 className="font-cinzel text-4xl sm:text-5xl font-bold text-white tracking-wide uppercase">
-              Begin the Gift Journey
-            </h2>
-          </SlideReveal>
-          <Reveal delay={0.2}>
-            <p className="text-white/55 text-sm sm:text-base leading-relaxed max-w-lg mx-auto">
-              From choosing the perfect timepiece to hand-delivering the emotion — Khroniq handles everything.
-              All you bring is the love.
-            </p>
-          </Reveal>
-          <Reveal delay={0.3} dir="up">
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button
-                whileHover={{ scale: 1.05, boxShadow: '0 20px 60px rgba(197,168,128,0.3)' }}
-                whileTap={{ scale: 0.96 }}
-                onClick={() => onPageChange('shop')}
-                className="flex items-center justify-center gap-3 px-10 py-4 bg-luxury-gold-dark text-white text-xs font-black tracking-widest uppercase cursor-pointer border border-luxury-gold-dark hover:bg-luxury-gold transition-colors duration-200"
-              >
-                <Gift size={16} /> Shop All Watches <ArrowRight size={14} />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.96 }}
-                onClick={handleCustomize}
-                className="flex items-center justify-center gap-3 px-10 py-4 border border-luxury-gold/30 text-luxury-gold text-xs font-black tracking-widest uppercase cursor-pointer hover:border-luxury-gold transition-colors duration-200"
-              >
-                <Sparkles size={16} /> Customize & Gift
-              </motion.button>
-            </div>
-          </Reveal>
         </div>
       </section>
     </div>

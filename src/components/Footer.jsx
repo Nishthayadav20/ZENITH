@@ -34,7 +34,9 @@ const NAV_COLS = [
     links: [
       { label: 'Book an Appointment', page: 'static',  args: { view: 'contact' } },
       { label: 'Register My Watch',   page: 'profile', args: { tab: 'settings' } },
-      { label: 'Shipping & Returns',  page: 'static',  args: { view: 'faq' } },
+      { label: 'Shipping Policy',     page: 'static',  args: { view: 'shipping' } },
+      { label: 'Exchange Policy',     page: 'static',  args: { view: 'exchange' } },
+      { label: 'Refund Policy',       page: 'static',  args: { view: 'refund' } },
       { label: 'FAQ',                 page: 'static',  args: { view: 'faq' } },
     ],
   },
@@ -44,7 +46,8 @@ const NAV_COLS = [
       { label: 'Our History',    page: 'static', args: { view: 'about' } },
       { label: 'The Manufacture',page: 'static', args: { view: 'about' } },
       { label: 'Sustainability', page: 'static', args: { view: 'about' } },
-      { label: 'News & Events',  page: 'static', args: { view: 'about' } },
+      { label: 'Blogs & Editorial', page: 'static', args: { view: 'blogs' } },
+      { label: 'Terms & Conditions', page: 'static', args: { view: 'policies' } },
     ],
   },
 ];
@@ -93,22 +96,8 @@ export default function Footer({ onPageChange }) {
   };
 
   return (
-    <footer style={{ background: 'linear-gradient(170deg, #0f0e0c 0%, #171410 55%, #1c1916 100%)' }}
-            className="relative mt-auto overflow-hidden text-gray-300">
-
-      {/* ── Ambient glow orbs ── */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div style={{
-          position:'absolute', top:'-120px', left:'10%',
-          width:'500px', height:'500px', borderRadius:'50%',
-          background:'radial-gradient(circle, rgba(197,168,128,0.07) 0%, transparent 70%)',
-        }} />
-        <div style={{
-          position:'absolute', bottom:'-80px', right:'5%',
-          width:'420px', height:'420px', borderRadius:'50%',
-          background:'radial-gradient(circle, rgba(197,168,128,0.05) 0%, transparent 70%)',
-        }} />
-      </div>
+    <footer style={{ backgroundColor: '#000000' }}
+            className="relative mt-auto overflow-hidden text-white">
 
       {/* ══════════════════════════════════════════════════════
           MANIFESTO BAND
@@ -167,7 +156,7 @@ export default function Footer({ onPageChange }) {
                 }}>luxury that matters.</span>
               </h2>
 
-              <p style={{ fontSize:'0.82rem', lineHeight:1.85, color:'rgba(200,190,175,0.65)', maxWidth:'420px' }}>
+              <p style={{ fontSize:'0.82rem', lineHeight:1.85, color:'#ffffff', maxWidth:'420px' }}>
                 Crafted with Swadeshi pride, KHRONIQ designs exceptional timepieces for those who dare to dream.
                 Every second counts — make it extraordinary.
               </p>
@@ -233,7 +222,7 @@ export default function Footer({ onPageChange }) {
                   Join the KHRONIQ<br />Inner Circle
                 </h3>
 
-                <p style={{ fontSize:'0.75rem', color:'rgba(200,190,175,0.6)', lineHeight:1.75, marginBottom:'1.75rem' }}>
+                <p style={{ fontSize:'0.75rem', color:'#ffffff', lineHeight:1.75, marginBottom:'1.75rem' }}>
                   Be the first to discover new collections, private events,
                   and exclusive offers reserved for true connoisseurs of fine watchmaking.
                 </p>
@@ -250,7 +239,7 @@ export default function Footer({ onPageChange }) {
                     <p style={{ fontSize:'0.75rem', color:'#c5a880', fontWeight:600, letterSpacing:'0.05em' }}>
                       Welcome to the Inner Circle.
                     </p>
-                    <p style={{ fontSize:'0.65rem', color:'rgba(197,168,128,0.6)', marginTop:'0.3rem' }}>
+                    <p style={{ fontSize:'0.65rem', color:'#ffffff', marginTop:'0.3rem' }}>
                       Expect something extraordinary soon.
                     </p>
                   </div>
@@ -309,7 +298,7 @@ export default function Footer({ onPageChange }) {
                     >
                       Subscribe Now <ArrowRight size={13} />
                     </button>
-                    <p style={{ fontSize:'0.6rem', color:'rgba(197,168,128,0.4)', textAlign:'center', marginTop:'0.65rem' }}>
+                    <p style={{ fontSize:'0.6rem', color:'#ffffff', opacity: 0.6, textAlign:'center', marginTop:'0.65rem' }}>
                       No spam, ever. Unsubscribe at any time.
                     </p>
                   </form>
@@ -344,29 +333,76 @@ export default function Footer({ onPageChange }) {
                 <div style={{ width:'20px', height:'1.5px', background:'#c5a880' }} />
               </div>
               <ul style={{ listStyle:'none', margin:0, padding:0, display:'flex', flexDirection:'column', gap:'0.6rem' }}>
-                {links.map(({ label, page, args }) => (
-                  <li key={label}>
-                    <button
-                      onClick={() => onPageChange(page, args)}
-                      style={{
-                        background:'none', border:'none', padding:0,
-                        fontSize:'0.72rem', color:'rgba(200,190,175,0.55)',
-                        cursor:'pointer', transition:'color 0.25s',
-                        display:'flex', alignItems:'center', gap:'6px',
-                        fontFamily:'inherit',
-                      }}
-                      onMouseEnter={e => { e.currentTarget.style.color='#c5a880'; }}
-                      onMouseLeave={e => { e.currentTarget.style.color='rgba(200,190,175,0.55)'; }}
-                    >
-                      <span style={{
-                        display:'inline-block', width:'14px', height:'1px',
-                        background:'currentColor', flexShrink:0,
-                        transition:'width 0.3s',
-                      }} className="link-dash" />
-                      {label}
-                    </button>
-                  </li>
-                ))}
+                {links.map(({ label, page, args }) => {
+                  if (label === 'FAQ') {
+                    return (
+                      <li key={label} className="relative group">
+                        <button
+                          onClick={() => onPageChange(page, args)}
+                          style={{
+                            background:'none', border:'none', padding:0,
+                            fontSize:'0.72rem', color:'#ffffff',
+                            cursor:'pointer', transition:'color 0.25s',
+                            display:'flex', alignItems:'center', gap:'6px',
+                            fontFamily:'inherit',
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.color='#c5a880'; }}
+                          onMouseLeave={e => { e.currentTarget.style.color='#ffffff'; }}
+                        >
+                          <span style={{
+                            display:'inline-block', width:'14px', height:'1px',
+                            background:'currentColor', flexShrink:0,
+                            transition:'width 0.3s',
+                          }} className="link-dash" />
+                          {label}
+                        </button>
+                        <div className="absolute bottom-full left-0 mb-2 w-48 bg-[#111111] border border-white/10 rounded shadow-2xl py-2 hidden group-hover:block transition duration-200 z-50 text-left">
+                          {[
+                            { label: 'Our Story', view: 'about' },
+                            { label: 'Boutique Contact', view: 'contact' },
+                            { label: 'Client FAQ', view: 'faq' },
+                            { label: 'Blogs & Editorial', view: 'blogs' },
+                            { label: 'Legal Policies', view: 'policies' }
+                          ].map((sub) => (
+                            <button
+                              key={sub.view}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onPageChange('static', { view: sub.view });
+                              }}
+                              className="w-full text-left px-4 py-2 hover:bg-white/10 text-gray-300 hover:text-white transition text-[11px] font-bold uppercase tracking-wider cursor-pointer block"
+                            >
+                              {sub.label}
+                            </button>
+                          ))}
+                        </div>
+                      </li>
+                    );
+                  }
+                  return (
+                    <li key={label}>
+                      <button
+                        onClick={() => onPageChange(page, args)}
+                        style={{
+                          background:'none', border:'none', padding:0,
+                          fontSize:'0.72rem', color:'#ffffff',
+                          cursor:'pointer', transition:'color 0.25s',
+                          display:'flex', alignItems:'center', gap:'6px',
+                          fontFamily:'inherit',
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.color='#c5a880'; }}
+                        onMouseLeave={e => { e.currentTarget.style.color='#ffffff'; }}
+                      >
+                        <span style={{
+                          display:'inline-block', width:'14px', height:'1px',
+                          background:'currentColor', flexShrink:0,
+                          transition:'width 0.3s',
+                        }} className="link-dash" />
+                        {label}
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}
@@ -385,12 +421,12 @@ export default function Footer({ onPageChange }) {
               <div style={{ width:'20px', height:'1.5px', background:'#c5a880' }} />
             </div>
 
-            <p style={{ fontSize:'0.68rem', color:'rgba(200,190,175,0.5)', lineHeight:1.7, marginBottom:'1.25rem' }}>
-              concierge@<br />khroniq-watches.com
+            <p style={{ fontSize:'0.68rem', color:'#ffffff', lineHeight:1.7, marginBottom:'1.25rem' }}>
+              concierge@<br />khroniq.com
             </p>
 
             {/* Clock-hours decoration */}
-            <p style={{ fontSize:'0.6rem', color:'rgba(197,168,128,0.4)', letterSpacing:'0.1em', marginBottom:'1rem' }}>
+            <p style={{ fontSize:'0.6rem', color:'#c5a880', letterSpacing:'0.1em', marginBottom:'1rem' }}>
               <Clock size={10} style={{ display:'inline', marginRight:'5px', verticalAlign:'middle' }} />
               MON–SAT · 9AM–7PM CET
             </p>
@@ -401,9 +437,9 @@ export default function Footer({ onPageChange }) {
                 <a key={label} href={href} aria-label={label}
                    style={{
                      width:'34px', height:'34px', borderRadius:'50%',
-                     border:'1px solid rgba(197,168,128,0.25)',
+                     border:'1px solid rgba(255,255,255,0.25)',
                      display:'flex', alignItems:'center', justifyContent:'center',
-                     color:'rgba(200,190,175,0.5)',
+                     color:'#ffffff',
                      transition:'color 0.3s, border-color 0.3s, background 0.3s, box-shadow 0.3s',
                    }}
                    onMouseEnter={e => {
@@ -413,8 +449,8 @@ export default function Footer({ onPageChange }) {
                      e.currentTarget.style.boxShadow='0 0 12px rgba(197,168,128,0.2)';
                    }}
                    onMouseLeave={e => {
-                     e.currentTarget.style.color='rgba(200,190,175,0.5)';
-                     e.currentTarget.style.borderColor='rgba(197,168,128,0.25)';
+                     e.currentTarget.style.color='#ffffff';
+                     e.currentTarget.style.borderColor='rgba(255,255,255,0.25)';
                      e.currentTarget.style.background='transparent';
                      e.currentTarget.style.boxShadow='none';
                    }}>
@@ -441,7 +477,7 @@ export default function Footer({ onPageChange }) {
           {/* Left – copyright */}
           <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
             <LogoMark className="w-3.5 h-3.5" />
-            <p style={{ fontSize:'0.62rem', color:'rgba(200,190,175,0.38)', letterSpacing:'0.08em' }}>
+            <p style={{ fontSize:'0.62rem', color:'#ffffff', opacity: 0.6, letterSpacing:'0.08em' }}>
               © 2026 KHRONIQ. All Rights Reserved. A TRUE KNOCK GROUP PRODUCT.
             </p>
           </div>
@@ -458,12 +494,12 @@ export default function Footer({ onPageChange }) {
                 onClick={() => onPageChange(page, args)}
                 style={{
                   background:'none', border:'none', padding:0,
-                  fontSize:'0.6rem', color:'rgba(200,190,175,0.35)',
+                  fontSize:'0.6rem', color:'#ffffff', opacity: 0.6,
                   cursor:'pointer', letterSpacing:'0.06em',
                   transition:'color 0.25s', fontFamily:'inherit',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.color='#c5a880'; }}
-                onMouseLeave={e => { e.currentTarget.style.color='rgba(200,190,175,0.35)'; }}
+                onMouseEnter={e => { e.currentTarget.style.color='#c5a880'; e.currentTarget.style.opacity = '1'; }}
+                onMouseLeave={e => { e.currentTarget.style.color='#ffffff'; e.currentTarget.style.opacity = '0.6'; }}
               >{label}</button>
             ))}
           </div>

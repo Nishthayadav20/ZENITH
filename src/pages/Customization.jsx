@@ -204,15 +204,16 @@ export default function Customization({ onPageChange, params }) {
   const currentCurrency = useSelector(selectCurrentCurrency);
 
   const customizableProducts = useMemo(() => {
-    const marked = products.filter(p => p.customizable);
-    // If no products are marked yet, show all products (all are customizable by default)
-    return marked.length > 0 ? marked : products;
+    return products.filter(p => p.customizable === true);
   }, [products]);
 
-  const allAreCustomizable = useMemo(
-    () => products.every(p => !p.customizable),
+  // Legacy: if admin has never touched the flag, all will be undefined — show all
+  const noneExplicitlySet = useMemo(
+    () => products.every(p => p.customizable === undefined || p.customizable === null),
     [products]
   );
+
+  const displayProducts = noneExplicitlySet ? products : customizableProducts;
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [dialColor,       setDialColor]       = useState(null);
@@ -262,7 +263,7 @@ export default function Customization({ onPageChange, params }) {
           <div className="absolute inset-0 opacity-10"
             style={{ backgroundImage: 'radial-gradient(circle at 25% 50%, #c8a96a 0%, transparent 60%), radial-gradient(circle at 75% 50%, #c8a96a 0%, transparent 60%)' }} />
           <Paintbrush className="mx-auto mb-4 text-luxury-gold" size={40} />
-          <h1 className="font-serif text-4xl font-black tracking-widest text-white uppercase mb-3">
+          <h1 className="font-serif text-4xl font-black tracking-widest text-luxury-gold uppercase mb-3">
             Bespoke Atelier
           </h1>
           <p className="text-white/50 text-sm max-w-xl mx-auto leading-relaxed">
@@ -272,7 +273,7 @@ export default function Customization({ onPageChange, params }) {
         </div>
 
         {/* Product grid */}
-        {customizableProducts.length === 0 ? (
+        {displayProducts.length === 0 ? (
           <div className="border border-dashed border-luxury-text/20 rounded-xl p-20 text-center space-y-4">
             <Sparkles size={36} className="mx-auto text-luxury-gold opacity-40" />
             <p className="text-luxury-muted text-sm">No customizable watches are available at the moment.</p>
@@ -288,18 +289,18 @@ export default function Customization({ onPageChange, params }) {
           <div>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xs font-bold uppercase tracking-widest text-luxury-muted">
-                {allAreCustomizable
-                  ? `All ${customizableProducts.length} models available for customisation`
-                  : `${customizableProducts.length} customisable models`}
+                {noneExplicitlySet
+                  ? `All ${displayProducts.length} models available for customisation`
+                  : `${displayProducts.length} model${displayProducts.length !== 1 ? 's' : ''} available for customisation`}
               </h2>
-              {allAreCustomizable && (
+              {noneExplicitlySet && (
                 <span className="text-[10px] text-luxury-gold/60 border border-luxury-gold/20 px-2.5 py-1 rounded">
                   Mark specific watches in Admin to restrict selection
                 </span>
               )}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {customizableProducts.map((product) => (
+              {displayProducts.map((product) => (
                 <motion.button
                   key={product.id}
                   onClick={() => handleSelectProduct(product)}
@@ -320,7 +321,7 @@ export default function Customization({ onPageChange, params }) {
                     </div>
                   </div>
                   <div className="p-4 space-y-2">
-                    <p className="text-[10px] text-luxury-muted uppercase tracking-widest">{product.category}</p>
+                    <p className="text-[10px] text-gray-300 uppercase tracking-widest">{product.category}</p>
                     <h3 className="text-white font-bold text-sm leading-tight">{product.name}</h3>
                     <div className="flex items-center justify-between">
                       <span className="text-luxury-gold font-black">{formatPrice(product.price)}</span>
@@ -352,7 +353,7 @@ export default function Customization({ onPageChange, params }) {
         {/* Back */}
         <button
           onClick={() => setSelectedProduct(null)}
-          className="flex items-center gap-2 text-luxury-muted hover:text-white text-xs font-bold uppercase tracking-widest mb-8 transition cursor-pointer"
+          className="flex items-center gap-2 text-gray-300 hover:text-white text-xs font-bold uppercase tracking-widest mb-8 transition cursor-pointer"
         >
           <ChevronLeft size={16} /> All Customizable Models
         </button>
@@ -381,7 +382,7 @@ export default function Customization({ onPageChange, params }) {
             <div className="dark-panel bg-[#111111] rounded-xl border border-white/5 p-5 space-y-3 text-xs text-white/90">
               <p className="text-white font-bold text-[11px] uppercase tracking-widest mb-3">Your Configuration</p>
               {[
-                ['Dial Color',     dialColor?.label   || '—', true],
+                ['Dial Color',     dialColor?.label   || '—', selectedProduct.allowDialCustomization !== false],
                 ['Strap Material', strapMaterial      || '—', selectedProduct.allowStrapCustomization !== false],
                 ['Case Finish',    caseFinish         || '—', selectedProduct.allowCaseCustomization !== false],
                 ['Engraving',      engraving || 'None',   options.engravingAllowed],
@@ -401,41 +402,43 @@ export default function Customization({ onPageChange, params }) {
                 Customise Your <br />
                 <span className="text-luxury-gold">{selectedProduct.name}</span>
               </h1>
-              <p className="text-luxury-muted text-xs mt-2 leading-relaxed">
+              <p className="text-gray-300 text-xs mt-2 leading-relaxed">
                 Each configuration is unique. Changes are reflected live in the preview.
               </p>
             </div>
 
             {/* Dial Color */}
-            <div className="space-y-3">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-muted">
-                Dial Color — <span className="text-white">{dialColor?.label}</span>
-              </h3>
-              <div className="flex flex-wrap gap-3">
-                {options.dialColors.map((color) => (
-                  <button
-                    key={color.value}
-                    onClick={() => setDialColor(color)}
-                    title={color.label}
-                    className="relative w-10 h-10 rounded-full border-2 transition-all duration-200 cursor-pointer"
-                    style={{
-                      background: color.value,
-                      borderColor: dialColor?.value === color.value ? '#c8a96a' : 'transparent',
-                      boxShadow: dialColor?.value === color.value ? '0 0 0 3px rgba(200,169,106,0.3)' : 'none',
-                    }}
-                  >
-                    {dialColor?.value === color.value && (
-                      <Check size={14} className="absolute inset-0 m-auto" style={{ color: color.textDark ? '#000' : '#fff' }} />
-                    )}
-                  </button>
-                ))}
+            {selectedProduct.allowDialCustomization !== false && (
+              <div className="space-y-3">
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-300">
+                  Dial Color — <span className="text-white">{dialColor?.label}</span>
+                </h3>
+                <div className="flex flex-wrap gap-3">
+                  {options.dialColors.map((color) => (
+                    <button
+                      key={color.value}
+                      onClick={() => setDialColor(color)}
+                      title={color.label}
+                      className="relative w-10 h-10 rounded-full border-2 transition-all duration-200 cursor-pointer"
+                      style={{
+                        background: color.value,
+                        borderColor: dialColor?.value === color.value ? '#c8a96a' : 'transparent',
+                        boxShadow: dialColor?.value === color.value ? '0 0 0 3px rgba(200,169,106,0.3)' : 'none',
+                      }}
+                    >
+                      {dialColor?.value === color.value && (
+                        <Check size={14} className="absolute inset-0 m-auto" style={{ color: color.textDark ? '#000' : '#fff' }} />
+                      )}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Strap Material */}
             {selectedProduct.allowStrapCustomization !== false && (
               <div className="space-y-3">
-                <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-muted">
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-300">
                   Strap Option
                 </h3>
                 <div className="grid grid-cols-3 gap-3">
@@ -450,7 +453,7 @@ export default function Customization({ onPageChange, params }) {
                         className={`flex flex-col items-center p-2.5 rounded border transition-all cursor-pointer bg-luxury-dark/40 ${
                           strapMaterial === mat
                             ? 'border-luxury-gold text-luxury-gold shadow-[0_0_15px_rgba(200,169,106,0.1)]'
-                            : 'border-white/5 text-luxury-muted hover:border-white/20 hover:text-white'
+                            : 'border-white/5 text-gray-300 hover:border-white/20 hover:text-white'
                         }`}
                       >
                         <div className="w-full h-20 bg-luxury-dark/80 rounded border border-white/5 overflow-hidden flex items-center justify-center p-1.5 mb-2">
@@ -473,7 +476,7 @@ export default function Customization({ onPageChange, params }) {
             {/* Case Finish */}
             {selectedProduct.allowCaseCustomization !== false && (
               <div className="space-y-3">
-                <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-muted">
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-300">
                   Case Finish — <span className="text-white">{caseFinish}</span>
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -484,7 +487,7 @@ export default function Customization({ onPageChange, params }) {
                       className={`px-3 py-2 text-xs font-bold rounded border transition-all cursor-pointer ${
                         caseFinish === fin
                           ? 'border-luxury-gold bg-luxury-gold/10 text-luxury-gold'
-                          : 'border-white/10 text-luxury-muted hover:border-white/30 hover:text-white'
+                          : 'border-white/10 text-gray-300 hover:border-white/30 hover:text-white'
                       }`}
                     >
                       {fin}
@@ -497,7 +500,7 @@ export default function Customization({ onPageChange, params }) {
             {/* Engraving */}
             {options.engravingAllowed && (
               <div className="space-y-3">
-                <h3 className="text-[10px] font-bold uppercase tracking-widest text-luxury-muted">
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-300">
                   Personal Engraving <span className="text-white/30">(optional)</span>
                 </h3>
                 <input
@@ -508,7 +511,7 @@ export default function Customization({ onPageChange, params }) {
                   placeholder="Your inscription…"
                   className="w-full bg-[#0d0d0d] border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-luxury-gold transition font-serif italic"
                 />
-                <p className="text-[10px] text-luxury-muted/50">{engraving.length}/18 characters</p>
+                <p className="text-[10px] text-gray-300">{engraving.length}/18 characters</p>
               </div>
             )}
 
@@ -532,7 +535,7 @@ export default function Customization({ onPageChange, params }) {
               )}
             </button>
 
-            <p className="text-[10px] text-luxury-muted/50 text-center leading-relaxed">
+            <p className="text-[10px] text-gray-300 text-center leading-relaxed">
               Customized pieces are handcrafted to order and may take 4–6 weeks for delivery.
               Returns are not accepted on personalized items.
             </p>

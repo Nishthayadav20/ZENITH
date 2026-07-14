@@ -9,7 +9,7 @@ const router = express.Router();
 // @desc    Create new order
 // @access  Private
 router.post('/', protect, async (req, res) => {
-  const { items, subtotal, discount, total, shippingDetails, paymentDetails } = req.body;
+  const { items, subtotal, discount, total, shippingDetails, paymentDetails, giftingOptions } = req.body;
 
   if (!items || items.length === 0) {
     return res.status(400).json({ success: false, message: 'No order items' });
@@ -62,7 +62,8 @@ router.post('/', protect, async (req, res) => {
         method: paymentDetails.method,
         last4: paymentDetails.cardNumber ? paymentDetails.cardNumber.slice(-4) : 'UPI'
       },
-      status: 'Paid' // Standard in this app is mock instant payment
+      status: 'Paid', // Standard in this app is mock instant payment
+      giftingOptions: giftingOptions || { isGifting: false }
     });
 
     const createdOrder = await order.save();

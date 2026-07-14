@@ -22,13 +22,13 @@ router.get('/', async (req, res) => {
 // @desc    Create a product
 // @access  Private/Admin
 router.post('/', protect, adminOnly, async (req, res) => {
-const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization, warrantyMonths } = req.body;
+const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization, allowDialCustomization, warrantyMonths } = req.body;
   try {
     const product = new Product({
       name,
       price: Number(price),
       stock: Number(stock),
-      warrantyMonths: warrantyMonths !== undefined ? Number(warrantyMonths) : 12,
+      warrantyMonths: warrantyMonths !== undefined ? Number(warrantyMonths) : 6,
       category,
       gender,
       description,
@@ -43,6 +43,7 @@ const { name, price, stock, category, gender, description, image, specs, customi
       customizable: customizable || false,
       allowStrapCustomization: allowStrapCustomization !== undefined ? allowStrapCustomization : true,
       allowCaseCustomization: allowCaseCustomization !== undefined ? allowCaseCustomization : true,
+        allowDialCustomization: allowDialCustomization !== undefined ? allowDialCustomization : true,
       customizationOptions: req.body.customizationOptions,
       reviews: []
     });
@@ -59,7 +60,7 @@ const { name, price, stock, category, gender, description, image, specs, customi
 // @desc    Update a product
 // @access  Private/Admin
 router.put('/:id', protect, adminOnly, async (req, res) => {
-const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization, warrantyMonths } = req.body;
+const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization, allowDialCustomization, warrantyMonths } = req.body;
   try {
     const product = await Product.findById(req.params.id);
 
