@@ -505,39 +505,21 @@ export default function Admin({ onPageChange }) {
   const totalOrdersCount = orders.length;
   const outOfStockCount = products.filter(p => p.stock === 0).length;
 
-  // Calculate dynamic category sales (case-insensitive category mapping)
+  // Real category sales — sourced directly from backend analytics (analytics.salesByCategory),
+  // not recalculated client-side. No mock/fallback numbers — shows real 0 when there are no sales.
   const categories = ['Khronomaster', 'Defy', 'Heritage', 'Elite'];
-  const categorySales = {
-    Khronomaster: 0,
-    Defy: 0,
-    Heritage: 0,
-    Elite: 0
-  };
+  const displaySales = { Khronomaster: 0, Defy: 0, Heritage: 0, Elite: 0 };
 
-  orders.filter(o => o.status !== 'Cancelled').forEach(o => {
-    o.items?.forEach(item => {
-      const prod = products.find(p => p.id === item.productId || p._id === item.productId);
-      const rawCat = (prod?.category || 'Heritage').trim().toLowerCase();
-      const itemPrice = Number(item.price) || 0;
-      const itemQty = Number(item.quantity) || 1;
-      
-      let mappedCat = 'Heritage';
-      if (rawCat === 'khronomaster') mappedCat = 'Khronomaster';
-      else if (rawCat === 'defy') mappedCat = 'Defy';
-      else if (rawCat === 'elite') mappedCat = 'Elite';
-      
-      categorySales[mappedCat] += itemPrice * itemQty;
+  if (analytics?.salesByCategory) {
+    analytics.salesByCategory.forEach(entry => {
+      const rawCat = (entry._id || 'Heritage').toString().trim().toLowerCase();
+      const matchedKey = categories.find(c => c.toLowerCase() === rawCat);
+      if (matchedKey) {
+        displaySales[matchedKey] += entry.revenue || 0;
+      } else {
+        displaySales.Heritage += entry.revenue || 0; // unmatched/unknown categories bucket into Heritage
+      }
     });
-  });
-
-  // Default fallback mock values if zero real sales exist, keeping layout clean
-  const hasAnySales = Object.values(categorySales).some(v => v > 0);
-  const displaySales = { ...categorySales };
-  if (!hasAnySales) {
-    displaySales.Khronomaster = 12500;
-    displaySales.Defy = 8500;
-    displaySales.Heritage = 5000;
-    displaySales.Elite = 2500;
   }
 
   const maxVal = Math.max(...Object.values(displaySales), 1000);
