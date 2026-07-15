@@ -201,37 +201,25 @@ export default function Admin({ onPageChange }) {
     const file = e.target.files[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      const token = localStorage.getItem('khroniq_token');
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        if (isEdit) {
-          setEditForm(prev => ({
-            ...prev,
-            customizationOptions: { ...prev.customizationOptions, customStrapImage: data.imageUrl }
-          }));
-        } else {
-          setNewProduct(prev => ({
-            ...prev,
-            customizationOptions: { ...prev.customizationOptions, customStrapImage: data.imageUrl }
-          }));
-        }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (isEdit) {
+        setEditForm(prev => ({
+          ...prev,
+          customizationOptions: { ...prev.customizationOptions, customStrapImage: reader.result }
+        }));
       } else {
-        alert(data.message || 'Strap image upload failed');
+        setNewProduct(prev => ({
+          ...prev,
+          customizationOptions: { ...prev.customizationOptions, customStrapImage: reader.result }
+        }));
       }
-    } catch (error) {
-      console.error('Strap image upload error:', error);
-      alert('Strap image upload failed');
-    }
+    };
+    reader.onerror = (error) => {
+      console.error('Base64 conversion error:', error);
+      alert('Failed to process image file');
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleStrapCheckboxChange = (strapName, isEdit = false) => {
@@ -546,28 +534,17 @@ const handleImageUpload = async (e) => {
   if (!file) return;
 
   setUploadingImage(true);
-  const formData = new FormData();
-  formData.append('image', file);
-
-  try {
-    const token = localStorage.getItem('khroniq_token');
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData
-    });
-    const data = await res.json();
-    if (data.success) {
-      setNewProduct({ ...newProduct, image: data.imageUrl });
-    } else {
-      alert(data.message || 'Image upload failed');
-    }
-  } catch (error) {
-    console.error('Upload error:', error);
-    alert('Image upload failed');
-  } finally {
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    setNewProduct({ ...newProduct, image: reader.result });
     setUploadingImage(false);
-  }
+  };
+  reader.onerror = (error) => {
+    console.error('Base64 conversion error:', error);
+    alert('Failed to process image file');
+    setUploadingImage(false);
+  };
+  reader.readAsDataURL(file);
 };
 
 const handleEditImageUpload = async (e) => {
@@ -575,28 +552,17 @@ const handleEditImageUpload = async (e) => {
   if (!file) return;
 
   setUploadingImage(true);
-  const formData = new FormData();
-  formData.append('image', file);
-
-  try {
-    const token = localStorage.getItem('khroniq_token');
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData
-    });
-    const data = await res.json();
-    if (data.success) {
-      setEditForm({ ...editForm, image: data.imageUrl });
-    } else {
-      alert(data.message || 'Image upload failed');
-    }
-  } catch (error) {
-    console.error('Upload error:', error);
-    alert('Image upload failed');
-  } finally {
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    setEditForm({ ...editForm, image: reader.result });
     setUploadingImage(false);
-  }
+  };
+  reader.onerror = (error) => {
+    console.error('Base64 conversion error:', error);
+    alert('Failed to process image file');
+    setUploadingImage(false);
+  };
+  reader.readAsDataURL(file);
 };
 
 
