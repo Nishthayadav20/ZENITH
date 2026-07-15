@@ -53,7 +53,7 @@ export default function Checkout({ params, onPageChange }) {
     country: currentUser?.shippingAddress?.country || 'United States'
   });
 const [processingPayment, setProcessingPayment] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('card'); // card | upi
+  const [paymentMethod, setPaymentMethod] = useState('card'); 
   const [giftPackage, setGiftPackage] = useState('standard'); // standard | gift-box | luxury
   const [giftNote, setGiftNote] = useState('');
   const [giftOccasion, setGiftOccasion] = useState('birthday'); // anniversary | birthday | retirement | other
@@ -100,17 +100,6 @@ const [processingPayment, setProcessingPayment] = useState(false);
   const subtotal = cartItemsWithDetails.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
   const discount = appliedCoupon ? Math.round(subtotal * (appliedCoupon.discountPercent / 100)) : 0;
   const total = subtotal - discount;
-
-  // Skip this guard once an order has actually been placed (step 4 / receipt shown) —
-  // useEffect(() => {
-  //   if (step === 4 || orderReceipt) return;
-  //   if (cart.length > 0 && cartItemsWithDetails.length === 0) {
-  //     alert('One or more items in your cart are no longer available. Please review your cart.');
-  //     onPageChange('cart');
-  //   } else if (cart.length === 0) {
-  //     onPageChange('shop');
-  //   }
-  // }, [cart, cartItemsWithDetails.length, step, orderReceipt]);
 
   const handleShippingSubmit = (e) => {
     e.preventDefault();
@@ -215,42 +204,148 @@ const rzp = new window.Razorpay(options);
     if (!orderReceipt) return;
 
     const doc = new jsPDF();
-    let y = 20;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const marginX = 15;
+    let y = 0;
 
+    // ---------- Header band ----------
+    doc.setFillColor(20, 20, 20);
+    doc.rect(0, 0, pageWidth, 32, 'F');
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(18);
-    doc.text('KHRONIQ Watches - Invoice', 20, y);
-    y += 10;
+    doc.text('KHRONIQ', marginX, 15);
 
-    doc.setFontSize(10);
-    doc.text(`Order Reference: ${orderReceipt.id}`, 20, y);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.text('FINE TIMEPIECES', marginX, 21);
+
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('INVOICE', pageWidth - marginX, 15, { align: 'right' });
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`#${orderReceipt.id}`, pageWidth - marginX, 21, { align: 'right' });
+
+    doc.setTextColor(0, 0, 0);
+    y = 44;
+
+    // ---------- Bill To / Invoice Details (two columns) ----------
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.text('BILL TO', marginX, y);
+    doc.text('INVOICE DETAILS', pageWidth / 2 + 5, y);
     y += 6;
-    doc.text(`Date: ${new Date(orderReceipt.createdAt || Date.now()).toLocaleDateString()}`, 20, y);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    const shipping = orderReceipt.shippingDetails || {};
+    doc.text(shipping.fullName || '-', marginX, y);
+    doc.text(`Date: ${new Date(orderReceipt.createdAt || Date.now()).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}`, pageWidth / 2 + 5, y);
+    y += 5;
+    doc.text(shipping.streetAddress || '-', marginX, y);
+    doc.text(`Payment: Razorpay`, pageWidth / 2 + 5, y);
+    y += 5;
+    doc.text(`${shipping.city || ''}${shipping.city ? ', ' : ''}${shipping.zipCode || ''}`, marginX, y);
+    if (orderReceipt.paymentDetails?.last4) {
+      doc.text(`Ref: •••• ${orderReceipt.paymentDetails.last4}`, pageWidth / 2 + 5, y);
+    }
+    y += 5;
+    if (shipping.country) doc.text(shipping.country, marginX, y);
+
     y += 12;
 
-    doc.setFontSize(12);
-    doc.text('Items:', 20, y);
-    y += 8;
+    // ---------- Items table ----------
+    const colX = { idx: marginX, item: marginX + 8, serial: 92, claim: 132, qty: 168, amount: pageWidth - marginX };
 
-    doc.setFontSize(10);
-    orderReceipt.items.forEach((item) => {
-      doc.text(`${item.name} (x${item.quantity})`, 20, y);
-      doc.text(`$${(item.price * item.quantity).toLocaleString()}`, 160, y);
-      y += 7;
+    const drawTableHeader = () => {
+      doc.setFillColor(240, 240, 240);
+      doc.rect(marginX, y - 5, pageWidth - marginX * 2, 8, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.text('#', colX.idx, y);
+      doc.text('ITEM', colX.item, y);
+      doc.text('SERIAL NO.', colX.serial, y);
+      doc.text('CLAIM CODE', colX.claim, y);
+      doc.text('QTY', colX.qty, y);
+      doc.text('AMOUNT', colX.amount, y, { align: 'right' });
+      y += 8;
+    };
+
+    drawTableHeader();
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+
+    orderReceipt.items.forEach((item, idx) => {
+      if (y > 265) {
+        doc.addPage();
+        y = 20;
+        drawTableHeader();
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+      }
+
+      doc.text(String(idx + 1), colX.idx, y);
+      doc.text(item.name.length > 26 ? item.name.slice(0, 24) + '…' : item.name, colX.item, y);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      doc.text(item.serialNumber || '-', colX.serial, y);
+      doc.text(item.claimCode || '-', colX.claim, y);
+      doc.setFontSize(8);
+      doc.text(String(item.quantity), colX.qty, y);
+      doc.text(`Rs. ${(item.price * item.quantity).toLocaleString('en-IN')}`, colX.amount, y, { align: 'right' });
+
+      y += 6;
+      doc.setDrawColor(230, 230, 230);
+      doc.line(marginX, y - 2, pageWidth - marginX, y - 2);
+      y += 2;
     });
 
     y += 6;
-    doc.setFontSize(12);
-    doc.text(`Total: $${orderReceipt.total.toLocaleString()}`, 20, y);
-    y += 12;
 
-    doc.setFontSize(10);
-    doc.text('Shipping Address:', 20, y);
+    // ---------- Totals box ----------
+    const totalsX = pageWidth - marginX - 60;
+    doc.setFontSize(9);
+    doc.text('Subtotal', totalsX, y);
+    doc.text(`Rs. ${Number(orderReceipt.subtotal).toLocaleString('en-IN')}`, pageWidth - marginX, y, { align: 'right' });
     y += 6;
-    doc.text(`${orderReceipt.shippingDetails.fullName}`, 20, y);
-    y += 6;
-    doc.text(`${orderReceipt.shippingDetails.streetAddress}, ${orderReceipt.shippingDetails.city}, ${orderReceipt.shippingDetails.zipCode}`, 20, y);
 
-    doc.save(`Invoice-${orderReceipt.id}.pdf`);
+    if (orderReceipt.discount > 0) {
+      doc.text('Discount', totalsX, y);
+      doc.text(`- Rs. ${Number(orderReceipt.discount).toLocaleString('en-IN')}`, pageWidth - marginX, y, { align: 'right' });
+      y += 6;
+    }
+
+    doc.setDrawColor(0, 0, 0);
+    doc.line(totalsX, y, pageWidth - marginX, y);
+    y += 6;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('Total Paid', totalsX, y);
+    doc.text(`Rs. ${Number(orderReceipt.total).toLocaleString('en-IN')}`, pageWidth - marginX, y, { align: 'right' });
+
+    y += 16;
+
+    // ---------- Warranty note ----------
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(7.5);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Keep this invoice safe — the Serial Number and Claim Code for each item are required to register', marginX, y);
+    y += 4;
+    doc.text('your warranty at khroniq.com/warranty.', marginX, y);
+
+    // ---------- Footer ----------
+    const pageHeight = doc.internal.pageSize.getHeight();
+    doc.setDrawColor(220, 220, 220);
+    doc.line(marginX, pageHeight - 18, pageWidth - marginX, pageHeight - 18);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(120, 120, 120);
+    doc.text('KHRONIQ Watches  •  support@khroniq.com  •  Thank you for your purchase', pageWidth / 2, pageHeight - 12, { align: 'center' });
+
+    doc.save(`KHRONIQ-Invoice-${orderReceipt.id}.pdf`);
   };
       
 
