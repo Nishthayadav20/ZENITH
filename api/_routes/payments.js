@@ -9,8 +9,8 @@ import sendEmail from '../utils/sendEmail.js';
 const router = express.Router();
 
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_dummykeyid',
-  key_secret: process.env.RAZORPAY_KEY_SECRET || 'dummykeysecret'
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET
 });
 
 // @route   POST /api/payments/create-order
@@ -87,29 +87,33 @@ router.post('/verify', protect, async (req, res) => {
     // Generate order ID first, so item serials can reference it
 const randomId = 'Z-' + Math.floor(100000 + Math.random() * 900000);
 
-// 3. Deduct stock & generate warranty codes
+
+// 3. Deduct stock & generate warranty codes — one order item PER PHYSICAL UNIT,
+// so buying quantity > 1 of the same watch still gives each unit its own unique serial/claim code.
 const dbItems = [];
-let itemIndex = 0;
+let unitIndex = 0; // increments per unit across the whole order, not per cart line
 for (const item of items) {
-  itemIndex++;
   const product = await Product.findById(item.productId);
   product.stock = Math.max(0, product.stock - item.quantity);
   await product.save();
 
-  const serialNumber = `KHQ-${new Date().getFullYear()}-${randomId.replace('Z-', '')}-${String(itemIndex).padStart(2, '0')}`;
-  const claimCode = `CLM-${crypto.randomBytes(5).toString('hex').toUpperCase()}`;
+  for (let unit = 1; unit <= item.quantity; unit++) {
+    unitIndex++;
+    const serialNumber = `KHQ-${new Date().getFullYear()}-${randomId.replace('Z-', '')}-${String(unitIndex).padStart(2, '0')}`;
+    const claimCode = `CLM-${crypto.randomBytes(5).toString('hex').toUpperCase()}`;
 
-  dbItems.push({
-    productId: item.productId,
-    name: product.name,
-    price: product.price,
-    quantity: item.quantity,
-    image: product.image,
-    serialNumber,
-    claimCode,
-    warrantyClaimed: false,
-    warrantyMonths: product.warrantyMonths || 12
-  });
+    dbItems.push({
+      productId: item.productId,
+      name: product.name,
+      price: product.price,
+      quantity: 1,
+      image: product.image,
+      serialNumber,
+      claimCode,
+      warrantyClaimed: false,
+      warrantyMonths: product.warrantyMonths || 6
+    });
+  }
 }
 
 
