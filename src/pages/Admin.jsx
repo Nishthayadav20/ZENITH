@@ -975,7 +975,7 @@ const handleEditImageUpload = async (e) => {
 
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Price ($)</label>
+                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Price (₹)</label>
                     <input
                       type="number"
                       required
@@ -1317,7 +1317,7 @@ const handleEditImageUpload = async (e) => {
 
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Price ($)</label>
+                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Price (₹)</label>
                       <input
                         type="number"
                         required
@@ -2137,7 +2137,7 @@ const handleEditImageUpload = async (e) => {
             ))}
             </div>
             </div>
-      )};
+      )}
 
 
       {/* --- TAB CONTENT: BLOGS EDITORIAL --- */}
