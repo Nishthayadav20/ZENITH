@@ -49,7 +49,7 @@ export default function MainLayout({ children, onPageChange, currentPage }) {
       </main>
 
       {/* Footer */}
-      <Footer onPageChange={onPageChange} />
+      <Footer onPageChange={onPageChange} onWarrantyOpen={() => setWarrantyOpen(true)} />
 
       {/* Scroll to Top Scroller */}
       <ScrollToTop />
