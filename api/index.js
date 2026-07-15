@@ -108,20 +108,11 @@ app.get('/api/health', (req, res) => {
 // Database Seed Function
 const seedDatabase = async () => {
   try {
-
-    // 1. Seed Products — Clear all old products and seed only the 2 launch watches
-    const existingProducts = await Product.find({});
-    const launchWatchNames = ['Khroniq Crimson Red', 'Khroniq Emerald Green'];
-    const hasOldProducts = existingProducts.some(p => !launchWatchNames.includes(p.name));
-
-    if (hasOldProducts) {
-      // Remove all products that are NOT the 2 launch watches
-      await Product.deleteMany({ name: { $nin: launchWatchNames } });
-      console.log('Database Migration: Removed all old products. Only launch watches remain.');
-    }
-
-   
-    // 5. Seed Default Blogs
+    // NOTE: Product deletion logic removed (previously lines 112-121)
+    // Products added via admin panel are now persisted in MongoDB without automatic deletion.
+    // This allows admins to add and maintain watches in the database across server restarts.
+    
+    // Seed Default Blogs (only on first initialization)
     const blogCount = await Blog.countDocuments();
     if (blogCount === 0) {
       const initialBlogs = [
