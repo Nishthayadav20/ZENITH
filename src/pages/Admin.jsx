@@ -570,6 +570,35 @@ const handleImageUpload = async (e) => {
   }
 };
 
+const handleEditImageUpload = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  setUploadingImage(true);
+  const formData = new FormData();
+  formData.append('image', file);
+
+  try {
+    const token = localStorage.getItem('khroniq_token');
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    });
+    const data = await res.json();
+    if (data.success) {
+      setEditForm({ ...editForm, image: data.imageUrl });
+    } else {
+      alert(data.message || 'Image upload failed');
+    }
+  } catch (error) {
+    console.error('Upload error:', error);
+    alert('Image upload failed');
+  } finally {
+    setUploadingImage(false);
+  }
+};
+
 
 
   // --- ACTIONS HANDLERS ---
@@ -1026,18 +1055,25 @@ const handleImageUpload = async (e) => {
                 </div>
 
                 <div className="space-y-1.5">
-  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Watch Image</label>
-  <input
-    type="file"
-    accept="image/*"
-    onChange={handleImageUpload}
-    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none file:mr-3 file:py-1 file:px-3 file:border-0 file:text-xs file:bg-luxury-gold file:text-luxury-dark file:font-bold file:uppercase file:cursor-pointer"
-  />
-  {uploadingImage && <p className="text-[10px] text-luxury-gold">Uploading image...</p>}
-  {newProduct.image && !uploadingImage && (
-    <img src={newProduct.image} alt="Preview" className="mt-2 h-20 w-20 object-cover rounded border border-white/10" />
-  )}
-</div>
+                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Watch Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none file:mr-3 file:py-1 file:px-3 file:border-0 file:text-xs file:bg-luxury-gold file:text-luxury-dark file:font-bold file:uppercase file:cursor-pointer"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Or enter image path/URL manually (e.g. /assets/watch_uploaded_1.jpg)"
+                    value={newProduct.image || ''}
+                    onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 mt-1.5 focus:outline-none focus:border-luxury-gold"
+                  />
+                  {uploadingImage && <p className="text-[10px] text-luxury-gold">Uploading image...</p>}
+                  {newProduct.image && !uploadingImage && (
+                    <img src={newProduct.image} alt="Preview" className="mt-2 h-20 w-20 object-cover rounded border border-white/10" />
+                  )}
+                </div>
 
                 <div className="md:col-span-2 space-y-1.5">
                   <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Product Description</label>
@@ -1357,6 +1393,27 @@ const handleImageUpload = async (e) => {
                       <option value="women">Women's watches</option>
                       <option value="unisex">Unisex</option>
                     </select>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Watch Image</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleEditImageUpload}
+                      className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none file:mr-3 file:py-1 file:px-3 file:border-0 file:text-xs file:bg-luxury-gold file:text-luxury-dark file:font-bold file:uppercase file:cursor-pointer"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Or enter image path/URL manually (e.g. /assets/watch_uploaded_1.jpg)"
+                      value={editForm.image || ''}
+                      onChange={(e) => setEditForm({ ...editForm, image: e.target.value })}
+                      className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 mt-1.5 focus:outline-none focus:border-luxury-gold"
+                    />
+                    {uploadingImage && <p className="text-[10px] text-luxury-gold">Uploading image...</p>}
+                    {editForm.image && !uploadingImage && (
+                      <img src={editForm.image} alt="Preview" className="mt-2 h-20 w-20 object-cover rounded border border-white/10" />
+                    )}
                   </div>
 
                   <div className="space-y-1.5">
