@@ -33,7 +33,7 @@ const NAV_COLS = [
     title: 'Customer Care',
     links: [
       { label: 'Book an Appointment', page: 'static',  args: { view: 'contact' } },
-      { label: 'Register My Watch',   page: 'profile', args: { tab: 'settings' } },
+      { label: 'Register My Watch',   action: 'warranty' },
       { label: 'Shipping Policy',     page: 'static',  args: { view: 'shipping' } },
       { label: 'Exchange Policy',     page: 'static',  args: { view: 'exchange' } },
       { label: 'Refund Policy',       page: 'static',  args: { view: 'refund' } },
@@ -80,7 +80,7 @@ const SOCIALS = [
 ];
 
 /* ─────────────────────────────────────────────────────────── */
-export default function Footer({ onPageChange }) {
+export default function Footer({ onPageChange, onWarrantyOpen }) {
   const [email, setEmail]           = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [heroRef, heroVisible]      = useInView(0.1);
@@ -382,7 +382,13 @@ export default function Footer({ onPageChange }) {
                   return (
                     <li key={label}>
                       <button
-                        onClick={() => onPageChange(page, args)}
+                        onClick={() => {
+                          if (args?.action === 'warranty' || label === 'Register My Watch') {
+                            onWarrantyOpen && onWarrantyOpen();
+                          } else {
+                            onPageChange(page, args);
+                          }
+                        }}
                         style={{
                           background:'none', border:'none', padding:0,
                           fontSize:'0.72rem', color:'#ffffff',
