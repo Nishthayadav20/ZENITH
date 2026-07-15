@@ -258,8 +258,8 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
         {/* Drawer Header */}
         <div className="flex justify-between items-center border-b border-white/5 pb-4">
           <div className="flex items-center space-x-2">
-            <ShieldCheck className="text-orange-500 w-5 h-5" />
-            <h3 className="text-xs font-bold uppercase tracking-widest text-orange-500">Warranty Portal</h3>
+            <ShieldCheck className="!text-luxury-gold w-5 h-5" />
+            <h3 className="text-base font-bold uppercase tracking-widest !text-luxury-gold warranty-portal-title">Warranty Portal</h3>
           </div>
           <button
             onClick={onClose}
@@ -282,7 +282,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
           {!currentUser && (
             <div className="p-4 bg-neutral-900 border border-white/10 rounded text-center space-y-2">
               <Lock className="mx-auto text-gray-500" size={20} />
-              <p className="text-[10px] text-gray-400 uppercase tracking-wider font-bold leading-relaxed">
+              <p className="text-[10px] !text-white warranty-portal-text uppercase tracking-wider !font-bold leading-relaxed">
                 Please log in to look up and register your watch warranty.
               </p>
             </div>
@@ -291,13 +291,13 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
           {/* STEP 1: Confirm Name, Email is locked to logged-in account */}
           {currentUser && step === 'details' && (
             <form onSubmit={handleRetrievePurchases} className="space-y-4 text-xs">
-              <p className="text-[10px] text-gray-200 leading-relaxed font-light uppercase tracking-wider">
+              <p className="text-[10px] !text-white warranty-portal-text leading-relaxed !font-bold uppercase tracking-wider">
                 We'll retrieve watch purchases linked to your account.
               </p>
 
               {/* Owner Name */}
               <div className="space-y-1.5">
-                <label className="text-[8px] text-orange-500 font-bold uppercase tracking-widest block">Full Name</label>
+                <label className="text-[8px] !text-white warranty-portal-label !font-bold uppercase tracking-widest block">Full Name</label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
                     <User size={12} />
@@ -315,7 +315,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Owner Email — locked to logged-in account */}
               <div className="space-y-1.5">
-                <label className="text-[8px] text-orange-500 font-bold uppercase tracking-widest block">Email Address</label>
+                <label className="text-[8px] !text-white warranty-portal-label !font-bold uppercase tracking-widest block">Email Address</label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
                     <Mail size={12} />
@@ -336,7 +336,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
               <div className="grid grid-cols-2 gap-4">
                 {/* Country Search Select */}
                 <div className="space-y-1.5 relative">
-                  <label className="text-[8px] text-orange-500 font-bold uppercase tracking-widest block">Country</label>
+                  <label className="text-[8px] !text-white warranty-portal-label !font-bold uppercase tracking-widest block">Country</label>
                   <input
                     type="text"
                     required
@@ -383,7 +383,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
                 {/* State Select / Text input */}
                 <div className="space-y-1.5">
-                  <label className="text-[8px] text-orange-500 font-bold uppercase tracking-widest block">State</label>
+                  <label className="text-[8px] !text-white warranty-portal-label !font-bold uppercase tracking-widest block">State</label>
                   {country === 'India' ? (
                     <select
                       required
@@ -411,7 +411,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Phone Number */}
               <div className="space-y-1.5">
-                <label className="text-[8px] text-orange-500 font-bold uppercase tracking-widest block">Phone Number</label>
+                <label className="text-[8px] !text-white warranty-portal-label !font-bold uppercase tracking-widest block">Phone Number</label>
                 <div className="flex space-x-2">
                   <div className="bg-neutral-900 border border-white/15 text-gray-100 font-mono text-xs px-3 py-2.5 rounded flex items-center justify-center min-w-[55px]">
                     {ALL_COUNTRIES.find(c => c.name === country)?.code || '+91'}
@@ -441,11 +441,11 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
           {currentUser && step === 'watch-select' && (
             <form onSubmit={handleClaimWarranty} className="space-y-4 text-xs">
               <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                <p className="text-[9px] text-gray-200 uppercase tracking-widest font-bold">Purchases Found: {purchases.length}</p>
+                <p className="text-[9px] !text-white warranty-portal-text uppercase tracking-widest !font-bold">Purchases Found: {purchases.length}</p>
                 <button
                   type="button"
                   onClick={() => setStep('details')}
-                  className="text-luxury-gold hover:underline text-[9px] uppercase font-bold"
+                  className="!text-white hover:underline text-[9px] uppercase !font-bold"
                 >
                   Back
                 </button>
@@ -453,7 +453,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Watch Name Dropdown Input */}
               <div className="space-y-1.5 relative">
-                <label className="text-[8px] text-orange-500 font-bold uppercase tracking-widest block">Name of Watch</label>
+                <label className="text-[8px] !text-white warranty-portal-label !font-bold uppercase tracking-widest block">Name of Watch</label>
                 <div className="relative">
                   <input
                     type="text"
@@ -494,7 +494,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                 )}
 
                 {suggestions.length === 0 && purchases.length === 0 && (
-                  <p className="text-[9px] text-gray-500 uppercase tracking-wider pt-1">
+                  <p className="text-[9px] !text-white warranty-portal-text uppercase tracking-wider pt-1">
                     No eligible watch purchases found on your account.
                   </p>
                 )}
@@ -509,10 +509,10 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                     className="w-14 h-14 object-cover rounded bg-black/40 border border-white/5"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider">Purchase Match</p>
+                    <p className="text-[9px] !text-white warranty-portal-text !font-bold uppercase tracking-wider">Purchase Match</p>
                     <p className="text-white font-bold truncate text-[11px]">{selectedPurchase.name}</p>
-                    <p className="text-gray-500 text-[9px]">Purchased on {selectedPurchase.date}</p>
-                    <p className="text-gray-500 text-[9px]">Warranty: <span className="text-luxury-gold font-bold">{selectedPurchase.warrantyMonths} Months</span></p>
+                    <p className="!text-white warranty-portal-muted text-[9px]">Purchased on {selectedPurchase.date}</p>
+                    <p className="!text-white warranty-portal-muted text-[9px]">Warranty: <span className="!text-white !font-bold">{selectedPurchase.warrantyMonths} Months</span></p>
                     {selectedPurchase.claimed && (
                       <p className="text-emerald-500 text-[9px] font-bold uppercase mt-0.5">Already Claimed</p>
                     )}
@@ -522,7 +522,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Serial Code — read-only, pulled from real order data */}
               <div className="space-y-1.5">
-                <label className="text-[8px] text-orange-500 font-bold uppercase tracking-widest block">Serial Number</label>
+                <label className="text-[8px] !text-white warranty-portal-label !font-bold uppercase tracking-widest block">Serial Number</label>
                 <input
                   type="text"
                   required
@@ -535,7 +535,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Special Code to Claim Warranty — the only thing the customer must supply */}
               <div className="space-y-1.5">
-                <label className="text-[8px] text-orange-500 font-bold uppercase tracking-widest block">Claim Code (from your order invoice)</label>
+                <label className="text-[8px] !text-white warranty-portal-label !font-bold uppercase tracking-widest block">Claim Code (from your order invoice)</label>
                 <input
                   type="text"
                   required
@@ -569,28 +569,28 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               <div className="bg-neutral-900 border border-white/10 rounded p-4 text-left space-y-2.5 text-[11px] leading-relaxed">
                 <div>
-                  <span className="text-gray-400 block text-[8px] uppercase tracking-wider font-bold">Watch Owner</span>
+                  <span className="!text-white warranty-portal-muted block text-[8px] uppercase tracking-wider !font-bold">Watch Owner</span>
                   <span className="text-white font-medium">{verificationResult.registeredTo}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400 block text-[8px] uppercase tracking-wider font-bold">Registered Email</span>
+                  <span className="!text-white warranty-portal-muted block text-[8px] uppercase tracking-wider !font-bold">Registered Email</span>
                   <span className="text-white font-medium">{verificationResult.registeredEmail}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400 block text-[8px] uppercase tracking-wider font-bold">Model</span>
+                  <span className="!text-white warranty-portal-muted block text-[8px] uppercase tracking-wider !font-bold">Model</span>
                   <span className="text-white font-medium">{verificationResult.watchModel}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400 block text-[8px] uppercase tracking-wider font-bold">Serial Number</span>
+                  <span className="!text-white warranty-portal-muted block text-[8px] uppercase tracking-wider !font-bold">Serial Number</span>
                   <span className="text-white font-mono">{verificationResult.serialNumber}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400 block text-[8px] uppercase tracking-wider font-bold">Warranty Claim Code</span>
+                  <span className="!text-white warranty-portal-muted block text-[8px] uppercase tracking-wider !font-bold">Warranty Claim Code</span>
                   <span className="text-white font-mono">{verificationResult.claimCode}</span>
                 </div>
                 <div className="pt-2 border-t border-white/5">
-                  <span className="text-gray-400 block text-[8px] uppercase tracking-wider font-bold">Expiration Date</span>
-                  <span className="text-luxury-gold font-bold">{verificationResult.expiryDate}</span>
+                  <span className="!text-white warranty-portal-muted block text-[8px] uppercase tracking-wider !font-bold">Expiration Date</span>
+                  <span className="!text-white !font-bold">{verificationResult.expiryDate}</span>
                 </div>
               </div>
 

@@ -9,8 +9,8 @@ import sendEmail from '../utils/sendEmail.js';
 const router = express.Router();
 
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET
+  key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_dummykeyid',
+  key_secret: process.env.RAZORPAY_KEY_SECRET || 'dummykeysecret'
 });
 
 // @route   POST /api/payments/create-order
