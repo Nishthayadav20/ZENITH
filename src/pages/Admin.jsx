@@ -16,7 +16,8 @@ import {
   addBlog,
   deleteBlog,
   updateBlog,
-  fetchOrders
+  fetchOrders,
+  getDiscountedPrice
 } from '../store/slices/watchSlice';
 import { 
   BarChart3, Plus, Edit, Trash2, Check, X, Tag, Star, 
@@ -60,6 +61,7 @@ export default function Admin({ onPageChange }) {
     name: '',
     price: '',
     stock: '',
+    discountPercent: 0,
     warrantyMonths: 6,
     category: 'Khronomaster',
     gender: 'unisex',
@@ -598,6 +600,7 @@ const handleEditImageUpload = async (e) => {
     }
     const finalProduct = {
       ...newProduct,
+      discountPercent: Number(newProduct.discountPercent) || 0,
       customizationOptions: customOpts
     };
     const res = await dispatch(addProduct(finalProduct));
@@ -605,7 +608,7 @@ const handleEditImageUpload = async (e) => {
       alert('Product created successfully!');
       setShowAddForm(false);
       setNewProduct({
-        name: '', price: '', stock: '', warrantyMonths: 12, category: 'Khronomaster', description: '',
+        name: '', price: '', stock: '', discountPercent: 0, warrantyMonths: 12, category: 'Khronomaster', description: '',
         image: '',
         specs: { movement: 'Automatic', case: '40mm', strap: 'Leather', waterResistance: '50m', glass: 'Sapphire' },
         customizable: true,
@@ -629,6 +632,7 @@ const handleEditImageUpload = async (e) => {
     setEditingId(product.id);
     setEditForm({ 
       ...product, 
+      discountPercent: product.discountPercent ?? 0,
       customizable: product.customizable ?? false,
       allowStrapCustomization: product.allowStrapCustomization ?? true,
       allowCaseCustomization: product.allowCaseCustomization ?? true,
@@ -973,7 +977,7 @@ const handleEditImageUpload = async (e) => {
                   />
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Price (₹)</label>
                     <input
@@ -997,17 +1001,29 @@ const handleEditImageUpload = async (e) => {
                     />
                   </div>
                   <div className="space-y-1.5">
-  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Warranty Period (Months)</label>
-  <input
-    type="number"
-    required
-    min="0"
-    value={newProduct.warrantyMonths}
-    onChange={(e) => setNewProduct({ ...newProduct, warrantyMonths: e.target.value })}
-    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
-    placeholder="12"
-  />
-</div>
+                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Discount (%)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={newProduct.discountPercent}
+                      onChange={(e) => setNewProduct({ ...newProduct, discountPercent: Number(e.target.value) })}
+                      className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
+                      placeholder="0"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Warranty Period (Months)</label>
+                    <input
+                      type="number"
+                      required
+                      min="0"
+                      value={newProduct.warrantyMonths}
+                      onChange={(e) => setNewProduct({ ...newProduct, warrantyMonths: e.target.value })}
+                      className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
+                      placeholder="12"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-1.5">
@@ -1315,7 +1331,7 @@ const handleEditImageUpload = async (e) => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Price (₹)</label>
                       <input
@@ -1336,18 +1352,29 @@ const handleEditImageUpload = async (e) => {
                         className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5"
                       />
                     </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Discount (%)</label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={editForm.discountPercent}
+                        onChange={(e) => setEditForm({ ...editForm, discountPercent: Number(e.target.value) })}
+                        className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Warranty Period (Months)</label>
+                      <input
+                        type="number"
+                        required
+                        min="0"
+                        value={editForm.warrantyMonths}
+                        onChange={(e) => setEditForm({ ...editForm, warrantyMonths: Number(e.target.value) })}
+                        className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5"
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-1.5">
-  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Warranty Period (Months)</label>
-  <input
-    type="number"
-    required
-    min="0"
-    value={editForm.warrantyMonths}
-    onChange={(e) => setEditForm({ ...editForm, warrantyMonths: Number(e.target.value) })}
-    className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5"
-  />
-</div>
 
                   
 
@@ -1650,6 +1677,7 @@ const handleEditImageUpload = async (e) => {
                   <th className="p-4">Watch Profile</th>
                   <th className="p-4">Collection</th>
                   <th className="p-4">Price</th>
+                  <th className="p-4">Discount</th>
                   <th className="p-4">Stock</th>
                   <th className="p-4 text-right">Actions</th>
                 </tr>
@@ -1671,7 +1699,19 @@ const handleEditImageUpload = async (e) => {
                       </div>
                     </td>
                     <td className="p-4 uppercase tracking-wider text-[10px] text-gray-400">{p.category}</td>
-                    <td className="p-4 font-bold text-white">{formatPrice(p.price, currentCurrency)}</td>
+                    <td className="p-4 font-bold text-white">
+                      {p.discountPercent > 0 ? (
+                        <div className="space-y-1">
+                          <span className="text-[10px] line-through text-red-400">{formatPrice(p.price, currentCurrency)}</span>
+                          <span>{formatPrice(getDiscountedPrice(p), currentCurrency)}</span>
+                        </div>
+                      ) : (
+                        formatPrice(p.price, currentCurrency)
+                      )}
+                    </td>
+                    <td className="p-4 text-[11px] text-luxury-gold font-semibold uppercase tracking-widest">
+                      {p.discountPercent > 0 ? `${p.discountPercent}%` : '—'}
+                    </td>
                     <td className="p-4">
                       <span className={`font-semibold ${p.stock === 0 ? 'text-luxury-red font-bold' : 'text-gray-300'}`}>
                         {p.stock === 0 ? 'SOLD OUT' : `${p.stock} units`}

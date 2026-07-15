@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addToCart, toggleWishlist, selectCurrentCurrency, formatPrice } from '../store/slices/watchSlice';
+import { addToCart, toggleWishlist, selectCurrentCurrency, formatPrice, getDiscountedPrice } from '../store/slices/watchSlice';
 import { ShoppingBag, Heart, Star } from 'lucide-react';
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 
@@ -66,6 +66,9 @@ export default function ProductCard({ product, onPageChange, showRemove = false 
   if (product.specs?.movement) specItems.push(product.specs.movement);
   if (product.specs?.strap) specItems.push(product.specs.strap);
   const specLine = specItems.length > 0 ? specItems.join(' • ') : 'Khroniq Caliber';
+  const discountedPrice = getDiscountedPrice(product);
+  const isDiscounted = Number(product.discountPercent) > 0 && discountedPrice < product.price;
+  const savedAmount = isDiscounted ? product.price - discountedPrice : 0;
 
   return (
     <div
@@ -104,6 +107,11 @@ export default function ProductCard({ product, onPageChange, showRemove = false 
             style={{ transform: isHovered ? 'translateX(120%)' : 'translateX(-120%)' }}
           />
 
+          {product.discountPercent > 0 && (
+            <div className="absolute top-3 left-3 bg-luxury-red text-white uppercase text-[10px] tracking-[0.2em] font-semibold px-2.5 py-1 rounded-sm shadow-lg shadow-black/20">
+              {product.discountPercent}% OFF
+            </div>
+          )}
           {product.stock === 0 && (
             <div className="absolute inset-0 bg-[#f6f6f6]/80 flex items-center justify-center">
               <span className="text-luxury-red font-bold text-[10px] tracking-widest uppercase border border-luxury-red px-2.5 py-1">
@@ -132,16 +140,33 @@ export default function ProductCard({ product, onPageChange, showRemove = false 
           </div>
 
           <div className="flex items-center justify-between pt-1">
-            <p
-              className="text-luxury-text text-xs sm:text-sm font-semibold transition-transform duration-300"
-              style={{
-                transform: isHovered ? 'scale(1.04)' : 'scale(1)',
-                transformOrigin: 'left center',
-              }}
-            >
-              {formatPrice(product.price, currentCurrency)}
-            </p>
-            
+            <div className="space-y-0.5">
+              {isDiscounted ? (
+                <>
+                  <p className="text-[10px] text-red-400 line-through">{formatPrice(product.price, currentCurrency)}</p>
+                  <p
+                    className="text-luxury-text text-xs sm:text-sm font-semibold transition-transform duration-300"
+                    style={{
+                      transform: isHovered ? 'scale(1.04)' : 'scale(1)',
+                      transformOrigin: 'left center',
+                    }}
+                  >
+                    {formatPrice(discountedPrice, currentCurrency)}
+                  </p>
+                </>
+              ) : (
+                <p
+                  className="text-luxury-text text-xs sm:text-sm font-semibold transition-transform duration-300"
+                  style={{
+                    transform: isHovered ? 'scale(1.04)' : 'scale(1)',
+                    transformOrigin: 'left center',
+                  }}
+                >
+                  {formatPrice(product.price, currentCurrency)}
+                </p>
+              )}
+            </div>
+             
             {/* Cart and Wishlist Action Buttons */}
             <div className="flex items-center space-x-1.5 ml-2">
               {/* Wishlist Heart Button */}

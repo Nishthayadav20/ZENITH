@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
 // @desc    Create a product
 // @access  Private/Admin
 router.post('/', protect, adminOnly, async (req, res) => {
-const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization, allowDialCustomization, warrantyMonths } = req.body;
+const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization, allowDialCustomization, warrantyMonths, discountPercent } = req.body;
   try {
     const product = new Product({
       name,
@@ -33,6 +33,7 @@ const { name, price, stock, category, gender, description, image, specs, customi
       gender,
       description,
       image: image || '/placeholder.jpg',
+      discountPercent: Number(discountPercent) || 0,
       specs: {
         movement: specs?.movement || 'Automatic',
         case: specs?.case || 'Stainless Steel',
@@ -60,7 +61,7 @@ const { name, price, stock, category, gender, description, image, specs, customi
 // @desc    Update a product
 // @access  Private/Admin
 router.put('/:id', protect, adminOnly, async (req, res) => {
-const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization, allowDialCustomization, warrantyMonths } = req.body;
+const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization, allowDialCustomization, warrantyMonths, discountPercent } = req.body;
   try {
     const product = await Product.findById(req.params.id);
 
@@ -90,6 +91,7 @@ const { name, price, stock, category, gender, description, image, specs, customi
     if (customizable !== undefined) product.customizable = customizable;
     if (allowStrapCustomization !== undefined) product.allowStrapCustomization = allowStrapCustomization;
     if (allowCaseCustomization !== undefined) product.allowCaseCustomization = allowCaseCustomization;
+    if (discountPercent !== undefined) product.discountPercent = Number(discountPercent) || 0;
     if (req.body.customizationOptions !== undefined) {
       product.customizationOptions = req.body.customizationOptions;
     }

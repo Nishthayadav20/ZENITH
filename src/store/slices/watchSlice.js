@@ -284,7 +284,7 @@ const getMockProducts = () => [
     allowDialCustomization: true,
     reviews: []
   }
-].map(p => ({ ...p, price: p.price * 83 }));
+].map(p => ({ ...p, price: p.price * 83, discountPercent: p.discountPercent || 0 }));
 
 const initialState = {
   products: [],
@@ -414,6 +414,12 @@ export const {
 
 export const selectCurrentCurrency = state => state.watch.currentCurrency || 'INR';
 
+const clampDiscountPercent = (value) => {
+  const percent = Number(value);
+  if (Number.isNaN(percent)) return 0;
+  return Math.min(100, Math.max(0, percent));
+};
+
 export const formatPrice = (price, currency) => {
   const numPrice = Number(price) || 0;
   if (currency === 'INR') {
@@ -422,6 +428,17 @@ export const formatPrice = (price, currency) => {
     return `€ ${(numPrice / 90).toLocaleString('en-GB', { maximumFractionDigits: 0 })}`;
   }
   return `$ ${(numPrice / 83).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+};
+
+export const getDiscountedPrice = (product) => {
+  if (!product) return 0;
+  const discountPercent = clampDiscountPercent(product.discountPercent);
+  return Math.round(product.price * (100 - discountPercent) / 100);
+};
+
+export const getDiscountAmount = (product) => {
+  if (!product) return 0;
+  return Math.max(0, product.price - getDiscountedPrice(product));
 };
 
 // Async Thunks using native fetch
@@ -649,7 +666,7 @@ export const addToCart = (productId, quantity = 1) => async (dispatch, getState)
     }
   }
 
-  dispatch(addToCartAction({ productId, quantity, price: product.price }));
+  dispatch(addToCartAction({ productId, quantity, price: getDiscountedPrice(product) }));
   return { success: true, message: 'Added to Cart' };
 };
 

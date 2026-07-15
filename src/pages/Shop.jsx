@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import ProductCard from '../components/ProductCard';
+import { getDiscountedPrice } from '../store/slices/watchSlice';
 import { SlidersHorizontal, Search, RotateCcw, X } from 'lucide-react';
 
 export default function Shop({ onPageChange, filterParams }) {
@@ -89,7 +90,8 @@ export default function Shop({ onPageChange, filterParams }) {
     const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
     const matchesMovement = selectedMovement === 'All' || product.specs.movement === selectedMovement;
     const matchesStrap = selectedStrap === 'All' || product.specs.strap === selectedStrap;
-    const matchesPrice = product.price <= priceRange;
+    const effectivePrice = getDiscountedPrice(product);
+    const matchesPrice = effectivePrice <= priceRange;
     const matchesGender = selectedGender === 'All' || 
       product.gender === selectedGender || 
       product.gender === 'unisex';
@@ -101,9 +103,9 @@ export default function Shop({ onPageChange, filterParams }) {
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortOption) {
       case 'price-asc':
-        return a.price - b.price;
+        return getDiscountedPrice(a) - getDiscountedPrice(b);
       case 'price-desc':
-        return b.price - a.price;
+        return getDiscountedPrice(b) - getDiscountedPrice(a);
       case 'name-asc':
         return a.name.localeCompare(b.name);
       case 'name-desc':

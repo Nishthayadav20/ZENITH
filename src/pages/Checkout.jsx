@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import jsPDF from 'jspdf';
-import { createRazorpayOrder, verifyRazorpayPayment, selectCurrentCurrency, formatPrice } from '../store/slices/watchSlice';
+import { createRazorpayOrder, verifyRazorpayPayment, selectCurrentCurrency, formatPrice, getDiscountedPrice } from '../store/slices/watchSlice';
 
 import confetti from 'canvas-confetti';
 import { CheckCircle2, CreditCard, Landmark, ArrowRight, ShieldCheck, Gift, Check } from 'lucide-react';
@@ -94,10 +94,11 @@ const [processingPayment, setProcessingPayment] = useState(false);
   // Compute prices
   const cartItemsWithDetails = cart.map(item => {
     const product = products.find(p => p.id === item.productId);
-    return { ...item, product };
+    const itemPrice = item.price !== undefined ? item.price : getDiscountedPrice(product);
+    return { ...item, product, itemPrice };
   }).filter(item => item.product !== undefined);
 
-  const subtotal = cartItemsWithDetails.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+  const subtotal = cartItemsWithDetails.reduce((sum, item) => sum + ((item.price || item.product.price) * item.quantity), 0);
   const discount = appliedCoupon ? Math.round(subtotal * (appliedCoupon.discountPercent / 100)) : 0;
   const total = subtotal - discount;
 
@@ -116,7 +117,7 @@ const handleRazorpayPayment = async () => {
     const items = cartItemsWithDetails.map(item => ({
       productId: item.productId,
       name: item.product.name,
-      price: item.product.price,
+      price: item.itemPrice,
       quantity: item.quantity,
       image: item.product.image
     }));

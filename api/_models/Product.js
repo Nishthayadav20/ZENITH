@@ -32,6 +32,7 @@ const productSchema = new mongoose.Schema({
     waterResistance: { type: String },
     glass: { type: String }
   },
+  discountPercent: { type: Number, default: 0 },
   customizable: { type: Boolean, default: true },
   allowStrapCustomization: { type: Boolean, default: true },
   allowCaseCustomization: { type: Boolean, default: true },

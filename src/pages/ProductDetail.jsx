@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addToCart, toggleWishlist, addReview, selectCurrentCurrency, formatPrice } from '../store/slices/watchSlice';
+import { addToCart, toggleWishlist, addReview, selectCurrentCurrency, formatPrice, getDiscountedPrice } from '../store/slices/watchSlice';
 import ProductCard from '../components/ProductCard';
 import { Star, Shield, RefreshCw, Truck, Heart, ShoppingBag, Plus, Minus, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { getExpectedDeliveryDate } from './Checkout';
@@ -81,6 +81,8 @@ export default function ProductDetail({ params, onPageChange }) {
   const averageRating = approvedReviews.length > 0
     ? (approvedReviews.reduce((sum, r) => sum + r.rating, 0) / approvedReviews.length).toFixed(1)
     : null;
+  const discountedPrice = getDiscountedPrice(product);
+  const isDiscounted = Number(product.discountPercent) > 0 && discountedPrice < product.price;
 
   const handleAddToCart = async () => {
     const result = await dispatch(addToCart(product.id, qty));
@@ -233,8 +235,18 @@ export default function ProductDetail({ params, onPageChange }) {
             </div>
           </div>
 
-          <p className="text-2xl font-bold text-luxury-text">{formatPrice(product.price, currentCurrency)}</p>
-          
+          <div className="space-y-2">
+            {isDiscounted ? (
+              <div className="space-y-1">
+                <p className="text-[14px] text-red-400 line-through">{formatPrice(product.price, currentCurrency)}</p>
+                <p className="text-2xl font-bold text-luxury-text">{formatPrice(discountedPrice, currentCurrency)}</p>
+                <p className="text-[11px] text-luxury-gold uppercase tracking-[0.24em] font-semibold">Save {formatPrice(product.price - discountedPrice, currentCurrency)}</p>
+              </div>
+            ) : (
+              <p className="text-2xl font-bold text-luxury-text">{formatPrice(product.price, currentCurrency)}</p>
+            )}
+          </div>
+           
           <p className="text-gray-700 text-xs sm:text-sm leading-relaxed font-normal">{product.description}</p>
 
           <div className="border-t border-b border-luxury-text/10 py-6 space-y-4">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateCartQty, removeFromCart, selectCurrentCurrency, formatPrice } from '../store/slices/watchSlice';
+import { updateCartQty, removeFromCart, selectCurrentCurrency, formatPrice, getDiscountedPrice } from '../store/slices/watchSlice';
 import { ShoppingBag, Trash2, Plus, Minus, Tag, ArrowRight, ShieldCheck } from 'lucide-react';
 
 export default function CartPage({ onPageChange }) {
@@ -18,12 +18,14 @@ export default function CartPage({ onPageChange }) {
   // Assemble full item details
   const cartItemsWithDetails = cart.map(item => {
     const product = products.find(p => p.id === item.productId);
+    const itemPrice = item.price !== undefined ? item.price : getDiscountedPrice(product);
     return {
       ...item,
-      product
+      product,
+      itemPrice
     };
   }).filter(item => item.product !== undefined);
-
+ 
   // Permanently prune stale cart entries (products that no longer exist) from Redux/localStorage,
   // not just from what's displayed — keeps cart counts (e.g. Navbar badge) accurate everywhere.
   useEffect(() => {
@@ -33,8 +35,8 @@ export default function CartPage({ onPageChange }) {
   }, [cart, products]);
 
   // Compute prices
-  const subtotal = cartItemsWithDetails.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-  
+  const subtotal = cartItemsWithDetails.reduce((sum, item) => sum + (item.itemPrice * item.quantity), 0);
+   
   const handleApplyCoupon = (e) => {
     e.preventDefault();
     setCouponError('');
@@ -146,7 +148,16 @@ export default function CartPage({ onPageChange }) {
                 {/* Price (Column 2) */}
                 <div className="col-span-2 text-center flex md:block justify-between w-full md:w-auto border-t md:border-t-0 border-luxury-text/10 pt-2 md:pt-0">
                   <span className="md:hidden text-[10px] text-luxury-muted font-bold uppercase">Price</span>
-                  <span className="text-luxury-gold-dark text-xs font-semibold">{formatPrice(item.product.price, currentCurrency)}</span>
+                  <div className="space-y-1">
+                    {item.itemPrice !== item.product.price ? (
+                      <>
+                        <span className="text-[10px] text-red-400 line-through block">{formatPrice(item.product.price, currentCurrency)}</span>
+                        <span className="text-luxury-gold-dark text-xs font-semibold">{formatPrice(item.itemPrice, currentCurrency)}</span>
+                      </>
+                    ) : (
+                      <span className="text-luxury-gold-dark text-xs font-semibold">{formatPrice(item.itemPrice, currentCurrency)}</span>
+                    )}
+                  </div>
                 </div>
 
                 {/* Quantity Controls (Column 2) */}
@@ -172,7 +183,7 @@ export default function CartPage({ onPageChange }) {
                 {/* Total (Column 2) */}
                 <div className="col-span-2 text-right flex md:block justify-between w-full md:w-auto border-t md:border-t-0 border-luxury-text/10 pt-2 md:pt-0">
                   <span className="md:hidden text-[10px] text-luxury-muted font-bold uppercase">Total</span>
-                  <span className="text-luxury-text text-xs font-bold">{formatPrice(item.product.price * item.quantity, currentCurrency)}</span>
+                  <span className="text-luxury-text text-xs font-bold">{formatPrice(item.itemPrice * item.quantity, currentCurrency)}</span>
                 </div>
               </div>
             ))}
