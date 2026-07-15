@@ -284,7 +284,7 @@ const getMockProducts = () => [
     allowDialCustomization: true,
     reviews: []
   }
-];
+].map(p => ({ ...p, price: p.price * 83 }));
 
 const initialState = {
   products: [],
@@ -417,11 +417,11 @@ export const selectCurrentCurrency = state => state.watch.currentCurrency || 'IN
 export const formatPrice = (price, currency) => {
   const numPrice = Number(price) || 0;
   if (currency === 'INR') {
-    return `₹ ${(numPrice * 83).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
+    return `₹ ${numPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
   } else if (currency === 'EUR') {
-    return `€ ${(numPrice * 0.92).toLocaleString('en-GB', { maximumFractionDigits: 0 })}`;
+    return `€ ${(numPrice / 90).toLocaleString('en-GB', { maximumFractionDigits: 0 })}`;
   }
-  return `$ ${numPrice.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+  return `$ ${(numPrice / 83).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
 };
 
 // Async Thunks using native fetch
