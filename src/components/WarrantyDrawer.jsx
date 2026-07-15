@@ -291,7 +291,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
           {/* STEP 1: Confirm Name, Email is locked to logged-in account */}
           {currentUser && step === 'details' && (
             <form onSubmit={handleRetrievePurchases} className="space-y-4 text-xs">
-              <p className="text-[10px] text-gray-400 leading-relaxed font-light uppercase tracking-wider">
+              <p className="text-[10px] text-gray-200 leading-relaxed font-light uppercase tracking-wider">
                 We'll retrieve watch purchases linked to your account.
               </p>
 
@@ -308,7 +308,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                     placeholder="Enter owner name..."
                     value={ownerName}
                     onChange={(e) => setOwnerName(e.target.value)}
-                    className="w-full bg-neutral-900 border border-white/10 rounded text-white p-2.5 pl-8 focus:outline-none focus:border-luxury-gold transition"
+                    className="w-full bg-neutral-900 border border-white/15 rounded text-white placeholder-gray-400 p-2.5 pl-8 focus:outline-none focus:border-luxury-gold transition"
                   />
                 </div>
               </div>
@@ -324,7 +324,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                     type="email"
                     disabled
                     value={currentUser.email}
-                    className="w-full bg-neutral-900/60 border border-white/10 rounded text-gray-400 p-2.5 pl-8 pr-8 cursor-not-allowed"
+                    className="w-full bg-neutral-900/60 border border-white/15 rounded text-gray-200 p-2.5 pl-8 pr-8 cursor-not-allowed"
                   />
                   <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600" title="Locked to your account">
                     <Lock size={12} />
@@ -352,7 +352,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                         setStateName(matchingCountry.name === 'India' ? 'Maharashtra' : '');
                       }
                     }}
-                    className="w-full bg-neutral-900 border border-white/10 rounded text-white p-2.5 focus:outline-none focus:border-luxury-gold transition"
+                    className="w-full bg-neutral-900 border border-white/15 rounded text-white placeholder-gray-400 p-2.5 focus:outline-none focus:border-luxury-gold transition"
                   />
                   {showCountryDropdown && (
                     <div className="absolute left-0 right-0 mt-1 bg-neutral-900 border border-white/10 rounded-md shadow-2xl max-h-40 overflow-y-auto z-[60] scrollbar-thin">
@@ -389,10 +389,11 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                       required
                       value={stateName}
                       onChange={(e) => setStateName(e.target.value)}
-                      className="w-full bg-neutral-900 border border-white/10 rounded text-white p-2.5 focus:outline-none focus:border-luxury-gold transition max-h-40 overflow-y-auto scrollbar-thin"
+                      className="w-full bg-neutral-900 border border-white/15 rounded text-white p-2.5 focus:outline-none focus:border-luxury-gold transition max-h-40 overflow-y-auto scrollbar-thin"
+                      style={{ colorScheme: 'dark' }}
                     >
                       {INDIAN_STATES.map((s) => (
-                        <option key={s} value={s}>{s}</option>
+                        <option key={s} value={s} style={{ background: '#171717', color: '#fff' }}>{s}</option>
                       ))}
                     </select>
                   ) : (
@@ -402,7 +403,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                       placeholder="Enter state..."
                       value={stateName}
                       onChange={(e) => setStateName(e.target.value)}
-                      className="w-full bg-neutral-900 border border-white/10 rounded text-white p-2.5 focus:outline-none focus:border-luxury-gold transition"
+                      className="w-full bg-neutral-900 border border-white/15 rounded text-white placeholder-gray-400 p-2.5 focus:outline-none focus:border-luxury-gold transition"
                     />
                   )}
                 </div>
@@ -412,7 +413,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
               <div className="space-y-1.5">
                 <label className="text-[8px] text-orange-500 font-bold uppercase tracking-widest block">Phone Number</label>
                 <div className="flex space-x-2">
-                  <div className="bg-neutral-900 border border-white/10 text-gray-300 font-mono text-xs px-3 py-2.5 rounded flex items-center justify-center min-w-[55px]">
+                  <div className="bg-neutral-900 border border-white/15 text-gray-100 font-mono text-xs px-3 py-2.5 rounded flex items-center justify-center min-w-[55px]">
                     {ALL_COUNTRIES.find(c => c.name === country)?.code || '+91'}
                   </div>
                   <input
@@ -421,7 +422,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                     placeholder="Enter phone number..."
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ''))}
-                    className="flex-1 bg-neutral-900 border border-white/10 rounded text-white p-2.5 focus:outline-none focus:border-luxury-gold transition"
+                    className="flex-1 bg-neutral-900 border border-white/15 rounded text-white placeholder-gray-400 p-2.5 focus:outline-none focus:border-luxury-gold transition"
                   />
                 </div>
               </div>
@@ -440,7 +441,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
           {currentUser && step === 'watch-select' && (
             <form onSubmit={handleClaimWarranty} className="space-y-4 text-xs">
               <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                <p className="text-[9px] text-gray-400 uppercase tracking-widest font-bold">Purchases Found: {purchases.length}</p>
+                <p className="text-[9px] text-gray-200 uppercase tracking-widest font-bold">Purchases Found: {purchases.length}</p>
                 <button
                   type="button"
                   onClick={() => setStep('details')}
@@ -465,7 +466,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                       setShowDropdown(true);
                       setSelectedPurchase(null);
                     }}
-                    className="w-full bg-neutral-900 border border-white/10 rounded text-white p-2.5 focus:outline-none focus:border-luxury-gold transition"
+                    className="w-full bg-neutral-900 border border-white/15 rounded text-white placeholder-gray-400 p-2.5 focus:outline-none focus:border-luxury-gold transition"
                   />
                   <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
                     <Search size={14} />
@@ -568,27 +569,27 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               <div className="bg-neutral-900 border border-white/10 rounded p-4 text-left space-y-2.5 text-[11px] leading-relaxed">
                 <div>
-                  <span className="text-gray-500 block text-[8px] uppercase tracking-wider font-bold">Watch Owner</span>
+                  <span className="text-gray-400 block text-[8px] uppercase tracking-wider font-bold">Watch Owner</span>
                   <span className="text-white font-medium">{verificationResult.registeredTo}</span>
                 </div>
                 <div>
-                  <span className="text-gray-500 block text-[8px] uppercase tracking-wider font-bold">Registered Email</span>
+                  <span className="text-gray-400 block text-[8px] uppercase tracking-wider font-bold">Registered Email</span>
                   <span className="text-white font-medium">{verificationResult.registeredEmail}</span>
                 </div>
                 <div>
-                  <span className="text-gray-500 block text-[8px] uppercase tracking-wider font-bold">Model</span>
+                  <span className="text-gray-400 block text-[8px] uppercase tracking-wider font-bold">Model</span>
                   <span className="text-white font-medium">{verificationResult.watchModel}</span>
                 </div>
                 <div>
-                  <span className="text-gray-500 block text-[8px] uppercase tracking-wider font-bold">Serial Number</span>
+                  <span className="text-gray-400 block text-[8px] uppercase tracking-wider font-bold">Serial Number</span>
                   <span className="text-white font-mono">{verificationResult.serialNumber}</span>
                 </div>
                 <div>
-                  <span className="text-gray-500 block text-[8px] uppercase tracking-wider font-bold">Warranty Claim Code</span>
+                  <span className="text-gray-400 block text-[8px] uppercase tracking-wider font-bold">Warranty Claim Code</span>
                   <span className="text-white font-mono">{verificationResult.claimCode}</span>
                 </div>
                 <div className="pt-2 border-t border-white/5">
-                  <span className="text-gray-500 block text-[8px] uppercase tracking-wider font-bold">Expiration Date</span>
+                  <span className="text-gray-400 block text-[8px] uppercase tracking-wider font-bold">Expiration Date</span>
                   <span className="text-luxury-gold font-bold">{verificationResult.expiryDate}</span>
                 </div>
               </div>
