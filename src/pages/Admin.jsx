@@ -166,29 +166,41 @@ export default function Admin({ onPageChange }) {
     if (!file) return;
 
     setUploadingMedia(true);
-    const formData = new FormData();
-    formData.append('files', file);
-    formData.append('section', sectionKey);
-
-    try {
-      const token = localStorage.getItem('khroniq_token');
-      const res = await fetch('/api/admin/media', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData
-      });
-      const data = await res.json();
-      if (data.success && data.media?.[0]) {
-        setMediaList(prev => ({ ...prev, [sectionKey]: data.media[0].url }));
-      } else {
-        alert(data.message || 'Upload failed.');
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      try {
+        const token = localStorage.getItem('khroniq_token');
+        const res = await fetch('/api/admin/media', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            url: reader.result,
+            section: sectionKey,
+            type: 'image'
+          })
+        });
+        const data = await res.json();
+        if (data.success && data.media?.[0]) {
+          setMediaList(prev => ({ ...prev, [sectionKey]: data.media[0].url }));
+        } else {
+          alert(data.message || 'Upload failed.');
+        }
+      } catch (err) {
+        console.error('Section image upload error:', err);
+        alert('Failed to upload image.');
+      } finally {
+        setUploadingMedia(false);
       }
-    } catch (err) {
-      console.error('Section image upload error:', err);
-      alert('Failed to upload image.');
-    } finally {
+    };
+    reader.onerror = (error) => {
+      console.error('Base64 conversion error:', error);
+      alert('Failed to process image file');
       setUploadingMedia(false);
-    }
+    };
+    reader.readAsDataURL(file);
   };
 
   // --- BLOGS ADMIN STATES & OPERATIONS ---
