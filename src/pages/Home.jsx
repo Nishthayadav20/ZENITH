@@ -852,7 +852,7 @@ export default function Home({ onPageChange }) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2">
-          <GenderPanel label="Men's Watches"   img={homeImages.gender_men || "/assets/men_watches_beach.jpg"}   gender="men"   delay={0}    accent="#c5a880" onPageChange={onPageChange} />
+          <GenderPanel label="Men's Watches"   img={homeImages.gender_men || "/assets/men_watches.jpg"}   gender="men"   delay={0}    accent="#c5a880" onPageChange={onPageChange} />
           <GenderPanel label="Women's Watches" img={homeImages.gender_women || "/assets/women_watches_beach.jpg"} gender="women" delay={0.1}  accent="#34d399" onPageChange={onPageChange} />
         </div>
       </section>
