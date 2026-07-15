@@ -2132,7 +2132,7 @@ const handleEditImageUpload = async (e) => {
             ))}
             </div>
             </div>
-      )};
+      )}
 
 
       {/* --- TAB CONTENT: BLOGS EDITORIAL --- */}
