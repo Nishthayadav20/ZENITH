@@ -101,6 +101,17 @@ const [processingPayment, setProcessingPayment] = useState(false);
   const discount = appliedCoupon ? Math.round(subtotal * (appliedCoupon.discountPercent / 100)) : 0;
   const total = subtotal - discount;
 
+  // Skip this guard once an order has actually been placed (step 4 / receipt shown) —
+  useEffect(() => {
+    if (step === 4 || orderReceipt) return;
+    if (cart.length > 0 && cartItemsWithDetails.length === 0) {
+      alert('One or more items in your cart are no longer available. Please review your cart.');
+      onPageChange('cart');
+    } else if (cart.length === 0) {
+      onPageChange('shop');
+    }
+  }, [cart, cartItemsWithDetails.length, step, orderReceipt]);
+
   const handleShippingSubmit = (e) => {
     e.preventDefault();
     if (!shippingForm.fullName || !shippingForm.streetAddress || !shippingForm.city || !shippingForm.zipCode) {
@@ -165,7 +176,7 @@ const handleRazorpayPayment = async () => {
 
         if (verifyRes.success) {
           setOrderReceipt(verifyRes.order);
-          setStep(3);
+          setStep(4);
 
           confetti({
             particleCount: 150,

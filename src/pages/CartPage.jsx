@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateCartQty, removeFromCart, selectCurrentCurrency, formatPrice } from '../store/slices/watchSlice';
 import { ShoppingBag, Trash2, Plus, Minus, Tag, ArrowRight, ShieldCheck } from 'lucide-react';
@@ -23,6 +23,14 @@ export default function CartPage({ onPageChange }) {
       product
     };
   }).filter(item => item.product !== undefined);
+
+  // Permanently prune stale cart entries (products that no longer exist) from Redux/localStorage,
+  // not just from what's displayed — keeps cart counts (e.g. Navbar badge) accurate everywhere.
+  useEffect(() => {
+    if (products.length === 0) return; // don't prune before products have loaded
+    const staleItems = cart.filter(item => !products.some(p => p.id === item.productId));
+    staleItems.forEach(item => dispatch(removeFromCart(item.productId)));
+  }, [cart, products]);
 
   // Compute prices
   const subtotal = cartItemsWithDetails.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
