@@ -6,13 +6,31 @@ import { v2 as cloudinary } from 'cloudinary';
 
 const router = express.Router();
 
-// POST /api/admin/media - upload images/videos (field name: files)
-router.post('/', protect, adminOnly, upload.array('files', 12), async (req, res) => {
+// POST /api/admin/media - upload images/videos (supports JSON Base64 or standard file upload)
+router.post('/', protect, adminOnly, (req, res, next) => {
+  if (req.headers['content-type'] && req.headers['content-type'].includes('application/json')) {
+    return next();
+  }
+  upload.array('files', 12)(req, res, next);
+}, async (req, res) => {
   try {
+    const section = req.body.section || 'homepage';
+    const type = req.body.type || 'image';
+
+    if (req.body.url) {
+      const media = await Media.create({
+        url: req.body.url,
+        publicId: '',
+        type,
+        section,
+        uploadedBy: req.user?._id
+      });
+      return res.json({ success: true, media: [media] });
+    }
+
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ success: false, message: 'No files uploaded' });
     }
-    const section = req.body.section || 'homepage';
     const created = [];
     for (const file of req.files) {
       const isVideo = file.mimetype && file.mimetype.startsWith('video');
