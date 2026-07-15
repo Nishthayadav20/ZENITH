@@ -386,6 +386,7 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
                           if (args?.action === 'warranty' || label === 'Register My Watch') {
                             onWarrantyOpen && onWarrantyOpen();
                           } else {
+                            localStorage.setItem('khroniq_is_gifting_journey', 'false');
                             onPageChange(page, args);
                           }
                         }}

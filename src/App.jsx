@@ -38,6 +38,9 @@ function AppContent() {
 }, []);
 
   const handlePageChange = (page, params = null) => {
+    if (page === 'home') {
+      localStorage.setItem('khroniq_is_gifting_journey', 'false');
+    }
     setCurrentPage(page);
     setPageParams(params);
     window.scrollTo({ top: 0, behavior: 'smooth' });

@@ -80,10 +80,17 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
 
   const handleNavLinkClick = (link) => {
     if (link.filter) {
+      localStorage.setItem('khroniq_is_gifting_journey', 'false');
       onPageChange('shop', link.filter);
     } else if (link.page === 'customization') {
+      localStorage.setItem('khroniq_is_gifting_journey', 'false');
       onPageChange('customization', { reset: Date.now() });
     } else {
+      if (link.page === 'gifting') {
+        localStorage.setItem('khroniq_is_gifting_journey', 'true');
+      } else {
+        localStorage.setItem('khroniq_is_gifting_journey', 'false');
+      }
       onPageChange(link.page);
     }
     setMobileMenuOpen(false);
@@ -209,6 +216,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                                   <button
                                     key={p.label}
                                     onClick={() => {
+                                      localStorage.setItem('khroniq_is_gifting_journey', 'false');
                                       setMegaMenuForceClosed(true);
                                       onPageChange('shop', { maxPrice: p.maxPrice });
                                     }}
@@ -278,7 +286,10 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                             <h4 className="font-serif text-2xl font-black tracking-wider leading-tight text-white mt-1">LOOKING<br/>for<br/>A GIFT?</h4>
                           </div>
                           <button
-                            onClick={() => onPageChange('gifting')}
+                            onClick={() => {
+                              localStorage.setItem('khroniq_is_gifting_journey', 'true');
+                              onPageChange('gifting');
+                            }}
                             className="relative z-10 w-full py-3 bg-white text-neutral-950 font-black text-xs uppercase tracking-widest rounded-lg hover:bg-luxury-gold hover:text-white transition duration-300 shadow-md cursor-pointer"
                           >
                             Shop Gifting Solutions
@@ -307,7 +318,10 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
           {/* Center Logo */}
           <div className="flex-1 md:flex-none flex justify-center items-center">
             <button 
-              onClick={() => onPageChange('home')} 
+              onClick={() => {
+                localStorage.setItem('khroniq_is_gifting_journey', 'false');
+                onPageChange('home');
+              }} 
               className="flex flex-col items-center gap-1 transition duration-300 cursor-pointer py-1"
             >
               <img 

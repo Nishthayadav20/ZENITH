@@ -177,6 +177,7 @@ const handleRazorpayPayment = async () => {
         if (verifyRes.success) {
           setOrderReceipt(verifyRes.order);
           setStep(4);
+          localStorage.setItem('khroniq_is_gifting_journey', 'false');
 
           confetti({
             particleCount: 150,
