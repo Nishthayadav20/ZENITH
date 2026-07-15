@@ -124,6 +124,11 @@ export default function Admin({ onPageChange }) {
   const [mediaList, setMediaList] = useState([]);
   const [uploadingMedia, setUploadingMedia] = useState(false);
 
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('khroniq_token');
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  };
+
   const HOMEPAGE_SECTIONS = [
     { key: 'gender_men', label: "Shop by Gender — Men's Banner" },
     { key: 'gender_women', label: "Shop by Gender — Women's Banner" },
@@ -145,7 +150,7 @@ export default function Admin({ onPageChange }) {
     if (currentUser?.role === 'admin' && activeTab === 'media') {
       const token = localStorage.getItem('khroniq_token');
       fetch('/api/admin/media', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { ...getAuthHeaders() }
       })
         .then(res => res.json())
         .then(data => {
@@ -174,7 +179,7 @@ export default function Admin({ onPageChange }) {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
+            ...getAuthHeaders()
           },
           body: JSON.stringify({
             url: reader.result,
@@ -298,7 +303,7 @@ export default function Admin({ onPageChange }) {
       const res = await fetch('/api/brand-updates/admin', {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : ''
+          ...getAuthHeaders()
         }
       });
       const data = await res.json();
@@ -385,7 +390,7 @@ export default function Admin({ onPageChange }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : ''
+          ...getAuthHeaders()
         },
         body: JSON.stringify(newUpdate)
       });
@@ -410,7 +415,7 @@ export default function Admin({ onPageChange }) {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : ''
+          ...getAuthHeaders()
         },
         body: JSON.stringify({ approved: !currentApproved })
       });
@@ -438,7 +443,7 @@ export default function Admin({ onPageChange }) {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : ''
+          ...getAuthHeaders()
         },
         body: JSON.stringify(editUpdateForm)
       });
@@ -464,7 +469,7 @@ export default function Admin({ onPageChange }) {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : ''
+          ...getAuthHeaders()
         }
       });
       const data = await res.json();
@@ -2361,3 +2366,4 @@ const handleEditImageUpload = async (e) => {
     </div>
   );
 }
+
