@@ -939,16 +939,17 @@ export default function Home({ onPageChange }) {
                 whileHover={{ scale: 1.06 }}
                 transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-              <div className="absolute bottom-0 left-0 p-7 space-y-1">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+              <div className="absolute bottom-0 left-0 p-7 space-y-1.5">
                 <motion.p
-                  className="text-white font-serif text-xl font-bold"
+                  className="font-serif text-xl font-bold"
+                  style={{ color: '#ffffff', textShadow: '0 1px 14px rgba(0,0,0,1), 0 0 32px rgba(0,0,0,0.8)' }}
                   initial={{ y: 8, opacity: 0.8 }}
                   whileInView={{ y: 0, opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}
                 >{label}</motion.p>
-                <p className="text-white/60 text-xs tracking-widest uppercase">{sub}</p>
+                <p className="text-xs tracking-widest uppercase font-semibold" style={{ color: 'rgba(255,255,255,0.92)', textShadow: '0 1px 10px rgba(0,0,0,1)' }}>{sub}</p>
               </div>
             </motion.div>
           ))}
