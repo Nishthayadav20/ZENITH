@@ -64,7 +64,7 @@ export default function Admin({ onPageChange }) {
     category: 'Khronomaster',
     gender: 'unisex',
     description: '',
-    image: '/assets/media__1782899491225.jpg', // default copy
+    image: '', // default copy
     specs: {
       movement: 'Automatic Chronometer',
       case: 'Stainless Steel (40mm)',
@@ -601,7 +601,7 @@ const handleEditImageUpload = async (e) => {
       setShowAddForm(false);
       setNewProduct({
         name: '', price: '', stock: '', warrantyMonths: 12, category: 'Khronomaster', description: '',
-        image: '/assets/media__1782899491225.jpg',
+        image: '',
         specs: { movement: 'Automatic', case: '40mm', strap: 'Leather', waterResistance: '50m', glass: 'Sapphire' },
         customizable: true,
         allowStrapCustomization: true,
