@@ -1119,93 +1119,101 @@ export default function Home({ onPageChange }) {
         </section>
 
 
-        {/* ══════════ SPLIT VIDEO SHOWCASE SECTION ══════════ */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={updatesRef}>
-          <motion.section
-            className="flex flex-col lg:flex-row gap-8 items-center justify-between py-12"
-            initial={{ opacity: 0, y: 48 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {/* Left Column: Text (takes remaining space, aligned slightly up) */}
-            <div className="flex-1 flex flex-col items-center lg:items-start justify-start p-6 lg:pt-16 space-y-4 h-[600px]">
-              <motion.div 
-                onClick={() => setShowUpdates(!showUpdates)}
-                className="cursor-pointer group inline-block text-center lg:text-left select-none"
-                initial="initial"
-                whileHover="hover"
-              >
-                <Reveal dir="left">
-                  <motion.h2 
-                    className="text-4xl sm:text-5xl lg:text-6xl font-serif font-black text-black tracking-[0.2em] uppercase leading-tight"
-                    variants={{
-                      initial: { scale: 1, color: '#000000' },
-                      hover: { scale: 1.04, color: '#c5a880' }
-                    }}
-                    transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                  >
-                    KHRONIQ<br />UPDATES
-                  </motion.h2>
-                </Reveal>
+        {/* ══════════ FULL SCREEN IMAGE BACKGROUND UPDATES SECTION ══════════ */}
+        <div 
+          className="relative w-full min-h-screen flex items-center justify-center overflow-hidden py-24 bg-black text-white" 
+          ref={updatesRef}
+        >
+          {/* Background Image with fade effect */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 0.65 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.5, ease: 'easeOut' }}
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+            style={{ 
+              backgroundImage: "url('/assets/t6.png')",
+            }}
+          />
+          {/* Fade overlays to blend with the top and bottom of the section */}
+          <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-transparent to-neutral-950 z-10 pointer-events-none" />
+          <div className="absolute inset-0 bg-black/30 z-10 pointer-events-none" />
+
+          {/* Content container */}
+          <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <motion.section
+              className="flex flex-col lg:flex-row gap-8 items-center justify-between w-full"
+              initial={{ opacity: 0, y: 48 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {/* Left Column: Text (takes remaining space, aligned slightly up) */}
+              <div className="flex-1 flex flex-col items-center lg:items-start justify-start p-6 lg:pt-16 space-y-4">
                 <motion.div 
-                  className="h-[3px] bg-luxury-gold mt-4"
-                  variants={{
-                    initial: { width: '0%', originX: 0 },
-                    hover: { width: '100%', originX: 0 }
-                  }}
-                  transition={{ duration: 0.35, ease: 'easeOut' }}
-                />
-                
-                {/* Hint indicator */}
-                <p className="text-[10px] text-luxury-muted uppercase tracking-[0.22em] mt-3 font-bold opacity-75 group-hover:text-luxury-gold transition duration-200">
-                  {showUpdates ? "▼ Click to collapse" : "▶ Click to expand"}
-                </p>
-              </motion.div>
-
-              {/* Expandable Bullet Points with Watch Brand updates */}
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ 
-                  height: showUpdates ? 'auto' : 0, 
-                  opacity: showUpdates ? 1 : 0 
-                }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="overflow-hidden w-full animate-gpu"
-              >
-                <ul className="space-y-4 text-left w-full mt-4 max-w-sm">
-                  {displayedUpdates.map((item, idx) => (
-                    <motion.li 
-                      key={idx}
-                      className="flex items-start gap-3"
-                      initial={{ x: -15, opacity: 0 }}
-                      animate={updatesInView ? { x: 0, opacity: 1 } : { x: -15, opacity: 0 }}
-                      transition={{ delay: updatesInView ? idx * 0.08 : 0, duration: 0.3 }}
+                  onClick={() => setShowUpdates(!showUpdates)}
+                  className="cursor-pointer group inline-block text-center lg:text-left select-none"
+                  initial="initial"
+                  whileHover="hover"
+                >
+                  <Reveal dir="left">
+                    <motion.h2 
+                      className="text-4xl sm:text-5xl lg:text-6xl font-serif font-black text-white tracking-[0.2em] uppercase leading-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
+                      variants={{
+                        initial: { scale: 1, color: '#ffffff' },
+                        hover: { scale: 1.04, color: '#c5a880' }
+                      }}
+                      transition={{ type: 'spring', stiffness: 200, damping: 15 }}
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-luxury-gold mt-2 flex-shrink-0" />
-                      <div>
-                        <h4 className="text-xs font-black uppercase text-black tracking-wider">{item.title}</h4>
-                        <p className="text-luxury-muted text-xs leading-relaxed mt-0.5">{item.detail}</p>
-                      </div>
-                    </motion.li>
-                  ))}
-                </ul>
-              </motion.div>
-            </div>
+                      KHRONIQ<br />UPDATES
+                    </motion.h2>
+                  </Reveal>
+                  <motion.div 
+                    className="h-[3px] bg-luxury-gold mt-4"
+                    variants={{
+                      initial: { width: '0%', originX: 0 },
+                      hover: { width: '100%', originX: 0 }
+                    }}
+                    transition={{ duration: 0.35, ease: 'easeOut' }}
+                  />
+                  
+                  {/* Hint indicator */}
+                  <p className="text-[10px] text-luxury-gold uppercase tracking-[0.22em] mt-3 font-bold opacity-90 group-hover:text-luxury-gold transition duration-200 drop-shadow-md">
+                    {showUpdates ? "▼ Click to collapse" : "▶ Click to expand"}
+                  </p>
+                </motion.div>
 
-            {/* Right Column: Single Video Showcase */}
-            <div className="w-full lg:w-[650px] h-[600px] relative bg-transparent flex-shrink-0 shadow-xl rounded-lg overflow-hidden border border-black/10">
-              <video 
-                autoPlay 
-                loop 
-                muted 
-                playsInline 
-                className="w-full h-full object-cover"
-              >
-                <source src="/assets/khroniq_updates.mp4" type="video/mp4" />
-              </video>
-            </div>
-          </motion.section>
+                {/* Expandable Bullet Points with Watch Brand updates */}
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ 
+                    height: showUpdates ? 'auto' : 0, 
+                    opacity: showUpdates ? 1 : 0 
+                  }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  className="overflow-hidden w-full animate-gpu"
+                >
+                  <ul className="space-y-4 text-left w-full mt-4 max-w-lg">
+                    {displayedUpdates.map((item, idx) => (
+                      <motion.li 
+                        key={idx}
+                        className="flex items-start gap-3"
+                        initial={{ x: -15, opacity: 0 }}
+                        animate={updatesInView ? { x: 0, opacity: 1 } : { x: -15, opacity: 0 }}
+                        transition={{ delay: updatesInView ? idx * 0.08 : 0, duration: 0.3 }}
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-luxury-gold mt-2 flex-shrink-0" />
+                        <div>
+                          <h4 className="text-sm font-black uppercase text-white tracking-wider drop-shadow-md">{item.title}</h4>
+                          <p className="text-gray-300 text-xs leading-relaxed mt-0.5 drop-shadow-sm">{item.detail}</p>
+                        </div>
+                      </motion.li>
+                    ))}
+                  </ul>
+                </motion.div>
+              </div>
+            </motion.section>
+          </div>
         </div>
       </div>
     </>
