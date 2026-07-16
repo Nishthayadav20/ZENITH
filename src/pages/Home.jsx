@@ -1055,6 +1055,7 @@ export default function Home({ onPageChange }) {
                   return '#12100a';
                 })()
               : '#000000',
+            color: '#ffffff',
             transition: 'background-color 0.6s ease',
           }}
         >

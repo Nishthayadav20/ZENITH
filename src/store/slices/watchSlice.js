@@ -446,13 +446,19 @@ export const fetchProducts = () => async (dispatch) => {
   try {
     const res = await fetch('/api/products');
     const data = await res.json();
-    if (data && data.success) {
-      dispatch(setProductsAction(data.products));
+    if (data && data.success && data.products && data.products.length > 0) {
+      // Normalize: ensure every product has `id` set from `_id`
+      const normalized = data.products.map(p => ({
+        ...p,
+        id: p.id || (p._id ? p._id.toString() : undefined),
+      }));
+      dispatch(setProductsAction(normalized));
       return;
     }
   } catch (error) {
     console.error('Failed to fetch products from API, falling back to static mock data:', error);
   }
+  // Fallback to mock data if API fails or returns empty
   dispatch(setProductsAction(getMockProducts()));
 };
 
