@@ -1033,29 +1033,10 @@ export default function Home({ onPageChange }) {
       {/* ══════════ FEATURED PRODUCTS ══════════ */}
       <div className="space-y-10 pb-12">
         <section
-          className="w-full py-14 space-y-10 dark-panel"
+          className="w-full py-14 space-y-10"
           style={{
-            backgroundColor: hoveredProduct
-              ? (() => {
-                  const n = (hoveredProduct.name || '').toLowerCase();
-                  if (n.includes('crimson') || n.includes('red'))    return '#1a0506';
-                  if (n.includes('emerald') || n.includes('green'))  return '#021a0b';
-                  if (n.includes('navy') || n.includes('blue'))      return '#020b1a';
-                  if (n.includes('midnight') || n.includes('black')) return '#0a0a0f';
-                  if (n.includes('gold') || n.includes('champagne')) return '#1a1203';
-                  if (n.includes('rose') || n.includes('pink'))      return '#1a0511';
-                  if (n.includes('silver') || n.includes('white'))   return '#0d0d10';
-                  if (n.includes('brown') || n.includes('tan'))      return '#150c04';
-                  if (n.includes('purple') || n.includes('violet'))  return '#0e0618';
-                  const cat = (hoveredProduct.category || '').toLowerCase();
-                  if (cat.includes('khronomaster')) return '#071c12';
-                  if (cat.includes('defy'))         return '#060d1f';
-                  if (cat.includes('heritage'))     return '#1c0e05';
-                  if (cat.includes('elite'))        return '#1a1003';
-                  return '#12100a';
-                })()
-              : '#000000',
-            color: '#ffffff',
+            backgroundColor: '#ffffff',
+            color: '#000000',
             transition: 'background-color 0.6s ease',
           }}
         >
@@ -1063,37 +1044,28 @@ export default function Home({ onPageChange }) {
           <div className="text-center max-w-2xl mx-auto space-y-3 px-4">
             <Reveal dir="up">
               <p
-                className="text-xs font-black tracking-[0.22em] uppercase transition-colors duration-500"
-                style={{ color: hoveredProduct ? '#c8a96a' : '#b8975a' }}
+                className="text-xs font-black tracking-[0.22em] uppercase"
+                style={{ color: '#b8975a' }}
               >
                 Signature Catalog
               </p>
             </Reveal>
             <SlideReveal delay={0.1}>
               <h2
-                className="text-4xl sm:text-5xl font-black font-serif tracking-wide uppercase transition-colors duration-500 text-white"
+                className="text-4xl sm:text-5xl font-black font-serif tracking-wide uppercase"
+                style={{ color: '#000000' }}
               >
                 Featured Masterpieces
               </h2>
             </SlideReveal>
             <motion.div
-              className="w-16 h-[3px] mx-auto transition-colors duration-500"
-              style={{ background: hoveredProduct ? '#c8a96a' : '#b8975a' }}
+              className="w-16 h-[3px] mx-auto"
+              style={{ background: '#b8975a' }}
               initial={{ scaleX: 0 }}
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.25 }}
             />
-
-            {/* Subtle category name label when hovering */}
-            <motion.p
-              animate={{ opacity: hoveredProduct ? 1 : 0, y: hoveredProduct ? 0 : 8 }}
-              transition={{ duration: 0.3 }}
-              className="text-[11px] tracking-[0.3em] uppercase font-bold"
-              style={{ color: hoveredProduct ? '#c8a96a' : 'transparent' }}
-            >
-              {hoveredProduct?.category || ''}
-            </motion.p>
           </div>
 
           {/* Carousel */}
