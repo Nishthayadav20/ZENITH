@@ -263,10 +263,10 @@ export default function Customization({ onPageChange, params }) {
           <div className="absolute inset-0 opacity-10"
             style={{ backgroundImage: 'radial-gradient(circle at 25% 50%, #2563eb 0%, transparent 60%), radial-gradient(circle at 75% 50%, #2563eb 0%, transparent 60%)' }} />
           <Paintbrush className="mx-auto mb-4" style={{ color: '#3b82f6' }} size={40} />
-          <h1 className="font-serif text-4xl font-black tracking-widest uppercase mb-3" style={{ color: '#3b82f6' }}>
+          <h1 className="font-serif text-4xl font-black tracking-widest uppercase mb-3" style={{ color: '#ffffff' }}>
             Bespoke Atelier
           </h1>
-          <p className="text-white/50 text-sm max-w-xl mx-auto leading-relaxed">
+          <p className="text-sm max-w-xl mx-auto leading-relaxed" style={{ color: '#ffffff' }}>
             Craft your signature timepiece. Select a customizable model below and tailor
             every detail — from dial colour to engraved inscription.
           </p>
@@ -274,10 +274,10 @@ export default function Customization({ onPageChange, params }) {
 
         {/* Product grid */}
         {displayProducts.length === 0 ? (
-          <div className="border border-dashed border-luxury-text/20 rounded-xl p-20 text-center space-y-4">
-            <Sparkles size={36} className="mx-auto opacity-40" style={{ color: '#3b82f6' }} />
-            <p className="text-luxury-muted text-sm">No customizable watches are available at the moment.</p>
-            <p className="text-luxury-muted/60 text-xs">Ask an admin to mark watches as customizable in the dashboard.</p>
+          <div className="rounded-xl p-20 text-center space-y-4" style={{ background: 'linear-gradient(135deg, #0a0a14 0%, #0d1a3a 50%, #0a0a14 100%)', border: '1px dashed rgba(59,130,246,0.3)' }}>
+            <Sparkles size={36} className="mx-auto opacity-70" style={{ color: '#3b82f6' }} />
+            <p className="text-sm" style={{ color: '#ffffff' }}>No customizable watches are available at the moment.</p>
+            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>Ask an admin to mark watches as customizable in the dashboard.</p>
             <button
               onClick={() => onPageChange('shop')}
               className="mt-4 px-8 py-2.5 text-white text-xs font-bold uppercase tracking-widest transition cursor-pointer rounded"
@@ -291,7 +291,7 @@ export default function Customization({ onPageChange, params }) {
         ) : (
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-luxury-muted">
+              <h2 className="text-xs font-bold uppercase tracking-widest" style={{ color: '#ffffff' }}>
                 {noneExplicitlySet
                   ? `All ${displayProducts.length} models available for customisation`
                   : `${displayProducts.length} model${displayProducts.length !== 1 ? 's' : ''} available for customisation`}
@@ -309,7 +309,8 @@ export default function Customization({ onPageChange, params }) {
                   onClick={() => handleSelectProduct(product)}
                   whileHover={{ y: -4 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group text-left bg-[#111111] rounded-xl overflow-hidden border border-white/5 hover:border-blue-500/30 transition-all duration-300 cursor-pointer"
+                  className="group text-left rounded-xl overflow-hidden border border-white/10 hover:border-blue-500/50 transition-all duration-300 cursor-pointer"
+                  style={{ background: 'linear-gradient(145deg, #0a0a14 0%, #0d1a3a 100%)' }}
                 >
                   <div className="relative overflow-hidden bg-[#0d0d0d]" style={{ height: 200 }}>
                     <img
@@ -324,8 +325,8 @@ export default function Customization({ onPageChange, params }) {
                     </div>
                   </div>
                   <div className="p-4 space-y-2">
-                    <p className="text-[10px] text-gray-300 uppercase tracking-widest">{product.category}</p>
-                    <h3 className="text-white font-bold text-sm leading-tight">{product.name}</h3>
+                    <p className="text-[10px] uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.7)' }}>{product.category}</p>
+                    <h3 className="font-bold text-sm leading-tight" style={{ color: '#ffffff' }}>{product.name}</h3>
                     <div className="flex items-center justify-between">
                       <span className="font-black" style={{ color: '#3b82f6' }}>{formatPrice(product.price)}</span>
                       <span className="text-[10px] border px-2.5 py-1 rounded font-bold tracking-wider transition" style={{ color: '#2563eb', borderColor: 'rgba(37,99,235,0.4)' }}>

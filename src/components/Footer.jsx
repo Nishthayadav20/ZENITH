@@ -123,16 +123,16 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
               transition: 'opacity 0.9s ease, transform 0.9s ease',
             }}>
               {/* Logo */}
-              <div className="flex items-center space-x-3 mb-8">
+              <div className="flex items-center space-x-5 mb-8">
                 <img 
                   src="/assets/logo_icon.png" 
                   alt="KHRONIQ Logo" 
-                  className="w-9 h-9 object-contain" 
+                  className="w-20 h-20 object-contain" 
                 />
                 <img 
                   src="/assets/logo_text.png" 
                   alt="KHRONIQ" 
-                  className="h-7 object-contain mt-0.5" 
+                  className="h-16 object-contain mt-0.5" 
                 />
               </div>
 
