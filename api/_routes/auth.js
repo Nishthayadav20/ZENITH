@@ -218,6 +218,9 @@ router.put('/profile', protect, async (req, res) => {
 // @route   POST /api/auth/forgot-password
 // @desc    Send password reset link to user's email
 // @access  Public
+// @route   POST /api/auth/forgot-password
+// @desc    Send password reset link to user's email
+// @access  Public
 router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
 
@@ -237,16 +240,40 @@ router.post('/forgot-password', async (req, res) => {
     user.resetPasswordExpire = Date.now() + 15 * 60 * 1000; // 15 minutes
     await user.save();
 
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${rawToken}`;
+    const resetUrl = `${process.env.FRONTEND_URL || 'https://zenith-sigma-ruby.vercel.app'}/reset-password/${rawToken}`;
 
     await sendEmail({
       to: user.email,
-      subject: 'KHRONIQ Watches - Password Reset Request',
+      subject: 'KHRONIQ Watches - Reset Your Password',
       html: `
-        <p>Hello ${user.name},</p>
-        <p>You requested a password reset. Click the link below to set a new password. This link expires in 15 minutes.</p>
-        <p><a href="${resetUrl}">${resetUrl}</a></p>
-        <p>If you did not request this, please ignore this email.</p>
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;background:#ffffff;">
+          <div style="background:#1a1a1a;padding:24px 32px;text-align:center;">
+            <span style="color:#ffffff;font-size:20px;font-weight:bold;letter-spacing:2px;">KHRONIQ</span>
+          </div>
+          <div style="padding:32px;">
+            <h2 style="color:#1a1a1a;margin-top:0;">Reset your password</h2>
+            <p style="color:#444;font-size:14px;line-height:1.6;">Hello ${user.name},</p>
+            <p style="color:#444;font-size:14px;line-height:1.6;">
+              We received a request to reset the password for your KHRONIQ account. Click the button below to choose a new password. This link is valid for <strong>15 minutes</strong>.
+            </p>
+            <div style="text-align:center;margin:32px 0;">
+              <a href="${resetUrl}" style="background:#93744d;color:#ffffff;text-decoration:none;padding:14px 32px;font-size:13px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;border-radius:2px;display:inline-block;">
+                Reset Password
+              </a>
+            </div>
+            <p style="color:#888;font-size:12px;line-height:1.6;">
+              If the button above doesn't work, copy and paste this link into your browser:<br/>
+              <a href="${resetUrl}" style="color:#93744d;word-break:break-all;">${resetUrl}</a>
+            </p>
+            <hr style="border:none;border-top:1px solid #eee;margin:24px 0;"/>
+            <p style="color:#999;font-size:12px;line-height:1.6;">
+              If you didn't request a password reset, you can safely ignore this email — your password will remain unchanged. For your security, never share this link with anyone.
+            </p>
+          </div>
+          <div style="background:#f6f6f6;padding:16px 32px;text-align:center;">
+            <p style="color:#999;font-size:11px;margin:0;">© ${new Date().getFullYear()} KHRONIQ Watches. All rights reserved.</p>
+          </div>
+        </div>
       `
     });
 
