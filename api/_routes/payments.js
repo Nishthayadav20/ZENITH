@@ -3,6 +3,7 @@ import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import Product from '../_models/Product.js';
 import Order from '../_models/Order.js';
+import Coupon from '../_models/Coupon.js';
 import { protect } from '../_middleware/auth.js';
 import sendEmail from '../utils/sendEmail.js';
 
@@ -43,6 +44,47 @@ router.post('/create-order', protect, async (req, res) => {
   }
 });
 
+// @route   POST /api/payments/validate-coupon
+// @desc    Validate a coupon code against the current cart subtotal and this user's redemption history
+// @access  Private
+router.post('/validate-coupon', protect, async (req, res) => {
+  const { code, subtotal } = req.body;
+
+  if (!code || typeof code !== 'string') {
+    return res.status(400).json({ success: false, message: 'Please enter a coupon code.' });
+  }
+  if (!subtotal || Number(subtotal) <= 0) {
+    return res.status(400).json({ success: false, message: 'Your cart is empty.' });
+  }
+
+  try {
+    const coupon = await Coupon.findOne({ code: code.trim().toUpperCase() });
+
+    if (!coupon) {
+      return res.status(404).json({ success: false, message: 'Invalid coupon code.' });
+    }
+
+    if (coupon.usedBy && coupon.usedBy.includes(req.user.email)) {
+      return res.status(400).json({ success: false, message: 'You have already used this coupon.' });
+    }
+
+    const discount = Math.round(Number(subtotal) * (coupon.discountPercent / 100));
+
+    res.json({
+      success: true,
+      coupon: {
+        code: coupon.code,
+        discountPercent: coupon.discountPercent,
+        description: coupon.description
+      },
+      discount
+    });
+  } catch (error) {
+    console.error('Coupon validation error:', error);
+    res.status(500).json({ success: false, message: 'Failed to validate coupon.' });
+  }
+});
+
 // @route   POST /api/payments/verify
 // @desc    Verify payment signature, then create the actual order in DB
 // @access  Private
@@ -55,7 +97,8 @@ router.post('/verify', protect, async (req, res) => {
     subtotal,
     discount,
     total,
-    shippingDetails
+    shippingDetails,
+    couponCode
   } = req.body;
 
   try {
@@ -125,6 +168,7 @@ for (const item of items) {
       items: dbItems,
       subtotal: Number(subtotal),
       discount: Number(discount),
+      couponCode: couponCode || undefined,
       total: Number(total),
       shippingDetails,
       paymentDetails: {
@@ -135,6 +179,20 @@ for (const item of items) {
     });
 
     const createdOrder = await order.save();
+
+    // Mark this coupon as used by this user, so it can't be applied again on their account.
+    // Payment has already succeeded at this point, so we record usage rather than blocking the order.
+    if (couponCode) {
+      try {
+        await Coupon.updateOne(
+          { code: couponCode.trim().toUpperCase(), usedBy: { $ne: req.user.email } },
+          { $push: { usedBy: req.user.email } }
+        );
+      } catch (couponError) {
+        console.error('Failed to record coupon usage:', couponError);
+        // Don't fail the order over this — the purchase itself already succeeded.
+      }
+    }
 
     // Send invoice email (non-blocking — don't fail the order if email fails)
     try {

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import jsPDF from 'jspdf';
-import { createRazorpayOrder, verifyRazorpayPayment, selectCurrentCurrency, formatPrice, getDiscountedPrice } from '../store/slices/watchSlice';
+import { createRazorpayOrder, verifyRazorpayPayment, validateCoupon, selectCurrentCurrency, formatPrice, getDiscountedPrice } from '../store/slices/watchSlice';
 
 import confetti from 'canvas-confetti';
-import { CheckCircle2, CreditCard, Landmark, ArrowRight, ShieldCheck, Gift, Check } from 'lucide-react';
+import { CheckCircle2, CreditCard, Landmark, ArrowRight, ShieldCheck, Gift, Check, Tag, X, Loader2 } from 'lucide-react';
 
 export function getExpectedDeliveryDate(zipCode) {
   if (!zipCode) return null;
@@ -41,7 +41,10 @@ export default function Checkout({ params, onPageChange }) {
   const currentUser = useSelector(state => state.watch.currentUser);
   const currentCurrency = useSelector(selectCurrentCurrency);
   
-  const appliedCoupon = params?.appliedCoupon || null;
+  const [appliedCoupon, setAppliedCoupon] = useState(params?.appliedCoupon || null);
+  const [couponInput, setCouponInput] = useState('');
+  const [couponError, setCouponError] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
 
   const isGiftingJourney = localStorage.getItem('khroniq_is_gifting_journey') === 'true';
   const [step, setStep] = useState(isGiftingJourney ? 1 : 2); // 1: Gifting, 2: Shipping, 3: Payment, 4: Success
@@ -111,6 +114,28 @@ const [processingPayment, setProcessingPayment] = useState(false);
     setStep(3);
   };
 
+  const handleApplyCoupon = async () => {
+    if (!couponInput.trim()) {
+      setCouponError('Please enter a coupon code.');
+      return;
+    }
+    setCouponLoading(true);
+    setCouponError('');
+    const res = await dispatch(validateCoupon(couponInput.trim(), subtotal));
+    setCouponLoading(false);
+    if (res.success) {
+      setAppliedCoupon(res.coupon);
+      setCouponInput('');
+    } else {
+      setCouponError(res.message || 'Invalid coupon code.');
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponError('');
+  };
+
 const handleRazorpayPayment = async () => {
     setProcessingPayment(true);
 
@@ -159,7 +184,8 @@ const handleRazorpayPayment = async () => {
           discount,
           total,
           shippingDetails: shippingForm,
-          giftingOptions
+          giftingOptions,
+          couponCode: appliedCoupon?.code || null
         }));
 
         setProcessingPayment(false);
@@ -597,6 +623,52 @@ const rzp = new window.Razorpay(options);
                   <option value="India">India</option>
                   <option value="Japan">Japan</option>
                 </select>
+              </div>
+
+              {/* Coupon Code */}
+              <div className="space-y-1.5 pt-2 border-t border-white/5">
+                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest flex items-center gap-1.5 pt-3">
+                  <Tag size={11} className="text-luxury-gold" />
+                  Coupon Code
+                </label>
+
+                {appliedCoupon ? (
+                  <div className="flex items-center justify-between bg-emerald-500/5 border border-emerald-500/20 rounded p-3">
+                    <div>
+                      <p className="text-emerald-400 text-xs font-bold tracking-wide">{appliedCoupon.code}</p>
+                      <p className="text-[10px] text-gray-400 mt-0.5">{appliedCoupon.description}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleRemoveCoupon}
+                      className="text-gray-400 hover:text-white transition p-1 cursor-pointer"
+                      aria-label="Remove coupon"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex space-x-2">
+                    <input
+                      type="text"
+                      value={couponInput}
+                      onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError(''); }}
+                      placeholder="Enter code"
+                      className="flex-1 bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold uppercase"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleApplyCoupon}
+                      disabled={couponLoading}
+                      className="px-5 border border-luxury-gold text-luxury-gold font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold hover:text-luxury-dark transition flex items-center justify-center cursor-pointer disabled:opacity-50 rounded"
+                    >
+                      {couponLoading ? <Loader2 size={14} className="animate-spin" /> : 'Apply'}
+                    </button>
+                  </div>
+                )}
+                {couponError && (
+                  <p className="text-red-400 text-[10px] pt-1">{couponError}</p>
+                )}
               </div>
 
 <div className="flex space-x-4 pt-4">

@@ -1006,6 +1006,20 @@ export const resetPassword = (token, password) => async () => {
   }
 };
 
+export const validateCoupon = (code, subtotal) => async () => {
+  try {
+    const res = await fetch('/api/payments/validate-coupon', {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ code, subtotal })
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return { success: false, message: 'Failed to validate coupon.' };
+  }
+};
+
 export const createRazorpayOrder = (amount) => async () => {
   try {
     const res = await fetch('/api/payments/create-order', {
