@@ -199,6 +199,156 @@ export default function Static({ params, _onPageChange }) {
     }
   ];
 
+  const warrantyData = [
+    {
+      title: "1. Warranty Coverage",
+      content: "Every genuine KHRONIQ watch purchased from KHRONIQ or an Authorized Dealer is covered by a Limited Warranty of Twelve (12) Months from the original date of purchase, unless otherwise specified. This warranty applies only to manufacturing defects in materials and workmanship under normal use."
+    },
+    {
+      title: "2. What is Covered",
+      content: (
+        <div className="space-y-2">
+          <p>The Limited Warranty covers the following components if they fail due to manufacturing defects under normal use:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Manufacturing defects in the watch movement.</li>
+            <li>Defects in the dial resulting from manufacturing.</li>
+            <li>Manufacturing defects in the watch hands.</li>
+            <li>Defective date display mechanism.</li>
+            <li>Crown malfunction due to manufacturing defect.</li>
+            <li>Defective push buttons (where applicable).</li>
+            <li>Manufacturing defects in the watch case.</li>
+            <li>Manufacturing defects in the bracelet clasp or buckle.</li>
+            <li>Defective deployment clasp due to manufacturing.</li>
+            <li>Manufacturing defects affecting normal timekeeping.</li>
+            <li>Loose indices or hour markers caused by manufacturing.</li>
+            <li>Factory-installed components that fail due to manufacturing defects.</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted">KHRONIQ reserves the right to repair, replace, or service the defective component at its sole discretion.</p>
+        </div>
+      )
+    },
+    {
+      title: "3. What is Not Covered",
+      content: (
+        <div className="space-y-2">
+          <p>This warranty does not cover:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Normal wear and tear.</li>
+            <li>Scratches on crystal, case, bracelet, clasp, or buckle.</li>
+            <li>Leather strap wear, fading, stretching, cracking, or discoloration.</li>
+            <li>Mesh, silicone, rubber, nylon, fabric, or metal strap wear caused by normal use.</li>
+            <li>Battery depletion (unless otherwise specified).</li>
+            <li>Damage caused by dropping, impact, accidents, or mishandling.</li>
+            <li>Water damage due to improper use beyond the stated water-resistance rating.</li>
+            <li>Damage caused by chemicals, perfumes, detergents, solvents, cosmetics, or saltwater unless specifically designed for such use.</li>
+            <li>Damage caused by excessive heat, fire, smoke, or extreme temperatures.</li>
+            <li>Damage resulting from floods, earthquakes, storms, or other natural disasters.</li>
+            <li>Damage caused by negligence, misuse, abuse, or improper storage.</li>
+            <li>Unauthorized modifications or repairs.</li>
+            <li>Removal or alteration of the serial number or QR code.</li>
+            <li>Cosmetic changes that do not affect functionality.</li>
+            <li>Damage caused during transportation after delivery.</li>
+            <li>Loss or theft of the watch or accessories.</li>
+          </ul>
+        </div>
+      )
+    },
+    {
+      title: "4. Warranty Conditions",
+      content: (
+        <div className="space-y-2">
+          <p>To obtain warranty service, the following conditions must be met:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>The original purchase invoice must be presented.</li>
+            <li>The original KHRONIQ Warranty Card must accompany the watch.</li>
+            <li>The serial number must be clearly readable and unaltered.</li>
+            <li>The watch must not have been opened or repaired by any unauthorized person.</li>
+            <li>Warranty applies only to the original purchaser unless otherwise permitted by law.</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted italic">Failure to satisfy these conditions may result in rejection of the warranty claim.</p>
+        </div>
+      )
+    },
+    {
+      title: "5. Warranty Claim Procedure",
+      content: (
+        <div className="space-y-2">
+          <p>To request warranty service:</p>
+          <ol className="list-decimal pl-5 space-y-1">
+            <li>Contact KHRONIQ Customer Support.</li>
+            <li>Provide your Order Number or Invoice.</li>
+            <li>Share the Model Number and Serial Number.</li>
+            <li>Describe the issue along with clear photographs or videos, if requested.</li>
+            <li>Follow the shipping instructions provided by our support team.</li>
+          </ol>
+          <p className="text-[11px] text-luxury-muted">KHRONIQ may inspect the product before approving the warranty claim.</p>
+        </div>
+      )
+    },
+    {
+      title: "6. Repair or Replacement",
+      content: "If a valid manufacturing defect is confirmed, KHRONIQ may, at its sole discretion: repair the defective watch, replace defective components, replace the watch with the same model, or replace the watch with an equivalent model if the original model has been discontinued. Repaired or replaced parts shall become the property of KHRONIQ."
+    },
+    {
+      title: "7. Warranty Period After Repair",
+      content: "Repair or replacement under warranty shall not extend or renew the original warranty period. The warranty continues only for the remaining portion of the original warranty."
+    },
+    {
+      title: "8. Shipping for Warranty",
+      content: "Where applicable, customers may be responsible for securely packaging and shipping the watch to the designated service center. KHRONIQ is not responsible for damage caused by inadequate packaging during transit. Return shipping arrangements shall be communicated after warranty approval."
+    },
+    {
+      title: "9. Water Resistance",
+      content: "Water resistance is not permanent and may diminish over time due to normal wear, aging of seals, accidental impacts, or improper handling. The warranty does not cover water damage resulting from operation of the crown or pushers while underwater, failure to properly secure the crown, use beyond the specified water-resistance rating, or damage caused after unauthorized servicing. Customers should regularly inspect water-resistant watches if frequently exposed to water."
+    },
+    {
+      title: "10. Leather Strap Notice",
+      content: "Leather is a natural material and may develop variations in texture, grain, or color over time. Such natural characteristics are not manufacturing defects and are not covered under warranty."
+    },
+    {
+      title: "11. Battery",
+      content: "Quartz watch batteries are consumable items. Battery replacement due to normal depletion is not covered unless otherwise stated in the product description."
+    },
+    {
+      title: "12. Exclusions from Liability",
+      content: "KHRONIQ shall not be liable for loss of business, loss of profits, emotional distress, indirect or consequential damages, delays caused by courier partners, or delays due to Force Majeure events."
+    },
+    {
+      title: "13. Counterfeit Products",
+      content: "This warranty applies only to genuine KHRONIQ products purchased directly from KHRONIQ or an Authorized Dealer. Counterfeit, altered, or unauthorized products are not eligible for warranty service."
+    },
+    {
+      title: "14. Authenticity Verification",
+      content: "KHRONIQ may require verification of the Serial Number, QR Code, Purchase Invoice, and Warranty Card before processing any warranty request."
+    },
+    {
+      title: "15. Right to Refuse Warranty",
+      content: "KHRONIQ reserves the right to refuse warranty service if the watch is counterfeit, the serial number has been removed or tampered with, the watch has been modified, the defect resulted from misuse or negligence, or if false or misleading information has been provided."
+    },
+    {
+      title: "16. Force Majeure",
+      content: "KHRONIQ shall not be responsible for delays in warranty service caused by events beyond its reasonable control, including pandemics, epidemics, natural disasters, floods, earthquakes, fires, wars, strikes, government restrictions, transport disruptions, customs delays, or other Force Majeure events."
+    },
+    {
+      title: "17. Governing Law",
+      content: "This Warranty Policy shall be governed by the laws of India. Any dispute arising from this Warranty Policy shall be subject to the exclusive jurisdiction of the competent courts at Lucknow, Uttar Pradesh, unless otherwise required by applicable law."
+    },
+    {
+      title: "18. Contact Us",
+      content: (
+        <div className="space-y-2">
+          <p className="font-bold text-luxury-text">KHRONIQ</p>
+          <p>A Premium Watch Brand by True Knock Industries Private Limited</p>
+          <div className="pl-3 border-l border-luxury-gold-dark/30 text-[11px] text-luxury-muted space-y-0.5">
+            <p><span className="font-semibold text-luxury-text">Office Address:</span> OFFICE NO. - 2, CHAMBER - 4, UDAIGIRI APARTMENT, KAUSHAMBI, GHAZIABAD, UTTAR PRADESH — 201010</p>
+            <p><span className="font-semibold text-luxury-text">Website:</span> www.khroniq.com</p>
+            <p><span className="font-semibold text-luxury-text">Email:</span> support@khroniq.com</p>
+          </div>
+        </div>
+      )
+    }
+  ];
+
   return (
     <div className="space-y-8 pb-12">
       {/* Header Banner */}
@@ -216,6 +366,7 @@ export default function Static({ params, _onPageChange }) {
           { key: 'shipping', label: 'Shipping Policy' },
           { key: 'exchange', label: 'Exchange Policy' },
           { key: 'refund', label: 'Refund Policy' },
+          { key: 'warranty', label: 'Warranty Policy' },
           { key: 'faq', label: 'Client FAQ' },
           { key: 'blogs', label: 'Blogs & Editorial' },
           { key: 'policies', label: 'Legal Policies' }
@@ -465,6 +616,50 @@ export default function Static({ params, _onPageChange }) {
                 <br />
                 Any timepiece showing signs of wear, sizing modifications (e.g. link removal), or missing original box/papers cannot be refunded. Bespoke engraved or custom-configured watches are non-refundable.
               </p>
+            </div>
+          </div>
+        )}
+
+        {/* WARRANTY POLICY TAB */}
+        {activeTab === 'warranty' && (
+          <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
+            <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Warranty Policy</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
+              {/* Sticky Sidebar Table of Contents */}
+              <div className="md:col-span-4 space-y-2 max-h-[500px] overflow-y-auto pr-2 border-r border-luxury-text/10 sticky top-24 hidden md:block">
+                <p className="text-[10px] font-bold text-luxury-text uppercase tracking-widest mb-3">Table of Contents</p>
+                {warrantyData.map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      const element = document.getElementById(`warranty-section-${idx}`);
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }}
+                    className="block text-left w-full text-[10px] py-1.5 px-2 hover:bg-luxury-gold-dark/5 hover:text-luxury-gold-dark transition rounded font-medium truncate cursor-pointer"
+                  >
+                    {item.title}
+                  </button>
+                ))}
+              </div>
+
+              {/* Scrollable Policy Text */}
+              <div className="md:col-span-8 space-y-6 max-h-[600px] overflow-y-auto pr-2">
+                <p className="text-[11px] text-luxury-muted italic mb-4">Effective Date: 1st July 2026</p>
+                <p className="text-[11px] text-luxury-muted mb-4">
+                  Welcome to KHRONIQ. Every KHRONIQ timepiece is carefully inspected and tested before dispatch. This Warranty Policy explains the scope of warranty coverage, eligibility, exclusions, and the procedure for obtaining warranty service.
+                </p>
+                {warrantyData.map((item, idx) => (
+                  <section key={idx} id={`warranty-section-${idx}`} className="space-y-2 scroll-mt-24 pb-4 border-b border-luxury-text/5 last:border-b-0">
+                    <h4 className="font-bold text-luxury-text uppercase text-[10px] tracking-wider">{item.title}</h4>
+                    <div className="text-[11px] font-light text-luxury-muted leading-relaxed">
+                      {item.content}
+                    </div>
+                  </section>
+                ))}
+              </div>
             </div>
           </div>
         )}

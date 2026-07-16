@@ -37,6 +37,7 @@ const NAV_COLS = [
       { label: 'Shipping Policy',     page: 'static',  args: { view: 'shipping' } },
       { label: 'Exchange Policy',     page: 'static',  args: { view: 'exchange' } },
       { label: 'Refund Policy',       page: 'static',  args: { view: 'refund' } },
+      { label: 'Warranty Policy',     page: 'static',  args: { view: 'warranty' } },
       { label: 'FAQ',                 page: 'static',  args: { view: 'faq' } },
     ],
   },
