@@ -23,7 +23,7 @@ import {
 import { 
   BarChart3, Plus, Edit, Trash2, Check, X, Tag, Star, 
   Package, AlertTriangle, ShieldAlert, ArrowLeft, ArrowUpRight,
-  CheckCircle2, LogOut, Newspaper, ImagePlus, BookOpen, Gift
+  CheckCircle2, LogOut, Newspaper, ImagePlus, BookOpen, Gift, Download
 } from 'lucide-react';
 
 const PRESET_STRAPS = [
@@ -672,6 +672,47 @@ const handleEditImageUpload = async (e) => {
     } else {
       alert(res?.message || 'Failed to update product.');
     }
+  };
+
+  const handleDownloadWarrantyCSV = () => {
+    const rows = [];
+    orders.forEach((o) => {
+      (o.items || []).forEach((item) => {
+        if (item.serialNumber || item.claimCode) {
+          rows.push({
+            orderId: o.id,
+            watchName: item.name,
+            customerEmail: o.userEmail,
+            serialNumber: item.serialNumber || '',
+            claimCode: item.claimCode || '',
+            warrantyClaimed: item.warrantyClaimed ? 'Yes' : 'No'
+          });
+        }
+      });
+    });
+
+    if (rows.length === 0) {
+      alert('No serial/claim code records found.');
+      return;
+    }
+
+    const headers = ['Order ID', 'Watch Name', 'Customer Email', 'Serial Number', 'Claim Code', 'Warranty Claimed'];
+    const escapeCsv = (val) => `"${String(val).replace(/"/g, '""')}"`;
+    const csvLines = [
+      headers.join(','),
+      ...rows.map(r => [r.orderId, r.watchName, r.customerEmail, r.serialNumber, r.claimCode, r.warrantyClaimed].map(escapeCsv).join(','))
+    ];
+    const csvContent = csvLines.join('\r\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `khroniq-warranty-codes-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handleDeleteProductClick = (id) => {
@@ -1813,7 +1854,16 @@ const handleEditImageUpload = async (e) => {
       {/* --- TAB CONTENT: ORDER DISPATCHER (MANAGE STATUSES) --- */}
       {activeTab === 'orders' && (
         <div className="space-y-6">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-white">Client Invoice Dispatcher</h3>
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-white">Client Invoice Dispatcher</h3>
+            <button
+              onClick={handleDownloadWarrantyCSV}
+              className="px-4 py-2 bg-luxury-gold/10 hover:bg-luxury-gold/20 border border-luxury-gold/30 text-luxury-gold text-[10px] font-black tracking-widest uppercase rounded flex items-center gap-2 cursor-pointer transition"
+            >
+              <Download size={13} />
+              Export Serial & Claim Codes (CSV)
+            </button>
+          </div>
           
           {orders.length === 0 ? (
             <p className="text-gray-400 text-xs italic p-4 text-center border border-dashed border-white/10 rounded">No order records found in simulated database.</p>
