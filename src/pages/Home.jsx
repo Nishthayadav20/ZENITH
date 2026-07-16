@@ -681,14 +681,7 @@ export default function Home({ onPageChange }) {
 
 
 
-  const defaultUpdates = [
-    { title: "Grand Boutique Launch", detail: "Geneva flagship store grand opening scheduled for October 15th." },
-    { title: "Limited Titanium Caliber", detail: "Exclusive high-frequency titanium editions starting to ship next month." },
-    { title: "Zero Carbon Milestone", detail: "Le Locle manufacture officially certified as a 100% net-zero operation." },
-    { title: "Lifetime Precision Care", detail: "Introducing extended lifetime service programs for certified chronometers." }
-  ];
-
-  const displayedUpdates = brandUpdates.length > 0 ? brandUpdates : defaultUpdates;
+  const displayedUpdates = brandUpdates;
 
   useEffect(() => {
     const handleResize = () => {

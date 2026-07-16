@@ -349,6 +349,195 @@ export default function Static({ params, _onPageChange }) {
     }
   ];
 
+  const privacyData = [
+    {
+      title: "1. Company Information",
+      content: (
+        <div className="space-y-2">
+          <p><span className="font-semibold text-luxury-text">Brand:</span> KHRONIQ</p>
+          <p><span className="font-semibold text-luxury-text">Owned & Marketed By:</span> True Knock Industries Private Limited</p>
+          <p className="font-semibold text-luxury-text mt-1">Registered Office:</p>
+          <p className="pl-3 border-l border-luxury-gold-dark/30 italic text-[11px] text-luxury-muted">
+            Office No. - 2, Chamber - 4,<br />
+            Udaigiri Tower, Kaushambi,<br />
+            Ghaziabad, Uttar Pradesh — 201010,<br />
+            India
+          </p>
+          <p><span className="font-semibold text-luxury-text">Website:</span> <a href="https://www.khroniq.com" target="_blank" rel="noopener noreferrer" className="text-luxury-gold-dark hover:underline">www.khroniq.com</a></p>
+          <p><span className="font-semibold text-luxury-text">Email:</span> support@khroniq.com</p>
+        </div>
+      )
+    },
+    {
+      title: "2. Information We Collect",
+      content: (
+        <div className="space-y-3">
+          <p>We may collect the following categories of information:</p>
+          
+          <div>
+            <p className="font-bold text-luxury-text uppercase text-[9px] tracking-wider mb-1">Personal Information</p>
+            <ul className="list-disc pl-5 space-y-0.5">
+              <li>Full Name</li>
+              <li>Email Address</li>
+              <li>Mobile Number</li>
+              <li>Shipping Address</li>
+              <li>Billing Address</li>
+              <li>Company Name (if applicable)</li>
+              <li>GST Number (for business customers)</li>
+              <li>Date of Birth (optional)</li>
+              <li>Customer ID</li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-bold text-luxury-text uppercase text-[9px] tracking-wider mb-1">Order Information</p>
+            <ul className="list-disc pl-5 space-y-0.5">
+              <li>Order Number</li>
+              <li>Product Purchased</li>
+              <li>Serial Number</li>
+              <li>Warranty Registration Details</li>
+              <li>Payment Status</li>
+              <li>Shipping Information</li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-bold text-luxury-text uppercase text-[9px] tracking-wider mb-1">Technical Information</p>
+            <ul className="list-disc pl-5 space-y-0.5">
+              <li>IP Address</li>
+              <li>Browser Type</li>
+              <li>Device Information</li>
+              <li>Operating System</li>
+              <li>Time Zone</li>
+              <li>Language Preferences</li>
+              <li>Website Usage Data</li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-bold text-luxury-text uppercase text-[9px] tracking-wider mb-1">Communication Information</p>
+            <ul className="list-disc pl-5 space-y-0.5">
+              <li>Customer Support Requests</li>
+              <li>Emails</li>
+              <li>Chat Messages</li>
+              <li>Product Reviews</li>
+              <li>Feedback</li>
+            </ul>
+          </div>
+        </div>
+      )
+    },
+    {
+      title: "3. How We Use Your Information",
+      content: (
+        <div className="space-y-2">
+          <p>Your information may be used to:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Process and fulfill orders.</li>
+            <li>Deliver products.</li>
+            <li>Process payments.</li>
+            <li>Provide warranty services.</li>
+            <li>Register your watch warranty.</li>
+            <li>Verify product authenticity.</li>
+            <li>Respond to customer support requests.</li>
+            <li>Improve our products and Website.</li>
+            <li>Prevent fraud and unauthorized transactions.</li>
+            <li>Send order updates.</li>
+            <li>Notify you about promotions, launches, and offers (where permitted).</li>
+            <li>Comply with legal and regulatory obligations.</li>
+          </ul>
+        </div>
+      )
+    },
+    {
+      title: "4. Payment Information",
+      content: "Payments are processed through secure third-party payment gateways. KHRONIQ does not store your complete credit card, debit card, CVV, UPI PIN, or banking credentials on its servers. Payment processing is governed by the privacy policies of the respective payment service providers."
+    },
+    {
+      title: "5. Cookies",
+      content: "Our Website may use cookies and similar technologies to remember user preferences, improve browsing experience, analyze Website performance, maintain login sessions, measure Website traffic, and personalize content. You may disable cookies through your browser settings, although certain Website features may not function properly."
+    },
+    {
+      title: "6. Sharing of Information",
+      content: (
+        <div className="space-y-2">
+          <p>We do not sell your personal information. Your information may be shared only with:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Courier and logistics partners</li>
+            <li>Payment gateways</li>
+            <li>Warranty service providers</li>
+            <li>Government authorities when legally required</li>
+            <li>Technology providers supporting our Website</li>
+            <li>Professional advisors including auditors and legal consultants</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted">All such parties are expected to maintain appropriate confidentiality.</p>
+        </div>
+      )
+    },
+    {
+      title: "7. Data Security",
+      content: "KHRONIQ implements commercially reasonable administrative, technical, and organizational measures to protect personal information against unauthorized access, disclosure, alteration, or destruction. However, no online system can guarantee absolute security."
+    },
+    {
+      title: "8. Data Retention",
+      content: "We retain personal information only for as long as necessary to complete transactions, provide warranty services, comply with legal obligations, resolve disputes, and enforce agreements. Certain financial and tax records may be retained for the period required under applicable laws."
+    },
+    {
+      title: "9. Marketing Communications",
+      content: "With your consent or where otherwise permitted by law, we may send promotional emails, SMS, or other communications regarding new collections, exclusive launches, product updates, offers and discounts, and events. You may opt out at any time by using the unsubscribe option or contacting us."
+    },
+    {
+      title: "10. Warranty Registration",
+      content: "When registering your KHRONIQ watch, we may collect the Model Number, Serial Number, Purchase Date, Dealer Information, and Invoice Details. This information is used solely for warranty verification, authenticity confirmation, and customer support."
+    },
+    {
+      title: "11. Product Authenticity",
+      content: "To protect customers from counterfeit products, KHRONIQ may verify QR Codes, Serial Numbers, Purchase Invoices, and Dealer Information. Information submitted for authenticity verification shall be used only for verification and fraud prevention."
+    },
+    {
+      title: "12. Children's Privacy",
+      content: "Our Website is not intended for individuals under the age of 18 years. We do not knowingly collect personal information from children. If we become aware that such information has been collected, we will take reasonable steps to delete it."
+    },
+    {
+      title: "13. Third-Party Links",
+      content: "Our Website may contain links to third-party websites. KHRONIQ is not responsible for the privacy practices, content, or policies of such external websites. Users are encouraged to review the privacy policies of those websites separately."
+    },
+    {
+      title: "14. Your Rights",
+      content: "Subject to applicable law, you may have the right to access your personal information, request correction of inaccurate information, request deletion where legally permissible, withdraw marketing consent, update your contact details, or request information regarding the processing of your personal data. Requests may be submitted through our customer support email."
+    },
+    {
+      title: "15. Fraud Prevention",
+      content: "To protect our customers and business, KHRONIQ may use personal information to detect fraudulent transactions, prevent payment fraud, verify customer identity, investigate suspicious activities, or comply with law enforcement requests where legally required."
+    },
+    {
+      title: "16. International Users",
+      content: "If you access our Website from outside India, you acknowledge that your information may be transferred to, processed, and stored in India or other jurisdictions where our service providers operate, subject to applicable legal requirements."
+    },
+    {
+      title: "17. Changes to This Policy",
+      content: "KHRONIQ reserves the right to amend or update this Privacy Policy at any time. Any revised version will be published on this Website with the updated Effective Date. Continued use of the Website constitutes acceptance of the revised Privacy Policy."
+    },
+    {
+      title: "18. Governing Law",
+      content: "This Privacy Policy shall be governed by the laws of India. Any dispute arising out of or relating to this Privacy Policy shall be subject to the exclusive jurisdiction of the competent courts at Lucknow, Uttar Pradesh, unless otherwise required by applicable law."
+    },
+    {
+      title: "19. Contact Us",
+      content: (
+        <div className="space-y-2">
+          <p className="font-bold text-luxury-text">KHRONIQ</p>
+          <p>A Premium Watch Brand by True Knock Industries Private Limited</p>
+          <div className="pl-3 border-l border-luxury-gold-dark/30 text-[11px] text-luxury-muted space-y-0.5">
+            <p><span className="font-semibold text-luxury-text">Office Address:</span> OFFICE NO. - 2, CHAMBER - 4, UDAIGIRI TOWER, KAUSHAMBI, GHAZIABAD, UTTAR PRADESH — 201010, India</p>
+            <p><span className="font-semibold text-luxury-text">Website:</span> www.khroniq.com</p>
+            <p><span className="font-semibold text-luxury-text">Email:</span> support@khroniq.com</p>
+          </div>
+        </div>
+      )
+    }
+  ];
+
   return (
     <div className="space-y-8 pb-12">
       {/* Header Banner */}
@@ -367,6 +556,7 @@ export default function Static({ params, _onPageChange }) {
           { key: 'exchange', label: 'Exchange Policy' },
           { key: 'refund', label: 'Refund Policy' },
           { key: 'warranty', label: 'Warranty Policy' },
+          { key: 'privacy', label: 'Privacy Policy' },
           { key: 'faq', label: 'Client FAQ' },
           { key: 'blogs', label: 'Blogs & Editorial' },
           { key: 'policies', label: 'Legal Policies' }
