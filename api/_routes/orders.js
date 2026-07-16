@@ -157,6 +157,50 @@ router.put('/:id/cancel', protect, async (req, res) => {
   }
 });
 
+
+// @route   PUT /api/orders/:id/items/:itemIndex/warranty
+// @desc    Manually set/override serial number and/or claim code for a specific order item.
+//          Only overwrites fields actually provided — leaves auto-generated values untouched otherwise.
+// @access  Private/Admin
+router.put('/:id/items/:itemIndex/warranty', protect, adminOnly, async (req, res) => {
+  const { serialNumber, claimCode } = req.body;
+  const itemIndex = Number(req.params.itemIndex);
+
+  try {
+    const order = await Order.findOne({ id: req.params.id });
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    const item = order.items[itemIndex];
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'Order item not found' });
+    }
+
+    if (serialNumber !== undefined && serialNumber.trim() !== '') {
+      const duplicate = await Order.findOne({ id: { $ne: order.id }, 'items.serialNumber': serialNumber.trim() });
+      if (duplicate) {
+        return res.status(400).json({ success: false, message: 'This serial number is already assigned to another item.' });
+      }
+      item.serialNumber = serialNumber.trim();
+    }
+
+    if (claimCode !== undefined && claimCode.trim() !== '') {
+      const duplicate = await Order.findOne({ id: { $ne: order.id }, 'items.claimCode': claimCode.trim() });
+      if (duplicate) {
+        return res.status(400).json({ success: false, message: 'This claim code is already assigned to another item.' });
+      }
+      item.claimCode = claimCode.trim();
+    }
+
+    const updatedOrder = await order.save();
+    res.json({ success: true, order: updatedOrder });
+  } catch (error) {
+    console.error('Update item warranty error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
 // @route   PUT /api/orders/:id/exchange-refund
 // @desc    Request Exchange/Refund for an order
 // @access  Private

@@ -848,6 +848,25 @@ export const updateOrderStatus = (orderId, newStatus) => async (dispatch) => {
   }
 };
 
+export const updateItemWarranty = (orderId, itemIndex, { serialNumber, claimCode }) => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/orders/${orderId}/items/${itemIndex}/warranty`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify({ serialNumber, claimCode })
+    });
+    const data = await res.json();
+    if (data.success) {
+      dispatch(fetchOrders());
+      return { success: true };
+    } else {
+      return { success: false, message: data.message };
+    }
+  } catch (error) {
+    return { success: false, message: 'Failed to update warranty details.' };
+  }
+};
+
 export const addProduct = (productData) => async (dispatch) => {
   try {
     const res = await fetch('/api/products', {

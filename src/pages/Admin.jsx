@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
   updateOrderStatus, 
+  updateItemWarranty, 
   addProduct, 
   editProduct, 
   deleteProduct, 
@@ -94,7 +95,8 @@ export default function Admin({ onPageChange }) {
   const [editForm, setEditForm] = useState(null);
 
   const [expandedNotes, setExpandedNotes] = useState({});
-
+const [expandedWarranty, setExpandedWarranty] = useState({});
+const [warrantyEdits, setWarrantyEdits] = useState({}); // key: `${orderId}-${itemIndex}` -> { serialNumber, claimCode }
   // Add Coupon Form State
 // Add Coupon Form State
   const [newCouponCode, setNewCouponCode] = useState('');
@@ -1800,6 +1802,56 @@ const handleEditImageUpload = async (e) => {
                                 )}
                               </div>
                             )}
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => setExpandedWarranty(prev => ({ ...prev, [o.id]: !prev[o.id] }))}
+                          className="mt-1 text-[9px] font-black tracking-widest uppercase bg-white/5 hover:bg-white/10 text-gray-300 px-2 py-0.5 rounded cursor-pointer transition"
+                        >
+                          WARRANTY {expandedWarranty[o.id] ? '▲' : '▼'}
+                        </button>
+                        {expandedWarranty[o.id] && (
+                          <div className="mt-1.5 space-y-1.5">
+                            {o.items.map((item, idx) => {
+                              const editKey = `${o.id}-${idx}`;
+                              const edit = warrantyEdits[editKey] || {};
+                              return (
+                                <div key={idx} className="text-[10px] bg-black/30 border border-white/5 rounded p-2 space-y-1">
+                                  <p className="text-gray-400 font-semibold">{item.name}</p>
+                                  <div className="flex gap-1.5">
+                                    <input
+                                      type="text"
+                                      placeholder={item.serialNumber || 'Serial Number'}
+                                      value={edit.serialNumber ?? ''}
+                                      onChange={(e) => setWarrantyEdits(prev => ({ ...prev, [editKey]: { ...edit, serialNumber: e.target.value } }))}
+                                      className="bg-luxury-dark border border-white/10 rounded px-1.5 py-1 text-[10px] font-mono w-full focus:outline-none focus:border-luxury-gold"
+                                    />
+                                    <input
+                                      type="text"
+                                      placeholder={item.claimCode || 'Claim Code'}
+                                      value={edit.claimCode ?? ''}
+                                      onChange={(e) => setWarrantyEdits(prev => ({ ...prev, [editKey]: { ...edit, claimCode: e.target.value } }))}
+                                      className="bg-luxury-dark border border-white/10 rounded px-1.5 py-1 text-[10px] font-mono w-full focus:outline-none focus:border-luxury-gold"
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={async () => {
+                                        const result = await dispatch(updateItemWarranty(o.id, idx, edit));
+                                        if (result.success) {
+                                          setWarrantyEdits(prev => ({ ...prev, [editKey]: {} }));
+                                        } else {
+                                          alert(result.message || 'Failed to update.');
+                                        }
+                                      }}
+                                      className="px-2 py-1 bg-luxury-gold/20 hover:bg-luxury-gold/30 text-luxury-gold text-[9px] font-black uppercase rounded cursor-pointer transition"
+                                    >
+                                      Save
+                                    </button>
+                                  </div>
+                                </div>
+                              );
+                            })}
                           </div>
                         )}
                       </td>
