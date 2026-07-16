@@ -171,14 +171,14 @@ function WatchPreview({ product, dialColor, finish, engraving, strapImage, caseC
           {/* Seconds */}
           <div className="absolute" style={{
             width: 1, height: 78, bottom: '50%', left: 'calc(50% - 0.5px)',
-            background: '#c8a96a',
+            background: '#2563eb',
             transformOrigin: 'bottom center',
             transform: 'rotate(200deg)',
             borderRadius: 1,
           }} />
           {/* Centre dot */}
           <div className="absolute rounded-full" style={{
-            width: 8, height: 8, background: '#c8a96a',
+            width: 8, height: 8, background: '#2563eb',
             top: 'calc(50% - 4px)', left: 'calc(50% - 4px)',
           }} />
 
@@ -259,11 +259,11 @@ export default function Customization({ onPageChange, params }) {
       <div className="space-y-10 pb-16">
         {/* Header */}
         <div className="relative overflow-hidden rounded-2xl p-10 text-center"
-          style={{ background: 'linear-gradient(135deg, #0a0a0f 0%, #1a1200 50%, #0a0a0f 100%)' }}>
+          style={{ background: 'linear-gradient(135deg, #0a0a14 0%, #0d1a3a 50%, #0a0a14 100%)' }}>
           <div className="absolute inset-0 opacity-10"
-            style={{ backgroundImage: 'radial-gradient(circle at 25% 50%, #c8a96a 0%, transparent 60%), radial-gradient(circle at 75% 50%, #c8a96a 0%, transparent 60%)' }} />
-          <Paintbrush className="mx-auto mb-4 text-luxury-gold" size={40} />
-          <h1 className="font-serif text-4xl font-black tracking-widest text-luxury-gold uppercase mb-3">
+            style={{ backgroundImage: 'radial-gradient(circle at 25% 50%, #2563eb 0%, transparent 60%), radial-gradient(circle at 75% 50%, #2563eb 0%, transparent 60%)' }} />
+          <Paintbrush className="mx-auto mb-4" style={{ color: '#3b82f6' }} size={40} />
+          <h1 className="font-serif text-4xl font-black tracking-widest uppercase mb-3" style={{ color: '#3b82f6' }}>
             Bespoke Atelier
           </h1>
           <p className="text-white/50 text-sm max-w-xl mx-auto leading-relaxed">
@@ -275,12 +275,15 @@ export default function Customization({ onPageChange, params }) {
         {/* Product grid */}
         {displayProducts.length === 0 ? (
           <div className="border border-dashed border-luxury-text/20 rounded-xl p-20 text-center space-y-4">
-            <Sparkles size={36} className="mx-auto text-luxury-gold opacity-40" />
+            <Sparkles size={36} className="mx-auto opacity-40" style={{ color: '#3b82f6' }} />
             <p className="text-luxury-muted text-sm">No customizable watches are available at the moment.</p>
             <p className="text-luxury-muted/60 text-xs">Ask an admin to mark watches as customizable in the dashboard.</p>
             <button
               onClick={() => onPageChange('shop')}
-              className="mt-4 px-8 py-2.5 bg-luxury-gold-dark text-white text-xs font-bold uppercase tracking-widest hover:bg-luxury-gold transition cursor-pointer rounded"
+              className="mt-4 px-8 py-2.5 text-white text-xs font-bold uppercase tracking-widest transition cursor-pointer rounded"
+              style={{ background: '#1e3a8a' }}
+              onMouseEnter={e => e.currentTarget.style.background='#2563eb'}
+              onMouseLeave={e => e.currentTarget.style.background='#1e3a8a'}
             >
               Browse All Watches
             </button>
@@ -294,7 +297,7 @@ export default function Customization({ onPageChange, params }) {
                   : `${displayProducts.length} model${displayProducts.length !== 1 ? 's' : ''} available for customisation`}
               </h2>
               {noneExplicitlySet && (
-                <span className="text-[10px] text-luxury-gold/60 border border-luxury-gold/20 px-2.5 py-1 rounded">
+                <span className="text-[10px] border px-2.5 py-1 rounded" style={{ color: 'rgba(59,130,246,0.6)', borderColor: 'rgba(59,130,246,0.2)' }}>
                   Mark specific watches in Admin to restrict selection
                 </span>
               )}
@@ -306,7 +309,7 @@ export default function Customization({ onPageChange, params }) {
                   onClick={() => handleSelectProduct(product)}
                   whileHover={{ y: -4 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group text-left bg-[#111111] rounded-xl overflow-hidden border border-white/5 hover:border-luxury-gold/30 transition-all duration-300 cursor-pointer"
+                  className="group text-left bg-[#111111] rounded-xl overflow-hidden border border-white/5 hover:border-blue-500/30 transition-all duration-300 cursor-pointer"
                 >
                   <div className="relative overflow-hidden bg-[#0d0d0d]" style={{ height: 200 }}>
                     <img
@@ -315,7 +318,7 @@ export default function Customization({ onPageChange, params }) {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     {/* Customizable badge */}
-                    <div className="absolute top-3 right-3 bg-luxury-gold-dark text-white text-[9px] font-black tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1.5">
+                    <div className="absolute top-3 right-3 text-white text-[9px] font-black tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1.5" style={{ background: '#1e3a8a' }}>
                       <Paintbrush size={9} />
                       CUSTOMIZABLE
                     </div>
@@ -324,8 +327,8 @@ export default function Customization({ onPageChange, params }) {
                     <p className="text-[10px] text-gray-300 uppercase tracking-widest">{product.category}</p>
                     <h3 className="text-white font-bold text-sm leading-tight">{product.name}</h3>
                     <div className="flex items-center justify-between">
-                      <span className="text-luxury-gold font-black">{formatPrice(product.price)}</span>
-                      <span className="text-[10px] text-luxury-gold-dark border border-luxury-gold-dark/40 px-2.5 py-1 rounded font-bold tracking-wider group-hover:bg-luxury-gold-dark group-hover:text-white transition">
+                      <span className="font-black" style={{ color: '#3b82f6' }}>{formatPrice(product.price)}</span>
+                      <span className="text-[10px] border px-2.5 py-1 rounded font-bold tracking-wider transition" style={{ color: '#2563eb', borderColor: 'rgba(37,99,235,0.4)' }}>
                         CUSTOMISE →
                       </span>
                     </div>
@@ -374,7 +377,7 @@ export default function Customization({ onPageChange, params }) {
               <div className="text-center space-y-1">
                 <p className="text-white font-bold text-lg">{selectedProduct.name}</p>
                 <p className="text-gray-400 text-xs">{selectedProduct.category} · {selectedProduct.gender}</p>
-                <p className="text-luxury-gold font-black text-xl mt-2">{formatPrice(selectedProduct.price)}</p>
+                <p className="font-black text-xl mt-2" style={{ color: '#3b82f6' }}>{formatPrice(selectedProduct.price)}</p>
               </div>
             </div>
 
@@ -400,7 +403,7 @@ export default function Customization({ onPageChange, params }) {
             <div>
               <h1 className="font-serif text-3xl font-black text-white tracking-wider">
                 Customise Your <br />
-                <span className="text-luxury-gold">{selectedProduct.name}</span>
+                <span style={{ color: '#3b82f6' }}>{selectedProduct.name}</span>
               </h1>
               <p className="text-gray-300 text-xs mt-2 leading-relaxed">
                 Each configuration is unique. Changes are reflected live in the preview.
@@ -422,8 +425,8 @@ export default function Customization({ onPageChange, params }) {
                       className="relative w-10 h-10 rounded-full border-2 transition-all duration-200 cursor-pointer"
                       style={{
                         background: color.value,
-                        borderColor: dialColor?.value === color.value ? '#c8a96a' : 'transparent',
-                        boxShadow: dialColor?.value === color.value ? '0 0 0 3px rgba(200,169,106,0.3)' : 'none',
+                        borderColor: dialColor?.value === color.value ? '#2563eb' : 'transparent',
+                        boxShadow: dialColor?.value === color.value ? '0 0 0 3px rgba(37,99,235,0.35)' : 'none',
                       }}
                     >
                       {dialColor?.value === color.value && (
@@ -452,9 +455,10 @@ export default function Customization({ onPageChange, params }) {
                         onClick={() => setStrapMaterial(mat)}
                         className={`flex flex-col items-center p-2.5 rounded border transition-all cursor-pointer bg-luxury-dark/40 ${
                           strapMaterial === mat
-                            ? 'border-luxury-gold text-luxury-gold shadow-[0_0_15px_rgba(200,169,106,0.1)]'
+                            ? 'border-blue-500 shadow-[0_0_15px_rgba(37,99,235,0.15)]'
                             : 'border-white/5 text-gray-300 hover:border-white/20 hover:text-white'
                         }`}
+                        style={strapMaterial === mat ? { color: '#3b82f6' } : {}}
                       >
                         <div className="w-full h-20 bg-luxury-dark/80 rounded border border-white/5 overflow-hidden flex items-center justify-center p-1.5 mb-2">
                           <img
@@ -486,9 +490,10 @@ export default function Customization({ onPageChange, params }) {
                       onClick={() => setCaseFinish(fin)}
                       className={`px-3 py-2 text-xs font-bold rounded border transition-all cursor-pointer ${
                         caseFinish === fin
-                          ? 'border-luxury-gold bg-luxury-gold/10 text-luxury-gold'
+                          ? 'border-blue-500'
                           : 'border-white/10 text-gray-300 hover:border-white/30 hover:text-white'
                       }`}
+                      style={caseFinish === fin ? { background: 'rgba(37,99,235,0.1)', color: '#3b82f6' } : {}}
                     >
                       {fin}
                     </button>
@@ -509,7 +514,7 @@ export default function Customization({ onPageChange, params }) {
                   value={engraving}
                   onChange={(e) => setEngraving(e.target.value)}
                   placeholder="Your inscription…"
-                  className="w-full bg-[#0d0d0d] border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-luxury-gold transition font-serif italic"
+                  className="w-full bg-[#0d0d0d] border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none transition font-serif italic" style={{ '--tw-ring-color': '#2563eb' }} onFocus={e => e.target.style.borderColor='#2563eb'} onBlur={e => e.target.style.borderColor='rgba(255,255,255,0.1)'}
                 />
                 <p className="text-[10px] text-gray-300">{engraving.length}/18 characters</p>
               </div>
@@ -518,11 +523,14 @@ export default function Customization({ onPageChange, params }) {
             {/* Add to Cart */}
             <button
               onClick={handleAddToCart}
-              className={`w-full py-4 rounded-xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all duration-300 cursor-pointer ${
+              className={`w-full py-4 rounded-xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all duration-300 cursor-pointer text-white ${
                 addedToCart
-                  ? 'bg-green-600 text-white'
-                  : 'bg-luxury-gold-dark hover:bg-luxury-gold text-white'
+                  ? 'bg-green-600'
+                  : ''
               }`}
+              style={!addedToCart ? { background: '#1e3a8a' } : {}}
+              onMouseEnter={e => { if (!addedToCart) e.currentTarget.style.background = '#2563eb'; }}
+              onMouseLeave={e => { if (!addedToCart) e.currentTarget.style.background = '#1e3a8a'; }}
             >
               {addedToCart ? (
                 <>
