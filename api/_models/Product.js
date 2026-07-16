@@ -33,6 +33,7 @@ const productSchema = new mongoose.Schema({
     glass: { type: String }
   },
   discountPercent: { type: Number, default: 0 },
+  badge: { type: String, default: '' },
   customizable: { type: Boolean, default: true },
   allowStrapCustomization: { type: Boolean, default: true },
   allowCaseCustomization: { type: Boolean, default: true },

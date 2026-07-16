@@ -189,6 +189,13 @@ export default function ProductDetail({ params, onPageChange }) {
                 </span>
               </div>
             )}
+
+            {product.stock > 0 && product.stock < 5 && (
+  <div className="absolute bottom-4 left-4 bg-luxury-red text-white uppercase text-[10px] tracking-[0.2em] font-semibold px-3 py-1.5 rounded-sm shadow-lg shadow-black/30 flex items-center gap-1.5">
+    <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+    Hurry, only {product.stock} left!
+  </div>
+)}
           </div>
 
           {/* Guarantees Box */}
@@ -275,7 +282,7 @@ export default function ProductDetail({ params, onPageChange }) {
                 <div className="text-right">
                   <span className="text-xs text-emerald-600 font-medium flex items-center space-x-1.5 justify-end">
                     <CheckCircle2 size={12} />
-                    <span>In Stock (Only {product.stock} left)</span>
+                    <span>{product.stock < 5 ? `Hurry, only ${product.stock} left!` : 'In Stock'}</span>
                   </span>
                   <p className="text-[10px] text-gray-500 mt-0.5">Complementary Express Shipping & Returns</p>
                 </div>

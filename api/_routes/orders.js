@@ -2,6 +2,7 @@ import express from 'express';
 import Order from '../_models/Order.js';
 import Product from '../_models/Product.js';
 import { protect, adminOnly } from '../_middleware/auth.js';
+import sendEmail from '../utils/sendEmail.js';
 
 const router = express.Router();
 
@@ -161,6 +162,7 @@ router.put('/:id/cancel', protect, async (req, res) => {
 // @route   PUT /api/orders/:id/items/:itemIndex/warranty
 // @desc    Manually set/override serial number and/or claim code for a specific order item.
 //          Only overwrites fields actually provided — leaves auto-generated values untouched otherwise.
+//          Notifies the customer by email if either value actually changed.
 // @access  Private/Admin
 router.put('/:id/items/:itemIndex/warranty', protect, adminOnly, async (req, res) => {
   const { serialNumber, claimCode } = req.body;
@@ -177,23 +179,62 @@ router.put('/:id/items/:itemIndex/warranty', protect, adminOnly, async (req, res
       return res.status(404).json({ success: false, message: 'Order item not found' });
     }
 
-    if (serialNumber !== undefined && serialNumber.trim() !== '') {
+    const oldSerialNumber = item.serialNumber;
+    const oldClaimCode = item.claimCode;
+    let changed = false;
+
+    if (serialNumber !== undefined && serialNumber.trim() !== '' && serialNumber.trim() !== oldSerialNumber) {
       const duplicate = await Order.findOne({ id: { $ne: order.id }, 'items.serialNumber': serialNumber.trim() });
       if (duplicate) {
         return res.status(400).json({ success: false, message: 'This serial number is already assigned to another item.' });
       }
       item.serialNumber = serialNumber.trim();
+      changed = true;
     }
 
-    if (claimCode !== undefined && claimCode.trim() !== '') {
+    if (claimCode !== undefined && claimCode.trim() !== '' && claimCode.trim() !== oldClaimCode) {
       const duplicate = await Order.findOne({ id: { $ne: order.id }, 'items.claimCode': claimCode.trim() });
       if (duplicate) {
         return res.status(400).json({ success: false, message: 'This claim code is already assigned to another item.' });
       }
       item.claimCode = claimCode.trim();
+      changed = true;
     }
 
     const updatedOrder = await order.save();
+
+    // Notify the customer — their previously emailed serial/claim code is no longer valid
+    if (changed) {
+      try {
+        await sendEmail({
+          to: order.userEmail,
+          subject: `KHRONIQ Watches - Warranty Details Updated (Order ${order.id})`,
+          html: `
+            <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;">
+              <h2>Warranty details updated</h2>
+              <p>Hi ${order.userName},</p>
+              <p>The warranty registration details for <strong>${item.name}</strong> in your order <strong>${order.id}</strong> have been updated by our team.</p>
+              <p style="color:#c0392b;font-size:12px;">Any serial number or claim code previously sent to you for this item is no longer valid. Please use the details below going forward.</p>
+              <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:13px;">
+                <tr>
+                  <td style="padding:6px 8px;border-bottom:1px solid #eee;font-weight:bold;">Serial Number</td>
+                  <td style="padding:6px 8px;border-bottom:1px solid #eee;font-family:monospace;">${item.serialNumber}</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 8px;border-bottom:1px solid #eee;font-weight:bold;">Claim Code</td>
+                  <td style="padding:6px 8px;border-bottom:1px solid #eee;font-family:monospace;">${item.claimCode}</td>
+                </tr>
+              </table>
+              <p style="color:#888;font-size:12px;">Keep this email — you'll need the Claim Code to register your warranty on our site.</p>
+            </div>
+          `
+        });
+      } catch (emailError) {
+        console.error('Warranty update email failed to send:', emailError);
+        // Don't fail the request over this — the DB update already succeeded.
+      }
+    }
+
     res.json({ success: true, order: updatedOrder });
   } catch (error) {
     console.error('Update item warranty error:', error);

@@ -112,6 +112,13 @@ export default function ProductCard({ product, onPageChange, showRemove = false 
               {product.discountPercent}% OFF
             </div>
           )}
+
+          {product.badge && (
+            <div className="absolute top-3 right-3 bg-luxury-gold-dark text-white uppercase text-[10px] tracking-[0.2em] font-semibold px-2.5 py-1 rounded-sm shadow-lg shadow-black/20">
+              {product.badge}
+            </div>
+          )}
+          
           {product.stock === 0 && (
             <div className="absolute inset-0 bg-[#f6f6f6]/80 flex items-center justify-center">
               <span className="text-luxury-red font-bold text-[10px] tracking-widest uppercase border border-luxury-red px-2.5 py-1">

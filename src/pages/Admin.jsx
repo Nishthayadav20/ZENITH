@@ -63,6 +63,8 @@ export default function Admin({ onPageChange }) {
     price: '',
     stock: '',
     discountPercent: 0,
+    badge: '',
+    badgeMode: 'none',
     warrantyMonths: 6,
     category: 'Khronomaster',
     gender: 'unisex',
@@ -610,7 +612,7 @@ const handleEditImageUpload = async (e) => {
       alert('Product created successfully!');
       setShowAddForm(false);
       setNewProduct({
-        name: '', price: '', stock: '', discountPercent: 0, warrantyMonths: 12, category: 'Khronomaster', description: '',
+        name: '', price: '', stock: '', discountPercent: 0, badge: '', badgeMode: 'none', warrantyMonths: 12, category: 'Khronomaster', description: '',
         image: '',
         specs: { movement: 'Automatic', case: '40mm', strap: 'Leather', waterResistance: '50m', glass: 'Sapphire' },
         customizable: true,
@@ -623,7 +625,8 @@ const handleEditImageUpload = async (e) => {
           customStrapImage: '',
           customCaseName: '',
           customCaseColor: '#ffffff'
-        }
+        },
+
       });
     } else {
       alert(res?.message || 'Failed to create product.');
@@ -635,6 +638,8 @@ const handleEditImageUpload = async (e) => {
     setEditForm({ 
       ...product, 
       discountPercent: product.discountPercent ?? 0,
+      badge: product.badge ?? '',
+      badgeMode: ['New', 'Limited Edition', 'Bestseller'].includes(product.badge) ? product.badge : (product.badge ? 'custom' : 'none'),
       customizable: product.customizable ?? false,
       allowStrapCustomization: product.allowStrapCustomization ?? true,
       allowCaseCustomization: product.allowCaseCustomization ?? true,
@@ -1029,6 +1034,37 @@ const handleEditImageUpload = async (e) => {
                 </div>
 
                 <div className="space-y-1.5">
+                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Badge</label>
+                    <select
+                      value={newProduct.badgeMode || 'none'}
+                      onChange={(e) => {
+                        const mode = e.target.value;
+                        setNewProduct({
+                          ...newProduct,
+                          badgeMode: mode,
+                          badge: mode === 'none' ? '' : mode === 'custom' ? '' : mode
+                        });
+                      }}
+                      className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
+                    >
+                      <option value="none">None</option>
+                      <option value="New">New</option>
+                      <option value="Limited Edition">Limited Edition</option>
+                      <option value="Bestseller">Bestseller</option>
+                      <option value="custom">Custom text…</option>
+                    </select>
+                    {newProduct.badgeMode === 'custom' && (
+                      <input
+                        type="text"
+                        placeholder="Enter custom badge text"
+                        value={newProduct.badge}
+                        onChange={(e) => setNewProduct({ ...newProduct, badge: e.target.value })}
+                        className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 mt-1.5 focus:outline-none focus:border-luxury-gold"
+                      />
+                    )}
+                  </div>
+
+                <div className="space-y-1.5">
                   <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Collection / Category</label>
                   <select
                     value={newProduct.category}
@@ -1378,6 +1414,37 @@ const handleEditImageUpload = async (e) => {
                     </div>
                   </div>
 
+
+<div className="space-y-1.5">
+                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Badge</label>
+                    <select
+                      value={editForm.badgeMode || 'none'}
+                      onChange={(e) => {
+                        const mode = e.target.value;
+                        setEditForm({
+                          ...editForm,
+                          badgeMode: mode,
+                          badge: mode === 'none' ? '' : mode === 'custom' ? '' : mode
+                        });
+                      }}
+                      className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
+                    >
+                      <option value="none">None</option>
+                      <option value="New">New</option>
+                      <option value="Limited Edition">Limited Edition</option>
+                      <option value="Bestseller">Bestseller</option>
+                      <option value="custom">Custom text…</option>
+                    </select>
+                    {editForm.badgeMode === 'custom' && (
+                      <input
+                        type="text"
+                        placeholder="Enter custom badge text"
+                        value={editForm.badge}
+                        onChange={(e) => setEditForm({ ...editForm, badge: e.target.value })}
+                        className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 mt-1.5 focus:outline-none focus:border-luxury-gold"
+                      />
+                    )}
+                  </div>
                   
 
                   <div className="space-y-1.5">
