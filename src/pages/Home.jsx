@@ -1155,7 +1155,7 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
         </motion.div>
 
         <section
-          className="w-full pt-14 pb-48 space-y-10 relative overflow-hidden"
+          className="w-full min-h-[100vh] flex flex-col justify-center py-24 space-y-12 relative overflow-hidden"
           style={{
             backgroundColor: '#000000',
             color: '#ffffff',
