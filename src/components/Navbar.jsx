@@ -376,28 +376,47 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
             {/* Profile / Admin Icon (Desktop Only) */}
             <div className="hidden md:flex items-center">
               {currentUser ? (
-                <button
-                  onClick={() => onPageChange(currentUser.role === 'admin' ? 'admin' : 'profile')}
-                  className="flex items-center space-x-1.5 transition cursor-pointer hover:text-luxury-gold"
-                  title={currentUser.role === 'admin' ? 'Admin Dashboard' : 'My Account'}
-                >
-                  {currentUser.role === 'admin' ? (
-                    <ShieldAlert size={24} className="text-luxury-red" />
-                  ) : (
-                    <User size={24} />
-                  )}
-                  <span className="hidden lg:inline text-sm max-w-24 truncate font-bold">
-                    {currentUser.name}
-                  </span>
-                </button>
+                <div className="flex items-center space-x-3 text-[11px] font-bold uppercase tracking-widest">
+                  <button
+                    onClick={() => onPageChange(currentUser.role === 'admin' ? 'admin' : 'profile')}
+                    className="flex items-center space-x-1.5 transition cursor-pointer text-white/90 hover:text-[#dfb76c]"
+                    title={currentUser.role === 'admin' ? 'Admin Dashboard' : 'My Account'}
+                  >
+                    {currentUser.role === 'admin' ? (
+                      <ShieldAlert size={14} className="text-luxury-red" />
+                    ) : (
+                      <User size={14} />
+                    )}
+                    <span className="max-w-24 truncate font-bold">
+                      {currentUser.name}
+                    </span>
+                  </button>
+                  <span className="text-white/20 font-light">|</span>
+                  <button 
+                    onClick={handleLogout}
+                    className="transition cursor-pointer text-white/60 hover:text-luxury-red"
+                  >
+                    Logout
+                  </button>
+                </div>
               ) : (
-                <button 
-                  onClick={() => onPageChange('login')}
-                  className="transition cursor-pointer hover:text-luxury-gold"
-                  title="Login"
-                >
-                  <User size={24} />
-                </button>
+                <div className="flex items-center space-x-3 text-[11px] font-bold uppercase tracking-widest">
+                  <button 
+                    onClick={() => onPageChange('login')}
+                    className="transition cursor-pointer text-white/90 hover:text-[#dfb76c]"
+                    title="Sign In"
+                  >
+                    Sign In
+                  </button>
+                  <span className="text-white/20 font-light">|</span>
+                  <button 
+                    onClick={() => onPageChange('login')}
+                    className="transition cursor-pointer text-white/60 hover:text-[#dfb76c]"
+                    title="Register"
+                  >
+                    Register
+                  </button>
+                </div>
               )}
             </div>
 
