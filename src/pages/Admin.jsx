@@ -2448,13 +2448,13 @@ const handleEditImageUpload = async (e) => {
       {activeTab === 'updates' && (
         <div className="space-y-8">
           <div className="flex justify-between items-center">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-white">Brand Updates Manager</h3>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-900">Brand Updates Manager</h3>
             <button
               onClick={() => {
                 setShowAddUpdateForm(!showAddUpdateForm);
                 setEditingUpdateId(null);
               }}
-              className="px-4 py-2 bg-luxury-gold text-luxury-dark text-xs font-bold uppercase tracking-wider flex items-center space-x-1.5 transition hover:bg-luxury-gold-dark cursor-pointer rounded-sm"
+              className="px-4 py-2 bg-neutral-900 hover:bg-black text-white text-xs font-bold uppercase tracking-wider flex items-center space-x-1.5 transition cursor-pointer rounded-sm"
             >
               <Plus size={14} />
               <span>{showAddUpdateForm ? 'Cancel Add' : 'Add New Update'}</span>
@@ -2463,33 +2463,33 @@ const handleEditImageUpload = async (e) => {
 
           {/* Form to Add New Update */}
           {showAddUpdateForm && (
-            <div className="bg-luxury-gray border border-white/5 p-6 rounded-md max-w-xl">
-              <h4 className="text-xs font-bold uppercase tracking-widest text-white mb-4">Create Brand Update</h4>
+            <div className="bg-gray-50 border border-black/5 p-6 rounded-md max-w-xl shadow-sm">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-900 mb-4">Create Brand Update</h4>
               <form onSubmit={handleCreateUpdate} className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Update Title</label>
+                  <label className="text-[9px] text-neutral-700 font-bold uppercase tracking-widest block">Update Title</label>
                   <input
                     type="text"
                     required
                     value={newUpdate.title}
                     onChange={(e) => setNewUpdate({ ...newUpdate, title: e.target.value })}
                     placeholder="e.g. Geneva Flagship Opening"
-                    className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5"
+                    className="w-full bg-white border border-black/10 rounded text-neutral-900 p-2.5 focus:outline-none focus:border-black"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Update Detail Description</label>
+                  <label className="text-[9px] text-neutral-700 font-bold uppercase tracking-widest block">Update Detail Description</label>
                   <textarea
                     required
                     rows={3}
                     value={newUpdate.detail}
                     onChange={(e) => setNewUpdate({ ...newUpdate, detail: e.target.value })}
                     placeholder="Provide full description of the news milestone..."
-                    className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5 resize-none"
+                    className="w-full bg-white border border-black/10 rounded text-neutral-900 p-2.5 resize-none focus:outline-none focus:border-black"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Display Expiry Duration</label>
+                  <label className="text-[9px] text-neutral-700 font-bold uppercase tracking-widest block">Display Expiry Duration</label>
                   <div className="grid grid-cols-2 gap-4">
                     <select
                       value={[24, 48, 72, 96, 168].includes(newUpdate.durationHours) ? newUpdate.durationHours : 'custom'}
@@ -2501,7 +2501,7 @@ const handleEditImageUpload = async (e) => {
                           setNewUpdate({ ...newUpdate, durationHours: 24 });
                         }
                       }}
-                      className="bg-luxury-dark border border-white/10 rounded text-white p-2 text-xs focus:outline-none"
+                      className="bg-white border border-black/10 rounded text-neutral-900 p-2 text-xs focus:outline-none"
                     >
                       <option value="24">24 Hours (1 Day)</option>
                       <option value="48">48 Hours (2 Days)</option>
@@ -2517,7 +2517,7 @@ const handleEditImageUpload = async (e) => {
                         value={newUpdate.durationHours || ''}
                         onChange={(e) => setNewUpdate({ ...newUpdate, durationHours: Math.max(1, Number(e.target.value)) })}
                         placeholder="Hours (e.g. 120)"
-                        className="bg-luxury-dark border border-white/10 rounded text-white p-2 text-xs focus:outline-none"
+                        className="bg-white border border-black/10 rounded text-neutral-900 p-2 text-xs focus:outline-none"
                       />
                     )}
                   </div>
@@ -2528,15 +2528,15 @@ const handleEditImageUpload = async (e) => {
                     id="newApproved"
                     checked={newUpdate.approved}
                     onChange={(e) => setNewUpdate({ ...newUpdate, approved: e.target.checked })}
-                    className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                    className="w-4 h-4 accent-neutral-900 cursor-pointer"
                   />
-                  <label htmlFor="newApproved" className="text-xs text-gray-300 cursor-pointer select-none">
+                  <label htmlFor="newApproved" className="text-xs text-neutral-800 cursor-pointer select-none">
                     Publish immediately (Approved)
                   </label>
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-3 bg-white text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold transition cursor-pointer"
+                  className="w-full py-3 bg-[#047857] hover:bg-[#065f46] text-white font-bold text-xs tracking-widest uppercase transition cursor-pointer"
                 >
                   Publish Update
                 </button>
@@ -2546,31 +2546,31 @@ const handleEditImageUpload = async (e) => {
 
           {/* Form to Edit Existing Update */}
           {editingUpdateId && editUpdateForm && (
-            <div className="bg-luxury-gray border border-luxury-gold/20 p-6 rounded-md max-w-xl">
-              <h4 className="text-xs font-bold uppercase tracking-widest text-white mb-4">Edit Brand Update</h4>
+            <div className="bg-gray-50 border border-black/5 p-6 rounded-md max-w-xl shadow-sm">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-900 mb-4">Edit Brand Update</h4>
               <form onSubmit={handleUpdateUpdate} className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Update Title</label>
+                  <label className="text-[9px] text-neutral-700 font-bold uppercase tracking-widest block">Update Title</label>
                   <input
                     type="text"
                     required
                     value={editUpdateForm.title}
                     onChange={(e) => setEditUpdateForm({ ...editUpdateForm, title: e.target.value })}
-                    className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5"
+                    className="w-full bg-white border border-black/10 rounded text-neutral-900 p-2.5 focus:outline-none focus:border-black"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Update Detail Description</label>
+                  <label className="text-[9px] text-neutral-700 font-bold uppercase tracking-widest block">Update Detail Description</label>
                   <textarea
                     required
                     rows={3}
                     value={editUpdateForm.detail}
                     onChange={(e) => setEditUpdateForm({ ...editUpdateForm, detail: e.target.value })}
-                    className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5 resize-none"
+                    className="w-full bg-white border border-black/10 rounded text-neutral-900 p-2.5 resize-none focus:outline-none"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Display Expiry Duration</label>
+                  <label className="text-[9px] text-neutral-700 font-bold uppercase tracking-widest block">Display Expiry Duration</label>
                   <div className="grid grid-cols-2 gap-4">
                     <select
                       value={[24, 48, 72, 96, 168].includes(editUpdateForm.durationHours) ? editUpdateForm.durationHours : 'custom'}
@@ -2582,7 +2582,7 @@ const handleEditImageUpload = async (e) => {
                           setEditUpdateForm({ ...editUpdateForm, durationHours: 24 });
                         }
                       }}
-                      className="bg-luxury-dark border border-white/10 rounded text-white p-2 text-xs focus:outline-none"
+                      className="bg-white border border-black/10 rounded text-neutral-900 p-2 text-xs focus:outline-none"
                     >
                       <option value="24">24 Hours (1 Day)</option>
                       <option value="48">48 Hours (2 Days)</option>
@@ -2598,7 +2598,7 @@ const handleEditImageUpload = async (e) => {
                         value={editUpdateForm.durationHours || ''}
                         onChange={(e) => setEditUpdateForm({ ...editUpdateForm, durationHours: Math.max(1, Number(e.target.value)) })}
                         placeholder="Hours (e.g. 120)"
-                        className="bg-luxury-dark border border-white/10 rounded text-white p-2 text-xs focus:outline-none"
+                        className="bg-white border border-black/10 rounded text-neutral-900 p-2 text-xs focus:outline-none"
                       />
                     )}
                   </div>
@@ -2609,9 +2609,9 @@ const handleEditImageUpload = async (e) => {
                     id="editApproved"
                     checked={editUpdateForm.approved}
                     onChange={(e) => setEditUpdateForm({ ...editUpdateForm, approved: e.target.checked })}
-                    className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                    className="w-4 h-4 accent-neutral-900 cursor-pointer"
                   />
-                  <label htmlFor="editApproved" className="text-xs text-gray-300 cursor-pointer select-none">
+                  <label htmlFor="editApproved" className="text-xs text-neutral-800 cursor-pointer select-none">
                     Approved (Visible to clients)
                   </label>
                 </div>
@@ -2622,13 +2622,13 @@ const handleEditImageUpload = async (e) => {
                       setEditingUpdateId(null);
                       setEditUpdateForm(null);
                     }}
-                    className="flex-1 py-3 bg-transparent border border-white/10 text-white font-bold text-xs tracking-widest uppercase hover:bg-white/5 transition cursor-pointer"
+                    className="flex-1 py-3 bg-transparent border border-black/15 text-neutral-900 font-bold text-xs tracking-widest uppercase hover:bg-black/5 transition cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-3 bg-luxury-gold text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold-dark transition cursor-pointer"
+                    className="flex-1 py-3 bg-[#047857] hover:bg-[#065f46] text-white font-bold text-xs tracking-widest uppercase transition cursor-pointer"
                   >
                     Save Changes
                   </button>
@@ -2639,30 +2639,30 @@ const handleEditImageUpload = async (e) => {
 
           {/* List of existing updates */}
           <div className="space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-widest text-white">Brand Updates Database</h4>
+            <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-900">Brand Updates Database</h4>
             
             {adminUpdates.length === 0 ? (
-              <p className="text-gray-400 text-xs italic p-6 text-center border border-dashed border-white/10 rounded">No brand updates found in database.</p>
+              <p className="text-neutral-600 text-xs italic p-6 text-center border border-dashed border-black/10 rounded">No brand updates found in database.</p>
             ) : (
-              <div className="bg-luxury-gray border border-white/5 rounded-md divide-y divide-white/5">
+              <div className="bg-gray-50 border border-black/5 rounded-md divide-y divide-black/10">
                 {adminUpdates.map((up) => (
                   <div key={up._id || up.id} className="p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="space-y-2">
                       <div className="flex items-center space-x-2.5">
-                        <span className="text-white text-sm font-bold tracking-wider">{up.title}</span>
+                        <span className="text-neutral-900 text-sm font-bold tracking-wider">{up.title}</span>
                         <button
                           onClick={() => handleToggleUpdateApproval(up._id || up.id, up.approved)}
                           className={`text-[9px] font-bold px-2 py-0.5 rounded border transition cursor-pointer ${
                             up.approved 
-                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-                              : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+                              ? 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20' 
+                              : 'bg-yellow-500/10 text-yellow-700 border-yellow-500/20'
                           }`}
                         >
                           {up.approved ? 'APPROVED & LIVE' : 'UNAPPROVED / HIDDEN'}
                         </button>
                       </div>
-                      <p className="text-xs text-gray-400 leading-relaxed font-light">{up.detail}</p>
-                      <p className="text-[9px] text-gray-500 font-mono">
+                      <p className="text-xs text-neutral-700 leading-relaxed font-light">{up.detail}</p>
+                      <p className="text-[9px] text-neutral-500 font-mono">
                         Duration: {up.durationHours || 24} hours (Expires: {new Date(new Date(up.createdAt).getTime() + (up.durationHours || 24) * 3600000).toLocaleString('en-IN')})
                       </p>
                     </div>
@@ -2670,14 +2670,14 @@ const handleEditImageUpload = async (e) => {
                     <div className="flex space-x-2 flex-shrink-0">
                       <button
                         onClick={() => handleEditUpdateInit(up)}
-                        className="p-2 text-gray-400 hover:text-white transition hover:bg-white/5 rounded"
+                        className="p-2 text-neutral-500 hover:text-black transition hover:bg-black/5 rounded"
                         title="Edit Update"
                       >
                         <Edit size={14} />
                       </button>
                       <button
                         onClick={() => handleDeleteUpdate(up._id || up.id)}
-                        className="p-2 text-gray-400 hover:text-luxury-red transition hover:bg-white/5 rounded"
+                        className="p-2 text-neutral-500 hover:text-red-600 transition hover:bg-black/5 rounded"
                         title="Delete Update"
                       >
                         <Trash2 size={14} />
