@@ -627,12 +627,17 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
   const curtainSectionRef = useRef(null);
   const isFeaturedInView = useInView(curtainSectionRef, { once: false, amount: 0.15 });
   const [curtainsOpenedByUser, setCurtainsOpenedByUser] = useState(false);
+  const [hasClickedCurtainsAtLeastOnce, setHasClickedCurtainsAtLeastOnce] = useState(false);
 
   useEffect(() => {
-    if (!isFeaturedInView) {
+    if (isFeaturedInView) {
+      if (hasClickedCurtainsAtLeastOnce) {
+        setCurtainsOpenedByUser(true);
+      }
+    } else {
       setCurtainsOpenedByUser(false);
     }
-  }, [isFeaturedInView]);
+  }, [isFeaturedInView, hasClickedCurtainsAtLeastOnce]);
 
   const onMouseMove = useCallback((e) => {
     const r = heroRef.current?.getBoundingClientRect();
@@ -1110,7 +1115,12 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
         {/* Auditorium Split-Curtain Screen */}
         <motion.div 
           className={`absolute inset-0 z-45 overflow-hidden flex ${curtainsOpenedByUser ? 'pointer-events-none' : 'cursor-pointer'}`}
-          onClick={() => !curtainsOpenedByUser && setCurtainsOpenedByUser(true)}
+          onClick={() => {
+            if (!curtainsOpenedByUser) {
+              setCurtainsOpenedByUser(true);
+              setHasClickedCurtainsAtLeastOnce(true);
+            }
+          }}
           animate={{ 
             pointerEvents: curtainsOpenedByUser ? 'none' : 'auto'
           }}
