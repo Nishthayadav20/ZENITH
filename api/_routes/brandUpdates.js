@@ -10,13 +10,19 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const allApproved = await BrandUpdate.find({ approved: true }).sort({ createdAt: -1 });
-    const updates = allApproved.filter(u => {
+    let updates = allApproved.filter(u => {
       const createdDate = u.createdAt ? new Date(u.createdAt) : new Date();
       const timeMs = isNaN(createdDate.getTime()) ? Date.now() : createdDate.getTime();
       const durationMs = (u.durationHours || 24) * 60 * 60 * 1000;
       const expiryTime = timeMs + durationMs;
       return expiryTime > Date.now();
     });
+
+    // Fallback: if no active updates exist, return the 3 most recent approved updates
+    if (updates.length === 0 && allApproved.length > 0) {
+      updates = allApproved.slice(0, 3);
+    }
+
     res.json({ success: true, updates });
   } catch (error) {
     console.error('Fetch brand updates error:', error);
