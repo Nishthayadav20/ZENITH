@@ -1132,14 +1132,14 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
         {/* Dark Overlay to align with the premium black theme */}
         <div className="absolute inset-0 bg-black/35 z-10" />
 
-        {/* Vertical Tab sticking to the extreme left of this section only */}
+        {/* Vertical Tab sticking to the extreme left of this section only, spanning full height */}
         <button
           onClick={() => onUpdatesOpen && onUpdatesOpen()}
-          className="absolute left-0 top-1/2 -translate-y-1/2 text-white font-bold text-[11px] sm:text-[12px] tracking-[0.22em] uppercase py-10 px-4 rounded-r border border-l-0 border-[#047857]/40 shadow-[0_4px_25px_rgba(0,0,0,0.55)] hover:opacity-90 transition-all duration-300 z-30 cursor-pointer"
+          className="absolute left-0 top-0 h-full w-14 sm:w-16 text-white font-bold text-[12px] sm:text-[14px] tracking-[0.25em] uppercase border-r border-[#047857]/30 shadow-2xl hover:opacity-95 transition-all duration-300 z-30 cursor-pointer flex items-center justify-center select-none rounded-none"
           style={{
             writingMode: 'vertical-lr',
             textOrientation: 'mixed',
-            background: 'linear-gradient(135deg, #047857 0%, #065f46 45%, #022c22 100%)',
+            background: 'linear-gradient(180deg, #047857 0%, #065f46 45%, #022c22 100%)',
           }}
         >
           Khroniq Update
