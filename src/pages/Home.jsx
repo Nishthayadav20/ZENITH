@@ -1142,14 +1142,28 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
         {/* Vertical Tab sticking to the extreme left of this section only, spanning full height */}
         <button
           onClick={() => onUpdatesOpen && onUpdatesOpen()}
-          className="absolute left-0 top-0 h-full w-20 sm:w-24 text-white font-black text-[13px] sm:text-[15px] tracking-[0.3em] uppercase border-r border-[#047857]/30 shadow-2xl hover:opacity-95 transition-all duration-300 z-30 cursor-pointer flex items-center justify-center select-none rounded-none"
+          className="absolute left-0 top-0 h-full w-20 sm:w-24 text-white font-black text-[16px] sm:text-[18px] tracking-[0.3em] uppercase border-r border-[#047857]/30 shadow-2xl hover:opacity-100 hover:translate-x-1.5 transition-all duration-300 z-30 cursor-pointer flex flex-col items-center justify-center select-none rounded-none group"
           style={{
             writingMode: 'vertical-lr',
             textOrientation: 'mixed',
             background: 'linear-gradient(180deg, #047857 0%, #065f46 45%, #022c22 100%)',
           }}
         >
-          Khroniq Update
+          {/* Top pulsing notification dot */}
+          <div className="absolute top-10 flex items-center justify-center">
+            <span className="animate-ping absolute inline-flex h-3.5 w-3.5 rounded-full bg-white opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+          </div>
+
+          <span className="group-hover:scale-105 transition-transform duration-300">
+            KHRONIQ UPDATES
+          </span>
+
+          {/* Bottom pulsing notification dot */}
+          <div className="absolute bottom-10 flex items-center justify-center">
+            <span className="animate-ping absolute inline-flex h-3.5 w-3.5 rounded-full bg-white opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+          </div>
         </button>
       </div>
     </>
