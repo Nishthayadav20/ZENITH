@@ -1111,27 +1111,30 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
         {/* Auditorium Split-Curtain Screen */}
         <motion.div 
           className="absolute inset-0 z-40 overflow-hidden flex"
-          animate={{ pointerEvents: isFeaturedInView ? 'none' : 'auto' }}
-          transition={{ duration: 0.2 }}
+          animate={{ 
+            pointerEvents: isFeaturedInView ? 'none' : 'auto',
+            opacity: isFeaturedInView ? 0 : 1
+          }}
+          transition={{ duration: 1.0, ease: 'easeInOut' }}
         >
           {/* Left Curtain */}
           <motion.div 
-            className="w-1/2 h-full bg-[#0d0c0a] border-r border-white/5 relative z-40"
+            className="w-1/2 h-full bg-[#022c22] border-r border-[#047857]/30 relative z-40"
             style={{ 
-              backgroundImage: 'repeating-linear-gradient(90deg, #0e0d0b, #0e0d0b 20px, #1a1815 40px, #0e0d0b 60px)',
+              backgroundImage: 'repeating-linear-gradient(90deg, #022c22, #022c22 20px, #047857 40px, #022c22 60px)',
               boxShadow: 'inset -20px 0 30px rgba(0,0,0,0.8)'
             }}
-            animate={{ x: isFeaturedInView ? '-100%' : '0%' }}
+            animate={{ x: isFeaturedInView ? '-105%' : '0%' }}
             transition={{ duration: 1.3, ease: [0.77, 0, 0.175, 1] }}
           />
           {/* Right Curtain */}
           <motion.div 
-            className="w-1/2 h-full bg-[#0d0c0a] border-l border-white/5 relative z-40"
+            className="w-1/2 h-full bg-[#022c22] border-l border-[#047857]/30 relative z-40"
             style={{ 
-              backgroundImage: 'repeating-linear-gradient(90deg, #0e0d0b, #0e0d0b 20px, #1a1815 40px, #0e0d0b 60px)',
+              backgroundImage: 'repeating-linear-gradient(90deg, #022c22, #022c22 20px, #047857 40px, #022c22 60px)',
               boxShadow: 'inset 20px 0 30px rgba(0,0,0,0.8)'
             }}
-            animate={{ x: isFeaturedInView ? '100%' : '0%' }}
+            animate={{ x: isFeaturedInView ? '105%' : '0%' }}
             transition={{ duration: 1.3, ease: [0.77, 0, 0.175, 1] }}
           />
           
