@@ -683,13 +683,7 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
     fetchUpdates();
   }, []);
 
-  useEffect(() => {
-    if (updatesInView && brandUpdates && brandUpdates.length > 0) {
-      if (onUpdatesOpen) {
-        onUpdatesOpen();
-      }
-    }
-  }, [updatesInView, brandUpdates, onUpdatesOpen]);
+
 
   const displayedUpdates = brandUpdates;
 
