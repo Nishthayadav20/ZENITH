@@ -679,7 +679,13 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
     fetchUpdates();
   }, []);
 
-
+  useEffect(() => {
+    if (updatesInView && brandUpdates && brandUpdates.length > 0) {
+      if (onUpdatesOpen) {
+        onUpdatesOpen();
+      }
+    }
+  }, [updatesInView, brandUpdates, onUpdatesOpen]);
 
   const displayedUpdates = brandUpdates;
 
@@ -1121,6 +1127,7 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
 
       {/* ══════════ KHRONIQ UPDATE PARALLAX BANNER SECTION ══════════ */}
       <div 
+        ref={updatesRef}
         className="relative w-full h-[100vh] flex items-center justify-center overflow-hidden bg-black text-white"
         style={{
           backgroundImage: "url('/assets/t6.png')",
