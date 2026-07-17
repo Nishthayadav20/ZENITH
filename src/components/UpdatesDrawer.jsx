@@ -47,11 +47,8 @@ export default function UpdatesDrawer({ isOpen, onClose }) {
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         style={{
-          backgroundImage: "linear-gradient(to bottom, rgba(255,255,255,0.22), rgba(255,255,255,0.38)), url('/assets/t6.png')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundColor: 'transparent',
-          backdropFilter: 'blur(2px)',
+          backgroundColor: 'rgba(255, 255, 255, 0.45)',
+          backdropFilter: 'blur(12px)',
         }}
       >
         {/* Drawer Header */}
