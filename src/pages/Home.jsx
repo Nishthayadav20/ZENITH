@@ -583,7 +583,7 @@ function LifestyleShowcaseSlider({ products, onPageChange, homeImages }) {
   );
 }
 
-export default function Home({ onPageChange }) {
+export default function Home({ onPageChange, onUpdatesOpen }) {
   const products = useSelector(state => state.watch.products);
   const [homeImages, setHomeImages] = useState({});
 
@@ -1117,6 +1117,37 @@ export default function Home({ onPageChange }) {
             )}
           </div>
         </section>
+      </div>
+
+      {/* ══════════ KHRONIQ UPDATE PARALLAX BANNER SECTION ══════════ */}
+      <div 
+        className="relative w-full h-[65vh] min-h-[480px] flex items-center justify-center overflow-hidden bg-black text-white"
+        style={{
+          backgroundImage: "url('/assets/t6.png')",
+          backgroundAttachment: 'fixed',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        {/* Dark Overlay to align with the premium black theme */}
+        <div className="absolute inset-0 bg-black/55 z-10" />
+
+        {/* Content Box */}
+        <div className="relative z-20 flex flex-col items-center justify-center text-center px-4 space-y-6">
+          <p className="text-[11px] text-luxury-gold font-bold tracking-[0.3em] uppercase drop-shadow-md">
+            Stay Tuned With KHRONIQ
+          </p>
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-black tracking-widest text-white uppercase drop-shadow-lg leading-tight">
+            Khroniq Updates
+          </h2>
+          <div className="w-16 h-[2px] bg-luxury-gold mx-auto" />
+          <button
+            onClick={() => onUpdatesOpen && onUpdatesOpen()}
+            className="px-12 py-6 bg-luxury-gold hover:bg-neutral-100 hover:text-black text-neutral-950 font-bold text-xs uppercase tracking-[0.22em] border border-white/10 shadow-2xl rounded transition-all duration-300 cursor-pointer"
+          >
+            Khroniq Update
+          </button>
+        </div>
       </div>
     </>
   );

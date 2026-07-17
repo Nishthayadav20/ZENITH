@@ -37,7 +37,7 @@ export default function UpdatesDrawer({ isOpen, onClose }) {
       {isOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 transition-opacity duration-300"
+          className="fixed inset-0 bg-black/75 z-50"
         />
       )}
 

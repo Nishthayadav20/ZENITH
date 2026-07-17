@@ -50,22 +50,14 @@ export default function MainLayout({ children, onPageChange, currentPage }) {
       >
         Warranty
       </button>
-
-      {/* Floating Updates Tab */}
-      <button
-        onClick={() => setUpdatesOpen(true)}
-        className="fixed left-0 bottom-24 bg-luxury-gold text-neutral-950 font-bold text-[11px] sm:text-[12px] tracking-[0.22em] uppercase py-6 px-3 rounded-r border border-l-0 border-white/10 shadow-[0_4px_25px_rgba(0,0,0,0.55)] hover:bg-neutral-100 hover:text-black hover:pl-4 transition-all duration-300 z-40 cursor-pointer"
-        style={{
-          writingMode: 'vertical-lr',
-          textOrientation: 'mixed',
-        }}
-      >
-        Khroniq Update
-      </button>
-
       {/* Main Content Area */}
       <main className={['home', 'gifting', 'shop'].includes(currentPage) ? 'flex-1 w-full' : 'flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'}>
-        {children}
+        {React.Children.map(children, child => {
+          if (React.isValidElement(child)) {
+            return React.cloneElement(child, { onUpdatesOpen: () => setUpdatesOpen(true) });
+          }
+          return child;
+        })}
       </main>
 
       {/* Footer */}
