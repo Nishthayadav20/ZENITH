@@ -1121,7 +1121,7 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
 
       {/* ══════════ KHRONIQ UPDATE PARALLAX BANNER SECTION ══════════ */}
       <div 
-        className="relative w-full h-[65vh] min-h-[480px] flex items-center justify-center overflow-hidden bg-black text-white"
+        className="relative w-full h-[100vh] flex items-center justify-center overflow-hidden bg-black text-white"
         style={{
           backgroundImage: "url('/assets/t6.png')",
           backgroundAttachment: 'fixed',
@@ -1130,27 +1130,20 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
         }}
       >
         {/* Dark Overlay to align with the premium black theme */}
-        <div className="absolute inset-0 bg-black/55 z-10" />
+        <div className="absolute inset-0 bg-black/35 z-10" />
 
-        {/* Content Box */}
-        <div className="relative z-20 flex flex-col items-center justify-center text-center px-4 space-y-6">
-          <p className="text-[11px] text-luxury-gold font-bold tracking-[0.3em] uppercase drop-shadow-md">
-            Stay Tuned With KHRONIQ
-          </p>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-black tracking-widest text-white uppercase drop-shadow-lg leading-tight">
-            Khroniq Updates
-          </h2>
-          <div className="w-16 h-[2px] bg-luxury-gold mx-auto" />
-          <button
-            onClick={() => onUpdatesOpen && onUpdatesOpen()}
-            className="px-12 py-6 text-white font-bold text-xs uppercase tracking-[0.22em] border border-[#047857]/40 shadow-2xl rounded hover:opacity-90 transition-all duration-300 cursor-pointer"
-            style={{
-              background: 'linear-gradient(135deg, #047857 0%, #065f46 45%, #022c22 100%)',
-            }}
-          >
-            Khroniq Update
-          </button>
-        </div>
+        {/* Vertical Tab sticking to the extreme left of this section only */}
+        <button
+          onClick={() => onUpdatesOpen && onUpdatesOpen()}
+          className="absolute left-0 top-1/2 -translate-y-1/2 text-white font-bold text-[11px] sm:text-[12px] tracking-[0.22em] uppercase py-10 px-4 rounded-r border border-l-0 border-[#047857]/40 shadow-[0_4px_25px_rgba(0,0,0,0.55)] hover:opacity-90 transition-all duration-300 z-30 cursor-pointer"
+          style={{
+            writingMode: 'vertical-lr',
+            textOrientation: 'mixed',
+            background: 'linear-gradient(135deg, #047857 0%, #065f46 45%, #022c22 100%)',
+          }}
+        >
+          Khroniq Update
+        </button>
       </div>
     </>
   );
