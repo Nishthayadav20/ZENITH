@@ -638,7 +638,7 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
   const [brandUpdates, setBrandUpdates] = useState([]);
   const [hoveredProduct, setHoveredProduct] = useState(null);
   const updatesRef = useRef(null);
-  const updatesInView = useInView(updatesRef, { once: true, margin: '-45px' });
+  const updatesInView = useInView(updatesRef, { once: false, margin: '-45px' });
 
   const hoverTimeoutRef = useRef(null);
 
@@ -683,7 +683,21 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
     fetchUpdates();
   }, []);
 
-
+  useEffect(() => {
+    let timer;
+    if (updatesInView && brandUpdates && brandUpdates.length > 0) {
+      timer = setTimeout(() => {
+        if (onUpdatesOpen) {
+          onUpdatesOpen();
+        }
+      }, 1000);
+    }
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, [updatesInView, brandUpdates, onUpdatesOpen]);
 
   const displayedUpdates = brandUpdates;
 

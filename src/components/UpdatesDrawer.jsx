@@ -32,6 +32,25 @@ export default function UpdatesDrawer({ isOpen, onClose }) {
     fetchUpdates();
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const initialScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      const diff = Math.abs(window.scrollY - initialScrollY);
+      if (diff > 45) {
+        onClose();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [isOpen, onClose]);
+
+
   return (
     <>
       {/* Backdrop overlay */}
