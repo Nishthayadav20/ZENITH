@@ -625,15 +625,7 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
 
   // Featured Collection split curtain animation variables
   const curtainSectionRef = useRef(null);
-  const { scrollYProgress: curtainScroll } = useScroll({
-    target: curtainSectionRef,
-    offset: ["start end", "end start"]
-  });
-
-  const curtainLeftX = useTransform(curtainScroll, [0.15, 0.45], ['0%', '-100%']);
-  const curtainRightX = useTransform(curtainScroll, [0.15, 0.45], ['0%', '100%']);
-  const curtainTextOpacity = useTransform(curtainScroll, [0.15, 0.35], [1, 0]);
-  const curtainDisplay = useTransform(curtainScroll, [0.15, 0.44, 0.45], ['flex', 'flex', 'none']);
+  const isFeaturedInView = useInView(curtainSectionRef, { once: false, amount: 0.15 });
 
   const onMouseMove = useCallback((e) => {
     const r = heroRef.current?.getBoundingClientRect();
