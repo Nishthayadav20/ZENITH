@@ -1207,7 +1207,7 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
         {/* Vertical Tab sticking to the extreme left of this section only, spanning full height */}
         <button
           onClick={() => onUpdatesOpen && onUpdatesOpen()}
-          className="absolute left-0 top-0 h-full w-20 sm:w-24 text-white font-black text-[16px] sm:text-[18px] tracking-[0.3em] uppercase border-r border-[#047857]/30 shadow-2xl hover:opacity-100 hover:translate-x-1.5 transition-all duration-300 z-30 cursor-pointer flex flex-col items-center justify-center select-none rounded-none group"
+          className="absolute left-0 top-0 h-full w-20 sm:w-24 text-white font-black text-[22px] sm:text-[26px] tracking-[0.35em] uppercase border-r border-[#047857]/30 shadow-2xl hover:opacity-100 hover:translate-x-1.5 transition-all duration-300 z-30 cursor-pointer flex flex-col items-center justify-center select-none rounded-none group"
           style={{
             writingMode: 'vertical-lr',
             textOrientation: 'mixed',
