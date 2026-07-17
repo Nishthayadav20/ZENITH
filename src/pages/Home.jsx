@@ -12,7 +12,7 @@ import {
   useScroll,
   AnimatePresence,
 } from 'framer-motion';
-import { Star, Award, ArrowRight, ChevronDown, ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
+import { Star, Award, ArrowRight, ChevronDown, ChevronLeft, ChevronRight, Play, Pause, Cpu, Layers, Droplet, Clock, Gem } from 'lucide-react';
 
 /* ─────────────────────────────────────────────────────────────────────
    ANIMATED COUNTER
@@ -258,105 +258,106 @@ function GenderPanel({ label, img, gender, delay, accent, onPageChange }) {
    COLLECTION CARD — mouse-tracking tilt per card
 ───────────────────────────────────────────────────────────────────── */
 function CollectionCard({ col, idx, onPageChange }) {
-  const cardRef = useRef(null);
-  const mx = useMotionValue(0); const my = useMotionValue(0);
-  const rx = useSpring(useTransform(my, [-1, 1], [10, -10]), { stiffness: 300, damping: 25 });
-  const ry = useSpring(useTransform(mx, [-1, 1], [-10, 10]), { stiffness: 300, damping: 25 });
-  const imgX = useTransform(useSpring(mx, { stiffness: 200, damping: 25 }), [-1, 1], ['-12px', '12px']);
-  const imgY = useTransform(useSpring(my, { stiffness: 200, damping: 25 }), [-1, 1], ['-8px', '8px']);
-  const [hov, setHov] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
-  const onMove = (e) => {
-    const r = cardRef.current?.getBoundingClientRect();
-    if (!r) return;
-    mx.set(((e.clientX - r.left) / r.width) * 2 - 1);
-    my.set(((e.clientY - r.top) / r.height) * 2 - 1);
+  const renderIcon = (iconName) => {
+    switch (iconName) {
+      case 'Cpu': return <Cpu size={12} className="shrink-0" />;
+      case 'Gem': return <Gem size={12} className="shrink-0" />;
+      case 'Droplet': return <Droplet size={12} className="shrink-0" />;
+      case 'Layers': return <Layers size={12} className="shrink-0" />;
+      case 'Clock': return <Clock size={12} className="shrink-0" />;
+      default: return <Cpu size={12} className="shrink-0" />;
+    }
   };
-  const onLeave = () => { mx.set(0); my.set(0); setHov(false); };
 
-  /* Each card: different enter animation */
+  const bgClass = col.dark ? 'bg-[#0c0c0c] text-white' : 'bg-[#e7e4dc] text-neutral-900 border border-black/5';
+  const numColor = '#047857'; // Swadeshi green (box color of warranty)
+  const descClass = col.dark ? 'text-gray-400' : 'text-neutral-600';
+  const specTextClass = col.dark ? 'text-gray-300' : 'text-neutral-700';
+
   const enterAnims = [
-    { hidden: { opacity: 0, x: -70, rotate: -4 }, visible: { opacity: 1, x: 0, rotate: 0 } },
-    { hidden: { opacity: 0, y: 80, scale: 0.88 }, visible: { opacity: 1, y: 0, scale: 1 } },
-    { hidden: { opacity: 0, x: 70, rotate: 4 },  visible: { opacity: 1, x: 0, rotate: 0 } },
+    { hidden: { opacity: 0, x: -70 }, visible: { opacity: 1, x: 0 } },
+    { hidden: { opacity: 0, y: 80, scale: 0.95 }, visible: { opacity: 1, y: 0, scale: 1 } },
+    { hidden: { opacity: 0, x: 70 }, visible: { opacity: 1, x: 0 } },
   ];
 
   return (
     <motion.div
-      ref={cardRef}
       onClick={() => onPageChange('shop', col.filter)}
-      onMouseMove={onMove}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={onLeave}
-      className="relative h-[420px] sm:h-[500px] lg:h-[580px] border border-luxury-text/10 rounded-xl overflow-hidden cursor-pointer flex flex-col justify-end p-6 sm:p-8 bg-luxury-dark"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       variants={enterAnims[idx]}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.85, delay: idx * 0.12, ease: [0.22, 1, 0.36, 1] }}
-      style={{
-        rotateX: rx, rotateY: ry,
-        transformStyle: 'preserve-3d',
-        boxShadow: hov ? `0 30px 70px ${col.accent}30` : '0 4px 20px rgba(0,0,0,0.3)',
-        transition: 'box-shadow 0.25s ease',
-      }}
+      className={`relative h-[360px] sm:h-[420px] md:h-[450px] rounded-2xl p-6 sm:p-8 flex flex-col justify-between overflow-hidden cursor-pointer shadow-md transition-shadow duration-300 hover:shadow-2xl ${bgClass}`}
     >
-      {/* Image — parallax inside card */}
-      <motion.div className="absolute inset-[-5%] z-0" style={{ x: imgX, y: imgY }}>
-        <motion.img
-          src={col.image} alt={col.name}
-          className="w-full h-full object-cover"
-          style={col.imgStyle || {}}
-          animate={{ scale: hov ? 1.1 : 1 }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-        />
-      </motion.div>
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-[1]" />
-
-      {/* Accent bar from center */}
-      <motion.div
-        className="absolute top-0 h-[3px] z-20"
-        style={{ background: col.accent, left: '50%', translateX: '-50%' }}
-        animate={{ width: hov ? '100%' : '0%' }}
-        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      {/* Background Watch Image overlapping on the right */}
+      <div 
+        className="absolute bottom-0 right-[-15%] w-[68%] h-[82%] bg-contain bg-no-repeat bg-bottom transition-transform duration-700 pointer-events-none z-10"
+        style={{ 
+          backgroundImage: `url('${col.image}')`,
+          transform: hovered ? 'scale(1.1) rotate(-3deg)' : 'scale(1)',
+          filter: col.dark ? 'brightness(0.95)' : 'none',
+        }}
       />
+      
+      {/* Content Container (relative z-20 to display over background) */}
+      <div className="relative z-20 flex flex-col justify-between h-full max-w-[65%]">
+        
+        {/* Top: Num & Header */}
+        <div className="space-y-3">
+          <span className="text-[10px] sm:text-xs font-black tracking-[0.25em]" style={{ color: numColor }}>
+            {col.num} —
+          </span>
+          <div className="space-y-1 sm:space-y-1.5">
+            <h3 className="font-serif text-xl sm:text-2xl font-black uppercase tracking-wider leading-tight">
+              {col.name}
+            </h3>
+            <p className="text-[8px] sm:text-[9px] font-black tracking-[0.2em] uppercase" style={{ color: numColor }}>
+              {col.tagline}
+            </p>
+          </div>
+          <p className={`text-[10px] sm:text-xs leading-relaxed font-light ${descClass}`}>
+            {col.desc}
+          </p>
+        </div>
 
-      {/* Glint diagonal sweep */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none z-[2]"
-        style={{ background: 'linear-gradient(110deg, transparent 38%, rgba(255,255,255,0.08) 50%, transparent 62%)' }}
-        animate={hov ? { x: ['−120%', '220%'] } : { x: '-120%' }}
-        transition={{ duration: 0.45, ease: 'easeOut' }}
-      />
+        {/* Middle: Divider + Specs */}
+        <div className="space-y-3 pt-4 border-t border-black/5">
+          <div className="space-y-2">
+            {col.specs.map((spec, i) => (
+              <div key={i} className={`flex items-center space-x-2 text-[9px] sm:text-[10px] font-medium ${specTextClass}`}>
+                <span style={{ color: numColor }}>{renderIcon(spec.icon)}</span>
+                <span>{spec.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
 
-      {/* Text area */}
-      <div className="relative z-10 space-y-3" style={{ transform: 'translateZ(30px)' }}>
-        <motion.span
-          className="block text-[11px] font-extrabold tracking-[0.2em] uppercase"
-          style={{ color: '#ffffff' }}
-          animate={{ letterSpacing: hov ? '0.28em' : '0.2em' }}
-          transition={{ duration: 0.2 }}
-        >
-          {col.tagline}
-        </motion.span>
-        <motion.h3
-          className="text-3xl sm:text-4xl font-serif font-black uppercase"
-          animate={{ color: hov ? col.accent : '#ffffff', y: hov ? -3 : 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          {col.name}
-        </motion.h3>
-        <p className="text-white/80 text-sm font-medium leading-relaxed line-clamp-2">
-          {col.desc}
-        </p>
-        <motion.div
-          className="flex items-center gap-2 text-sm font-bold pt-1"
-          animate={{ x: hov ? 5 : 0, gap: hov ? 14 : 8, color: hov ? col.accent : '#ffffff' }}
-          transition={{ duration: 0.18 }}
-        >
-          <span>DISCOVER</span><ArrowRight size={13} />
-        </motion.div>
+        {/* Bottom: Explore Collection */}
+        <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-black tracking-widest uppercase mt-4">
+          <span>Explore Collection</span>
+          <ArrowRight size={10} style={{ color: numColor }} />
+        </div>
+
       </div>
+
+      {/* Circular Arrow Button in bottom right corner */}
+      <div 
+        className="absolute bottom-6 right-6 w-11 h-11 rounded-full border flex items-center justify-center transition-all duration-300 z-20"
+        style={{ 
+          borderColor: col.dark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
+          backgroundColor: hovered ? numColor : 'transparent',
+          color: hovered ? '#ffffff' : (col.dark ? '#ffffff' : '#000000'),
+          transform: hovered ? 'rotate(-45deg)' : 'none',
+        }}
+      >
+        <ArrowRight size={14} className="stroke-[2.5]" />
+      </div>
+
     </motion.div>
   );
 }
@@ -723,9 +724,48 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
   const featured = products;
 
   const collections = [
-{ name: 'Khronomaster', image: homeImages.collection_khronomaster || '/assets/watch_green.jpg', tagline: 'High-Frequency Chronographs', desc: 'Powered by our high-precision automatic caliber, blending robust authenticity with modern Indian design.', filter: { category: 'Heritage' }, accent: '#34d399', imgStyle: { filter: 'brightness(0.72) contrast(1.18) saturate(1.1)', objectPosition: 'center 30%' } },
-    { name: 'Defy', image: homeImages.collection_defy || '/assets/watch_red.jpg', tagline: 'Futuristic Watchmaking', desc: 'Unmatched precision and bold architectural design built for the boundary-breakers.', filter: { category: 'Heritage' }, accent: '#f87171', imgStyle: { filter: 'brightness(0.65) contrast(1.22) saturate(0.9) hue-rotate(-10deg)', objectPosition: 'center 25%' } },
-    { name: 'Elite & Heritage', image: homeImages.collection_heritage || '/assets/watch_green.jpg', tagline: 'Timeless Swadeshi Classics', desc: 'Elegant profiles, vintage inspirations, and dress chronometers suited for any formal setting.', filter: { category: 'Heritage' }, accent: '#c5a880', imgStyle: { filter: 'brightness(0.6) contrast(1.3) sepia(0.25) saturate(0.85)', objectPosition: 'center 35%' } },
+    {
+      num: '01',
+      name: 'KHRONOMASTER',
+      tagline: 'HIGH-FREQUENCY CHRONOGRAPHS',
+      desc: 'Engineered for precision. Built for performance.',
+      image: homeImages.collection_khronomaster || '/assets/watch_green.jpg',
+      specs: [
+        { label: 'Automatic Movement', icon: 'Cpu' },
+        { label: 'Sapphire Crystal', icon: 'Gem' },
+        { label: '100M Water Resistant', icon: 'Droplet' }
+      ],
+      dark: true,
+      filter: { category: 'Khronomaster' }
+    },
+    {
+      num: '02',
+      name: 'DEFY',
+      tagline: 'FUTURISTIC WATCHMAKING',
+      desc: 'Bold innovation. Boundary-breaking design.',
+      image: homeImages.collection_defy || '/assets/watch_red.jpg',
+      specs: [
+        { label: 'Swiss Automatic', icon: 'Cpu' },
+        { label: 'Carbon Composite', icon: 'Layers' },
+        { label: '120M Water Resistant', icon: 'Droplet' }
+      ],
+      dark: true,
+      filter: { category: 'Defy' }
+    },
+    {
+      num: '03',
+      name: 'ELITE & HERITAGE',
+      tagline: 'TIMELESS SWADESHI CLASSICS',
+      desc: 'Inspired by heritage. Made for generations.',
+      image: homeImages.collection_heritage || '/assets/watch_green.jpg',
+      specs: [
+        { label: 'Vintage Inspiration', icon: 'Clock' },
+        { label: 'Premium Leather', icon: 'Gem' },
+        { label: '50M Water Resistant', icon: 'Droplet' }
+      ],
+      dark: false,
+      filter: { category: 'Heritage' }
+    }
   ];
 
   const marqueeA = ['Swadeshi Luxury', 'Indian Engineered', 'Make In India Pride', 'Sapphire Crystal', 'High-Beat Caliber', 'In-House Assembly'];
@@ -957,21 +997,21 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
 
       {/* ══════════ COLLECTIONS ══════════
           Each card: different enter anim + full 3-D mouse-track tilt + image parallax */}
-      <section className="w-full px-4 sm:px-8 lg:px-12 pt-32 pb-24 space-y-14">
+      <section className="w-full px-4 sm:px-8 lg:px-12 pt-32 pb-24 space-y-14 bg-[#faf8f5]">
         <div className="text-center max-w-3xl mx-auto space-y-4">
           <Reveal dir="flip">
-            <p className="text-xs text-luxury-gold-dark font-black tracking-[0.3em] uppercase">The Pillars of KHRONIQ</p>
+            <p className="text-xs text-neutral-800 font-extrabold tracking-[0.35em] uppercase">The Pillars of KHRONIQ</p>
           </Reveal>
           
           <Reveal dir="up" delay={0.15}>
-            <h2 className="text-4xl sm:text-5xl font-serif font-bold text-luxury-text tracking-wide uppercase">
+            <h2 className="text-4xl sm:text-5xl font-serif font-black text-neutral-900 tracking-wide uppercase">
               Signature Collections
             </h2>
           </Reveal>
           
           <div className="flex items-center justify-center gap-5 mt-2">
             <motion.div 
-              className="h-[1.5px] bg-gradient-to-r from-transparent to-luxury-gold-dark"
+              className="h-[1.5px] bg-gradient-to-r from-transparent to-[#047857]"
               initial={{ width: 0 }}
               whileInView={{ width: '80px' }}
               viewport={{ once: true }}
@@ -981,10 +1021,10 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
             <img 
               src="/assets/logo_icon.png" 
               alt="Logo Mark" 
-              className="w-5 h-5 object-contain opacity-90 filter drop-shadow-[0_0_8px_rgba(0,0,0,0.3)]" 
+              className="w-5 h-5 object-contain opacity-90 filter brightness-0" 
             />
             <motion.div 
-              className="h-[1.5px] bg-gradient-to-l from-transparent to-luxury-gold-dark"
+              className="h-[1.5px] bg-gradient-to-l from-transparent to-[#047857]"
               initial={{ width: 0 }}
               whileInView={{ width: '80px' }}
               viewport={{ once: true }}
@@ -994,8 +1034,8 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
           </div>
           
           <Reveal dir="up" delay={0.3}>
-            <p className="text-luxury-muted text-xs sm:text-sm max-w-xl mx-auto font-light leading-relaxed">
-              Explore our historic lineages, where centuries-old watchmaking heritage meets vanguard design engineering.
+            <p className="text-neutral-600 text-xs sm:text-sm max-w-xl mx-auto font-medium leading-relaxed">
+              Three distinct expressions of our watchmaking philosophy. Crafted for those who value timeless excellence.
             </p>
           </Reveal>
         </div>
