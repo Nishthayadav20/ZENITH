@@ -40,6 +40,7 @@ const dbReady = new Promise((res, rej) => {
   dbReadyResolve = res;
   dbReadyReject = rej;
 });
+dbReady.catch(() => {}); // Prevent unhandled promise rejection crash
 
 // Middleware: wait for DB to be ready before handling any request
 const ensureDb = async (req, res, next) => {
@@ -56,6 +57,23 @@ const ensureDb = async (req, res, next) => {
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// Diagnostics Endpoint (Before DB)
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    env: {
+      has_mongodb_uri: !!process.env.MONGODB_URI,
+      has_jwt_secret: !!process.env.JWT_SECRET,
+      node_env: process.env.NODE_ENV
+    },
+    mongoose: {
+      readyState: mongoose.connection.readyState,
+      error: dbConnectionError
+    }
+  });
+});
+
 app.use(ensureDb);
 
 // Vercel Serverless Routing URL Restorer
@@ -88,22 +106,6 @@ app.use('/api/blogs', blogRoutes);
 // Base Endpoint
 app.get('/api', (req, res) => {
   res.json({ message: 'Welcome to the KHRONIQ API' });
-});
-
-// Diagnostics Endpoint
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    env: {
-      has_mongodb_uri: !!process.env.MONGODB_URI,
-      has_jwt_secret: !!process.env.JWT_SECRET,
-      node_env: process.env.NODE_ENV
-    },
-    mongoose: {
-      readyState: mongoose.connection.readyState, // 0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting
-      error: dbConnectionError
-    }
-  });
 });
 
 // Database Seed Function
