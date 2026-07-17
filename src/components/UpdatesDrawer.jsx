@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Bell } from 'lucide-react';
+import LogoMark from './LogoMark';
 
 export default function UpdatesDrawer({ isOpen, onClose }) {
   const [updates, setUpdates] = useState([]);
@@ -52,7 +53,11 @@ export default function UpdatesDrawer({ isOpen, onClose }) {
         }}
       >
         {/* Drawer Header */}
-        <div className="flex justify-end items-center border-b border-black/10 p-6">
+        <div className="flex justify-between items-center border-b border-black/10 p-6">
+          <div className="flex items-center space-x-2">
+            <LogoMark className="w-5 h-5 text-black fill-black" />
+            <span className="font-cinzel font-black text-sm tracking-[0.2em] text-black">KHRONIQ</span>
+          </div>
           <button
             onClick={onClose}
             className="text-black hover:scale-110 transition p-1 hover:bg-black/5 rounded-full cursor-pointer"
