@@ -1403,7 +1403,7 @@ const handleEditImageUpload = async (e) => {
                         });
                       }}
                       className={`w-12 h-6 rounded-full transition-all duration-300 cursor-pointer relative ${
-                        newProduct.customizable ? 'bg-luxury-gold' : 'bg-white/10'
+                        newProduct.customizable ? 'bg-[#047857]' : 'bg-white/10'
                       }`}
                     >
                       <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
@@ -1897,7 +1897,7 @@ const handleEditImageUpload = async (e) => {
                           });
                         }}
                         className={`w-12 h-6 rounded-full transition-all duration-300 cursor-pointer relative ${
-                          editForm.customizable ? 'bg-luxury-gold' : 'bg-white/10'
+                          editForm.customizable ? 'bg-[#047857]' : 'bg-white/10'
                         }`}
                       >
                         <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
