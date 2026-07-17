@@ -1664,7 +1664,7 @@ const handleEditImageUpload = async (e) => {
 
                 <button
                   type="submit"
-                  className="md:col-span-2 py-3 bg-luxury-gold text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold-dark transition"
+                  className="md:col-span-2 py-3 bg-black text-white border border-white/10 font-bold text-xs tracking-widest uppercase hover:bg-neutral-900 transition"
                 >
                   Save Timepiece to Stock
                 </button>
@@ -2166,7 +2166,7 @@ const handleEditImageUpload = async (e) => {
                     </button>
                     <button
                       type="submit"
-                      className="py-2.5 bg-luxury-gold text-luxury-dark font-bold uppercase hover:bg-luxury-gold-dark transition"
+                      className="py-2.5 bg-black text-white border border-white/10 font-bold uppercase hover:bg-neutral-900 transition"
                     >
                       Save Modifications
                     </button>
