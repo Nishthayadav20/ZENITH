@@ -1117,7 +1117,7 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
               boxShadow: 'inset -20px 0 30px rgba(0,0,0,0.8)'
             }}
             animate={{ x: isFeaturedInView ? '-105%' : '0%' }}
-            transition={{ duration: 1.3, ease: [0.77, 0, 0.175, 1] }}
+            transition={{ duration: 2.2, ease: [0.77, 0, 0.175, 1] }}
           />
           {/* Right Curtain */}
           <motion.div 
@@ -1127,7 +1127,7 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
               boxShadow: 'inset 20px 0 30px rgba(0,0,0,0.8)'
             }}
             animate={{ x: isFeaturedInView ? '105%' : '0%' }}
-            transition={{ duration: 1.3, ease: [0.77, 0, 0.175, 1] }}
+            transition={{ duration: 2.2, ease: [0.77, 0, 0.175, 1] }}
           />
           
           {/* Centered Curtains Text Overlay */}
