@@ -638,7 +638,7 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
   const [brandUpdates, setBrandUpdates] = useState([]);
   const [hoveredProduct, setHoveredProduct] = useState(null);
   const updatesRef = useRef(null);
-  const updatesInView = useInView(updatesRef, { once: false, margin: '-45px' });
+  const updatesInView = useInView(updatesRef, { once: false, margin: '-40%' });
 
   const hoverTimeoutRef = useRef(null);
 
