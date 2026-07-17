@@ -93,7 +93,9 @@ export default function Admin({ onPageChange }) {
       customStrapName: '',
       customStrapImage: '',
       customCaseName: '',
-      customCaseColor: '#ffffff'
+      customCaseColor: '#ffffff',
+      customStraps: [],
+      customCases: []
     }
   });
 
@@ -107,6 +109,128 @@ export default function Admin({ onPageChange }) {
   const [newCouponCode, setNewCouponCode] = useState('');
   const [newCouponDiscount, setNewCouponDiscount] = useState('');
   const [newCouponDesc, setNewCouponDesc] = useState('');
+
+  // Customization Options temporary states and helper functions
+  const [tempStrapName, setTempStrapName] = useState('');
+  const [tempStrapImage, setTempStrapImage] = useState('');
+  const [tempCaseName, setTempCaseName] = useState('');
+  const [tempCaseColor, setTempCaseColor] = useState('#ffffff');
+
+  const handleTempStrapImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setTempStrapImage(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAddCustomStrap = (isEdit = false) => {
+    if (!tempStrapName.trim()) {
+      alert('Please enter a name for the custom strap.');
+      return;
+    }
+    const newStrap = { name: tempStrapName.trim(), image: tempStrapImage };
+    if (isEdit) {
+      const currentStraps = editForm.customizationOptions?.customStraps || [];
+      setEditForm({
+        ...editForm,
+        customizationOptions: {
+          ...editForm.customizationOptions,
+          customStraps: [...currentStraps, newStrap]
+        }
+      });
+    } else {
+      const currentStraps = newProduct.customizationOptions?.customStraps || [];
+      setNewProduct({
+        ...newProduct,
+        customizationOptions: {
+          ...newProduct.customizationOptions,
+          customStraps: [...currentStraps, newStrap]
+        }
+      });
+    }
+    setTempStrapName('');
+    setTempStrapImage('');
+  };
+
+  const handleRemoveCustomStrap = (idx, isEdit = false) => {
+    if (isEdit) {
+      const currentStraps = editForm.customizationOptions?.customStraps || [];
+      const updated = currentStraps.filter((_, i) => i !== idx);
+      setEditForm({
+        ...editForm,
+        customizationOptions: {
+          ...editForm.customizationOptions,
+          customStraps: updated
+        }
+      });
+    } else {
+      const currentStraps = newProduct.customizationOptions?.customStraps || [];
+      const updated = currentStraps.filter((_, i) => i !== idx);
+      setNewProduct({
+        ...newProduct,
+        customizationOptions: {
+          ...newProduct.customizationOptions,
+          customStraps: updated
+        }
+      });
+    }
+  };
+
+  const handleAddCustomCase = (isEdit = false) => {
+    if (!tempCaseName.trim()) {
+      alert('Please enter a name for the custom case finish.');
+      return;
+    }
+    const newCase = { name: tempCaseName.trim(), color: tempCaseColor };
+    if (isEdit) {
+      const currentCases = editForm.customizationOptions?.customCases || [];
+      setEditForm({
+        ...editForm,
+        customizationOptions: {
+          ...editForm.customizationOptions,
+          customCases: [...currentCases, newCase]
+        }
+      });
+    } else {
+      const currentCases = newProduct.customizationOptions?.customCases || [];
+      setNewProduct({
+        ...newProduct,
+        customizationOptions: {
+          ...newProduct.customizationOptions,
+          customCases: [...currentCases, newCase]
+        }
+      });
+    }
+    setTempCaseName('');
+    setTempCaseColor('#ffffff');
+  };
+
+  const handleRemoveCustomCase = (idx, isEdit = false) => {
+    if (isEdit) {
+      const currentCases = editForm.customizationOptions?.customCases || [];
+      const updated = currentCases.filter((_, i) => i !== idx);
+      setEditForm({
+        ...editForm,
+        customizationOptions: {
+          ...editForm.customizationOptions,
+          customCases: updated
+        }
+      });
+    } else {
+      const currentCases = newProduct.customizationOptions?.customCases || [];
+      const updated = currentCases.filter((_, i) => i !== idx);
+      setNewProduct({
+        ...newProduct,
+        customizationOptions: {
+          ...newProduct.customizationOptions,
+          customCases: updated
+        }
+      });
+    }
+  };
 
 
   // Analytics State
@@ -1327,46 +1451,57 @@ const handleEditImageUpload = async (e) => {
                               </div>
                             </div>
 
-                            {/* Custom Name input for another strap */}
-                            <div className="space-y-1 pt-2 border-t border-white/5">
-                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Add Custom Strap Name (Optional)</label>
-                              <input
-                                type="text"
-                                placeholder="e.g. Alligator Leather"
-                                value={newProduct.customizationOptions?.customStrapName || ''}
-                                onChange={(e) => setNewProduct({
-                                  ...newProduct,
-                                  customizationOptions: {
-                                    ...newProduct.customizationOptions,
-                                    customStrapName: e.target.value
-                                  }
-                                })}
-                                className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
-                              />
-                            </div>
+                            {/* Multiple Custom Straps Addition */}
+                            <div className="space-y-2 pt-2 border-t border-white/5">
+                              <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Straps</label>
+                              <div className="grid grid-cols-2 gap-2">
+                                <input
+                                  type="text"
+                                  placeholder="Strap Name..."
+                                  value={tempStrapName}
+                                  onChange={(e) => setTempStrapName(e.target.value)}
+                                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
+                                />
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={handleTempStrapImageChange}
+                                  className="text-[10px] text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:bg-white/10 file:text-white hover:file:bg-white/20 cursor-pointer"
+                                />
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleAddCustomStrap(false)}
+                                className="w-full py-1.5 bg-luxury-gold hover:bg-neutral-100 text-neutral-950 font-bold text-[9px] uppercase tracking-wider rounded transition cursor-pointer"
+                              >
+                                Add Strap Option
+                              </button>
 
-                            {/* Image Upload for new straps */}
-                            <div className="space-y-1">
-                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Upload Custom Strap Image</label>
-                              <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => handleStrapImageChange(e, false)}
-                                className="text-[10px] text-gray-400 file:mr-3 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20 cursor-pointer"
-                              />
-                              {newProduct.customizationOptions?.customStrapImage && (
-                                <div className="mt-1.5 flex items-center space-x-2 bg-black/20 p-1.5 rounded border border-white/5">
-                                  <img
-                                    src={newProduct.customizationOptions.customStrapImage}
-                                    alt="Strap Preview"
-                                    className="w-10 h-10 object-contain rounded border border-white/10 bg-luxury-dark/40"
-                                  />
-                                  <div>
-                                    <p className="text-[9px] text-emerald-500 font-bold uppercase tracking-wider">Custom Strap Loaded</p>
-                                    <p className="text-[8px] text-gray-400 truncate max-w-[200px]">
-                                      {newProduct.customizationOptions.customStrapName || 'Unnamed'}
-                                    </p>
-                                  </div>
+                              {/* Added Custom Straps List */}
+                              {((newProduct.customizationOptions?.customStraps || []).length > 0) && (
+                                <div className="space-y-1.5 max-h-32 overflow-y-auto scrollbar-thin mt-2">
+                                  {(newProduct.customizationOptions.customStraps).map((s, idx) => (
+                                    <div key={idx} className="flex items-center justify-between bg-black/35 p-1.5 rounded border border-white/5">
+                                      <div className="flex items-center space-x-2">
+                                        <input
+                                          type="checkbox"
+                                          checked={true}
+                                          onChange={() => handleRemoveCustomStrap(idx, false)}
+                                          className="w-3.5 h-3.5 accent-red-500 cursor-pointer"
+                                          title="Uncheck to remove"
+                                        />
+                                        <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded bg-white/5" />
+                                        <span className="text-[9px] text-gray-300 font-medium">{s.name}</span>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleRemoveCustomStrap(idx, false)}
+                                        className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
+                                      >
+                                        Remove
+                                      </button>
+                                    </div>
+                                  ))}
                                 </div>
                               )}
                             </div>
@@ -1389,41 +1524,62 @@ const handleEditImageUpload = async (e) => {
                         </div>
                         {newProduct.allowCaseCustomization && (
                           <div className="pl-6 space-y-2 border-l border-white/10 my-2">
-                            <div className="space-y-1">
-                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Custom Case Name</label>
-                              <input
-                                type="text"
-                                placeholder="e.g. Matte Gold"
-                                value={newProduct.customizationOptions?.customCaseName || ''}
-                                onChange={(e) => setNewProduct({
-                                  ...newProduct,
-                                  customizationOptions: {
-                                    ...newProduct.customizationOptions,
-                                    customCaseName: e.target.value
-                                  }
-                                })}
-                                className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
-                              />
-                            </div>
-                            <div className="space-y-1">
-                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Case Color Option</label>
-                              <div className="flex items-center space-x-2">
+                            {/* Multiple Custom Cases Addition */}
+                            <div className="space-y-1.5">
+                              <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Case Finish (Optional)</label>
+                              <div className="grid grid-cols-2 gap-2">
                                 <input
-                                  type="color"
-                                  value={newProduct.customizationOptions?.customCaseColor || '#ffffff'}
-                                  onChange={(e) => setNewProduct({
-                                    ...newProduct,
-                                    customizationOptions: {
-                                      ...newProduct.customizationOptions,
-                                      customCaseColor: e.target.value
-                                    }
-                                  })}
-                                  className="w-8 h-8 rounded border-0 bg-transparent cursor-pointer"
+                                  type="text"
+                                  placeholder="Finish Name (e.g. Matte Gold)..."
+                                  value={tempCaseName}
+                                  onChange={(e) => setTempCaseName(e.target.value)}
+                                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
                                 />
-                                <span className="text-xs text-gray-300 font-mono">
-                                  {newProduct.customizationOptions?.customCaseColor || '#ffffff'}
-                                </span>
+                                <div className="flex items-center space-x-2">
+                                  <input
+                                    type="color"
+                                    value={tempCaseColor}
+                                    onChange={(e) => setTempCaseColor(e.target.value)}
+                                    className="w-8 h-8 rounded border-0 bg-transparent cursor-pointer"
+                                  />
+                                  <span className="text-[10px] text-gray-300 font-mono">{tempCaseColor}</span>
+                                </div>
                               </div>
+                              <button
+                                type="button"
+                                onClick={() => handleAddCustomCase(false)}
+                                className="w-full py-1.5 bg-luxury-gold hover:bg-neutral-100 text-neutral-950 font-bold text-[9px] uppercase tracking-wider rounded transition cursor-pointer"
+                              >
+                                Add Case Option
+                              </button>
+
+                              {/* Added Custom Cases List */}
+                              {((newProduct.customizationOptions?.customCases || []).length > 0) && (
+                                <div className="space-y-1.5 max-h-32 overflow-y-auto scrollbar-thin mt-2">
+                                  {(newProduct.customizationOptions.customCases).map((c, idx) => (
+                                    <div key={idx} className="flex items-center justify-between bg-black/35 p-1.5 rounded border border-white/5">
+                                      <div className="flex items-center space-x-2">
+                                        <input
+                                          type="checkbox"
+                                          checked={true}
+                                          onChange={() => handleRemoveCustomCase(idx, false)}
+                                          className="w-3.5 h-3.5 accent-red-500 cursor-pointer"
+                                          title="Uncheck to remove"
+                                        />
+                                        <span className="w-4 h-4 rounded-full border border-white/10" style={{ backgroundColor: c.color }} />
+                                        <span className="text-[9px] text-gray-300 font-medium">{c.name}</span>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleRemoveCustomCase(idx, false)}
+                                        className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
+                                      >
+                                        Remove
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           </div>
                         )}
@@ -1789,46 +1945,57 @@ const handleEditImageUpload = async (e) => {
                                 </div>
                               </div>
 
-                              {/* Custom Name input for another strap */}
-                              <div className="space-y-1 pt-2 border-t border-white/5">
-                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Add Custom Strap Name (Optional)</label>
-                                <input
-                                  type="text"
-                                  placeholder="e.g. Alligator Leather"
-                                  value={editForm.customizationOptions?.customStrapName || ''}
-                                  onChange={(e) => setEditForm({
-                                    ...editForm,
-                                    customizationOptions: {
-                                      ...editForm.customizationOptions,
-                                      customStrapName: e.target.value
-                                    }
-                                  })}
-                                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
-                                />
-                              </div>
+                              {/* Multiple Custom Straps Addition */}
+                              <div className="space-y-2 pt-2 border-t border-white/5">
+                                <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Straps</label>
+                                <div className="grid grid-cols-2 gap-2">
+                                  <input
+                                    type="text"
+                                    placeholder="Strap Name..."
+                                    value={tempStrapName}
+                                    onChange={(e) => setTempStrapName(e.target.value)}
+                                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
+                                  />
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleTempStrapImageChange}
+                                    className="text-[10px] text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:bg-white/10 file:text-white hover:file:bg-white/20 cursor-pointer"
+                                  />
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => handleAddCustomStrap(true)}
+                                  className="w-full py-1.5 bg-luxury-gold hover:bg-neutral-100 text-neutral-950 font-bold text-[9px] uppercase tracking-wider rounded transition cursor-pointer"
+                                >
+                                  Add Strap Option
+                                </button>
 
-                              {/* Image Upload for new straps */}
-                              <div className="space-y-1">
-                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Upload Custom Strap Image</label>
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={(e) => handleStrapImageChange(e, true)}
-                                  className="text-[10px] text-gray-400 file:mr-3 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20 cursor-pointer"
-                                />
-                                {editForm.customizationOptions?.customStrapImage && (
-                                  <div className="mt-1.5 flex items-center space-x-2 bg-black/20 p-1.5 rounded border border-white/5">
-                                    <img
-                                      src={editForm.customizationOptions.customStrapImage}
-                                      alt="Strap Preview"
-                                      className="w-10 h-10 object-contain rounded border border-white/10 bg-luxury-dark/40"
-                                    />
-                                    <div>
-                                      <p className="text-[9px] text-emerald-500 font-bold uppercase tracking-wider">Custom Strap Loaded</p>
-                                      <p className="text-[8px] text-gray-400 truncate max-w-[200px]">
-                                        {editForm.customizationOptions.customStrapName || 'Unnamed'}
-                                      </p>
-                                    </div>
+                                {/* Added Custom Straps List */}
+                                {((editForm.customizationOptions?.customStraps || []).length > 0) && (
+                                  <div className="space-y-1.5 max-h-32 overflow-y-auto scrollbar-thin mt-2">
+                                    {(editForm.customizationOptions.customStraps).map((s, idx) => (
+                                      <div key={idx} className="flex items-center justify-between bg-black/35 p-1.5 rounded border border-white/5">
+                                        <div className="flex items-center space-x-2">
+                                          <input
+                                            type="checkbox"
+                                            checked={true}
+                                            onChange={() => handleRemoveCustomStrap(idx, true)}
+                                            className="w-3.5 h-3.5 accent-red-500 cursor-pointer"
+                                            title="Uncheck to remove"
+                                          />
+                                          <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded bg-white/5" />
+                                          <span className="text-[9px] text-gray-300 font-medium">{s.name}</span>
+                                        </div>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveCustomStrap(idx, true)}
+                                          className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
+                                        >
+                                          Remove
+                                        </button>
+                                      </div>
+                                    ))}
                                   </div>
                                 )}
                               </div>
@@ -1849,43 +2016,64 @@ const handleEditImageUpload = async (e) => {
                               Allow Case Finish Customization
                             </label>
                           </div>
-                          {editForm.allowCaseCustomization && (
+                           {editForm.allowCaseCustomization && (
                             <div className="pl-6 space-y-2 border-l border-white/10 my-2">
-                              <div className="space-y-1">
-                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Custom Case Name</label>
-                                <input
-                                  type="text"
-                                  placeholder="e.g. Matte Gold"
-                                  value={editForm.customizationOptions?.customCaseName || ''}
-                                  onChange={(e) => setEditForm({
-                                    ...editForm,
-                                    customizationOptions: {
-                                      ...editForm.customizationOptions,
-                                      customCaseName: e.target.value
-                                    }
-                                  })}
-                                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Case Color Option</label>
-                                <div className="flex items-center space-x-2">
+                              {/* Multiple Custom Cases Addition */}
+                              <div className="space-y-1.5">
+                                <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Case Finish (Optional)</label>
+                                <div className="grid grid-cols-2 gap-2">
                                   <input
-                                    type="color"
-                                    value={editForm.customizationOptions?.customCaseColor || '#ffffff'}
-                                    onChange={(e) => setEditForm({
-                                      ...editForm,
-                                      customizationOptions: {
-                                        ...editForm.customizationOptions,
-                                        customCaseColor: e.target.value
-                                      }
-                                    })}
-                                    className="w-8 h-8 rounded border-0 bg-transparent cursor-pointer"
+                                    type="text"
+                                    placeholder="Finish Name (e.g. Matte Gold)..."
+                                    value={tempCaseName}
+                                    onChange={(e) => setTempCaseName(e.target.value)}
+                                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
                                   />
-                                  <span className="text-xs text-gray-300 font-mono">
-                                    {editForm.customizationOptions?.customCaseColor || '#ffffff'}
-                                  </span>
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="color"
+                                      value={tempCaseColor}
+                                      onChange={(e) => setTempCaseColor(e.target.value)}
+                                      className="w-8 h-8 rounded border-0 bg-transparent cursor-pointer"
+                                    />
+                                    <span className="text-[10px] text-gray-300 font-mono">{tempCaseColor}</span>
+                                  </div>
                                 </div>
+                                <button
+                                  type="button"
+                                  onClick={() => handleAddCustomCase(true)}
+                                  className="w-full py-1.5 bg-luxury-gold hover:bg-neutral-100 text-neutral-950 font-bold text-[9px] uppercase tracking-wider rounded transition cursor-pointer"
+                                >
+                                  Add Case Option
+                                </button>
+
+                                {/* Added Custom Cases List */}
+                                {((editForm.customizationOptions?.customCases || []).length > 0) && (
+                                  <div className="space-y-1.5 max-h-32 overflow-y-auto scrollbar-thin mt-2">
+                                    {(editForm.customizationOptions.customCases).map((c, idx) => (
+                                      <div key={idx} className="flex items-center justify-between bg-black/35 p-1.5 rounded border border-white/5">
+                                        <div className="flex items-center space-x-2">
+                                          <input
+                                            type="checkbox"
+                                            checked={true}
+                                            onChange={() => handleRemoveCustomCase(idx, true)}
+                                            className="w-3.5 h-3.5 accent-red-500 cursor-pointer"
+                                            title="Uncheck to remove"
+                                          />
+                                          <span className="w-4 h-4 rounded-full border border-white/10" style={{ backgroundColor: c.color }} />
+                                          <span className="text-[9px] text-gray-300 font-medium">{c.name}</span>
+                                        </div>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveCustomCase(idx, true)}
+                                          className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
+                                        >
+                                          Remove
+                                        </button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
                             </div>
                           )}

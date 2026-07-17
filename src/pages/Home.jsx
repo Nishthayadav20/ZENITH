@@ -1116,7 +1116,8 @@ export default function Home({ onPageChange }) {
               </>
             )}
           </div>
-        </div>
+        </section>
+      </div>
     </>
   );
 }

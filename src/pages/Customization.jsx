@@ -45,12 +45,24 @@ function buildOptions(product) {
   if (opts.customStrapName && !strapMaterials.includes(opts.customStrapName)) {
     strapMaterials.push(opts.customStrapName);
   }
+  const customStraps = opts.customStraps || [];
+  customStraps.forEach(cs => {
+    if (cs.name && !strapMaterials.includes(cs.name)) {
+      strapMaterials.push(cs.name);
+    }
+  });
   
   // Custom case finishes
   const caseFinishes = [...(opts.caseFinishes?.length ? opts.caseFinishes : FALLBACK_FINISHES)];
   if (opts.customCaseName && !caseFinishes.includes(opts.customCaseName)) {
     caseFinishes.push(opts.customCaseName);
   }
+  const customCases = opts.customCases || [];
+  customCases.forEach(cc => {
+    if (cc.name && !caseFinishes.includes(cc.name)) {
+      caseFinishes.push(cc.name);
+    }
+  });
 
   const engravingAllowed = opts.engravingAllowed ?? true;
   return { 
@@ -61,7 +73,9 @@ function buildOptions(product) {
     customStrapName: opts.customStrapName || '',
     customStrapImage: opts.customStrapImage || '',
     customCaseName: opts.customCaseName || '',
-    customCaseColor: opts.customCaseColor || ''
+    customCaseColor: opts.customCaseColor || '',
+    customStraps,
+    customCases
   };
 }
 
@@ -372,8 +386,22 @@ export default function Customization({ onPageChange, params }) {
                 dialColor={dialColor}
                 finish={caseFinish}
                 engraving={engraving}
-                strapImage={strapMaterial === options?.customStrapName ? options?.customStrapImage : (STRAP_IMAGES[strapMaterial] || '')}
-                caseColor={caseFinish === options?.customCaseName ? options?.customCaseColor : ''}
+                strapImage={
+                  (() => {
+                    const matchingCustom = (options?.customStraps || []).find(cs => cs.name === strapMaterial);
+                    if (matchingCustom) return matchingCustom.image;
+                    if (strapMaterial === options?.customStrapName) return options?.customStrapImage;
+                    return STRAP_IMAGES[strapMaterial] || '';
+                  })()
+                }
+                caseColor={
+                  (() => {
+                    const matchingCustom = (options?.customCases || []).find(cc => cc.name === caseFinish);
+                    if (matchingCustom) return matchingCustom.color;
+                    if (caseFinish === options?.customCaseName) return options?.customCaseColor;
+                    return '';
+                  })()
+                }
               />
               <div className="text-center space-y-1">
                 <p className="text-white font-bold text-lg">{selectedProduct.name}</p>
@@ -447,9 +475,12 @@ export default function Customization({ onPageChange, params }) {
                 </h3>
                 <div className="grid grid-cols-3 gap-3">
                   {options.strapMaterials.map((mat) => {
-                    const imgUrl = (mat === options.customStrapName && options.customStrapImage) 
-                      ? options.customStrapImage 
-                      : (STRAP_IMAGES[mat] || '/assets/strap_leather_tan.jpg');
+                    const matchingCustom = (options.customStraps || []).find(cs => cs.name === mat);
+                    const imgUrl = matchingCustom 
+                      ? matchingCustom.image 
+                      : ((mat === options.customStrapName && options.customStrapImage) 
+                        ? options.customStrapImage 
+                        : (STRAP_IMAGES[mat] || '/assets/strap_leather_tan.jpg'));
                     return (
                       <button
                         key={mat}
