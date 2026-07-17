@@ -944,11 +944,12 @@ const handleEditImageUpload = async (e) => {
               onClick={() => setActiveTab(tab.key)}
               className={`py-2.5 px-4 font-bold uppercase tracking-wider cursor-pointer transition flex items-center space-x-1.5 rounded-sm border ${
                 activeTab === tab.key 
-                  ? 'bg-luxury-gold text-luxury-dark font-extrabold' 
+                  ? 'bg-black text-white font-extrabold' 
                   : 'bg-luxury-gray text-gray-400 hover:text-white hover:bg-luxury-gray/70'
               }`}
               style={{
-                color: activeTab === tab.key ? '#ffffff' : '#374151'
+                color: activeTab === tab.key ? '#ffffff' : '#374151',
+                backgroundColor: activeTab === tab.key ? '#000000' : undefined
               }}
             >
               <Icon size={14} style={{ color: activeTab === tab.key ? '#ffffff' : 'inherit' }} />
