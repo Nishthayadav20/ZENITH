@@ -90,122 +90,65 @@ function WatchPreview({ product, dialColor, finish, engraving, strapImage, caseC
   );
 
   return (
-    <div className="relative flex items-center justify-center" style={{ minHeight: 300 }}>
-      {/* Glow */}
+    <div className="relative flex items-center justify-center w-full overflow-hidden rounded-xl" style={{ minHeight: 350 }}>
+      {/* Background glow to reflect case finish */}
       <div
-        className="absolute rounded-full blur-3xl opacity-30 w-56 h-56"
-        style={{ background: dialColor?.value || '#c8a96a', zIndex: 1 }}
+        className="absolute rounded-full blur-3xl opacity-40 w-72 h-72 transition-colors duration-700"
+        style={{ background: finishTone, zIndex: 1 }}
       />
 
-      {/* Strap band */}
+      {/* Strap Texture Ambient Background */}
       {strapImage && (
-        <div className="absolute animate-fade-in" style={{
-          width: 44,
-          height: 290,
-          backgroundImage: `url(${strapImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          borderRadius: 4,
-          boxShadow: '0 0 15px rgba(0,0,0,0.6)',
-          zIndex: 2
-        }} />
+         <div className="absolute inset-0 opacity-20 transition-all duration-700 pointer-events-none"
+           style={{
+             backgroundImage: `url(${strapImage})`,
+             backgroundSize: 'cover',
+             backgroundPosition: 'center',
+             zIndex: 0,
+             mixBlendMode: 'luminosity'
+           }}
+         />
       )}
 
-      {/* Lug top */}
-      <div className="absolute" style={{ width: 26, height: 28, top: 14, left: '50%', transform: 'translateX(-50%)', background: finishTone, borderRadius: '4px 4px 0 0', opacity: 0.9, zIndex: 3 }} />
-      {/* Lug bottom */}
-      <div className="absolute" style={{ width: 26, height: 28, bottom: 14, left: '50%', transform: 'translateX(-50%)', background: finishTone, borderRadius: '0 0 4px 4px', opacity: 0.9, zIndex: 3 }} />
-
-      {/* Case / Bezel */}
-      <div
-        className="relative rounded-full flex items-center justify-center shadow-2xl"
-        style={{
-          width: 220,
-          height: 220,
-          background: `radial-gradient(circle at 35% 35%, ${finishTone}dd, ${finishTone}66)`,
-          border: `6px solid ${finishTone}`,
-          boxShadow: `0 0 40px ${finishTone}55, inset 0 2px 4px rgba(255,255,255,0.15)`,
-          zIndex: 4
-        }}
-      >
-        {/* Crystal */}
-        <div
-          className="rounded-full flex flex-col items-center justify-center overflow-hidden"
-          style={{
-            width: 178,
-            height: 178,
-            background: dialColor?.value || '#0a0a0f',
-            boxShadow: 'inset 0 4px 12px rgba(0,0,0,0.5)',
-          }}
-        >
-          {/* Hour markers */}
-          {[...Array(12)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute"
-              style={{
-                width: i % 3 === 0 ? 3 : 1.5,
-                height: i % 3 === 0 ? 12 : 7,
-                background: dialColor?.textDark ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.8)',
-                borderRadius: 2,
-                top: '50%',
-                left: '50%',
-                transformOrigin: '50% 82px',
-                transform: `translate(-50%, -100%) rotate(${i * 30}deg)`,
-              }}
-            />
-          ))}
-
-          {/* Brand name */}
-          <span
-            className="font-cinzel text-[10px] font-bold tracking-[0.2em] uppercase mt-10"
-            style={{ color: dialColor?.textDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)' }}
-          >
-            KHRONIQ
-          </span>
-
-          {/* Hands */}
-          {/* Hour */}
-          <div className="absolute" style={{
-            width: 3, height: 52, bottom: '50%', left: 'calc(50% - 1.5px)',
-            background: dialColor?.textDark ? '#333' : '#fff',
-            transformOrigin: 'bottom center',
-            transform: 'rotate(-60deg)',
-            borderRadius: 2,
-            boxShadow: '0 0 4px rgba(0,0,0,0.3)',
-          }} />
-          {/* Minute */}
-          <div className="absolute" style={{
-            width: 2, height: 70, bottom: '50%', left: 'calc(50% - 1px)',
-            background: dialColor?.textDark ? '#555' : '#ddd',
-            transformOrigin: 'bottom center',
-            transform: 'rotate(100deg)',
-            borderRadius: 2,
-          }} />
-          {/* Seconds */}
-          <div className="absolute" style={{
-            width: 1, height: 78, bottom: '50%', left: 'calc(50% - 0.5px)',
-            background: '#2563eb',
-            transformOrigin: 'bottom center',
-            transform: 'rotate(200deg)',
-            borderRadius: 1,
-          }} />
-          {/* Centre dot */}
-          <div className="absolute rounded-full" style={{
-            width: 8, height: 8, background: '#2563eb',
-            top: 'calc(50% - 4px)', left: 'calc(50% - 4px)',
-          }} />
-
-          {/* Engraving */}
-          {engraving && (
-            <span
-              className="absolute bottom-9 text-[7px] tracking-widest italic font-serif"
-              style={{ color: dialColor?.textDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.35)' }}
+      {/* Actual Product Image container */}
+      <div className="relative z-10 w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center group">
+        
+        {/* Watch Image */}
+        <img 
+          src={product?.image} 
+          alt={product?.name} 
+          className="w-full h-full object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-105"
+        />
+        
+        {/* Dial Color Overlay */}
+        {dialColor && (
+          <div 
+            className="absolute rounded-full transition-all duration-500 z-20 pointer-events-none"
+            style={{ 
+              width: '42%', 
+              height: '42%', 
+              backgroundColor: dialColor.value,
+              mixBlendMode: 'color',
+              opacity: 0.7,
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              boxShadow: `inset 0 0 15px ${dialColor.value}`
+            }} 
+          />
+        )}
+        
+        {/* Engraving */}
+        {engraving && (
+          <div className="absolute z-30 bottom-[28%] left-1/2 transform -translate-x-1/2 text-center pointer-events-none w-full">
+             <span
+              className="text-[8px] tracking-[0.2em] italic font-serif opacity-80"
+              style={{ color: dialColor?.textDark ? '#000' : '#fff', textShadow: dialColor?.textDark ? '0px 1px 1px rgba(255,255,255,0.5)' : '0px 1px 2px rgba(0,0,0,0.8)' }}
             >
               {engraving.slice(0, 18)}
             </span>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
