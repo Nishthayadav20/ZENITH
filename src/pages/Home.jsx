@@ -587,7 +587,7 @@ function LifestyleShowcaseSlider({ products, onPageChange, homeImages }) {
   );
 }
 
-export default function Home({ onPageChange, onUpdatesOpen }) {
+export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, updatesOpen }) {
   const products = useSelector(state => state.watch.products);
   const [homeImages, setHomeImages] = useState({});
 
@@ -683,9 +683,25 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
     fetchUpdates();
   }, []);
 
+  const [hasClosedSinceInView, setHasClosedSinceInView] = useState(false);
+  const prevUpdatesOpenRef = useRef(updatesOpen);
+
+  useEffect(() => {
+    if (!updatesInView) {
+      setHasClosedSinceInView(false);
+    }
+  }, [updatesInView]);
+
+  useEffect(() => {
+    if (prevUpdatesOpenRef.current && !updatesOpen && updatesInView) {
+      setHasClosedSinceInView(true);
+    }
+    prevUpdatesOpenRef.current = updatesOpen;
+  }, [updatesOpen, updatesInView]);
+
   useEffect(() => {
     let timer;
-    if (updatesInView && brandUpdates && brandUpdates.length > 0) {
+    if (updatesInView && brandUpdates && brandUpdates.length > 0 && !hasClosedSinceInView && !updatesOpen) {
       timer = setTimeout(() => {
         if (onUpdatesOpen) {
           onUpdatesOpen();
@@ -697,7 +713,7 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
         clearTimeout(timer);
       }
     };
-  }, [updatesInView, brandUpdates, onUpdatesOpen]);
+  }, [updatesInView, brandUpdates, onUpdatesOpen, hasClosedSinceInView, updatesOpen]);
 
   const displayedUpdates = brandUpdates;
 

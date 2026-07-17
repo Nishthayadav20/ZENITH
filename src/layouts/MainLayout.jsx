@@ -55,7 +55,11 @@ export default function MainLayout({ children, onPageChange, currentPage }) {
       <main className={['home', 'gifting', 'shop'].includes(currentPage) ? 'flex-1 w-full' : 'flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'}>
         {React.Children.map(children, child => {
           if (React.isValidElement(child)) {
-            return React.cloneElement(child, { onUpdatesOpen: () => setUpdatesOpen(true) });
+            return React.cloneElement(child, { 
+              onUpdatesOpen: () => setUpdatesOpen(true),
+              onUpdatesClose: () => setUpdatesOpen(false),
+              updatesOpen
+            });
           }
           return child;
         })}
