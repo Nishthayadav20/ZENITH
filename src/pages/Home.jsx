@@ -1104,10 +1104,9 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
         <motion.div 
           className="absolute inset-0 z-40 overflow-hidden flex"
           animate={{ 
-            pointerEvents: isFeaturedInView ? 'none' : 'auto',
-            opacity: isFeaturedInView ? 0 : 1
+            pointerEvents: isFeaturedInView ? 'none' : 'auto'
           }}
-          transition={{ duration: 1.0, ease: 'easeInOut' }}
+          transition={{ duration: 0.2 }}
         >
           {/* Left Curtain */}
           <motion.div 
@@ -1117,7 +1116,7 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
               boxShadow: 'inset -20px 0 30px rgba(0,0,0,0.8)'
             }}
             animate={{ x: isFeaturedInView ? '-105%' : '0%' }}
-            transition={{ duration: 2.2, ease: [0.77, 0, 0.175, 1] }}
+            transition={{ duration: 2.0, ease: [0.77, 0, 0.175, 1] }}
           />
           {/* Right Curtain */}
           <motion.div 
@@ -1127,7 +1126,7 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
               boxShadow: 'inset 20px 0 30px rgba(0,0,0,0.8)'
             }}
             animate={{ x: isFeaturedInView ? '105%' : '0%' }}
-            transition={{ duration: 2.2, ease: [0.77, 0, 0.175, 1] }}
+            transition={{ duration: 2.0, ease: [0.77, 0, 0.175, 1] }}
           />
           
           {/* Centered Curtains Text Overlay */}
