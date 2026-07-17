@@ -1116,36 +1116,24 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
           }}
           transition={{ duration: 0.2 }}
         >
-          {/* Left Curtain - Plain Green */}
+          {/* Left Curtain - Translucent Dark */}
           <motion.div 
-            className="w-1/2 h-full bg-white/12 backdrop-blur-lg relative z-40 border-none flex items-center justify-center overflow-hidden"
+            className="w-1/2 h-full bg-[#0e0d0b]/98 backdrop-blur-3xl relative z-40 border-none flex items-center justify-center overflow-hidden"
             style={{ 
-              boxShadow: 'inset -20px 0 30px rgba(0,0,0,0.15), -5px 0 15px rgba(0,0,0,0.05)'
+              boxShadow: 'inset -20px 0 30px rgba(0,0,0,0.4), -5px 0 15px rgba(0,0,0,0.1)'
             }}
             animate={{ x: curtainsOpenedByUser ? '-105%' : '0%' }}
             transition={{ duration: 2.0, ease: [0.77, 0, 0.175, 1] }}
-          >
-            <img 
-              src="/assets/t1.png" 
-              alt="Watch Left Silhouette" 
-              className="absolute w-[68%] h-[68%] object-contain opacity-35 select-none pointer-events-none filter brightness-95" 
-            />
-          </motion.div>
-          {/* Right Curtain - Plain Green */}
+          />
+          {/* Right Curtain - Translucent Dark */}
           <motion.div 
-            className="w-1/2 h-full bg-white/12 backdrop-blur-lg relative z-40 border-none flex items-center justify-center overflow-hidden"
+            className="w-1/2 h-full bg-[#0e0d0b]/98 backdrop-blur-3xl relative z-40 border-none flex items-center justify-center overflow-hidden"
             style={{ 
-              boxShadow: 'inset 20px 0 30px rgba(0,0,0,0.15), 5px 0 15px rgba(0,0,0,0.05)'
+              boxShadow: 'inset 20px 0 30px rgba(0,0,0,0.4), 5px 0 15px rgba(0,0,0,0.1)'
             }}
             animate={{ x: curtainsOpenedByUser ? '105%' : '0%' }}
             transition={{ duration: 2.0, ease: [0.77, 0, 0.175, 1] }}
-          >
-            <img 
-              src="/assets/t2.png" 
-              alt="Watch Right Silhouette" 
-              className="absolute w-[68%] h-[68%] object-contain opacity-35 select-none pointer-events-none filter brightness-95" 
-            />
-          </motion.div>
+          />
           
           {/* Centered Curtains Text Overlay */}
           <motion.div 
@@ -1153,10 +1141,10 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
             animate={{ opacity: curtainsOpenedByUser ? 0 : 1, scale: curtainsOpenedByUser ? 0.85 : 1 }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl sm:text-6xl font-serif font-black text-white tracking-[0.22em] uppercase leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]">
+            <h2 className="text-5xl sm:text-7xl lg:text-8xl font-serif font-black text-white tracking-[0.26em] uppercase leading-tight drop-shadow-[0_6px_16px_rgba(0,0,0,0.95)]">
               KHRONIQ PRESENTS
             </h2>
-            <p className="text-[10px] sm:text-xs text-luxury-gold tracking-[0.3em] uppercase font-bold drop-shadow-md mt-6 animate-pulse">
+            <p className="text-xs sm:text-sm text-luxury-gold tracking-[0.35em] font-black uppercase drop-shadow-md mt-8 animate-pulse">
               CLICK TO OPEN
             </p>
           </motion.div>
