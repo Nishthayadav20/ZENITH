@@ -1110,32 +1110,36 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
       <div className="relative overflow-hidden" ref={curtainSectionRef}>
         {/* Auditorium Split-Curtain Screen */}
         <motion.div 
-          className="absolute inset-0 z-40 pointer-events-none overflow-hidden flex"
-          style={{ display: curtainDisplay }}
+          className="absolute inset-0 z-40 overflow-hidden flex"
+          animate={{ pointerEvents: isFeaturedInView ? 'none' : 'auto' }}
+          transition={{ duration: 0.2 }}
         >
           {/* Left Curtain */}
           <motion.div 
             className="w-1/2 h-full bg-[#0d0c0a] border-r border-white/5 relative z-40"
             style={{ 
-              x: curtainLeftX,
               backgroundImage: 'repeating-linear-gradient(90deg, #0e0d0b, #0e0d0b 20px, #1a1815 40px, #0e0d0b 60px)',
               boxShadow: 'inset -20px 0 30px rgba(0,0,0,0.8)'
             }}
+            animate={{ x: isFeaturedInView ? '-100%' : '0%' }}
+            transition={{ duration: 1.3, ease: [0.77, 0, 0.175, 1] }}
           />
           {/* Right Curtain */}
           <motion.div 
             className="w-1/2 h-full bg-[#0d0c0a] border-l border-white/5 relative z-40"
             style={{ 
-              x: curtainRightX,
               backgroundImage: 'repeating-linear-gradient(90deg, #0e0d0b, #0e0d0b 20px, #1a1815 40px, #0e0d0b 60px)',
               boxShadow: 'inset 20px 0 30px rgba(0,0,0,0.8)'
             }}
+            animate={{ x: isFeaturedInView ? '100%' : '0%' }}
+            transition={{ duration: 1.3, ease: [0.77, 0, 0.175, 1] }}
           />
           
           {/* Centered Curtains Text Overlay */}
           <motion.div 
-            className="absolute inset-0 flex flex-col items-center justify-center text-center z-50 px-4"
-            style={{ opacity: curtainTextOpacity }}
+            className="absolute inset-0 flex flex-col items-center justify-center text-center z-50 px-4 pointer-events-none"
+            animate={{ opacity: isFeaturedInView ? 0 : 1, scale: isFeaturedInView ? 0.85 : 1 }}
+            transition={{ duration: 0.8 }}
           >
             <span className="text-[10px] sm:text-xs font-bold tracking-[0.3em] text-luxury-gold uppercase drop-shadow-lg mb-2">
               Performance of Time
@@ -1153,8 +1157,8 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
         <section
           className="w-full pt-14 pb-48 space-y-10 relative overflow-hidden"
           style={{
-            backgroundColor: '#ffffff',
-            color: '#000000',
+            backgroundColor: '#000000',
+            color: '#ffffff',
             transition: 'background-color 0.6s ease',
           }}
         >
@@ -1163,7 +1167,7 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
             <Reveal dir="up">
               <p
                 className="text-xs font-black tracking-[0.22em] uppercase"
-                style={{ color: '#0d0d0d' }}
+                style={{ color: '#ffffff' }}
               >
                 Signature Catalog
               </p>
@@ -1171,14 +1175,14 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
             <SlideReveal delay={0.1}>
               <h2
                 className="text-4xl sm:text-5xl font-black font-serif tracking-wide uppercase"
-                style={{ color: '#000000' }}
+                style={{ color: '#ffffff' }}
               >
                 Featured Masterpieces
               </h2>
             </SlideReveal>
             <motion.div
               className="w-16 h-[3px] mx-auto"
-              style={{ background: '#0d0d0d' }}
+              style={{ background: '#ffffff' }}
               initial={{ scaleX: 0 }}
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true }}
