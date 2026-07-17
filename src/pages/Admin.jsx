@@ -684,29 +684,38 @@ const handleImageUpload = async (e) => {
   if (!file) return;
 
   setUploadingImage(true);
-  try {
-    const formData = new FormData();
-    formData.append('image', file);
-    const token = localStorage.getItem('khroniq_token');
+  const reader = new FileReader();
+  reader.onloadend = async () => {
+    try {
+      const token = localStorage.getItem('khroniq_token');
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify({ image: reader.result })
+      });
+      const data = await res.json();
 
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData
-    });
-    const data = await res.json();
-
-    if (data.success) {
-      setNewProduct({ ...newProduct, image: data.imageUrl });
-    } else {
-      alert(data.message || 'Failed to upload image');
+      if (data.success) {
+        setNewProduct({ ...newProduct, image: data.imageUrl });
+      } else {
+        alert(data.message || 'Failed to upload image');
+      }
+    } catch (error) {
+      console.error('Image upload error:', error);
+      alert('Failed to upload image');
+    } finally {
+      setUploadingImage(false);
     }
-  } catch (error) {
-    console.error('Image upload error:', error);
-    alert('Failed to upload image');
-  } finally {
+  };
+  reader.onerror = (error) => {
+    console.error('Base64 conversion error:', error);
+    alert('Failed to process image file');
     setUploadingImage(false);
-  }
+  };
+  reader.readAsDataURL(file);
 };
 
 const handleEditImageUpload = async (e) => {
@@ -714,29 +723,38 @@ const handleEditImageUpload = async (e) => {
   if (!file) return;
 
   setUploadingImage(true);
-  try {
-    const formData = new FormData();
-    formData.append('image', file);
-    const token = localStorage.getItem('khroniq_token');
+  const reader = new FileReader();
+  reader.onloadend = async () => {
+    try {
+      const token = localStorage.getItem('khroniq_token');
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify({ image: reader.result })
+      });
+      const data = await res.json();
 
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData
-    });
-    const data = await res.json();
-
-    if (data.success) {
-      setEditForm({ ...editForm, image: data.imageUrl });
-    } else {
-      alert(data.message || 'Failed to upload image');
+      if (data.success) {
+        setEditForm({ ...editForm, image: data.imageUrl });
+      } else {
+        alert(data.message || 'Failed to upload image');
+      }
+    } catch (error) {
+      console.error('Image upload error:', error);
+      alert('Failed to upload image');
+    } finally {
+      setUploadingImage(false);
     }
-  } catch (error) {
-    console.error('Image upload error:', error);
-    alert('Failed to upload image');
-  } finally {
+  };
+  reader.onerror = (error) => {
+    console.error('Base64 conversion error:', error);
+    alert('Failed to process image file');
     setUploadingImage(false);
-  }
+  };
+  reader.readAsDataURL(file);
 };
 
 
