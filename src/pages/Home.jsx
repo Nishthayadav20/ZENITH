@@ -1145,10 +1145,16 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
             animate={{ opacity: curtainsOpenedByUser ? 0 : 1, scale: curtainsOpenedByUser ? 0.85 : 1 }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-5xl sm:text-7xl lg:text-8xl font-serif font-black text-luxury-gold-dark tracking-[0.26em] uppercase leading-tight drop-shadow-[0_6px_16px_rgba(0,0,0,0.95)]">
+            <h2 
+              className="text-5xl sm:text-7xl lg:text-8xl font-serif font-black tracking-[0.26em] uppercase leading-tight drop-shadow-[0_6px_16px_rgba(0,0,0,0.95)]"
+              style={{ color: '#dfb76c' }}
+            >
               KHRONIQ PRESENTS
             </h2>
-            <p className="text-xs sm:text-sm text-luxury-gold-dark tracking-[0.35em] font-black uppercase drop-shadow-md mt-8 animate-pulse">
+            <p 
+              className="text-xs sm:text-sm tracking-[0.35em] font-black uppercase drop-shadow-md mt-8 animate-pulse"
+              style={{ color: '#dfb76c' }}
+            >
               CLICK TO OPEN
             </p>
           </motion.div>
