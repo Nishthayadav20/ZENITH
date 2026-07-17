@@ -54,9 +54,9 @@ export default function UpdatesDrawer({ isOpen, onClose }) {
       >
         {/* Drawer Header */}
         <div className="flex justify-between items-center border-b border-black/10 p-6">
-          <div className="flex items-center space-x-2">
-            <LogoMark className="w-5 h-5 text-black fill-black" />
-            <span className="font-cinzel font-black text-sm tracking-[0.2em] text-black">KHRONIQ</span>
+          <div className="flex items-center space-x-3">
+            <LogoMark className="w-8 h-8 text-black fill-black" />
+            <span className="font-cinzel font-black text-xl tracking-[0.25em] text-black">KHRONIQ</span>
           </div>
           <button
             onClick={onClose}
