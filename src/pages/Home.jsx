@@ -633,6 +633,7 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
   const curtainLeftX = useTransform(curtainScroll, [0.15, 0.45], ['0%', '-100%']);
   const curtainRightX = useTransform(curtainScroll, [0.15, 0.45], ['0%', '100%']);
   const curtainTextOpacity = useTransform(curtainScroll, [0.15, 0.35], [1, 0]);
+  const curtainDisplay = useTransform(curtainScroll, [0.15, 0.44, 0.45], ['flex', 'flex', 'none']);
 
   const onMouseMove = useCallback((e) => {
     const r = heroRef.current?.getBoundingClientRect();
@@ -1108,7 +1109,10 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
       {/* ══════════ FEATURED PRODUCTS ══════════ */}
       <div className="relative overflow-hidden" ref={curtainSectionRef}>
         {/* Auditorium Split-Curtain Screen */}
-        <div className="absolute inset-0 z-40 pointer-events-none overflow-hidden flex">
+        <motion.div 
+          className="absolute inset-0 z-40 pointer-events-none overflow-hidden flex"
+          style={{ display: curtainDisplay }}
+        >
           {/* Left Curtain */}
           <motion.div 
             className="w-1/2 h-full bg-[#0d0c0a] border-r border-white/5 relative z-40"
@@ -1144,7 +1148,7 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
               THE MASTERPIECES REVEAL AS YOU SCROLL
             </p>
           </motion.div>
-        </div>
+        </motion.div>
 
         <section
           className="w-full pt-14 pb-48 space-y-10 relative overflow-hidden"
