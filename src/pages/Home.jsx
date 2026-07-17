@@ -1118,18 +1118,18 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
         >
           {/* Left Curtain - Plain Green */}
           <motion.div 
-            className="w-1/2 h-full bg-[#047857] border-r border-[#022c22]/40 relative z-40"
+            className="w-1/2 h-full bg-[#047857] relative z-40 border-none"
             style={{ 
-              boxShadow: 'inset -20px 0 30px rgba(0,0,0,0.6)'
+              boxShadow: 'inset -20px 0 30px rgba(0,0,0,0.5), -5px 0 15px rgba(0,0,0,0.2)'
             }}
             animate={{ x: curtainsOpenedByUser ? '-105%' : '0%' }}
             transition={{ duration: 2.0, ease: [0.77, 0, 0.175, 1] }}
           />
           {/* Right Curtain - Plain Green */}
           <motion.div 
-            className="w-1/2 h-full bg-[#047857] border-l border-[#022c22]/40 relative z-40"
+            className="w-1/2 h-full bg-[#047857] relative z-40 border-none"
             style={{ 
-              boxShadow: 'inset 20px 0 30px rgba(0,0,0,0.6)'
+              boxShadow: 'inset 20px 0 30px rgba(0,0,0,0.5), 5px 0 15px rgba(0,0,0,0.2)'
             }}
             animate={{ x: curtainsOpenedByUser ? '105%' : '0%' }}
             transition={{ duration: 2.0, ease: [0.77, 0, 0.175, 1] }}
@@ -1141,15 +1141,11 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
             animate={{ opacity: curtainsOpenedByUser ? 0 : 1, scale: curtainsOpenedByUser ? 0.85 : 1 }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl sm:text-6xl font-serif font-black text-white tracking-[0.25em] uppercase leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]">
-              KHRONIQ
+            <h2 className="text-4xl sm:text-6xl font-serif font-black text-white tracking-[0.22em] uppercase leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]">
+              KHRONIQ PRESENTS
             </h2>
-            <span className="text-[10px] sm:text-xs font-bold tracking-[0.4em] text-luxury-gold uppercase drop-shadow-lg mt-2 mb-4">
-              PRESENTS
-            </span>
-            <div className="w-16 h-[1px] bg-white/40 mb-4" />
-            <p className="text-[8px] sm:text-[9px] text-gray-200 tracking-[0.2em] uppercase font-bold drop-shadow-md animate-pulse">
-              CLICK TO ENTER THE STAGE
+            <p className="text-[10px] sm:text-xs text-luxury-gold tracking-[0.3em] uppercase font-bold drop-shadow-md mt-6 animate-pulse">
+              CLICK TO OPEN
             </p>
           </motion.div>
         </motion.div>
@@ -1252,6 +1248,7 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
             style={{ background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.65) 65%, rgba(0,0,0,1) 100%)' }}
           />
         </section>
+      </div>
 
 
         {/* ══════════ FULL SCREEN IMAGE BACKGROUND UPDATES SECTION ══════════ */}
@@ -1296,7 +1293,6 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
             </div>
           </button>
         </div>
-      </div>
     </>
   );
 }
