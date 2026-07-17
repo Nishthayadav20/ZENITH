@@ -817,7 +817,7 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
           <div className="absolute inset-0 bg-black/28" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.65)_100%)]" />
           {/* Masking overlay to cover the bottom-right Gemini watermark on the video */}
-          <div className="absolute bottom-0 right-0 w-48 h-36 sm:w-72 sm:h-52 bg-gradient-to-br from-transparent via-black/90 to-black blur-2xl sm:blur-3xl pointer-events-none z-10 opacity-95" />
+          <div className="absolute bottom-0 right-0 w-64 h-48 sm:w-[28rem] sm:h-[20rem] bg-gradient-to-br from-transparent via-black/90 to-black blur-2xl sm:blur-3xl pointer-events-none z-10 opacity-95" />
         </motion.div>
 
         {/* Ambient orb — furthest opposite */}
