@@ -49,6 +49,47 @@ const DIAL_COLOR_PRESETS = [
   { name: 'Beige Dial', hex: '#f5f5dc' }
 ];
 
+const compressImage = (file) => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+      img.onerror = () => {
+        resolve(event.target.result);
+      };
+    };
+    reader.onerror = () => {
+      resolve('');
+    };
+  });
+};
+
 export default function Admin({ onPageChange }) {
   const dispatch = useDispatch();
   const products = useSelector(state => state.watch.products);
@@ -116,14 +157,15 @@ export default function Admin({ onPageChange }) {
   const [tempCaseName, setTempCaseName] = useState('');
   const [tempCaseColor, setTempCaseColor] = useState('#ffffff');
 
-  const handleTempStrapImageChange = (e) => {
+  const handleTempStrapImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setTempStrapImage(reader.result);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressedBase64 = await compressImage(file);
+      setTempStrapImage(compressedBase64);
+    } catch (err) {
+      console.error('Strap image compression error:', err);
+    }
   };
 
   const handleAddCustomStrap = (isEdit = false) => {
@@ -304,41 +346,32 @@ export default function Admin({ onPageChange }) {
     if (!file) return;
 
     setUploadingMedia(true);
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      try {
-        const token = localStorage.getItem('khroniq_token');
-        const res = await fetch('/api/admin/media', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...getAuthHeaders()
-          },
-          body: JSON.stringify({
-            url: reader.result,
-            section: sectionKey,
-            type: 'image'
-          })
-        });
-        const data = await res.json();
-        if (data.success && data.media?.[0]) {
-          setMediaList(prev => ({ ...prev, [sectionKey]: data.media[0].url }));
-        } else {
-          alert(data.message || 'Upload failed.');
-        }
-      } catch (err) {
-        console.error('Section image upload error:', err);
-        alert('Failed to upload image.');
-      } finally {
-        setUploadingMedia(false);
+    try {
+      const compressedBase64 = await compressImage(file);
+      const res = await fetch('/api/admin/media', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders()
+        },
+        body: JSON.stringify({
+          url: compressedBase64,
+          section: sectionKey,
+          type: 'image'
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.media?.[0]) {
+        setMediaList(prev => ({ ...prev, [sectionKey]: data.media[0].url }));
+      } else {
+        alert(data.message || 'Upload failed.');
       }
-    };
-    reader.onerror = (error) => {
-      console.error('Base64 conversion error:', error);
-      alert('Failed to process image file');
+    } catch (err) {
+      console.error('Section image upload error:', err);
+      alert('Failed to upload image.');
+    } finally {
       setUploadingMedia(false);
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
   // --- BLOGS ADMIN STATES & OPERATIONS ---
@@ -351,25 +384,22 @@ export default function Admin({ onPageChange }) {
     const file = e.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
+    try {
+      const compressedBase64 = await compressImage(file);
       if (isEdit) {
         setEditForm(prev => ({
           ...prev,
-          customizationOptions: { ...prev.customizationOptions, customStrapImage: reader.result }
+          customizationOptions: { ...prev.customizationOptions, customStrapImage: compressedBase64 }
         }));
       } else {
         setNewProduct(prev => ({
           ...prev,
-          customizationOptions: { ...prev.customizationOptions, customStrapImage: reader.result }
+          customizationOptions: { ...prev.customizationOptions, customStrapImage: compressedBase64 }
         }));
       }
-    };
-    reader.onerror = (error) => {
-      console.error('Base64 conversion error:', error);
-      alert('Failed to process image file');
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Strap image compression error:', err);
+    }
   };
 
   const handleStrapCheckboxChange = (strapName, isEdit = false) => {
@@ -684,38 +714,30 @@ const handleImageUpload = async (e) => {
   if (!file) return;
 
   setUploadingImage(true);
-  const reader = new FileReader();
-  reader.onloadend = async () => {
-    try {
-      const token = localStorage.getItem('khroniq_token');
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}` 
-        },
-        body: JSON.stringify({ image: reader.result })
-      });
-      const data = await res.json();
+  try {
+    const compressedBase64 = await compressImage(file);
+    const token = localStorage.getItem('khroniq_token');
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}` 
+      },
+      body: JSON.stringify({ image: compressedBase64 })
+    });
+    const data = await res.json();
 
-      if (data.success) {
-        setNewProduct({ ...newProduct, image: data.imageUrl });
-      } else {
-        alert(data.message || 'Failed to upload image');
-      }
-    } catch (error) {
-      console.error('Image upload error:', error);
-      alert('Failed to upload image');
-    } finally {
-      setUploadingImage(false);
+    if (data.success) {
+      setNewProduct({ ...newProduct, image: data.imageUrl });
+    } else {
+      alert(data.message || 'Failed to upload image');
     }
-  };
-  reader.onerror = (error) => {
-    console.error('Base64 conversion error:', error);
-    alert('Failed to process image file');
+  } catch (error) {
+    console.error('Image upload error:', error);
+    alert('Failed to upload image');
+  } finally {
     setUploadingImage(false);
-  };
-  reader.readAsDataURL(file);
+  }
 };
 
 const handleEditImageUpload = async (e) => {
@@ -723,38 +745,30 @@ const handleEditImageUpload = async (e) => {
   if (!file) return;
 
   setUploadingImage(true);
-  const reader = new FileReader();
-  reader.onloadend = async () => {
-    try {
-      const token = localStorage.getItem('khroniq_token');
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}` 
-        },
-        body: JSON.stringify({ image: reader.result })
-      });
-      const data = await res.json();
+  try {
+    const compressedBase64 = await compressImage(file);
+    const token = localStorage.getItem('khroniq_token');
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}` 
+      },
+      body: JSON.stringify({ image: compressedBase64 })
+    });
+    const data = await res.json();
 
-      if (data.success) {
-        setEditForm({ ...editForm, image: data.imageUrl });
-      } else {
-        alert(data.message || 'Failed to upload image');
-      }
-    } catch (error) {
-      console.error('Image upload error:', error);
-      alert('Failed to upload image');
-    } finally {
-      setUploadingImage(false);
+    if (data.success) {
+      setEditForm({ ...editForm, image: data.imageUrl });
+    } else {
+      alert(data.message || 'Failed to upload image');
     }
-  };
-  reader.onerror = (error) => {
-    console.error('Base64 conversion error:', error);
-    alert('Failed to process image file');
+  } catch (error) {
+    console.error('Image upload error:', error);
+    alert('Failed to upload image');
+  } finally {
     setUploadingImage(false);
-  };
-  reader.readAsDataURL(file);
+  }
 };
 
 
