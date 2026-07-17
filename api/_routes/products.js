@@ -2,8 +2,26 @@ import express from 'express';
 import Product from '../_models/Product.js';
 import Order from '../_models/Order.js';
 import { protect, adminOnly } from '../_middleware/auth.js';
+import crypto from 'crypto';
 
 const router = express.Router();
+
+const generateUnitCode = (productId, index) => {
+  const serialNumber = `KHQ-${new Date().getFullYear()}-${String(productId).slice(-6).toUpperCase()}-${String(index).padStart(2, '0')}`;
+  const claimCode = `CLM-${crypto.randomBytes(5).toString('hex').toUpperCase()}`;
+  return { serialNumber, claimCode };
+};
+
+const findDuplicateUnitCode = async (serialNumber, claimCode, excludeProductId) => {
+  return Product.findOne({
+    _id: { $ne: excludeProductId },
+    $or: [
+      { 'unitCodes.serialNumber': serialNumber },
+      { 'unitCodes.claimCode': claimCode }
+    ]
+  });
+};
+
 
 // @route   GET /api/products
 // @desc    Get all products
@@ -22,12 +40,15 @@ router.get('/', async (req, res) => {
 // @desc    Create a product
 // @access  Private/Admin
 router.post('/', protect, adminOnly, async (req, res) => {
-const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization, allowDialCustomization, warrantyMonths, discountPercent, badge } = req.body;
+const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization, allowDialCustomization, warrantyMonths, discountPercent, badge, unitCodes } = req.body;
   try {
+    const stockCount = Math.max(0, Number(stock) || 0);
+    const incomingUnitCodes = Array.isArray(unitCodes) ? unitCodes : [];
+
     const product = new Product({
       name,
       price: Number(price),
-      stock: Number(stock),
+      stock: stockCount,
       warrantyMonths: warrantyMonths !== undefined ? Number(warrantyMonths) : 6,
       category,
       gender,
@@ -45,10 +66,31 @@ const { name, price, stock, category, gender, description, image, specs, customi
       customizable: customizable || false,
       allowStrapCustomization: allowStrapCustomization !== undefined ? allowStrapCustomization : true,
       allowCaseCustomization: allowCaseCustomization !== undefined ? allowCaseCustomization : true,
-        allowDialCustomization: allowDialCustomization !== undefined ? allowDialCustomization : true,
+      allowDialCustomization: allowDialCustomization !== undefined ? allowDialCustomization : true,
       customizationOptions: req.body.customizationOptions,
       reviews: []
     });
+
+    const finalUnitCodes = [];
+    for (let i = 0; i < stockCount; i++) {
+      const entry = incomingUnitCodes[i] || {};
+      let serialNumber = entry.serialNumber?.trim();
+      let claimCode = entry.claimCode?.trim();
+
+      if (!serialNumber || !claimCode) {
+        const generated = generateUnitCode(product._id, i + 1);
+        serialNumber = serialNumber || generated.serialNumber;
+        claimCode = claimCode || generated.claimCode;
+      }
+
+      const duplicate = await findDuplicateUnitCode(serialNumber, claimCode, product._id);
+      if (duplicate) {
+        return res.status(400).json({ success: false, message: `Duplicate serial number or claim code: ${serialNumber} / ${claimCode}` });
+      }
+
+      finalUnitCodes.push({ serialNumber, claimCode, used: false });
+    }
+    product.unitCodes = finalUnitCodes;
 
     const createdProduct = await product.save();
     res.status(201).json({ success: true, product: createdProduct });
@@ -62,7 +104,7 @@ const { name, price, stock, category, gender, description, image, specs, customi
 // @desc    Update a product
 // @access  Private/Admin
 router.put('/:id', protect, adminOnly, async (req, res) => {
-const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization, allowDialCustomization, warrantyMonths, discountPercent, badge } = req.body;
+const { name, price, stock, category, gender, description, image, specs, customizable, allowStrapCustomization, allowCaseCustomization, allowDialCustomization, warrantyMonths, discountPercent, badge, unitCodes  } = req.body;
   try {
     const product = await Product.findById(req.params.id);
 
@@ -78,6 +120,45 @@ const { name, price, stock, category, gender, description, image, specs, customi
     product.gender = gender !== undefined ? gender : product.gender;
     product.description = description !== undefined ? description : product.description;
     product.image = image !== undefined ? image : product.image;
+
+    if (stock !== undefined) {
+      const newStockCount = Math.max(0, Number(stock));
+      const existingUsed = product.unitCodes.filter(u => u.used);
+      const existingUnused = product.unitCodes.filter(u => !u.used);
+
+      let newUnused;
+      if (newStockCount <= existingUnused.length) {
+        newUnused = existingUnused.slice(0, newStockCount);
+        if (newStockCount < existingUnused.length && existingUsed.length > 0 && newStockCount < 0) {
+          return res.status(400).json({ success: false, message: 'Stock cannot be negative.' });
+        }
+      } else {
+        newUnused = [...existingUnused];
+        const additionalNeeded = newStockCount - existingUnused.length;
+        const incomingUnitCodes = Array.isArray(req.body.unitCodes) ? req.body.unitCodes : [];
+        for (let i = 0; i < additionalNeeded; i++) {
+          const entry = incomingUnitCodes[i] || {};
+          let serialNumber = entry.serialNumber?.trim();
+          let claimCode = entry.claimCode?.trim();
+
+          if (!serialNumber || !claimCode) {
+            const generated = generateUnitCode(product._id, product.unitCodes.length + i + 1);
+            serialNumber = serialNumber || generated.serialNumber;
+            claimCode = claimCode || generated.claimCode;
+          }
+
+          const duplicate = await findDuplicateUnitCode(serialNumber, claimCode, product._id);
+          if (duplicate) {
+            return res.status(400).json({ success: false, message: `Duplicate serial number or claim code: ${serialNumber} / ${claimCode}` });
+          }
+
+          newUnused.push({ serialNumber, claimCode, used: false });
+        }
+      }
+
+      product.unitCodes = [...existingUsed, ...newUnused];
+      product.stock = newStockCount;
+    }
     
     if (specs) {
       product.specs = {

@@ -9,7 +9,12 @@ const router = express.Router();
 // @access  Public
 router.get('/', async (req, res) => {
   try {
-    const updates = await BrandUpdate.find({ approved: true }).sort({ createdAt: -1 });
+    const allApproved = await BrandUpdate.find({ approved: true }).sort({ createdAt: -1 });
+    const updates = allApproved.filter(u => {
+      const durationMs = (u.durationHours || 24) * 60 * 60 * 1000;
+      const expiryTime = new Date(u.createdAt).getTime() + durationMs;
+      return expiryTime > Date.now();
+    });
     res.json({ success: true, updates });
   } catch (error) {
     console.error('Fetch brand updates error:', error);
@@ -34,7 +39,7 @@ router.get('/admin', protect, adminOnly, async (req, res) => {
 // @desc    Add a brand update
 // @access  Private/Admin
 router.post('/', protect, adminOnly, async (req, res) => {
-  const { title, detail, approved } = req.body;
+  const { title, detail, approved, durationHours } = req.body;
 
   try {
     if (!title || !detail) {
@@ -44,7 +49,8 @@ router.post('/', protect, adminOnly, async (req, res) => {
     const update = new BrandUpdate({
       title: title.trim(),
       detail: detail.trim(),
-      approved: approved !== undefined ? approved : true
+      approved: approved !== undefined ? approved : true,
+      durationHours: durationHours !== undefined ? Number(durationHours) : 24
     });
 
     const createdUpdate = await update.save();
@@ -59,7 +65,7 @@ router.post('/', protect, adminOnly, async (req, res) => {
 // @desc    Update a brand update
 // @access  Private/Admin
 router.put('/:id', protect, adminOnly, async (req, res) => {
-  const { title, detail, approved } = req.body;
+  const { title, detail, approved, durationHours } = req.body;
 
   try {
     const update = await BrandUpdate.findById(req.params.id);
@@ -71,6 +77,7 @@ router.put('/:id', protect, adminOnly, async (req, res) => {
     if (title !== undefined) update.title = title.trim();
     if (detail !== undefined) update.detail = detail.trim();
     if (approved !== undefined) update.approved = approved;
+    if (durationHours !== undefined) update.durationHours = Number(durationHours);
 
     const updatedUpdate = await update.save();
     res.json({ success: true, update: updatedUpdate });

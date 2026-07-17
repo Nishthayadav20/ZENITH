@@ -34,6 +34,11 @@ const PRESET_STRAPS = [
   { name: 'Brushed Steel Link', image: '/assets/strap_steel_link.jpg' }
 ];
 
+const generateUnitCodePair = () => ({
+  serialNumber: `KHQ-${new Date().getFullYear()}-${Math.random().toString(16).slice(2, 8).toUpperCase()}`,
+  claimCode: `CLM-${Math.random().toString(16).slice(2, 12).toUpperCase()}`
+});
+
 const DIAL_COLOR_PRESETS = [
   { name: 'Midnight Black', hex: '#0a0a0f' },
   { name: 'Pearl White', hex: '#f5f0e8' },
@@ -64,6 +69,7 @@ export default function Admin({ onPageChange }) {
     stock: '',
     discountPercent: 0,
     badge: '',
+    unitCodes: [],
     badgeMode: 'none',
     warrantyMonths: 6,
     category: 'Khronomaster',
@@ -87,7 +93,9 @@ export default function Admin({ onPageChange }) {
       customStrapName: '',
       customStrapImage: '',
       customCaseName: '',
-      customCaseColor: '#ffffff'
+      customCaseColor: '#ffffff',
+      customStraps: [],
+      customCases: []
     }
   });
 
@@ -97,13 +105,132 @@ export default function Admin({ onPageChange }) {
   const [editForm, setEditForm] = useState(null);
 
   const [expandedNotes, setExpandedNotes] = useState({});
-const [expandedWarranty, setExpandedWarranty] = useState({});
-const [warrantyEdits, setWarrantyEdits] = useState({}); // key: `${orderId}-${itemIndex}` -> { serialNumber, claimCode }
-  // Add Coupon Form State
 // Add Coupon Form State
   const [newCouponCode, setNewCouponCode] = useState('');
   const [newCouponDiscount, setNewCouponDiscount] = useState('');
   const [newCouponDesc, setNewCouponDesc] = useState('');
+
+  // Customization Options temporary states and helper functions
+  const [tempStrapName, setTempStrapName] = useState('');
+  const [tempStrapImage, setTempStrapImage] = useState('');
+  const [tempCaseName, setTempCaseName] = useState('');
+  const [tempCaseColor, setTempCaseColor] = useState('#ffffff');
+
+  const handleTempStrapImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setTempStrapImage(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAddCustomStrap = (isEdit = false) => {
+    if (!tempStrapName.trim()) {
+      alert('Please enter a name for the custom strap.');
+      return;
+    }
+    const newStrap = { name: tempStrapName.trim(), image: tempStrapImage };
+    if (isEdit) {
+      const currentStraps = editForm.customizationOptions?.customStraps || [];
+      setEditForm({
+        ...editForm,
+        customizationOptions: {
+          ...editForm.customizationOptions,
+          customStraps: [...currentStraps, newStrap]
+        }
+      });
+    } else {
+      const currentStraps = newProduct.customizationOptions?.customStraps || [];
+      setNewProduct({
+        ...newProduct,
+        customizationOptions: {
+          ...newProduct.customizationOptions,
+          customStraps: [...currentStraps, newStrap]
+        }
+      });
+    }
+    setTempStrapName('');
+    setTempStrapImage('');
+  };
+
+  const handleRemoveCustomStrap = (idx, isEdit = false) => {
+    if (isEdit) {
+      const currentStraps = editForm.customizationOptions?.customStraps || [];
+      const updated = currentStraps.filter((_, i) => i !== idx);
+      setEditForm({
+        ...editForm,
+        customizationOptions: {
+          ...editForm.customizationOptions,
+          customStraps: updated
+        }
+      });
+    } else {
+      const currentStraps = newProduct.customizationOptions?.customStraps || [];
+      const updated = currentStraps.filter((_, i) => i !== idx);
+      setNewProduct({
+        ...newProduct,
+        customizationOptions: {
+          ...newProduct.customizationOptions,
+          customStraps: updated
+        }
+      });
+    }
+  };
+
+  const handleAddCustomCase = (isEdit = false) => {
+    if (!tempCaseName.trim()) {
+      alert('Please enter a name for the custom case finish.');
+      return;
+    }
+    const newCase = { name: tempCaseName.trim(), color: tempCaseColor };
+    if (isEdit) {
+      const currentCases = editForm.customizationOptions?.customCases || [];
+      setEditForm({
+        ...editForm,
+        customizationOptions: {
+          ...editForm.customizationOptions,
+          customCases: [...currentCases, newCase]
+        }
+      });
+    } else {
+      const currentCases = newProduct.customizationOptions?.customCases || [];
+      setNewProduct({
+        ...newProduct,
+        customizationOptions: {
+          ...newProduct.customizationOptions,
+          customCases: [...currentCases, newCase]
+        }
+      });
+    }
+    setTempCaseName('');
+    setTempCaseColor('#ffffff');
+  };
+
+  const handleRemoveCustomCase = (idx, isEdit = false) => {
+    if (isEdit) {
+      const currentCases = editForm.customizationOptions?.customCases || [];
+      const updated = currentCases.filter((_, i) => i !== idx);
+      setEditForm({
+        ...editForm,
+        customizationOptions: {
+          ...editForm.customizationOptions,
+          customCases: updated
+        }
+      });
+    } else {
+      const currentCases = newProduct.customizationOptions?.customCases || [];
+      const updated = currentCases.filter((_, i) => i !== idx);
+      setNewProduct({
+        ...newProduct,
+        customizationOptions: {
+          ...newProduct.customizationOptions,
+          customCases: updated
+        }
+      });
+    }
+  };
 
 
   // Analytics State
@@ -120,7 +247,7 @@ const [warrantyEdits, setWarrantyEdits] = useState({}); // key: `${orderId}-${it
   // --- BRAND UPDATES ADMIN STATES & OPERATIONS ---
   const [adminUpdates, setAdminUpdates] = useState([]);
   const [showAddUpdateForm, setShowAddUpdateForm] = useState(false);
-  const [newUpdate, setNewUpdate] = useState({ title: '', detail: '', approved: true });
+  const [newUpdate, setNewUpdate] = useState({ title: '', detail: '', approved: true, durationHours: 24 });
   const [editingUpdateId, setEditingUpdateId] = useState(null);
   const [editUpdateForm, setEditUpdateForm] = useState(null);
 
@@ -404,7 +531,7 @@ const [warrantyEdits, setWarrantyEdits] = useState({}); // key: `${orderId}-${it
       if (data.success) {
         alert('Brand update created successfully!');
         setShowAddUpdateForm(false);
-        setNewUpdate({ title: '', detail: '', approved: true });
+        setNewUpdate({ title: '', detail: '', approved: true, durationHours: 24 });
         fetchAdminUpdates();
       } else {
         alert(data.message || 'Failed to create update.');
@@ -557,17 +684,29 @@ const handleImageUpload = async (e) => {
   if (!file) return;
 
   setUploadingImage(true);
-  const reader = new FileReader();
-  reader.onloadend = () => {
-    setNewProduct({ ...newProduct, image: reader.result });
+  try {
+    const formData = new FormData();
+    formData.append('image', file);
+    const token = localStorage.getItem('khroniq_token');
+
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      setNewProduct({ ...newProduct, image: data.imageUrl });
+    } else {
+      alert(data.message || 'Failed to upload image');
+    }
+  } catch (error) {
+    console.error('Image upload error:', error);
+    alert('Failed to upload image');
+  } finally {
     setUploadingImage(false);
-  };
-  reader.onerror = (error) => {
-    console.error('Base64 conversion error:', error);
-    alert('Failed to process image file');
-    setUploadingImage(false);
-  };
-  reader.readAsDataURL(file);
+  }
 };
 
 const handleEditImageUpload = async (e) => {
@@ -575,17 +714,29 @@ const handleEditImageUpload = async (e) => {
   if (!file) return;
 
   setUploadingImage(true);
-  const reader = new FileReader();
-  reader.onloadend = () => {
-    setEditForm({ ...editForm, image: reader.result });
+  try {
+    const formData = new FormData();
+    formData.append('image', file);
+    const token = localStorage.getItem('khroniq_token');
+
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      setEditForm({ ...editForm, image: data.imageUrl });
+    } else {
+      alert(data.message || 'Failed to upload image');
+    }
+  } catch (error) {
+    console.error('Image upload error:', error);
+    alert('Failed to upload image');
+  } finally {
     setUploadingImage(false);
-  };
-  reader.onerror = (error) => {
-    console.error('Base64 conversion error:', error);
-    alert('Failed to process image file');
-    setUploadingImage(false);
-  };
-  reader.readAsDataURL(file);
+  }
 };
 
 
@@ -612,7 +763,7 @@ const handleEditImageUpload = async (e) => {
       alert('Product created successfully!');
       setShowAddForm(false);
       setNewProduct({
-        name: '', price: '', stock: '', discountPercent: 0, badge: '', badgeMode: 'none', warrantyMonths: 12, category: 'Khronomaster', description: '',
+        name: '', price: '', stock: '', discountPercent: 0, badge: '', badgeMode: 'none',unitCodes: [],  warrantyMonths: 12, category: 'Khronomaster', description: '',
         image: '',
         specs: { movement: 'Automatic', case: '40mm', strap: 'Leather', waterResistance: '50m', glass: 'Sapphire' },
         customizable: true,
@@ -640,6 +791,8 @@ const handleEditImageUpload = async (e) => {
       discountPercent: product.discountPercent ?? 0,
       badge: product.badge ?? '',
       badgeMode: ['New', 'Limited Edition', 'Bestseller'].includes(product.badge) ? product.badge : (product.badge ? 'custom' : 'none'),
+      existingUnitCodes: product.unitCodes || [],
+      newUnitCodes: [],
       customizable: product.customizable ?? false,
       allowStrapCustomization: product.allowStrapCustomization ?? true,
       allowCaseCustomization: product.allowCaseCustomization ?? true,
@@ -655,6 +808,7 @@ const handleEditImageUpload = async (e) => {
   };
 
   const handleUpdateProduct = async (e) => {
+    
     e.preventDefault();
     let customOpts = { ...(editForm.customizationOptions || {}) };
     if (customOpts.customStrapName && !customOpts.strapMaterials?.includes(customOpts.customStrapName)) {
@@ -662,6 +816,7 @@ const handleEditImageUpload = async (e) => {
     }
     const finalProduct = {
       ...editForm,
+      unitCodes: editForm.newUnitCodes || [],
       customizationOptions: customOpts
     };
     const res = await dispatch(editProduct(editingId, finalProduct));
@@ -674,20 +829,17 @@ const handleEditImageUpload = async (e) => {
     }
   };
 
-  const handleDownloadWarrantyCSV = () => {
+
+  const handleDownloadInventoryCSV = () => {
     const rows = [];
-    orders.forEach((o) => {
-      (o.items || []).forEach((item) => {
-        if (item.serialNumber || item.claimCode) {
-          rows.push({
-            orderId: o.id,
-            watchName: item.name,
-            customerEmail: o.userEmail,
-            serialNumber: item.serialNumber || '',
-            claimCode: item.claimCode || '',
-            warrantyClaimed: item.warrantyClaimed ? 'Yes' : 'No'
-          });
-        }
+    products.forEach((p) => {
+      (p.unitCodes || []).forEach((code) => {
+        rows.push({
+          watchName: p.name,
+          serialNumber: code.serialNumber || '',
+          claimCode: code.claimCode || '',
+          status: code.used ? 'Sold' : 'Available'
+        });
       });
     });
 
@@ -696,11 +848,11 @@ const handleEditImageUpload = async (e) => {
       return;
     }
 
-    const headers = ['Order ID', 'Watch Name', 'Customer Email', 'Serial Number', 'Claim Code', 'Warranty Claimed'];
+    const headers = ['Watch Name', 'Serial Number', 'Claim Code', 'Status'];
     const escapeCsv = (val) => `"${String(val).replace(/"/g, '""')}"`;
     const csvLines = [
       headers.join(','),
-      ...rows.map(r => [r.orderId, r.watchName, r.customerEmail, r.serialNumber, r.claimCode, r.warrantyClaimed].map(escapeCsv).join(','))
+      ...rows.map(r => [r.watchName, r.serialNumber, r.claimCode, r.status].map(escapeCsv).join(','))
     ];
     const csvContent = csvLines.join('\r\n');
 
@@ -708,12 +860,13 @@ const handleEditImageUpload = async (e) => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `khroniq-warranty-codes-${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = `khroniq-inventory-codes-${new Date().toISOString().split('T')[0]}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
+  
 
   const handleDeleteProductClick = (id) => {
     if (window.confirm('Delete this timepiece from store inventory?')) {
@@ -789,14 +942,17 @@ const handleEditImageUpload = async (e) => {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`py-2.5 px-4 font-bold uppercase tracking-wider cursor-pointer transition flex items-center space-x-1.5 rounded-sm ${
+              className={`py-2.5 px-4 font-bold uppercase tracking-wider cursor-pointer transition flex items-center space-x-1.5 rounded-sm border ${
                 activeTab === tab.key 
-                  ? 'bg-black text-neutral-50 font-extrabold' 
-                  : 'bg-luxury-gray text-gray-400 hover:text-luxury-text hover:bg-luxury-gray/70'
+                  ? 'bg-luxury-gold text-luxury-dark font-extrabold' 
+                  : 'bg-luxury-gray text-gray-400 hover:text-white hover:bg-luxury-gray/70'
               }`}
+              style={{
+                color: activeTab === tab.key ? '#ffffff' : '#374151'
+              }}
             >
-              <Icon size={14} />
-              <span>{tab.label}</span>
+              <Icon size={14} style={{ color: activeTab === tab.key ? '#ffffff' : 'inherit' }} />
+              <span style={{ color: activeTab === tab.key ? '#ffffff' : 'inherit' }}>{tab.label}</span>
               {tab.key === 'reviews' && activeReviews.length > 0 && (
                 <span className="bg-white/10 text-white text-[9px] px-1.5 py-0.5 rounded-full font-sans font-medium ml-1">
                   {activeReviews.length}
@@ -996,15 +1152,24 @@ const handleEditImageUpload = async (e) => {
         <div className="space-y-6">
           
           {/* Header & Add Button */}
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center flex-wrap gap-3">
             <h3 className="text-xs font-bold uppercase tracking-widest text-white">Watch Database</h3>
-            <button
-              onClick={() => setShowAddForm(!showAddForm)}
-              className="px-4 py-2 bg-white hover:bg-luxury-gold text-luxury-dark text-xs font-bold uppercase tracking-widest transition flex items-center space-x-1.5 cursor-pointer"
-            >
-              <Plus size={14} />
-              <span>Add Timepiece</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleDownloadInventoryCSV}
+                className="px-4 py-2 bg-luxury-gold/10 hover:bg-luxury-gold/20 border border-luxury-gold/30 text-luxury-gold text-[10px] font-black tracking-widest uppercase rounded flex items-center gap-2 cursor-pointer transition"
+              >
+                <Download size={13} />
+                Export Serial & Claim Codes (CSV)
+              </button>
+              <button
+                onClick={() => setShowAddForm(!showAddForm)}
+                className="px-4 py-2 bg-white hover:bg-luxury-gold text-luxury-dark text-xs font-bold uppercase tracking-widest transition flex items-center space-x-1.5 cursor-pointer"
+              >
+                <Plus size={14} />
+                <span>Add Timepiece</span>
+              </button>
+            </div>
           </div>
 
           {/* Add Form Drawer */}
@@ -1043,11 +1208,65 @@ const handleEditImageUpload = async (e) => {
                       type="number"
                       required
                       value={newProduct.stock}
-                      onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
+                      onChange={(e) => {
+  const count = Math.max(0, Number(e.target.value) || 0);
+  const current = newProduct.unitCodes || [];
+  const resized = count <= current.length
+    ? current.slice(0, count)
+    : [...current, ...Array(count - current.length).fill(null).map(() => ({ serialNumber: '', claimCode: '' }))];
+  setNewProduct({ ...newProduct, stock: e.target.value, unitCodes: resized });
+}}
                       className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
                       placeholder="8"
                     />
                   </div>
+                  {newProduct.unitCodes.length > 0 && (
+                    <div className="col-span-full space-y-2">
+                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">
+                        Serial Numbers & Claim Codes ({newProduct.unitCodes.length})
+                      </label>
+                      <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+                        {newProduct.unitCodes.map((code, idx) => (
+                          <div key={idx} className="flex gap-2 items-center bg-luxury-dark border border-white/10 rounded p-2">
+                            <span className="text-[10px] text-gray-500 w-6">#{idx + 1}</span>
+                            <input
+                              type="text"
+                              placeholder="Serial Number (blank = auto)"
+                              value={code.serialNumber}
+                              onChange={(e) => {
+                                const updated = [...newProduct.unitCodes];
+                                updated[idx] = { ...updated[idx], serialNumber: e.target.value };
+                                setNewProduct({ ...newProduct, unitCodes: updated });
+                              }}
+                              className="flex-1 bg-black border border-white/10 rounded text-white text-[10px] font-mono p-2 focus:outline-none"
+                            />
+                            <input
+                              type="text"
+                              placeholder="Claim Code (blank = auto)"
+                              value={code.claimCode}
+                              onChange={(e) => {
+                                const updated = [...newProduct.unitCodes];
+                                updated[idx] = { ...updated[idx], claimCode: e.target.value };
+                                setNewProduct({ ...newProduct, unitCodes: updated });
+                              }}
+                              className="flex-1 bg-black border border-white/10 rounded text-white text-[10px] font-mono p-2 focus:outline-none"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = [...newProduct.unitCodes];
+                                updated[idx] = generateUnitCodePair();
+                                setNewProduct({ ...newProduct, unitCodes: updated });
+                              }}
+                              className="px-2 py-2 bg-luxury-gold/10 hover:bg-luxury-gold/20 border border-luxury-gold/30 text-luxury-gold text-[9px] font-black uppercase rounded cursor-pointer whitespace-nowrap"
+                            >
+                              Auto-Generate
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <div className="space-y-1.5">
                     <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Discount (%)</label>
                     <input
@@ -1184,7 +1403,7 @@ const handleEditImageUpload = async (e) => {
                         });
                       }}
                       className={`w-12 h-6 rounded-full transition-all duration-300 cursor-pointer relative ${
-                        newProduct.customizable ? 'bg-luxury-gold' : 'bg-white/10'
+                        newProduct.customizable ? 'bg-[#047857]' : 'bg-white/10'
                       }`}
                     >
                       <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
@@ -1235,46 +1454,57 @@ const handleEditImageUpload = async (e) => {
                               </div>
                             </div>
 
-                            {/* Custom Name input for another strap */}
-                            <div className="space-y-1 pt-2 border-t border-white/5">
-                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Add Custom Strap Name (Optional)</label>
-                              <input
-                                type="text"
-                                placeholder="e.g. Alligator Leather"
-                                value={newProduct.customizationOptions?.customStrapName || ''}
-                                onChange={(e) => setNewProduct({
-                                  ...newProduct,
-                                  customizationOptions: {
-                                    ...newProduct.customizationOptions,
-                                    customStrapName: e.target.value
-                                  }
-                                })}
-                                className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
-                              />
-                            </div>
+                            {/* Multiple Custom Straps Addition */}
+                            <div className="space-y-2 pt-2 border-t border-white/5">
+                              <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Straps</label>
+                              <div className="grid grid-cols-2 gap-2">
+                                <input
+                                  type="text"
+                                  placeholder="Strap Name..."
+                                  value={tempStrapName}
+                                  onChange={(e) => setTempStrapName(e.target.value)}
+                                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
+                                />
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={handleTempStrapImageChange}
+                                  className="text-[10px] text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:bg-white/10 file:text-white hover:file:bg-white/20 cursor-pointer"
+                                />
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleAddCustomStrap(false)}
+                                className="w-full py-1.5 bg-luxury-gold hover:bg-neutral-100 text-neutral-950 font-bold text-[9px] uppercase tracking-wider rounded transition cursor-pointer"
+                              >
+                                Add Strap Option
+                              </button>
 
-                            {/* Image Upload for new straps */}
-                            <div className="space-y-1">
-                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Upload Custom Strap Image</label>
-                              <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => handleStrapImageChange(e, false)}
-                                className="text-[10px] text-gray-400 file:mr-3 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20 cursor-pointer"
-                              />
-                              {newProduct.customizationOptions?.customStrapImage && (
-                                <div className="mt-1.5 flex items-center space-x-2 bg-black/20 p-1.5 rounded border border-white/5">
-                                  <img
-                                    src={newProduct.customizationOptions.customStrapImage}
-                                    alt="Strap Preview"
-                                    className="w-10 h-10 object-contain rounded border border-white/10 bg-luxury-dark/40"
-                                  />
-                                  <div>
-                                    <p className="text-[9px] text-emerald-500 font-bold uppercase tracking-wider">Custom Strap Loaded</p>
-                                    <p className="text-[8px] text-gray-400 truncate max-w-[200px]">
-                                      {newProduct.customizationOptions.customStrapName || 'Unnamed'}
-                                    </p>
-                                  </div>
+                              {/* Added Custom Straps List */}
+                              {((newProduct.customizationOptions?.customStraps || []).length > 0) && (
+                                <div className="space-y-1.5 max-h-32 overflow-y-auto scrollbar-thin mt-2">
+                                  {(newProduct.customizationOptions.customStraps).map((s, idx) => (
+                                    <div key={idx} className="flex items-center justify-between bg-black/35 p-1.5 rounded border border-white/5">
+                                      <div className="flex items-center space-x-2">
+                                        <input
+                                          type="checkbox"
+                                          checked={true}
+                                          onChange={() => handleRemoveCustomStrap(idx, false)}
+                                          className="w-3.5 h-3.5 accent-red-500 cursor-pointer"
+                                          title="Uncheck to remove"
+                                        />
+                                        <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded bg-white/5" />
+                                        <span className="text-[9px] text-gray-300 font-medium">{s.name}</span>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleRemoveCustomStrap(idx, false)}
+                                        className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
+                                      >
+                                        Remove
+                                      </button>
+                                    </div>
+                                  ))}
                                 </div>
                               )}
                             </div>
@@ -1297,41 +1527,62 @@ const handleEditImageUpload = async (e) => {
                         </div>
                         {newProduct.allowCaseCustomization && (
                           <div className="pl-6 space-y-2 border-l border-white/10 my-2">
-                            <div className="space-y-1">
-                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Custom Case Name</label>
-                              <input
-                                type="text"
-                                placeholder="e.g. Matte Gold"
-                                value={newProduct.customizationOptions?.customCaseName || ''}
-                                onChange={(e) => setNewProduct({
-                                  ...newProduct,
-                                  customizationOptions: {
-                                    ...newProduct.customizationOptions,
-                                    customCaseName: e.target.value
-                                  }
-                                })}
-                                className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
-                              />
-                            </div>
-                            <div className="space-y-1">
-                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Case Color Option</label>
-                              <div className="flex items-center space-x-2">
+                            {/* Multiple Custom Cases Addition */}
+                            <div className="space-y-1.5">
+                              <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Case Finish (Optional)</label>
+                              <div className="grid grid-cols-2 gap-2">
                                 <input
-                                  type="color"
-                                  value={newProduct.customizationOptions?.customCaseColor || '#ffffff'}
-                                  onChange={(e) => setNewProduct({
-                                    ...newProduct,
-                                    customizationOptions: {
-                                      ...newProduct.customizationOptions,
-                                      customCaseColor: e.target.value
-                                    }
-                                  })}
-                                  className="w-8 h-8 rounded border-0 bg-transparent cursor-pointer"
+                                  type="text"
+                                  placeholder="Finish Name (e.g. Matte Gold)..."
+                                  value={tempCaseName}
+                                  onChange={(e) => setTempCaseName(e.target.value)}
+                                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
                                 />
-                                <span className="text-xs text-gray-300 font-mono">
-                                  {newProduct.customizationOptions?.customCaseColor || '#ffffff'}
-                                </span>
+                                <div className="flex items-center space-x-2">
+                                  <input
+                                    type="color"
+                                    value={tempCaseColor}
+                                    onChange={(e) => setTempCaseColor(e.target.value)}
+                                    className="w-8 h-8 rounded border-0 bg-transparent cursor-pointer"
+                                  />
+                                  <span className="text-[10px] text-gray-300 font-mono">{tempCaseColor}</span>
+                                </div>
                               </div>
+                              <button
+                                type="button"
+                                onClick={() => handleAddCustomCase(false)}
+                                className="w-full py-1.5 bg-luxury-gold hover:bg-neutral-100 text-neutral-950 font-bold text-[9px] uppercase tracking-wider rounded transition cursor-pointer"
+                              >
+                                Add Case Option
+                              </button>
+
+                              {/* Added Custom Cases List */}
+                              {((newProduct.customizationOptions?.customCases || []).length > 0) && (
+                                <div className="space-y-1.5 max-h-32 overflow-y-auto scrollbar-thin mt-2">
+                                  {(newProduct.customizationOptions.customCases).map((c, idx) => (
+                                    <div key={idx} className="flex items-center justify-between bg-black/35 p-1.5 rounded border border-white/5">
+                                      <div className="flex items-center space-x-2">
+                                        <input
+                                          type="checkbox"
+                                          checked={true}
+                                          onChange={() => handleRemoveCustomCase(idx, false)}
+                                          className="w-3.5 h-3.5 accent-red-500 cursor-pointer"
+                                          title="Uncheck to remove"
+                                        />
+                                        <span className="w-4 h-4 rounded-full border border-white/10" style={{ backgroundColor: c.color }} />
+                                        <span className="text-[9px] text-gray-300 font-medium">{c.name}</span>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleRemoveCustomCase(idx, false)}
+                                        className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
+                                      >
+                                        Remove
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           </div>
                         )}
@@ -1427,10 +1678,90 @@ const handleEditImageUpload = async (e) => {
                         type="number"
                         required
                         value={editForm.stock}
-                        onChange={(e) => setEditForm({ ...editForm, stock: Number(e.target.value) })}
+                        onChange={(e) => {
+  const newCount = Math.max(0, Number(e.target.value) || 0);
+  const unusedExisting = (editForm.existingUnitCodes || []).filter(c => !c.used).length;
+  let newUnitCodes = editForm.newUnitCodes || [];
+  if (newCount > unusedExisting) {
+    const needed = newCount - unusedExisting;
+    newUnitCodes = needed > newUnitCodes.length
+      ? [...newUnitCodes, ...Array(needed - newUnitCodes.length).fill(null).map(() => ({ serialNumber: '', claimCode: '' }))]
+      : newUnitCodes.slice(0, needed);
+  } else {
+    newUnitCodes = [];
+  }
+  setEditForm({ ...editForm, stock: e.target.value, newUnitCodes });
+}}
                         className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5"
                       />
                     </div>
+
+{editForm.existingUnitCodes?.length > 0 && (
+                      <div className="col-span-full space-y-1.5">
+                        <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">
+                          Existing Codes ({editForm.existingUnitCodes.length})
+                        </label>
+                        <div className="space-y-1 max-h-40 overflow-y-auto">
+                          {editForm.existingUnitCodes.map((code, idx) => (
+                            <div key={idx} className="flex gap-2 items-center text-[10px] font-mono bg-black/30 border border-white/5 rounded p-1.5 text-gray-400">
+                              <span className="w-6">#{idx + 1}</span>
+                              <span className="flex-1 truncate">{code.serialNumber}</span>
+                              <span className="flex-1 truncate">{code.claimCode}</span>
+                              <span className={`text-[9px] font-bold uppercase ${code.used ? 'text-luxury-red' : 'text-emerald-500'}`}>
+                                {code.used ? 'Sold' : 'Available'}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {editForm.newUnitCodes?.length > 0 && (
+                      <div className="col-span-full space-y-2">
+                        <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">
+                          New Units to Add ({editForm.newUnitCodes.length})
+                        </label>
+                        <div className="space-y-2">
+                          {editForm.newUnitCodes.map((code, idx) => (
+                            <div key={idx} className="flex gap-2 items-center bg-luxury-dark border border-white/10 rounded p-2">
+                              <input
+                                type="text"
+                                placeholder="Serial Number (blank = auto)"
+                                value={code.serialNumber}
+                                onChange={(e) => {
+                                  const updated = [...editForm.newUnitCodes];
+                                  updated[idx] = { ...updated[idx], serialNumber: e.target.value };
+                                  setEditForm({ ...editForm, newUnitCodes: updated });
+                                }}
+                                className="flex-1 bg-black border border-white/10 rounded text-white text-[10px] font-mono p-2 focus:outline-none"
+                              />
+                              <input
+                                type="text"
+                                placeholder="Claim Code (blank = auto)"
+                                value={code.claimCode}
+                                onChange={(e) => {
+                                  const updated = [...editForm.newUnitCodes];
+                                  updated[idx] = { ...updated[idx], claimCode: e.target.value };
+                                  setEditForm({ ...editForm, newUnitCodes: updated });
+                                }}
+                                className="flex-1 bg-black border border-white/10 rounded text-white text-[10px] font-mono p-2 focus:outline-none"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = [...editForm.newUnitCodes];
+                                  updated[idx] = generateUnitCodePair();
+                                  setEditForm({ ...editForm, newUnitCodes: updated });
+                                }}
+                                className="px-2 py-2 bg-luxury-gold/10 hover:bg-luxury-gold/20 border border-luxury-gold/30 text-luxury-gold text-[9px] font-black uppercase rounded cursor-pointer whitespace-nowrap"
+                              >
+                                Auto-Generate
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     <div className="space-y-1.5">
                       <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Discount (%)</label>
                       <input
@@ -1566,7 +1897,7 @@ const handleEditImageUpload = async (e) => {
                           });
                         }}
                         className={`w-12 h-6 rounded-full transition-all duration-300 cursor-pointer relative ${
-                          editForm.customizable ? 'bg-luxury-gold' : 'bg-white/10'
+                          editForm.customizable ? 'bg-[#047857]' : 'bg-white/10'
                         }`}
                       >
                         <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
@@ -1617,46 +1948,57 @@ const handleEditImageUpload = async (e) => {
                                 </div>
                               </div>
 
-                              {/* Custom Name input for another strap */}
-                              <div className="space-y-1 pt-2 border-t border-white/5">
-                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Add Custom Strap Name (Optional)</label>
-                                <input
-                                  type="text"
-                                  placeholder="e.g. Alligator Leather"
-                                  value={editForm.customizationOptions?.customStrapName || ''}
-                                  onChange={(e) => setEditForm({
-                                    ...editForm,
-                                    customizationOptions: {
-                                      ...editForm.customizationOptions,
-                                      customStrapName: e.target.value
-                                    }
-                                  })}
-                                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
-                                />
-                              </div>
+                              {/* Multiple Custom Straps Addition */}
+                              <div className="space-y-2 pt-2 border-t border-white/5">
+                                <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Straps</label>
+                                <div className="grid grid-cols-2 gap-2">
+                                  <input
+                                    type="text"
+                                    placeholder="Strap Name..."
+                                    value={tempStrapName}
+                                    onChange={(e) => setTempStrapName(e.target.value)}
+                                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
+                                  />
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleTempStrapImageChange}
+                                    className="text-[10px] text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:bg-white/10 file:text-white hover:file:bg-white/20 cursor-pointer"
+                                  />
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => handleAddCustomStrap(true)}
+                                  className="w-full py-1.5 bg-luxury-gold hover:bg-neutral-100 text-neutral-950 font-bold text-[9px] uppercase tracking-wider rounded transition cursor-pointer"
+                                >
+                                  Add Strap Option
+                                </button>
 
-                              {/* Image Upload for new straps */}
-                              <div className="space-y-1">
-                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Upload Custom Strap Image</label>
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={(e) => handleStrapImageChange(e, true)}
-                                  className="text-[10px] text-gray-400 file:mr-3 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20 cursor-pointer"
-                                />
-                                {editForm.customizationOptions?.customStrapImage && (
-                                  <div className="mt-1.5 flex items-center space-x-2 bg-black/20 p-1.5 rounded border border-white/5">
-                                    <img
-                                      src={editForm.customizationOptions.customStrapImage}
-                                      alt="Strap Preview"
-                                      className="w-10 h-10 object-contain rounded border border-white/10 bg-luxury-dark/40"
-                                    />
-                                    <div>
-                                      <p className="text-[9px] text-emerald-500 font-bold uppercase tracking-wider">Custom Strap Loaded</p>
-                                      <p className="text-[8px] text-gray-400 truncate max-w-[200px]">
-                                        {editForm.customizationOptions.customStrapName || 'Unnamed'}
-                                      </p>
-                                    </div>
+                                {/* Added Custom Straps List */}
+                                {((editForm.customizationOptions?.customStraps || []).length > 0) && (
+                                  <div className="space-y-1.5 max-h-32 overflow-y-auto scrollbar-thin mt-2">
+                                    {(editForm.customizationOptions.customStraps).map((s, idx) => (
+                                      <div key={idx} className="flex items-center justify-between bg-black/35 p-1.5 rounded border border-white/5">
+                                        <div className="flex items-center space-x-2">
+                                          <input
+                                            type="checkbox"
+                                            checked={true}
+                                            onChange={() => handleRemoveCustomStrap(idx, true)}
+                                            className="w-3.5 h-3.5 accent-red-500 cursor-pointer"
+                                            title="Uncheck to remove"
+                                          />
+                                          <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded bg-white/5" />
+                                          <span className="text-[9px] text-gray-300 font-medium">{s.name}</span>
+                                        </div>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveCustomStrap(idx, true)}
+                                          className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
+                                        >
+                                          Remove
+                                        </button>
+                                      </div>
+                                    ))}
                                   </div>
                                 )}
                               </div>
@@ -1677,43 +2019,64 @@ const handleEditImageUpload = async (e) => {
                               Allow Case Finish Customization
                             </label>
                           </div>
-                          {editForm.allowCaseCustomization && (
+                           {editForm.allowCaseCustomization && (
                             <div className="pl-6 space-y-2 border-l border-white/10 my-2">
-                              <div className="space-y-1">
-                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Custom Case Name</label>
-                                <input
-                                  type="text"
-                                  placeholder="e.g. Matte Gold"
-                                  value={editForm.customizationOptions?.customCaseName || ''}
-                                  onChange={(e) => setEditForm({
-                                    ...editForm,
-                                    customizationOptions: {
-                                      ...editForm.customizationOptions,
-                                      customCaseName: e.target.value
-                                    }
-                                  })}
-                                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Case Color Option</label>
-                                <div className="flex items-center space-x-2">
+                              {/* Multiple Custom Cases Addition */}
+                              <div className="space-y-1.5">
+                                <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Case Finish (Optional)</label>
+                                <div className="grid grid-cols-2 gap-2">
                                   <input
-                                    type="color"
-                                    value={editForm.customizationOptions?.customCaseColor || '#ffffff'}
-                                    onChange={(e) => setEditForm({
-                                      ...editForm,
-                                      customizationOptions: {
-                                        ...editForm.customizationOptions,
-                                        customCaseColor: e.target.value
-                                      }
-                                    })}
-                                    className="w-8 h-8 rounded border-0 bg-transparent cursor-pointer"
+                                    type="text"
+                                    placeholder="Finish Name (e.g. Matte Gold)..."
+                                    value={tempCaseName}
+                                    onChange={(e) => setTempCaseName(e.target.value)}
+                                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
                                   />
-                                  <span className="text-xs text-gray-300 font-mono">
-                                    {editForm.customizationOptions?.customCaseColor || '#ffffff'}
-                                  </span>
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="color"
+                                      value={tempCaseColor}
+                                      onChange={(e) => setTempCaseColor(e.target.value)}
+                                      className="w-8 h-8 rounded border-0 bg-transparent cursor-pointer"
+                                    />
+                                    <span className="text-[10px] text-gray-300 font-mono">{tempCaseColor}</span>
+                                  </div>
                                 </div>
+                                <button
+                                  type="button"
+                                  onClick={() => handleAddCustomCase(true)}
+                                  className="w-full py-1.5 bg-luxury-gold hover:bg-neutral-100 text-neutral-950 font-bold text-[9px] uppercase tracking-wider rounded transition cursor-pointer"
+                                >
+                                  Add Case Option
+                                </button>
+
+                                {/* Added Custom Cases List */}
+                                {((editForm.customizationOptions?.customCases || []).length > 0) && (
+                                  <div className="space-y-1.5 max-h-32 overflow-y-auto scrollbar-thin mt-2">
+                                    {(editForm.customizationOptions.customCases).map((c, idx) => (
+                                      <div key={idx} className="flex items-center justify-between bg-black/35 p-1.5 rounded border border-white/5">
+                                        <div className="flex items-center space-x-2">
+                                          <input
+                                            type="checkbox"
+                                            checked={true}
+                                            onChange={() => handleRemoveCustomCase(idx, true)}
+                                            className="w-3.5 h-3.5 accent-red-500 cursor-pointer"
+                                            title="Uncheck to remove"
+                                          />
+                                          <span className="w-4 h-4 rounded-full border border-white/10" style={{ backgroundColor: c.color }} />
+                                          <span className="text-[9px] text-gray-300 font-medium">{c.name}</span>
+                                        </div>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveCustomCase(idx, true)}
+                                          className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
+                                        >
+                                          Remove
+                                        </button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
                             </div>
                           )}
@@ -1854,16 +2217,7 @@ const handleEditImageUpload = async (e) => {
       {/* --- TAB CONTENT: ORDER DISPATCHER (MANAGE STATUSES) --- */}
       {activeTab === 'orders' && (
         <div className="space-y-6">
-          <div className="flex items-center justify-between flex-wrap gap-3">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-white">Client Invoice Dispatcher</h3>
-            <button
-              onClick={handleDownloadWarrantyCSV}
-              className="px-4 py-2 bg-luxury-gold/10 hover:bg-luxury-gold/20 border border-luxury-gold/30 text-luxury-gold text-[10px] font-black tracking-widest uppercase rounded flex items-center gap-2 cursor-pointer transition"
-            >
-              <Download size={13} />
-              Export Serial & Claim Codes (CSV)
-            </button>
-          </div>
+          <h3 className="text-xs font-bold uppercase tracking-widest text-white">Client Invoice Dispatcher</h3>
           
           {orders.length === 0 ? (
             <p className="text-gray-400 text-xs italic p-4 text-center border border-dashed border-white/10 rounded">No order records found in simulated database.</p>
@@ -1921,56 +2275,7 @@ const handleEditImageUpload = async (e) => {
                             )}
                           </div>
                         )}
-                        <button
-                          type="button"
-                          onClick={() => setExpandedWarranty(prev => ({ ...prev, [o.id]: !prev[o.id] }))}
-                          className="mt-1 text-[9px] font-black tracking-widest uppercase bg-white/5 hover:bg-white/10 text-gray-300 px-2 py-0.5 rounded cursor-pointer transition"
-                        >
-                          WARRANTY {expandedWarranty[o.id] ? '▲' : '▼'}
-                        </button>
-                        {expandedWarranty[o.id] && (
-                          <div className="mt-1.5 space-y-1.5">
-                            {o.items.map((item, idx) => {
-                              const editKey = `${o.id}-${idx}`;
-                              const edit = warrantyEdits[editKey] || {};
-                              return (
-                                <div key={idx} className="text-[10px] bg-black/30 border border-white/5 rounded p-2 space-y-1">
-                                  <p className="text-gray-400 font-semibold">{item.name}</p>
-                                  <div className="flex gap-1.5">
-                                    <input
-                                      type="text"
-                                      placeholder={item.serialNumber || 'Serial Number'}
-                                      value={edit.serialNumber ?? ''}
-                                      onChange={(e) => setWarrantyEdits(prev => ({ ...prev, [editKey]: { ...edit, serialNumber: e.target.value } }))}
-                                      className="bg-luxury-dark border border-white/10 rounded px-1.5 py-1 text-[10px] font-mono w-full focus:outline-none focus:border-luxury-gold"
-                                    />
-                                    <input
-                                      type="text"
-                                      placeholder={item.claimCode || 'Claim Code'}
-                                      value={edit.claimCode ?? ''}
-                                      onChange={(e) => setWarrantyEdits(prev => ({ ...prev, [editKey]: { ...edit, claimCode: e.target.value } }))}
-                                      className="bg-luxury-dark border border-white/10 rounded px-1.5 py-1 text-[10px] font-mono w-full focus:outline-none focus:border-luxury-gold"
-                                    />
-                                    <button
-                                      type="button"
-                                      onClick={async () => {
-                                        const result = await dispatch(updateItemWarranty(o.id, idx, edit));
-                                        if (result.success) {
-                                          setWarrantyEdits(prev => ({ ...prev, [editKey]: {} }));
-                                        } else {
-                                          alert(result.message || 'Failed to update.');
-                                        }
-                                      }}
-                                      className="px-2 py-1 bg-luxury-gold/20 hover:bg-luxury-gold/30 text-luxury-gold text-[9px] font-black uppercase rounded cursor-pointer transition"
-                                    >
-                                      Save
-                                    </button>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )}
+                        
                       </td>
                       <td className="p-4 font-bold text-luxury-gold">{formatPrice(o.total, currentCurrency)}</td>
                       <td className="p-4">
@@ -2143,45 +2448,80 @@ const handleEditImageUpload = async (e) => {
       {activeTab === 'updates' && (
         <div className="space-y-8">
           <div className="flex justify-between items-center">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-white">Brand Updates Manager</h3>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-900">Brand Updates Manager</h3>
             <button
               onClick={() => {
                 setShowAddUpdateForm(!showAddUpdateForm);
                 setEditingUpdateId(null);
               }}
-              className="px-4 py-2 bg-luxury-gold text-luxury-dark text-xs font-bold uppercase tracking-wider flex items-center space-x-1.5 transition hover:bg-luxury-gold-dark cursor-pointer rounded-sm"
+              className="px-4 py-2 bg-neutral-900 hover:bg-black text-white text-xs font-bold uppercase tracking-wider flex items-center space-x-1.5 transition cursor-pointer rounded-sm"
+              style={{ color: '#ffffff' }}
             >
-              <Plus size={14} />
-              <span>{showAddUpdateForm ? 'Cancel Add' : 'Add New Update'}</span>
+              <Plus size={14} style={{ color: '#ffffff' }} />
+              <span style={{ color: '#ffffff' }}>{showAddUpdateForm ? 'Cancel Add' : 'Add New Update'}</span>
             </button>
           </div>
 
           {/* Form to Add New Update */}
           {showAddUpdateForm && (
-            <div className="bg-luxury-gray border border-white/5 p-6 rounded-md max-w-xl">
-              <h4 className="text-xs font-bold uppercase tracking-widest text-white mb-4">Create Brand Update</h4>
+            <div className="bg-gray-50 border border-black/5 p-6 rounded-md max-w-xl shadow-sm">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-900 mb-4">Create Brand Update</h4>
               <form onSubmit={handleCreateUpdate} className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Update Title</label>
+                  <label className="text-[9px] text-neutral-700 font-bold uppercase tracking-widest block">Update Title</label>
                   <input
                     type="text"
                     required
                     value={newUpdate.title}
                     onChange={(e) => setNewUpdate({ ...newUpdate, title: e.target.value })}
                     placeholder="e.g. Geneva Flagship Opening"
-                    className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5"
+                    className="w-full bg-white border border-black/10 rounded text-neutral-900 p-2.5 focus:outline-none focus:border-black"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Update Detail Description</label>
+                  <label className="text-[9px] text-neutral-700 font-bold uppercase tracking-widest block">Update Detail Description</label>
                   <textarea
                     required
                     rows={3}
                     value={newUpdate.detail}
                     onChange={(e) => setNewUpdate({ ...newUpdate, detail: e.target.value })}
                     placeholder="Provide full description of the news milestone..."
-                    className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5 resize-none"
+                    className="w-full bg-white border border-black/10 rounded text-neutral-900 p-2.5 resize-none focus:outline-none focus:border-black"
                   />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[9px] text-neutral-700 font-bold uppercase tracking-widest block">Display Expiry Duration</label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <select
+                      value={[24, 48, 72, 96, 168].includes(newUpdate.durationHours) ? newUpdate.durationHours : 'custom'}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val !== 'custom') {
+                          setNewUpdate({ ...newUpdate, durationHours: Number(val) });
+                        } else {
+                          setNewUpdate({ ...newUpdate, durationHours: 24 });
+                        }
+                      }}
+                      className="bg-white border border-black/10 rounded text-neutral-900 p-2 text-xs focus:outline-none"
+                    >
+                      <option value="24">24 Hours (1 Day)</option>
+                      <option value="48">48 Hours (2 Days)</option>
+                      <option value="72">72 Hours (3 Days)</option>
+                      <option value="96">96 Hours (4 Days)</option>
+                      <option value="168">168 Hours (1 Week)</option>
+                      <option value="custom">Custom Hours...</option>
+                    </select>
+                    {![24, 48, 72, 96, 168].includes(newUpdate.durationHours) && (
+                      <input
+                        type="number"
+                        min="1"
+                        value={newUpdate.durationHours || ''}
+                        onChange={(e) => setNewUpdate({ ...newUpdate, durationHours: Math.max(1, Number(e.target.value)) })}
+                        placeholder="Hours (e.g. 120)"
+                        className="bg-white border border-black/10 rounded text-neutral-900 p-2 text-xs focus:outline-none"
+                      />
+                    )}
+                  </div>
                 </div>
                 <div className="flex items-center space-x-2.5 pt-1">
                   <input
@@ -2189,15 +2529,15 @@ const handleEditImageUpload = async (e) => {
                     id="newApproved"
                     checked={newUpdate.approved}
                     onChange={(e) => setNewUpdate({ ...newUpdate, approved: e.target.checked })}
-                    className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                    className="w-4 h-4 accent-neutral-900 cursor-pointer"
                   />
-                  <label htmlFor="newApproved" className="text-xs text-gray-300 cursor-pointer select-none">
+                  <label htmlFor="newApproved" className="text-xs text-neutral-800 cursor-pointer select-none">
                     Publish immediately (Approved)
                   </label>
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-3 bg-white text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold transition cursor-pointer"
+                  className="w-full py-3 bg-[#047857] hover:bg-[#065f46] text-white font-bold text-xs tracking-widest uppercase transition cursor-pointer"
                 >
                   Publish Update
                 </button>
@@ -2207,28 +2547,62 @@ const handleEditImageUpload = async (e) => {
 
           {/* Form to Edit Existing Update */}
           {editingUpdateId && editUpdateForm && (
-            <div className="bg-luxury-gray border border-luxury-gold/20 p-6 rounded-md max-w-xl">
-              <h4 className="text-xs font-bold uppercase tracking-widest text-white mb-4">Edit Brand Update</h4>
+            <div className="bg-gray-50 border border-black/5 p-6 rounded-md max-w-xl shadow-sm">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-900 mb-4">Edit Brand Update</h4>
               <form onSubmit={handleUpdateUpdate} className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Update Title</label>
+                  <label className="text-[9px] text-neutral-700 font-bold uppercase tracking-widest block">Update Title</label>
                   <input
                     type="text"
                     required
                     value={editUpdateForm.title}
                     onChange={(e) => setEditUpdateForm({ ...editUpdateForm, title: e.target.value })}
-                    className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5"
+                    className="w-full bg-white border border-black/10 rounded text-neutral-900 p-2.5 focus:outline-none focus:border-black"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Update Detail Description</label>
+                  <label className="text-[9px] text-neutral-700 font-bold uppercase tracking-widest block">Update Detail Description</label>
                   <textarea
                     required
                     rows={3}
                     value={editUpdateForm.detail}
                     onChange={(e) => setEditUpdateForm({ ...editUpdateForm, detail: e.target.value })}
-                    className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5 resize-none"
+                    className="w-full bg-white border border-black/10 rounded text-neutral-900 p-2.5 resize-none focus:outline-none"
                   />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[9px] text-neutral-700 font-bold uppercase tracking-widest block">Display Expiry Duration</label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <select
+                      value={[24, 48, 72, 96, 168].includes(editUpdateForm.durationHours) ? editUpdateForm.durationHours : 'custom'}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val !== 'custom') {
+                          setEditUpdateForm({ ...editUpdateForm, durationHours: Number(val) });
+                        } else {
+                          setEditUpdateForm({ ...editUpdateForm, durationHours: 24 });
+                        }
+                      }}
+                      className="bg-white border border-black/10 rounded text-neutral-900 p-2 text-xs focus:outline-none"
+                    >
+                      <option value="24">24 Hours (1 Day)</option>
+                      <option value="48">48 Hours (2 Days)</option>
+                      <option value="72">72 Hours (3 Days)</option>
+                      <option value="96">96 Hours (4 Days)</option>
+                      <option value="168">168 Hours (1 Week)</option>
+                      <option value="custom">Custom Hours...</option>
+                    </select>
+                    {![24, 48, 72, 96, 168].includes(editUpdateForm.durationHours) && (
+                      <input
+                        type="number"
+                        min="1"
+                        value={editUpdateForm.durationHours || ''}
+                        onChange={(e) => setEditUpdateForm({ ...editUpdateForm, durationHours: Math.max(1, Number(e.target.value)) })}
+                        placeholder="Hours (e.g. 120)"
+                        className="bg-white border border-black/10 rounded text-neutral-900 p-2 text-xs focus:outline-none"
+                      />
+                    )}
+                  </div>
                 </div>
                 <div className="flex items-center space-x-2.5 pt-1">
                   <input
@@ -2236,9 +2610,9 @@ const handleEditImageUpload = async (e) => {
                     id="editApproved"
                     checked={editUpdateForm.approved}
                     onChange={(e) => setEditUpdateForm({ ...editUpdateForm, approved: e.target.checked })}
-                    className="w-4 h-4 accent-luxury-gold cursor-pointer"
+                    className="w-4 h-4 accent-neutral-900 cursor-pointer"
                   />
-                  <label htmlFor="editApproved" className="text-xs text-gray-300 cursor-pointer select-none">
+                  <label htmlFor="editApproved" className="text-xs text-neutral-800 cursor-pointer select-none">
                     Approved (Visible to clients)
                   </label>
                 </div>
@@ -2249,13 +2623,13 @@ const handleEditImageUpload = async (e) => {
                       setEditingUpdateId(null);
                       setEditUpdateForm(null);
                     }}
-                    className="flex-1 py-3 bg-transparent border border-white/10 text-white font-bold text-xs tracking-widest uppercase hover:bg-white/5 transition cursor-pointer"
+                    className="flex-1 py-3 bg-transparent border border-black/15 text-neutral-900 font-bold text-xs tracking-widest uppercase hover:bg-black/5 transition cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-3 bg-luxury-gold text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold-dark transition cursor-pointer"
+                    className="flex-1 py-3 bg-[#047857] hover:bg-[#065f46] text-white font-bold text-xs tracking-widest uppercase transition cursor-pointer"
                   >
                     Save Changes
                   </button>
@@ -2266,42 +2640,45 @@ const handleEditImageUpload = async (e) => {
 
           {/* List of existing updates */}
           <div className="space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-widest text-white">Brand Updates Database</h4>
+            <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-900">Brand Updates Database</h4>
             
             {adminUpdates.length === 0 ? (
-              <p className="text-gray-400 text-xs italic p-6 text-center border border-dashed border-white/10 rounded">No brand updates found in database.</p>
+              <p className="text-neutral-600 text-xs italic p-6 text-center border border-dashed border-black/10 rounded">No brand updates found in database.</p>
             ) : (
-              <div className="bg-luxury-gray border border-white/5 rounded-md divide-y divide-white/5">
+              <div className="bg-gray-50 border border-black/5 rounded-md divide-y divide-black/10">
                 {adminUpdates.map((up) => (
                   <div key={up._id || up.id} className="p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="space-y-2">
                       <div className="flex items-center space-x-2.5">
-                        <span className="text-white text-sm font-bold tracking-wider">{up.title}</span>
+                        <span className="text-neutral-900 text-sm font-bold tracking-wider">{up.title}</span>
                         <button
                           onClick={() => handleToggleUpdateApproval(up._id || up.id, up.approved)}
                           className={`text-[9px] font-bold px-2 py-0.5 rounded border transition cursor-pointer ${
                             up.approved 
-                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-                              : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+                              ? 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20' 
+                              : 'bg-yellow-500/10 text-yellow-700 border-yellow-500/20'
                           }`}
                         >
                           {up.approved ? 'APPROVED & LIVE' : 'UNAPPROVED / HIDDEN'}
                         </button>
                       </div>
-                      <p className="text-xs text-gray-400 leading-relaxed font-light">{up.detail}</p>
+                      <p className="text-xs text-neutral-700 leading-relaxed font-light">{up.detail}</p>
+                      <p className="text-[9px] text-neutral-500 font-mono">
+                        Duration: {up.durationHours || 24} hours (Expires: {new Date(new Date(up.createdAt).getTime() + (up.durationHours || 24) * 3600000).toLocaleString('en-IN')})
+                      </p>
                     </div>
 
                     <div className="flex space-x-2 flex-shrink-0">
                       <button
                         onClick={() => handleEditUpdateInit(up)}
-                        className="p-2 text-gray-400 hover:text-white transition hover:bg-white/5 rounded"
+                        className="p-2 text-neutral-500 hover:text-black transition hover:bg-black/5 rounded"
                         title="Edit Update"
                       >
                         <Edit size={14} />
                       </button>
                       <button
                         onClick={() => handleDeleteUpdate(up._id || up.id)}
-                        className="p-2 text-gray-400 hover:text-luxury-red transition hover:bg-white/5 rounded"
+                        className="p-2 text-neutral-500 hover:text-red-600 transition hover:bg-black/5 rounded"
                         title="Delete Update"
                       >
                         <Trash2 size={14} />

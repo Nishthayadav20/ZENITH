@@ -34,6 +34,11 @@ const productSchema = new mongoose.Schema({
   },
   discountPercent: { type: Number, default: 0 },
   badge: { type: String, default: '' },
+  unitCodes: [{
+    serialNumber: { type: String },
+    claimCode: { type: String },
+    used: { type: Boolean, default: false }
+  }],
   customizable: { type: Boolean, default: true },
   allowStrapCustomization: { type: Boolean, default: true },
   allowCaseCustomization: { type: Boolean, default: true },
@@ -46,7 +51,15 @@ const productSchema = new mongoose.Schema({
     customStrapName: { type: String, default: '' },
     customStrapImage: { type: String, default: '' },
     customCaseName: { type: String, default: '' },
-    customCaseColor: { type: String, default: '' }
+    customCaseColor: { type: String, default: '' },
+    customStraps: [{
+      name: { type: String, default: '' },
+      image: { type: String, default: '' }
+    }],
+    customCases: [{
+      name: { type: String, default: '' },
+      color: { type: String, default: '' }
+    }]
   },
   reviews: [reviewSchema]
 }, {
