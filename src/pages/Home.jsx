@@ -927,7 +927,6 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
             </Reveal>
             <SlideReveal delay={0.1}>
               <h2 className="text-4xl sm:text-5xl font-serif font-bold text-luxury-text leading-tight">
-                Dive Deeper with the<br />
                 <span className="text-luxury-gold-dark">Khronomaster</span> Professional
               </h2>
             </SlideReveal>
