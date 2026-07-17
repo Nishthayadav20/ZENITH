@@ -331,7 +331,7 @@ function CollectionCard({ col, idx, onPageChange }) {
             {col.specs.map((spec, i) => (
               <div key={i} className={`flex items-center space-x-2 text-[9px] sm:text-[10px] ${specTextClass}`}>
                 <span style={{ color: col.dark ? '#ffffff' : numColor }}>{renderIcon(spec.icon)}</span>
-                <span>{spec.label}</span>
+                <span style={{ color: col.dark ? '#ffffff' : 'inherit' }}>{spec.label}</span>
               </div>
             ))}
           </div>
