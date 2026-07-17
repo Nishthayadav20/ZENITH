@@ -1174,9 +1174,17 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
         <div className="absolute inset-0 bg-black/35 z-10" />
 
         {/* Vertical Tab sticking to the extreme left of this section only, spanning full height */}
-        <button
+        <motion.button
           onClick={() => onUpdatesOpen && onUpdatesOpen()}
-          className="absolute left-0 top-0 h-full w-20 sm:w-24 text-white font-black text-[16px] sm:text-[18px] tracking-[0.3em] uppercase border-r border-[#047857]/30 shadow-2xl hover:opacity-100 hover:translate-x-1.5 transition-all duration-300 z-30 cursor-pointer flex flex-col items-center justify-center select-none rounded-none group"
+          drag="x"
+          dragConstraints={{ left: 0, right: 120 }}
+          dragElastic={0.08}
+          onDragEnd={(event, info) => {
+            if (info.offset.x > 30) {
+              onUpdatesOpen && onUpdatesOpen();
+            }
+          }}
+          className="absolute left-0 top-0 h-full w-20 sm:w-24 text-white font-black text-[15px] sm:text-[17px] tracking-[0.3em] uppercase border-r border-[#047857]/30 shadow-2xl hover:opacity-100 transition-all duration-300 z-30 cursor-grab active:cursor-grabbing flex flex-col items-center justify-center select-none rounded-none group"
           style={{
             writingMode: 'vertical-lr',
             textOrientation: 'mixed',
@@ -1189,8 +1197,12 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
           </div>
 
-          <span className="group-hover:scale-105 transition-transform duration-300">
-            KHRONIQ UPDATES
+          <span className="group-hover:scale-105 transition-transform duration-300 flex items-center gap-1.5">
+            KHRONIQ UPDATES <span className="rotate-90 sm:rotate-0 tracking-normal text-xs opacity-80">→</span>
+          </span>
+
+          <span className="absolute bottom-16 text-[8px] tracking-[0.1em] text-white/75 rotate-90 sm:rotate-0 font-bold">
+            SLIDE RIGHT
           </span>
 
           {/* Bottom pulsing notification dot */}
@@ -1198,7 +1210,7 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
             <span className="animate-ping absolute inline-flex h-3.5 w-3.5 rounded-full bg-white opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
           </div>
-        </button>
+        </motion.button>
       </div>
     </>
   );
