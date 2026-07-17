@@ -623,6 +623,17 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
   const { scrollY } = useScroll();
   const scrollFade = useTransform(scrollY, [0, 180], [1, 0]);
 
+  // Featured Collection split curtain animation variables
+  const curtainSectionRef = useRef(null);
+  const { scrollYProgress: curtainScroll } = useScroll({
+    target: curtainSectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  const curtainLeftX = useTransform(curtainScroll, [0.15, 0.45], ['0%', '-100%']);
+  const curtainRightX = useTransform(curtainScroll, [0.15, 0.45], ['0%', '100%']);
+  const curtainTextOpacity = useTransform(curtainScroll, [0.15, 0.35], [1, 0]);
+
   const onMouseMove = useCallback((e) => {
     const r = heroRef.current?.getBoundingClientRect();
     if (!r) return;
@@ -1095,9 +1106,48 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
       <LifestyleShowcaseSlider products={products} onPageChange={onPageChange} homeImages={homeImages} />
 
       {/* ══════════ FEATURED PRODUCTS ══════════ */}
-      <div className="relative">
+      <div className="relative overflow-hidden" ref={curtainSectionRef}>
+        {/* Auditorium Split-Curtain Screen */}
+        <div className="absolute inset-0 z-40 pointer-events-none overflow-hidden flex">
+          {/* Left Curtain */}
+          <motion.div 
+            className="w-1/2 h-full bg-[#0d0c0a] border-r border-white/5 relative z-40"
+            style={{ 
+              x: curtainLeftX,
+              backgroundImage: 'repeating-linear-gradient(90deg, #0e0d0b, #0e0d0b 20px, #1a1815 40px, #0e0d0b 60px)',
+              boxShadow: 'inset -20px 0 30px rgba(0,0,0,0.8)'
+            }}
+          />
+          {/* Right Curtain */}
+          <motion.div 
+            className="w-1/2 h-full bg-[#0d0c0a] border-l border-white/5 relative z-40"
+            style={{ 
+              x: curtainRightX,
+              backgroundImage: 'repeating-linear-gradient(90deg, #0e0d0b, #0e0d0b 20px, #1a1815 40px, #0e0d0b 60px)',
+              boxShadow: 'inset 20px 0 30px rgba(0,0,0,0.8)'
+            }}
+          />
+          
+          {/* Centered Curtains Text Overlay */}
+          <motion.div 
+            className="absolute inset-0 flex flex-col items-center justify-center text-center z-50 px-4"
+            style={{ opacity: curtainTextOpacity }}
+          >
+            <span className="text-[10px] sm:text-xs font-bold tracking-[0.3em] text-luxury-gold uppercase drop-shadow-lg mb-2">
+              Performance of Time
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-serif font-black text-white tracking-[0.25em] uppercase leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]">
+              FEATURED COLLECTION
+            </h2>
+            <div className="w-24 h-[1.5px] bg-luxury-gold my-4 drop-shadow-md" />
+            <p className="text-[8px] sm:text-[9px] text-gray-300 tracking-[0.2em] uppercase font-bold max-w-md leading-relaxed drop-shadow-md">
+              THE MASTERPIECES REVEAL AS YOU SCROLL
+            </p>
+          </motion.div>
+        </div>
+
         <section
-          className="w-full pt-14 pb-48 space-y-10 relative"
+          className="w-full pt-14 pb-48 space-y-10 relative overflow-hidden"
           style={{
             backgroundColor: '#ffffff',
             color: '#000000',
@@ -1197,100 +1247,46 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
 
 
         {/* ══════════ FULL SCREEN IMAGE BACKGROUND UPDATES SECTION ══════════ */}
+        {/* ══════════ KHRONIQ UPDATE PARALLAX BANNER SECTION ══════════ */}
         <div 
-          className="relative w-full min-h-screen flex items-center justify-center overflow-hidden py-24 bg-black text-white" 
           ref={updatesRef}
+          className="relative w-full h-[100vh] flex items-center justify-center overflow-hidden bg-black text-white"
+          style={{
+            backgroundImage: "url('/assets/t6.png')",
+            backgroundAttachment: 'fixed',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
         >
-          {/* Background Image with fade effect */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 0.65 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.5, ease: 'easeOut' }}
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-            style={{ 
-              backgroundImage: "url('/assets/t6.png')",
+          {/* Dark Overlay to align with the premium black theme */}
+          <div className="absolute inset-0 bg-black/35 z-10" />
+
+          {/* Vertical Tab sticking to the extreme left of this section only, spanning full height */}
+          <button
+            onClick={() => onUpdatesOpen && onUpdatesOpen()}
+            className="absolute left-0 top-0 h-full w-20 sm:w-24 text-white font-black text-[22px] sm:text-[26px] tracking-[0.35em] uppercase border-r border-[#047857]/30 shadow-2xl hover:opacity-100 hover:translate-x-1.5 transition-all duration-300 z-30 cursor-pointer flex flex-col items-center justify-center select-none rounded-none group"
+            style={{
+              writingMode: 'vertical-lr',
+              textOrientation: 'mixed',
+              background: 'linear-gradient(180deg, #047857 0%, #065f46 45%, #022c22 100%)',
             }}
-          />
-          {/* Fade overlays to blend with the top and bottom of the section */}
-          <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-transparent to-neutral-950 z-10 pointer-events-none" />
-          <div className="absolute inset-0 bg-black/30 z-10 pointer-events-none" />
+          >
+            {/* Top pulsing notification dot */}
+            <div className="absolute top-10 flex items-center justify-center">
+              <span className="animate-ping absolute inline-flex h-3.5 w-3.5 rounded-full bg-white opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+            </div>
 
-          {/* Content container */}
-          <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <motion.section
-              className="flex flex-col lg:flex-row gap-8 items-center justify-between w-full"
-              initial={{ opacity: 0, y: 48 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-            >
-              {/* Left Column: Text (takes remaining space, aligned slightly up) */}
-              <div className="flex-1 flex flex-col items-center lg:items-start justify-start p-6 lg:pt-16 space-y-4">
-                <motion.div 
-                  onClick={() => setShowUpdates(!showUpdates)}
-                  className="cursor-pointer group inline-block text-center lg:text-left select-none"
-                  initial="initial"
-                  whileHover="hover"
-                >
-                  <Reveal dir="left">
-                    <motion.h2 
-                      className="text-4xl sm:text-5xl lg:text-6xl font-serif font-black text-white tracking-[0.2em] uppercase leading-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
-                      variants={{
-                        initial: { scale: 1, color: '#ffffff' },
-                        hover: { scale: 1.04, color: '#ffffff' }
-                      }}
-                      transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                    >
-                      KHRONIQ<br />UPDATES
-                    </motion.h2>
-                  </Reveal>
-                  <motion.div 
-                    className="h-[3px] bg-luxury-gold mt-4"
-                    variants={{
-                      initial: { width: '0%', originX: 0 },
-                      hover: { width: '100%', originX: 0 }
-                    }}
-                    transition={{ duration: 0.35, ease: 'easeOut' }}
-                  />
-                  
-                  {/* Hint indicator */}
-                  <p className="text-[10px] text-luxury-gold uppercase tracking-[0.22em] mt-3 font-bold opacity-90 group-hover:text-luxury-gold transition duration-200 drop-shadow-md">
-                    {showUpdates ? "▼ Click to collapse" : "▶ Click to expand"}
-                  </p>
-                </motion.div>
+            <span className="group-hover:scale-105 transition-transform duration-300">
+              KHRONIQ UPDATES
+            </span>
 
-                {/* Expandable Bullet Points with Watch Brand updates */}
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ 
-                    height: showUpdates ? 'auto' : 0, 
-                    opacity: showUpdates ? 1 : 0 
-                  }}
-                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  className="overflow-hidden w-full animate-gpu"
-                >
-                  <ul className="space-y-4 text-left w-full mt-4 max-w-lg">
-                    {displayedUpdates.map((item, idx) => (
-                      <motion.li 
-                        key={idx}
-                        className="flex items-start gap-3"
-                        initial={{ x: -15, opacity: 0 }}
-                        animate={updatesInView ? { x: 0, opacity: 1 } : { x: -15, opacity: 0 }}
-                        transition={{ delay: updatesInView ? idx * 0.08 : 0, duration: 0.3 }}
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full bg-luxury-gold mt-2 flex-shrink-0" />
-                        <div>
-                          <h4 className="text-sm font-black uppercase text-white tracking-wider drop-shadow-md">{item.title}</h4>
-                          <p className="text-gray-300 text-xs leading-relaxed mt-0.5 drop-shadow-sm">{item.detail}</p>
-                        </div>
-                      </motion.li>
-                    ))}
-                  </ul>
-                </motion.div>
-              </div>
-            </motion.section>
-          </div>
+            {/* Bottom pulsing notification dot */}
+            <div className="absolute bottom-10 flex items-center justify-center">
+              <span className="animate-ping absolute inline-flex h-3.5 w-3.5 rounded-full bg-white opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+            </div>
+          </button>
         </div>
       </div>
     </>
