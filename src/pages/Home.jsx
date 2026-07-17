@@ -1143,7 +1143,10 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
           <div className="w-16 h-[2px] bg-luxury-gold mx-auto" />
           <button
             onClick={() => onUpdatesOpen && onUpdatesOpen()}
-            className="px-12 py-6 bg-luxury-gold hover:bg-neutral-100 hover:text-black text-neutral-950 font-bold text-xs uppercase tracking-[0.22em] border border-white/10 shadow-2xl rounded transition-all duration-300 cursor-pointer"
+            className="px-12 py-6 text-white font-bold text-xs uppercase tracking-[0.22em] border border-[#047857]/40 shadow-2xl rounded hover:opacity-90 transition-all duration-300 cursor-pointer"
+            style={{
+              background: 'linear-gradient(135deg, #047857 0%, #065f46 45%, #022c22 100%)',
+            }}
           >
             Khroniq Update
           </button>

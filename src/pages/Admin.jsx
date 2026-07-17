@@ -942,10 +942,10 @@ const handleEditImageUpload = async (e) => {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`py-2.5 px-4 font-bold uppercase tracking-wider cursor-pointer transition flex items-center space-x-1.5 rounded-sm ${
+              className={`py-2.5 px-4 font-bold uppercase tracking-wider cursor-pointer transition flex items-center space-x-1.5 rounded-sm border ${
                 activeTab === tab.key 
-                  ? 'bg-luxury-gold text-luxury-dark font-extrabold' 
-                  : 'bg-luxury-gray text-gray-400 hover:text-white hover:bg-luxury-gray/70'
+                  ? 'bg-[#0d0d0d] text-white border-[#0d0d0d] font-extrabold' 
+                  : 'bg-white text-gray-700 border-black/10 hover:text-black hover:bg-gray-50'
               }`}
             >
               <Icon size={14} />

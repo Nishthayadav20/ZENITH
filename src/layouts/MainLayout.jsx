@@ -42,10 +42,11 @@ export default function MainLayout({ children, onPageChange, currentPage }) {
       {/* Floating Warranty Tab */}
       <button
         onClick={() => setWarrantyOpen(true)}
-        className="fixed right-0 bottom-24 bg-luxury-gold text-neutral-950 font-bold text-[9px] sm:text-[10px] tracking-[0.22em] uppercase py-4 px-2 rounded-l border border-r-0 border-white/10 shadow-[0_4px_25px_rgba(0,0,0,0.55)] hover:bg-neutral-100 hover:text-black hover:pr-3 transition-all duration-300 z-40 cursor-pointer"
+        className="fixed right-0 bottom-24 text-white font-bold text-[9px] sm:text-[10px] tracking-[0.22em] uppercase py-4 px-2 rounded-l border border-r-0 border-[#047857]/40 shadow-[0_4px_25px_rgba(0,0,0,0.55)] hover:opacity-90 transition-all duration-300 z-40 cursor-pointer"
         style={{
           writingMode: 'vertical-rl',
           textOrientation: 'mixed',
+          background: 'linear-gradient(135deg, #047857 0%, #065f46 45%, #022c22 100%)',
         }}
       >
         Warranty
