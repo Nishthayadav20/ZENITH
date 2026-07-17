@@ -1129,18 +1129,12 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
           {/* Left Curtain - Translucent Dark */}
           <motion.div 
             className="w-1/2 h-full bg-[#0e0d0b]/98 backdrop-blur-3xl relative z-40 border-none flex items-center justify-center overflow-hidden"
-            style={{ 
-              boxShadow: 'inset -20px 0 30px rgba(0,0,0,0.4), -5px 0 15px rgba(0,0,0,0.1)'
-            }}
             animate={{ x: curtainsOpenedByUser ? '-105%' : '0%' }}
             transition={{ duration: 2.0, ease: [0.77, 0, 0.175, 1] }}
           />
           {/* Right Curtain - Translucent Dark */}
           <motion.div 
             className="w-1/2 h-full bg-[#0e0d0b]/98 backdrop-blur-3xl relative z-40 border-none flex items-center justify-center overflow-hidden"
-            style={{ 
-              boxShadow: 'inset 20px 0 30px rgba(0,0,0,0.4), 5px 0 15px rgba(0,0,0,0.1)'
-            }}
             animate={{ x: curtainsOpenedByUser ? '105%' : '0%' }}
             transition={{ duration: 2.0, ease: [0.77, 0, 0.175, 1] }}
           />
