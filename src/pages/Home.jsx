@@ -997,21 +997,21 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
 
       {/* ══════════ COLLECTIONS ══════════
           Each card: different enter anim + full 3-D mouse-track tilt + image parallax */}
-      <section className="w-full px-4 sm:px-8 lg:px-12 pt-32 pb-24 space-y-14 bg-[#faf8f5]">
+      <section className="w-full px-4 sm:px-8 lg:px-12 pt-32 pb-24 space-y-14" style={{ background: 'linear-gradient(180deg, #047857 0%, #065f46 45%, #022c22 100%)' }}>
         <div className="text-center max-w-3xl mx-auto space-y-4">
           <Reveal dir="flip">
-            <p className="text-xs text-neutral-800 font-extrabold tracking-[0.35em] uppercase">The Pillars of KHRONIQ</p>
+            <p className="text-xs text-white/85 font-extrabold tracking-[0.35em] uppercase">The Pillars of KHRONIQ</p>
           </Reveal>
           
           <Reveal dir="up" delay={0.15}>
-            <h2 className="text-4xl sm:text-5xl font-serif font-black text-neutral-900 tracking-wide uppercase">
+            <h2 className="text-4xl sm:text-5xl font-serif font-black text-white tracking-wide uppercase">
               Signature Collections
             </h2>
           </Reveal>
           
           <div className="flex items-center justify-center gap-5 mt-2">
             <motion.div 
-              className="h-[1.5px] bg-gradient-to-r from-transparent to-[#047857]"
+              className="h-[1.5px] bg-gradient-to-r from-transparent to-white/60"
               initial={{ width: 0 }}
               whileInView={{ width: '80px' }}
               viewport={{ once: true }}
@@ -1021,10 +1021,10 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
             <img 
               src="/assets/logo_icon.png" 
               alt="Logo Mark" 
-              className="w-5 h-5 object-contain opacity-90 filter brightness-0" 
+              className="w-5 h-5 object-contain opacity-90 filter brightness-0 invert" 
             />
             <motion.div 
-              className="h-[1.5px] bg-gradient-to-l from-transparent to-[#047857]"
+              className="h-[1.5px] bg-gradient-to-l from-transparent to-white/60"
               initial={{ width: 0 }}
               whileInView={{ width: '80px' }}
               viewport={{ once: true }}
@@ -1034,7 +1034,7 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
           </div>
           
           <Reveal dir="up" delay={0.3}>
-            <p className="text-neutral-600 text-xs sm:text-sm max-w-xl mx-auto font-medium leading-relaxed">
+            <p className="text-white/80 text-xs sm:text-sm max-w-xl mx-auto font-medium leading-relaxed">
               Three distinct expressions of our watchmaking philosophy. Crafted for those who value timeless excellence.
             </p>
           </Reveal>
