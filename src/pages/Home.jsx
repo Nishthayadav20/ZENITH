@@ -626,6 +626,13 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
   // Featured Collection split curtain animation variables
   const curtainSectionRef = useRef(null);
   const isFeaturedInView = useInView(curtainSectionRef, { once: false, amount: 0.15 });
+  const [curtainsOpenedByUser, setCurtainsOpenedByUser] = useState(false);
+
+  useEffect(() => {
+    if (!isFeaturedInView) {
+      setCurtainsOpenedByUser(false);
+    }
+  }, [isFeaturedInView]);
 
   const onMouseMove = useCallback((e) => {
     const r = heroRef.current?.getBoundingClientRect();
@@ -1102,48 +1109,47 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
       <div className="relative overflow-hidden" ref={curtainSectionRef}>
         {/* Auditorium Split-Curtain Screen */}
         <motion.div 
-          className="absolute inset-0 z-40 overflow-hidden flex"
+          className={`absolute inset-0 z-45 overflow-hidden flex ${curtainsOpenedByUser ? 'pointer-events-none' : 'cursor-pointer'}`}
+          onClick={() => !curtainsOpenedByUser && setCurtainsOpenedByUser(true)}
           animate={{ 
-            pointerEvents: isFeaturedInView ? 'none' : 'auto'
+            pointerEvents: curtainsOpenedByUser ? 'none' : 'auto'
           }}
           transition={{ duration: 0.2 }}
         >
-          {/* Left Curtain */}
+          {/* Left Curtain - Plain Green */}
           <motion.div 
-            className="w-1/2 h-full bg-[#022c22] border-r border-[#047857]/30 relative z-40"
+            className="w-1/2 h-full bg-[#047857] border-r border-[#022c22]/40 relative z-40"
             style={{ 
-              backgroundImage: 'repeating-linear-gradient(90deg, #022c22, #022c22 20px, #047857 40px, #022c22 60px)',
-              boxShadow: 'inset -20px 0 30px rgba(0,0,0,0.8)'
+              boxShadow: 'inset -20px 0 30px rgba(0,0,0,0.6)'
             }}
-            animate={{ x: isFeaturedInView ? '-105%' : '0%' }}
+            animate={{ x: curtainsOpenedByUser ? '-105%' : '0%' }}
             transition={{ duration: 2.0, ease: [0.77, 0, 0.175, 1] }}
           />
-          {/* Right Curtain */}
+          {/* Right Curtain - Plain Green */}
           <motion.div 
-            className="w-1/2 h-full bg-[#022c22] border-l border-[#047857]/30 relative z-40"
+            className="w-1/2 h-full bg-[#047857] border-l border-[#022c22]/40 relative z-40"
             style={{ 
-              backgroundImage: 'repeating-linear-gradient(90deg, #022c22, #022c22 20px, #047857 40px, #022c22 60px)',
-              boxShadow: 'inset 20px 0 30px rgba(0,0,0,0.8)'
+              boxShadow: 'inset 20px 0 30px rgba(0,0,0,0.6)'
             }}
-            animate={{ x: isFeaturedInView ? '105%' : '0%' }}
+            animate={{ x: curtainsOpenedByUser ? '105%' : '0%' }}
             transition={{ duration: 2.0, ease: [0.77, 0, 0.175, 1] }}
           />
           
           {/* Centered Curtains Text Overlay */}
           <motion.div 
-            className="absolute inset-0 flex flex-col items-center justify-center text-center z-50 px-4 pointer-events-none"
-            animate={{ opacity: isFeaturedInView ? 0 : 1, scale: isFeaturedInView ? 0.85 : 1 }}
+            className="absolute inset-0 flex flex-col items-center justify-center text-center z-50 px-4 pointer-events-none select-none"
+            animate={{ opacity: curtainsOpenedByUser ? 0 : 1, scale: curtainsOpenedByUser ? 0.85 : 1 }}
             transition={{ duration: 0.8 }}
           >
-            <span className="text-[10px] sm:text-xs font-bold tracking-[0.3em] text-luxury-gold uppercase drop-shadow-lg mb-2">
-              Performance of Time
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-serif font-black text-white tracking-[0.25em] uppercase leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]">
-              FEATURED COLLECTION
+            <h2 className="text-4xl sm:text-6xl font-serif font-black text-white tracking-[0.25em] uppercase leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]">
+              KHRONIQ
             </h2>
-            <div className="w-24 h-[1.5px] bg-luxury-gold my-4 drop-shadow-md" />
-            <p className="text-[8px] sm:text-[9px] text-gray-300 tracking-[0.2em] uppercase font-bold max-w-md leading-relaxed drop-shadow-md">
-              THE MASTERPIECES REVEAL AS YOU SCROLL
+            <span className="text-[10px] sm:text-xs font-bold tracking-[0.4em] text-luxury-gold uppercase drop-shadow-lg mt-2 mb-4">
+              PRESENTS
+            </span>
+            <div className="w-16 h-[1px] bg-white/40 mb-4" />
+            <p className="text-[8px] sm:text-[9px] text-gray-200 tracking-[0.2em] uppercase font-bold drop-shadow-md animate-pulse">
+              CLICK TO ENTER THE STAGE
             </p>
           </motion.div>
         </motion.div>
