@@ -946,7 +946,7 @@ const handleEditImageUpload = async (e) => {
       <div className="flex flex-wrap gap-2 text-xs border-b border-white/5 pb-4">
         {[
           { key: 'analytics', label: 'Store Analytics', icon: BarChart3 },
-          { key: 'products', label: 'Inventory Manager', icon: Package },
+          { key: 'products', label: 'Timepiece Section', icon: Package },
           { key: 'orders', label: 'Order Dispatcher', icon: CheckCircle2 },
           { key: 'coupons', label: 'Coupon Builder', icon: Tag },
           { key: 'reviews', label: 'Reviews Manager', icon: Star },
@@ -960,20 +960,21 @@ const handleEditImageUpload = async (e) => {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`py-2.5 px-4 font-bold uppercase tracking-wider cursor-pointer transition flex items-center space-x-1.5 rounded-sm border ${
+              className={`py-2.5 px-4 font-black uppercase tracking-widest cursor-pointer transition flex items-center space-x-1.5 rounded-sm border ${
                 activeTab === tab.key 
-                  ? 'bg-black text-white font-extrabold' 
-                  : 'bg-luxury-gray text-gray-400 hover:text-white hover:bg-luxury-gray/70'
+                  ? 'bg-black text-white' 
+                  : 'bg-white text-black hover:bg-neutral-200'
               }`}
               style={{
-                color: activeTab === tab.key ? '#ffffff' : '#374151',
-                backgroundColor: activeTab === tab.key ? '#000000' : undefined
+                color: activeTab === tab.key ? '#ffffff' : '#000000',
+                backgroundColor: activeTab === tab.key ? '#000000' : '#ffffff',
+                borderColor: activeTab === tab.key ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)'
               }}
             >
-              <Icon size={14} style={{ color: activeTab === tab.key ? '#ffffff' : 'inherit' }} />
-              <span style={{ color: activeTab === tab.key ? '#ffffff' : 'inherit' }}>{tab.label}</span>
+              <Icon size={14} style={{ color: activeTab === tab.key ? '#ffffff' : '#000000' }} />
+              <span>{tab.label}</span>
               {tab.key === 'reviews' && activeReviews.length > 0 && (
-                <span className="bg-white/10 text-white text-[9px] px-1.5 py-0.5 rounded-full font-sans font-medium ml-1">
+                <span className="bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-full font-sans font-medium ml-1">
                   {activeReviews.length}
                 </span>
               )}
@@ -2205,7 +2206,7 @@ const handleEditImageUpload = async (e) => {
                       {p.discountPercent > 0 ? `${p.discountPercent}%` : '—'}
                     </td>
                     <td className="p-4">
-                      <span className={`font-semibold ${p.stock === 0 ? 'text-luxury-red font-bold' : 'text-gray-300'}`}>
+                      <span className="inline-block bg-black text-white font-black px-2.5 py-1 rounded border border-white/10 text-[10px] tracking-wider uppercase">
                         {p.stock === 0 ? 'SOLD OUT' : `${p.stock} units`}
                       </span>
                     </td>
