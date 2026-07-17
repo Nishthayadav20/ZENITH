@@ -273,8 +273,8 @@ function CollectionCard({ col, idx, onPageChange }) {
 
   const bgClass = col.dark ? 'bg-[#0c0c0c] text-white' : 'bg-[#e7e4dc] text-neutral-900 border border-black/5';
   const numColor = '#047857'; // Swadeshi green (box color of warranty)
-  const descClass = col.dark ? 'text-gray-400' : 'text-neutral-600';
-  const specTextClass = col.dark ? 'text-gray-300' : 'text-neutral-700';
+  const descClass = col.dark ? 'text-gray-100 font-bold' : 'text-neutral-950 font-bold';
+  const specTextClass = col.dark ? 'text-white font-extrabold' : 'text-neutral-950 font-extrabold';
 
   const enterAnims = [
     { hidden: { opacity: 0, x: -70 }, visible: { opacity: 1, x: 0 } },
@@ -309,18 +309,18 @@ function CollectionCard({ col, idx, onPageChange }) {
         
         {/* Top: Num & Header */}
         <div className="space-y-3">
-          <span className="text-[10px] sm:text-xs font-black tracking-[0.25em]" style={{ color: numColor }}>
+          <span className="text-[10px] sm:text-xs font-black tracking-[0.25em]" style={{ color: col.dark ? '#ffffff' : numColor }}>
             {col.num} —
           </span>
           <div className="space-y-1 sm:space-y-1.5">
             <h3 className="font-serif text-xl sm:text-2xl font-black uppercase tracking-wider leading-tight">
               {col.name}
             </h3>
-            <p className="text-[8px] sm:text-[9px] font-black tracking-[0.2em] uppercase" style={{ color: numColor }}>
+            <p className="text-[8px] sm:text-[9px] font-black tracking-[0.2em] uppercase" style={{ color: col.dark ? '#ffffff' : numColor }}>
               {col.tagline}
             </p>
           </div>
-          <p className={`text-[10px] sm:text-xs leading-relaxed font-light ${descClass}`}>
+          <p className={`text-[10px] sm:text-xs leading-relaxed ${descClass}`}>
             {col.desc}
           </p>
         </div>
@@ -329,8 +329,8 @@ function CollectionCard({ col, idx, onPageChange }) {
         <div className="space-y-3 pt-4 border-t border-black/5">
           <div className="space-y-2">
             {col.specs.map((spec, i) => (
-              <div key={i} className={`flex items-center space-x-2 text-[9px] sm:text-[10px] font-medium ${specTextClass}`}>
-                <span style={{ color: numColor }}>{renderIcon(spec.icon)}</span>
+              <div key={i} className={`flex items-center space-x-2 text-[9px] sm:text-[10px] ${specTextClass}`}>
+                <span style={{ color: col.dark ? '#ffffff' : numColor }}>{renderIcon(spec.icon)}</span>
                 <span>{spec.label}</span>
               </div>
             ))}
@@ -338,9 +338,12 @@ function CollectionCard({ col, idx, onPageChange }) {
         </div>
 
         {/* Bottom: Explore Collection */}
-        <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-black tracking-widest uppercase mt-4">
+        <div 
+          className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-black tracking-widest uppercase mt-4"
+          style={{ color: col.dark ? '#ffffff' : numColor }}
+        >
           <span>Explore Collection</span>
-          <ArrowRight size={10} style={{ color: numColor }} />
+          <ArrowRight size={10} style={{ color: col.dark ? '#ffffff' : numColor }} />
         </div>
 
       </div>
@@ -732,8 +735,7 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
       image: homeImages.collection_khronomaster || '/assets/watch_green.jpg',
       specs: [
         { label: 'Automatic Movement', icon: 'Cpu' },
-        { label: 'Sapphire Crystal', icon: 'Gem' },
-        { label: '100M Water Resistant', icon: 'Droplet' }
+        { label: 'Sapphire Crystal', icon: 'Gem' }
       ],
       dark: false,
       filter: { category: 'Khronomaster' }
@@ -746,8 +748,7 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
       image: homeImages.collection_defy || '/assets/watch_red.jpg',
       specs: [
         { label: 'Automatic Movement', icon: 'Cpu' },
-        { label: 'Sapphire Crystal', icon: 'Gem' },
-        { label: '120M Water Resistant', icon: 'Droplet' }
+        { label: 'Sapphire Crystal', icon: 'Gem' }
       ],
       dark: true,
       filter: { category: 'Defy' }
@@ -760,8 +761,7 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
       image: homeImages.collection_heritage || '/assets/watch_green.jpg',
       specs: [
         { label: 'Automatic Movement', icon: 'Cpu' },
-        { label: 'Premium Leather', icon: 'Gem' },
-        { label: '50M Water Resistant', icon: 'Droplet' }
+        { label: 'Premium Leather', icon: 'Gem' }
       ],
       dark: false,
       filter: { category: 'Heritage' }
