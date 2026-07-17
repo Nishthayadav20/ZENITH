@@ -1024,9 +1024,9 @@ export default function Home({ onPageChange }) {
       <LifestyleShowcaseSlider products={products} onPageChange={onPageChange} homeImages={homeImages} />
 
       {/* ══════════ FEATURED PRODUCTS ══════════ */}
-      <div className="space-y-10 pb-12">
+      <div className="relative">
         <section
-          className="w-full py-14 space-y-10"
+          className="w-full pt-14 pb-48 space-y-10 relative"
           style={{
             backgroundColor: '#ffffff',
             color: '#000000',
@@ -1116,12 +1116,17 @@ export default function Home({ onPageChange }) {
               </>
             )}
           </div>
-        </section>
 
+          {/* Bottom fade — dissolves white into dark Khroniq section below */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-56 pointer-events-none z-10"
+            style={{ background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.65) 65%, rgba(0,0,0,1) 100%)' }}
+          />
+        </section>
 
         {/* ══════════ FULL SCREEN IMAGE BACKGROUND UPDATES SECTION ══════════ */}
         <div 
-          className="relative w-full min-h-screen flex items-center justify-center overflow-hidden py-24 bg-black text-white" 
+          className="relative w-full min-h-screen flex items-center justify-center overflow-hidden py-24 mb-16 bg-black text-white"
           ref={updatesRef}
         >
           {/* Background Image with fade effect */}
@@ -1136,7 +1141,7 @@ export default function Home({ onPageChange }) {
             }}
           />
           {/* Fade overlays to blend with the top and bottom of the section */}
-          <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-transparent to-neutral-950 z-10 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-neutral-950 z-10 pointer-events-none" />
           <div className="absolute inset-0 bg-black/30 z-10 pointer-events-none" />
 
           {/* Content container */}
@@ -1214,6 +1219,12 @@ export default function Home({ onPageChange }) {
               </div>
             </motion.section>
           </div>
+
+          {/* Bottom fade — dissolves dark section into the white space below */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none z-10"
+            style={{ background: 'linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.7) 65%, rgba(255,255,255,1) 100%)' }}
+          />
         </div>
       </div>
     </>
