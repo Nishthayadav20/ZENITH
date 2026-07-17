@@ -247,7 +247,7 @@ export default function Admin({ onPageChange }) {
   // --- BRAND UPDATES ADMIN STATES & OPERATIONS ---
   const [adminUpdates, setAdminUpdates] = useState([]);
   const [showAddUpdateForm, setShowAddUpdateForm] = useState(false);
-  const [newUpdate, setNewUpdate] = useState({ title: '', detail: '', approved: true });
+  const [newUpdate, setNewUpdate] = useState({ title: '', detail: '', approved: true, durationHours: 24 });
   const [editingUpdateId, setEditingUpdateId] = useState(null);
   const [editUpdateForm, setEditUpdateForm] = useState(null);
 
@@ -531,7 +531,7 @@ export default function Admin({ onPageChange }) {
       if (data.success) {
         alert('Brand update created successfully!');
         setShowAddUpdateForm(false);
-        setNewUpdate({ title: '', detail: '', approved: true });
+        setNewUpdate({ title: '', detail: '', approved: true, durationHours: 24 });
         fetchAdminUpdates();
       } else {
         alert(data.message || 'Failed to create update.');
@@ -2488,6 +2488,40 @@ const handleEditImageUpload = async (e) => {
                     className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5 resize-none"
                   />
                 </div>
+                <div className="space-y-1.5">
+                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Display Expiry Duration</label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <select
+                      value={[24, 48, 72, 96, 168].includes(newUpdate.durationHours) ? newUpdate.durationHours : 'custom'}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val !== 'custom') {
+                          setNewUpdate({ ...newUpdate, durationHours: Number(val) });
+                        } else {
+                          setNewUpdate({ ...newUpdate, durationHours: 24 });
+                        }
+                      }}
+                      className="bg-luxury-dark border border-white/10 rounded text-white p-2 text-xs focus:outline-none"
+                    >
+                      <option value="24">24 Hours (1 Day)</option>
+                      <option value="48">48 Hours (2 Days)</option>
+                      <option value="72">72 Hours (3 Days)</option>
+                      <option value="96">96 Hours (4 Days)</option>
+                      <option value="168">168 Hours (1 Week)</option>
+                      <option value="custom">Custom Hours...</option>
+                    </select>
+                    {![24, 48, 72, 96, 168].includes(newUpdate.durationHours) && (
+                      <input
+                        type="number"
+                        min="1"
+                        value={newUpdate.durationHours || ''}
+                        onChange={(e) => setNewUpdate({ ...newUpdate, durationHours: Math.max(1, Number(e.target.value)) })}
+                        placeholder="Hours (e.g. 120)"
+                        className="bg-luxury-dark border border-white/10 rounded text-white p-2 text-xs focus:outline-none"
+                      />
+                    )}
+                  </div>
+                </div>
                 <div className="flex items-center space-x-2.5 pt-1">
                   <input
                     type="checkbox"
@@ -2534,6 +2568,40 @@ const handleEditImageUpload = async (e) => {
                     onChange={(e) => setEditUpdateForm({ ...editUpdateForm, detail: e.target.value })}
                     className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5 resize-none"
                   />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Display Expiry Duration</label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <select
+                      value={[24, 48, 72, 96, 168].includes(editUpdateForm.durationHours) ? editUpdateForm.durationHours : 'custom'}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val !== 'custom') {
+                          setEditUpdateForm({ ...editUpdateForm, durationHours: Number(val) });
+                        } else {
+                          setEditUpdateForm({ ...editUpdateForm, durationHours: 24 });
+                        }
+                      }}
+                      className="bg-luxury-dark border border-white/10 rounded text-white p-2 text-xs focus:outline-none"
+                    >
+                      <option value="24">24 Hours (1 Day)</option>
+                      <option value="48">48 Hours (2 Days)</option>
+                      <option value="72">72 Hours (3 Days)</option>
+                      <option value="96">96 Hours (4 Days)</option>
+                      <option value="168">168 Hours (1 Week)</option>
+                      <option value="custom">Custom Hours...</option>
+                    </select>
+                    {![24, 48, 72, 96, 168].includes(editUpdateForm.durationHours) && (
+                      <input
+                        type="number"
+                        min="1"
+                        value={editUpdateForm.durationHours || ''}
+                        onChange={(e) => setEditUpdateForm({ ...editUpdateForm, durationHours: Math.max(1, Number(e.target.value)) })}
+                        placeholder="Hours (e.g. 120)"
+                        className="bg-luxury-dark border border-white/10 rounded text-white p-2 text-xs focus:outline-none"
+                      />
+                    )}
+                  </div>
                 </div>
                 <div className="flex items-center space-x-2.5 pt-1">
                   <input
@@ -2594,6 +2662,9 @@ const handleEditImageUpload = async (e) => {
                         </button>
                       </div>
                       <p className="text-xs text-gray-400 leading-relaxed font-light">{up.detail}</p>
+                      <p className="text-[9px] text-gray-500 font-mono">
+                        Duration: {up.durationHours || 24} hours (Expires: {new Date(new Date(up.createdAt).getTime() + (up.durationHours || 24) * 3600000).toLocaleString('en-IN')})
+                      </p>
                     </div>
 
                     <div className="flex space-x-2 flex-shrink-0">
