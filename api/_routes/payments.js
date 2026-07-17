@@ -127,37 +127,48 @@ router.post('/verify', protect, async (req, res) => {
       }
     }
 
-    // Generate order ID first, so item serials can reference it
-const randomId = 'Z-' + Math.floor(100000 + Math.random() * 900000);
+// Generate order ID
+    const randomId = 'Z-' + Math.floor(100000 + Math.random() * 900000);
 
+    // 3. Assign warranty codes from each product's pre-assigned pool, deduct stock —
+    // one order item PER PHYSICAL UNIT, pulling the next unused serial/claim pair
+    // that admin already generated/assigned when the product was added/edited.
+    const dbItems = [];
+    for (const item of items) {
+      const product = await Product.findById(item.productId);
 
-// 3. Deduct stock & generate warranty codes — one order item PER PHYSICAL UNIT,
-// so buying quantity > 1 of the same watch still gives each unit its own unique serial/claim code.
-const dbItems = [];
-let unitIndex = 0; // increments per unit across the whole order, not per cart line
-for (const item of items) {
-  const product = await Product.findById(item.productId);
-  product.stock = Math.max(0, product.stock - item.quantity);
-  await product.save();
+      for (let unit = 1; unit <= item.quantity; unit++) {
+        let unitCode = product.unitCodes.find(u => !u.used);
+        let serialNumber, claimCode;
 
-  for (let unit = 1; unit <= item.quantity; unit++) {
-    unitIndex++;
-    const serialNumber = `KHQ-${new Date().getFullYear()}-${randomId.replace('Z-', '')}-${String(unitIndex).padStart(2, '0')}`;
-    const claimCode = `CLM-${crypto.randomBytes(5).toString('hex').toUpperCase()}`;
+        if (unitCode) {
+          unitCode.used = true;
+          serialNumber = unitCode.serialNumber;
+          claimCode = unitCode.claimCode;
+        } else {
+          // Safety net only — shouldn't normally trigger, since stock should always
+          // equal the count of unused codes. Generates one on the spot rather than failing the order.
+          serialNumber = `KHQ-${new Date().getFullYear()}-${String(product._id).slice(-6).toUpperCase()}-${Date.now().toString().slice(-4)}`;
+          claimCode = `CLM-${crypto.randomBytes(5).toString('hex').toUpperCase()}`;
+          product.unitCodes.push({ serialNumber, claimCode, used: true });
+        }
 
-    dbItems.push({
-      productId: item.productId,
-      name: product.name,
-      price: product.price,
-      quantity: 1,
-      image: product.image,
-      serialNumber,
-      claimCode,
-      warrantyClaimed: false,
-      warrantyMonths: product.warrantyMonths || 6
-    });
-  }
-}
+        dbItems.push({
+          productId: item.productId,
+          name: product.name,
+          price: product.price,
+          quantity: 1,
+          image: product.image,
+          serialNumber,
+          claimCode,
+          warrantyClaimed: false,
+          warrantyMonths: product.warrantyMonths || 6
+        });
+      }
+
+      product.stock = Math.max(0, product.stock - item.quantity);
+      await product.save();
+    }
 
 
     // 4. Create the order

@@ -34,6 +34,11 @@ const PRESET_STRAPS = [
   { name: 'Brushed Steel Link', image: '/assets/strap_steel_link.jpg' }
 ];
 
+const generateUnitCodePair = () => ({
+  serialNumber: `KHQ-${new Date().getFullYear()}-${Math.random().toString(16).slice(2, 8).toUpperCase()}`,
+  claimCode: `CLM-${Math.random().toString(16).slice(2, 12).toUpperCase()}`
+});
+
 const DIAL_COLOR_PRESETS = [
   { name: 'Midnight Black', hex: '#0a0a0f' },
   { name: 'Pearl White', hex: '#f5f0e8' },
@@ -64,6 +69,7 @@ export default function Admin({ onPageChange }) {
     stock: '',
     discountPercent: 0,
     badge: '',
+    unitCodes: [],
     badgeMode: 'none',
     warrantyMonths: 6,
     category: 'Khronomaster',
@@ -97,9 +103,6 @@ export default function Admin({ onPageChange }) {
   const [editForm, setEditForm] = useState(null);
 
   const [expandedNotes, setExpandedNotes] = useState({});
-const [expandedWarranty, setExpandedWarranty] = useState({});
-const [warrantyEdits, setWarrantyEdits] = useState({}); // key: `${orderId}-${itemIndex}` -> { serialNumber, claimCode }
-  // Add Coupon Form State
 // Add Coupon Form State
   const [newCouponCode, setNewCouponCode] = useState('');
   const [newCouponDiscount, setNewCouponDiscount] = useState('');
@@ -557,17 +560,29 @@ const handleImageUpload = async (e) => {
   if (!file) return;
 
   setUploadingImage(true);
-  const reader = new FileReader();
-  reader.onloadend = () => {
-    setNewProduct({ ...newProduct, image: reader.result });
+  try {
+    const formData = new FormData();
+    formData.append('image', file);
+    const token = localStorage.getItem('khroniq_token');
+
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      setNewProduct({ ...newProduct, image: data.imageUrl });
+    } else {
+      alert(data.message || 'Failed to upload image');
+    }
+  } catch (error) {
+    console.error('Image upload error:', error);
+    alert('Failed to upload image');
+  } finally {
     setUploadingImage(false);
-  };
-  reader.onerror = (error) => {
-    console.error('Base64 conversion error:', error);
-    alert('Failed to process image file');
-    setUploadingImage(false);
-  };
-  reader.readAsDataURL(file);
+  }
 };
 
 const handleEditImageUpload = async (e) => {
@@ -575,17 +590,29 @@ const handleEditImageUpload = async (e) => {
   if (!file) return;
 
   setUploadingImage(true);
-  const reader = new FileReader();
-  reader.onloadend = () => {
-    setEditForm({ ...editForm, image: reader.result });
+  try {
+    const formData = new FormData();
+    formData.append('image', file);
+    const token = localStorage.getItem('khroniq_token');
+
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      setEditForm({ ...editForm, image: data.imageUrl });
+    } else {
+      alert(data.message || 'Failed to upload image');
+    }
+  } catch (error) {
+    console.error('Image upload error:', error);
+    alert('Failed to upload image');
+  } finally {
     setUploadingImage(false);
-  };
-  reader.onerror = (error) => {
-    console.error('Base64 conversion error:', error);
-    alert('Failed to process image file');
-    setUploadingImage(false);
-  };
-  reader.readAsDataURL(file);
+  }
 };
 
 
@@ -612,7 +639,7 @@ const handleEditImageUpload = async (e) => {
       alert('Product created successfully!');
       setShowAddForm(false);
       setNewProduct({
-        name: '', price: '', stock: '', discountPercent: 0, badge: '', badgeMode: 'none', warrantyMonths: 12, category: 'Khronomaster', description: '',
+        name: '', price: '', stock: '', discountPercent: 0, badge: '', badgeMode: 'none',unitCodes: [],  warrantyMonths: 12, category: 'Khronomaster', description: '',
         image: '',
         specs: { movement: 'Automatic', case: '40mm', strap: 'Leather', waterResistance: '50m', glass: 'Sapphire' },
         customizable: true,
@@ -640,6 +667,8 @@ const handleEditImageUpload = async (e) => {
       discountPercent: product.discountPercent ?? 0,
       badge: product.badge ?? '',
       badgeMode: ['New', 'Limited Edition', 'Bestseller'].includes(product.badge) ? product.badge : (product.badge ? 'custom' : 'none'),
+      existingUnitCodes: product.unitCodes || [],
+      newUnitCodes: [],
       customizable: product.customizable ?? false,
       allowStrapCustomization: product.allowStrapCustomization ?? true,
       allowCaseCustomization: product.allowCaseCustomization ?? true,
@@ -655,6 +684,7 @@ const handleEditImageUpload = async (e) => {
   };
 
   const handleUpdateProduct = async (e) => {
+    
     e.preventDefault();
     let customOpts = { ...(editForm.customizationOptions || {}) };
     if (customOpts.customStrapName && !customOpts.strapMaterials?.includes(customOpts.customStrapName)) {
@@ -662,6 +692,7 @@ const handleEditImageUpload = async (e) => {
     }
     const finalProduct = {
       ...editForm,
+      unitCodes: editForm.newUnitCodes || [],
       customizationOptions: customOpts
     };
     const res = await dispatch(editProduct(editingId, finalProduct));
@@ -674,20 +705,17 @@ const handleEditImageUpload = async (e) => {
     }
   };
 
-  const handleDownloadWarrantyCSV = () => {
+
+  const handleDownloadInventoryCSV = () => {
     const rows = [];
-    orders.forEach((o) => {
-      (o.items || []).forEach((item) => {
-        if (item.serialNumber || item.claimCode) {
-          rows.push({
-            orderId: o.id,
-            watchName: item.name,
-            customerEmail: o.userEmail,
-            serialNumber: item.serialNumber || '',
-            claimCode: item.claimCode || '',
-            warrantyClaimed: item.warrantyClaimed ? 'Yes' : 'No'
-          });
-        }
+    products.forEach((p) => {
+      (p.unitCodes || []).forEach((code) => {
+        rows.push({
+          watchName: p.name,
+          serialNumber: code.serialNumber || '',
+          claimCode: code.claimCode || '',
+          status: code.used ? 'Sold' : 'Available'
+        });
       });
     });
 
@@ -696,11 +724,11 @@ const handleEditImageUpload = async (e) => {
       return;
     }
 
-    const headers = ['Order ID', 'Watch Name', 'Customer Email', 'Serial Number', 'Claim Code', 'Warranty Claimed'];
+    const headers = ['Watch Name', 'Serial Number', 'Claim Code', 'Status'];
     const escapeCsv = (val) => `"${String(val).replace(/"/g, '""')}"`;
     const csvLines = [
       headers.join(','),
-      ...rows.map(r => [r.orderId, r.watchName, r.customerEmail, r.serialNumber, r.claimCode, r.warrantyClaimed].map(escapeCsv).join(','))
+      ...rows.map(r => [r.watchName, r.serialNumber, r.claimCode, r.status].map(escapeCsv).join(','))
     ];
     const csvContent = csvLines.join('\r\n');
 
@@ -708,12 +736,13 @@ const handleEditImageUpload = async (e) => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `khroniq-warranty-codes-${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = `khroniq-inventory-codes-${new Date().toISOString().split('T')[0]}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
+  
 
   const handleDeleteProductClick = (id) => {
     if (window.confirm('Delete this timepiece from store inventory?')) {
@@ -996,15 +1025,24 @@ const handleEditImageUpload = async (e) => {
         <div className="space-y-6">
           
           {/* Header & Add Button */}
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center flex-wrap gap-3">
             <h3 className="text-xs font-bold uppercase tracking-widest text-white">Watch Database</h3>
-            <button
-              onClick={() => setShowAddForm(!showAddForm)}
-              className="px-4 py-2 bg-white hover:bg-luxury-gold text-luxury-dark text-xs font-bold uppercase tracking-widest transition flex items-center space-x-1.5 cursor-pointer"
-            >
-              <Plus size={14} />
-              <span>Add Timepiece</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleDownloadInventoryCSV}
+                className="px-4 py-2 bg-luxury-gold/10 hover:bg-luxury-gold/20 border border-luxury-gold/30 text-luxury-gold text-[10px] font-black tracking-widest uppercase rounded flex items-center gap-2 cursor-pointer transition"
+              >
+                <Download size={13} />
+                Export Serial & Claim Codes (CSV)
+              </button>
+              <button
+                onClick={() => setShowAddForm(!showAddForm)}
+                className="px-4 py-2 bg-white hover:bg-luxury-gold text-luxury-dark text-xs font-bold uppercase tracking-widest transition flex items-center space-x-1.5 cursor-pointer"
+              >
+                <Plus size={14} />
+                <span>Add Timepiece</span>
+              </button>
+            </div>
           </div>
 
           {/* Add Form Drawer */}
@@ -1043,11 +1081,65 @@ const handleEditImageUpload = async (e) => {
                       type="number"
                       required
                       value={newProduct.stock}
-                      onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
+                      onChange={(e) => {
+  const count = Math.max(0, Number(e.target.value) || 0);
+  const current = newProduct.unitCodes || [];
+  const resized = count <= current.length
+    ? current.slice(0, count)
+    : [...current, ...Array(count - current.length).fill(null).map(() => ({ serialNumber: '', claimCode: '' }))];
+  setNewProduct({ ...newProduct, stock: e.target.value, unitCodes: resized });
+}}
                       className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
                       placeholder="8"
                     />
                   </div>
+                  {newProduct.unitCodes.length > 0 && (
+                    <div className="col-span-full space-y-2">
+                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">
+                        Serial Numbers & Claim Codes ({newProduct.unitCodes.length})
+                      </label>
+                      <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+                        {newProduct.unitCodes.map((code, idx) => (
+                          <div key={idx} className="flex gap-2 items-center bg-luxury-dark border border-white/10 rounded p-2">
+                            <span className="text-[10px] text-gray-500 w-6">#{idx + 1}</span>
+                            <input
+                              type="text"
+                              placeholder="Serial Number (blank = auto)"
+                              value={code.serialNumber}
+                              onChange={(e) => {
+                                const updated = [...newProduct.unitCodes];
+                                updated[idx] = { ...updated[idx], serialNumber: e.target.value };
+                                setNewProduct({ ...newProduct, unitCodes: updated });
+                              }}
+                              className="flex-1 bg-black border border-white/10 rounded text-white text-[10px] font-mono p-2 focus:outline-none"
+                            />
+                            <input
+                              type="text"
+                              placeholder="Claim Code (blank = auto)"
+                              value={code.claimCode}
+                              onChange={(e) => {
+                                const updated = [...newProduct.unitCodes];
+                                updated[idx] = { ...updated[idx], claimCode: e.target.value };
+                                setNewProduct({ ...newProduct, unitCodes: updated });
+                              }}
+                              className="flex-1 bg-black border border-white/10 rounded text-white text-[10px] font-mono p-2 focus:outline-none"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = [...newProduct.unitCodes];
+                                updated[idx] = generateUnitCodePair();
+                                setNewProduct({ ...newProduct, unitCodes: updated });
+                              }}
+                              className="px-2 py-2 bg-luxury-gold/10 hover:bg-luxury-gold/20 border border-luxury-gold/30 text-luxury-gold text-[9px] font-black uppercase rounded cursor-pointer whitespace-nowrap"
+                            >
+                              Auto-Generate
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <div className="space-y-1.5">
                     <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Discount (%)</label>
                     <input
@@ -1427,10 +1519,90 @@ const handleEditImageUpload = async (e) => {
                         type="number"
                         required
                         value={editForm.stock}
-                        onChange={(e) => setEditForm({ ...editForm, stock: Number(e.target.value) })}
+                        onChange={(e) => {
+  const newCount = Math.max(0, Number(e.target.value) || 0);
+  const unusedExisting = (editForm.existingUnitCodes || []).filter(c => !c.used).length;
+  let newUnitCodes = editForm.newUnitCodes || [];
+  if (newCount > unusedExisting) {
+    const needed = newCount - unusedExisting;
+    newUnitCodes = needed > newUnitCodes.length
+      ? [...newUnitCodes, ...Array(needed - newUnitCodes.length).fill(null).map(() => ({ serialNumber: '', claimCode: '' }))]
+      : newUnitCodes.slice(0, needed);
+  } else {
+    newUnitCodes = [];
+  }
+  setEditForm({ ...editForm, stock: e.target.value, newUnitCodes });
+}}
                         className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5"
                       />
                     </div>
+
+{editForm.existingUnitCodes?.length > 0 && (
+                      <div className="col-span-full space-y-1.5">
+                        <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">
+                          Existing Codes ({editForm.existingUnitCodes.length})
+                        </label>
+                        <div className="space-y-1 max-h-40 overflow-y-auto">
+                          {editForm.existingUnitCodes.map((code, idx) => (
+                            <div key={idx} className="flex gap-2 items-center text-[10px] font-mono bg-black/30 border border-white/5 rounded p-1.5 text-gray-400">
+                              <span className="w-6">#{idx + 1}</span>
+                              <span className="flex-1 truncate">{code.serialNumber}</span>
+                              <span className="flex-1 truncate">{code.claimCode}</span>
+                              <span className={`text-[9px] font-bold uppercase ${code.used ? 'text-luxury-red' : 'text-emerald-500'}`}>
+                                {code.used ? 'Sold' : 'Available'}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {editForm.newUnitCodes?.length > 0 && (
+                      <div className="col-span-full space-y-2">
+                        <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">
+                          New Units to Add ({editForm.newUnitCodes.length})
+                        </label>
+                        <div className="space-y-2">
+                          {editForm.newUnitCodes.map((code, idx) => (
+                            <div key={idx} className="flex gap-2 items-center bg-luxury-dark border border-white/10 rounded p-2">
+                              <input
+                                type="text"
+                                placeholder="Serial Number (blank = auto)"
+                                value={code.serialNumber}
+                                onChange={(e) => {
+                                  const updated = [...editForm.newUnitCodes];
+                                  updated[idx] = { ...updated[idx], serialNumber: e.target.value };
+                                  setEditForm({ ...editForm, newUnitCodes: updated });
+                                }}
+                                className="flex-1 bg-black border border-white/10 rounded text-white text-[10px] font-mono p-2 focus:outline-none"
+                              />
+                              <input
+                                type="text"
+                                placeholder="Claim Code (blank = auto)"
+                                value={code.claimCode}
+                                onChange={(e) => {
+                                  const updated = [...editForm.newUnitCodes];
+                                  updated[idx] = { ...updated[idx], claimCode: e.target.value };
+                                  setEditForm({ ...editForm, newUnitCodes: updated });
+                                }}
+                                className="flex-1 bg-black border border-white/10 rounded text-white text-[10px] font-mono p-2 focus:outline-none"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = [...editForm.newUnitCodes];
+                                  updated[idx] = generateUnitCodePair();
+                                  setEditForm({ ...editForm, newUnitCodes: updated });
+                                }}
+                                className="px-2 py-2 bg-luxury-gold/10 hover:bg-luxury-gold/20 border border-luxury-gold/30 text-luxury-gold text-[9px] font-black uppercase rounded cursor-pointer whitespace-nowrap"
+                              >
+                                Auto-Generate
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     <div className="space-y-1.5">
                       <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Discount (%)</label>
                       <input
@@ -1854,16 +2026,7 @@ const handleEditImageUpload = async (e) => {
       {/* --- TAB CONTENT: ORDER DISPATCHER (MANAGE STATUSES) --- */}
       {activeTab === 'orders' && (
         <div className="space-y-6">
-          <div className="flex items-center justify-between flex-wrap gap-3">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-white">Client Invoice Dispatcher</h3>
-            <button
-              onClick={handleDownloadWarrantyCSV}
-              className="px-4 py-2 bg-luxury-gold/10 hover:bg-luxury-gold/20 border border-luxury-gold/30 text-luxury-gold text-[10px] font-black tracking-widest uppercase rounded flex items-center gap-2 cursor-pointer transition"
-            >
-              <Download size={13} />
-              Export Serial & Claim Codes (CSV)
-            </button>
-          </div>
+          <h3 className="text-xs font-bold uppercase tracking-widest text-white">Client Invoice Dispatcher</h3>
           
           {orders.length === 0 ? (
             <p className="text-gray-400 text-xs italic p-4 text-center border border-dashed border-white/10 rounded">No order records found in simulated database.</p>
@@ -1921,56 +2084,7 @@ const handleEditImageUpload = async (e) => {
                             )}
                           </div>
                         )}
-                        <button
-                          type="button"
-                          onClick={() => setExpandedWarranty(prev => ({ ...prev, [o.id]: !prev[o.id] }))}
-                          className="mt-1 text-[9px] font-black tracking-widest uppercase bg-white/5 hover:bg-white/10 text-gray-300 px-2 py-0.5 rounded cursor-pointer transition"
-                        >
-                          WARRANTY {expandedWarranty[o.id] ? '▲' : '▼'}
-                        </button>
-                        {expandedWarranty[o.id] && (
-                          <div className="mt-1.5 space-y-1.5">
-                            {o.items.map((item, idx) => {
-                              const editKey = `${o.id}-${idx}`;
-                              const edit = warrantyEdits[editKey] || {};
-                              return (
-                                <div key={idx} className="text-[10px] bg-black/30 border border-white/5 rounded p-2 space-y-1">
-                                  <p className="text-gray-400 font-semibold">{item.name}</p>
-                                  <div className="flex gap-1.5">
-                                    <input
-                                      type="text"
-                                      placeholder={item.serialNumber || 'Serial Number'}
-                                      value={edit.serialNumber ?? ''}
-                                      onChange={(e) => setWarrantyEdits(prev => ({ ...prev, [editKey]: { ...edit, serialNumber: e.target.value } }))}
-                                      className="bg-luxury-dark border border-white/10 rounded px-1.5 py-1 text-[10px] font-mono w-full focus:outline-none focus:border-luxury-gold"
-                                    />
-                                    <input
-                                      type="text"
-                                      placeholder={item.claimCode || 'Claim Code'}
-                                      value={edit.claimCode ?? ''}
-                                      onChange={(e) => setWarrantyEdits(prev => ({ ...prev, [editKey]: { ...edit, claimCode: e.target.value } }))}
-                                      className="bg-luxury-dark border border-white/10 rounded px-1.5 py-1 text-[10px] font-mono w-full focus:outline-none focus:border-luxury-gold"
-                                    />
-                                    <button
-                                      type="button"
-                                      onClick={async () => {
-                                        const result = await dispatch(updateItemWarranty(o.id, idx, edit));
-                                        if (result.success) {
-                                          setWarrantyEdits(prev => ({ ...prev, [editKey]: {} }));
-                                        } else {
-                                          alert(result.message || 'Failed to update.');
-                                        }
-                                      }}
-                                      className="px-2 py-1 bg-luxury-gold/20 hover:bg-luxury-gold/30 text-luxury-gold text-[9px] font-black uppercase rounded cursor-pointer transition"
-                                    >
-                                      Save
-                                    </button>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )}
+                        
                       </td>
                       <td className="p-4 font-bold text-luxury-gold">{formatPrice(o.total, currentCurrency)}</td>
                       <td className="p-4">
