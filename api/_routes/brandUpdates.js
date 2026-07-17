@@ -11,8 +11,10 @@ router.get('/', async (req, res) => {
   try {
     const allApproved = await BrandUpdate.find({ approved: true }).sort({ createdAt: -1 });
     const updates = allApproved.filter(u => {
+      const createdDate = u.createdAt ? new Date(u.createdAt) : new Date();
+      const timeMs = isNaN(createdDate.getTime()) ? Date.now() : createdDate.getTime();
       const durationMs = (u.durationHours || 24) * 60 * 60 * 1000;
-      const expiryTime = new Date(u.createdAt).getTime() + durationMs;
+      const expiryTime = timeMs + durationMs;
       return expiryTime > Date.now();
     });
     res.json({ success: true, updates });
