@@ -121,7 +121,7 @@ function Marquee({ items, speed = 20, reverse = false }) {
         transition={{ duration: speed, repeat: Infinity, ease: 'linear' }}>
         {[...items, ...items].map((item, i) => (
           <span key={i} className="text-[11px] font-bold tracking-[0.22em] uppercase text-luxury-muted flex items-center gap-3">
-            <Star size={7} fill="currentColor" className="text-luxury-gold" />{item}
+            <Star size={7} fill="currentColor" className="text-black/30" />{item}
           </span>
         ))}
       </motion.div>
@@ -333,7 +333,7 @@ function CollectionCard({ col, idx, onPageChange }) {
       <div className="relative z-10 space-y-3" style={{ transform: 'translateZ(30px)' }}>
         <motion.span
           className="block text-[11px] font-extrabold tracking-[0.2em] uppercase"
-          style={{ color: '#c5a880' }}
+          style={{ color: '#ffffff' }}
           animate={{ letterSpacing: hov ? '0.28em' : '0.2em' }}
           transition={{ duration: 0.2 }}
         >
@@ -543,7 +543,7 @@ function LifestyleShowcaseSlider({ products, onPageChange, homeImages }) {
                 </h3>
                 <button
                   onClick={handleDetailsClick}
-                  className="text-xs font-bold text-luxury-gold-dark hover:text-luxury-gold transition duration-200 underline underline-offset-4 tracking-widest uppercase cursor-pointer"
+                  className="text-xs font-bold text-luxury-gold-dark hover:text-neutral-500 transition duration-200 underline underline-offset-4 tracking-widest uppercase cursor-pointer"
                 >
                   Details
                 </button>
@@ -845,7 +845,7 @@ export default function Home({ onPageChange }) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2">
-          <GenderPanel label="Men's Watches"   img={homeImages.gender_men || "/assets/men_watches.jpg"}   gender="men"   delay={0}    accent="#c5a880" onPageChange={onPageChange} />
+          <GenderPanel label="Men's Watches"   img={homeImages.gender_men || "/assets/men_watches.jpg"}   gender="men"   delay={0}    accent="#ffffff" onPageChange={onPageChange} />
           <GenderPanel label="Women's Watches" img={homeImages.gender_women || "/assets/women_watches_beach.jpg"} gender="women" delay={0.1}  accent="#34d399" onPageChange={onPageChange} />
         </div>
       </section>
@@ -886,7 +886,7 @@ export default function Home({ onPageChange }) {
               <motion.button
                 onClick={() => onPageChange('shop', { category: 'Khronomaster' })}
                 className="flex items-center gap-2 text-xs font-black tracking-[0.22em] uppercase text-luxury-text border-b border-luxury-text pb-1 w-fit cursor-pointer"
-                whileHover={{ gap: 16, color: '#b8975a', borderColor: '#b8975a' }}
+                whileHover={{ gap: 16, color: '#000000', borderColor: '#000000' }}
                 transition={{ duration: 0.25 }}
               >
                 Discover <ArrowRight size={12} />
@@ -975,7 +975,7 @@ export default function Home({ onPageChange }) {
             <img 
               src="/assets/logo_icon.png" 
               alt="Logo Mark" 
-              className="w-5 h-5 object-contain opacity-90 filter drop-shadow-[0_0_8px_rgba(197,168,128,0.5)]" 
+              className="w-5 h-5 object-contain opacity-90 filter drop-shadow-[0_0_8px_rgba(0,0,0,0.3)]" 
             />
             <motion.div 
               className="h-[1.5px] bg-gradient-to-l from-transparent to-luxury-gold-dark"
@@ -1038,7 +1038,7 @@ export default function Home({ onPageChange }) {
             <Reveal dir="up">
               <p
                 className="text-xs font-black tracking-[0.22em] uppercase"
-                style={{ color: '#b8975a' }}
+                style={{ color: '#0d0d0d' }}
               >
                 Signature Catalog
               </p>
@@ -1053,7 +1053,7 @@ export default function Home({ onPageChange }) {
             </SlideReveal>
             <motion.div
               className="w-16 h-[3px] mx-auto"
-              style={{ background: '#b8975a' }}
+              style={{ background: '#0d0d0d' }}
               initial={{ scaleX: 0 }}
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true }}
@@ -1101,14 +1101,14 @@ export default function Home({ onPageChange }) {
               <>
                 <button
                   onClick={prevSlide}
-                  className="absolute left-2 sm:left-4 lg:left-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/60 border border-white/10 text-white flex items-center justify-center hover:bg-luxury-gold hover:text-luxury-dark hover:border-luxury-gold transition duration-300 cursor-pointer shadow-lg"
+                  className="absolute left-2 sm:left-4 lg:left-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/60 border border-white/10 text-white flex items-center justify-center hover:bg-white hover:text-black hover:border-white transition duration-300 cursor-pointer shadow-lg"
                   aria-label="Previous timepiece"
                 >
                   <ChevronLeft size={20} />
                 </button>
                 <button
                   onClick={nextSlide}
-                  className="absolute right-2 sm:right-4 lg:right-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/60 border border-white/10 text-white flex items-center justify-center hover:bg-luxury-gold hover:text-luxury-dark hover:border-luxury-gold transition duration-300 cursor-pointer shadow-lg"
+                  className="absolute right-2 sm:right-4 lg:right-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/60 border border-white/10 text-white flex items-center justify-center hover:bg-white hover:text-black hover:border-white transition duration-300 cursor-pointer shadow-lg"
                   aria-label="Next timepiece"
                 >
                   <ChevronRight size={20} />
@@ -1161,7 +1161,7 @@ export default function Home({ onPageChange }) {
                       className="text-4xl sm:text-5xl lg:text-6xl font-serif font-black text-white tracking-[0.2em] uppercase leading-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
                       variants={{
                         initial: { scale: 1, color: '#ffffff' },
-                        hover: { scale: 1.04, color: '#c5a880' }
+                        hover: { scale: 1.04, color: '#ffffff' }
                       }}
                       transition={{ type: 'spring', stiffness: 200, damping: 15 }}
                     >

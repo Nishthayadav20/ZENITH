@@ -80,7 +80,7 @@ export default function CartDrawer({ isOpen, onClose, onPageChange }) {
                   </div>
                   <button
                     onClick={() => { onClose(); onPageChange('shop'); }}
-                    className="px-6 py-2.5 bg-luxury-gold-dark text-white text-xs font-semibold tracking-widest uppercase hover:bg-luxury-gold transition cursor-pointer"
+                    className="px-6 py-2.5 bg-luxury-gold-dark text-white text-xs font-semibold tracking-widest uppercase hover:bg-neutral-700 transition cursor-pointer"
                   >
                     Shop Collections
                   </button>

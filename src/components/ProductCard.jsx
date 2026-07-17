@@ -114,7 +114,7 @@ export default function ProductCard({ product, onPageChange, showRemove = false 
           )}
 
           {product.badge && (
-            <div className="absolute top-3 right-3 bg-luxury-gold-dark text-white uppercase text-[10px] tracking-[0.2em] font-semibold px-2.5 py-1 rounded-sm shadow-lg shadow-black/20">
+            <div className="absolute top-3 right-3 bg-luxury-gold-dark uppercase text-[10px] tracking-[0.2em] font-semibold px-2.5 py-1 rounded-sm shadow-lg shadow-black/20" style={{ color: '#ffffff' }}>
               {product.badge}
             </div>
           )}
@@ -137,7 +137,7 @@ export default function ProductCard({ product, onPageChange, showRemove = false 
             <h3
               className="text-luxury-text text-sm font-semibold tracking-wide line-clamp-1 transition-all duration-300"
               style={{
-                color: isHovered ? '#93744d' : 'inherit',
+                color: isHovered ? '#000000' : 'inherit',
                 transform: isHovered ? 'translateX(2px)' : 'translateX(0)',
               }}
             >
@@ -206,7 +206,7 @@ export default function ProductCard({ product, onPageChange, showRemove = false 
               {/* Cart Button */}
               <button
                 onClick={handleAddToCart}
-                className="action-btn p-1.5 text-neutral-500 hover:text-luxury-gold transition duration-200 cursor-pointer rounded-full hover:bg-neutral-100 dark:hover:bg-white/5 flex items-center justify-center"
+                className="action-btn p-1.5 text-neutral-500 hover:text-black transition duration-200 cursor-pointer rounded-full hover:bg-neutral-100 dark:hover:bg-white/5 flex items-center justify-center"
                 title="Add to Cart"
               >
                 <ShoppingBag size={15} />

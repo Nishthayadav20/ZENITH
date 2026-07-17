@@ -107,7 +107,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
       : 'bg-[#111111] shadow-md'
   }`;
 
-  const textColorClass = "text-white hover:text-luxury-gold";
+  const textColorClass = "text-white/80 hover:text-white";
 
   return (
     <header className={headerClass}>
@@ -220,7 +220,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                                       setMegaMenuForceClosed(true);
                                       onPageChange('shop', { maxPrice: p.maxPrice });
                                     }}
-                                    className="text-left text-xs text-black hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
+                                    className="text-left text-xs text-black hover:text-black/60 transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-black/40 w-fit"
                                   >
                                     {p.label}
                                   </button>
@@ -247,7 +247,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                                         setMegaMenuForceClosed(true);
                                         onPageChange('shop', r.filter);
                                       }}
-                                      className="text-left text-xs text-black hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
+                                      className="text-left text-xs text-black hover:text-black/60 transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-black/40 w-fit"
                                     >
                                       {r.label}
                                     </button>
@@ -266,7 +266,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                                         setMegaMenuForceClosed(true);
                                         onPageChange('shop', r.filter);
                                       }}
-                                      className="text-left text-xs text-black hover:text-luxury-gold transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-luxury-gold w-fit"
+                                      className="text-left text-xs text-black hover:text-black/60 transition duration-150 font-bold uppercase tracking-wider py-1.5 cursor-pointer block border-b border-transparent hover:border-black/40 w-fit"
                                     >
                                       {r.label}
                                     </button>
@@ -290,7 +290,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                               localStorage.setItem('khroniq_is_gifting_journey', 'true');
                               onPageChange('gifting');
                             }}
-                            className="relative z-10 w-full py-3 bg-white text-neutral-950 font-black text-xs uppercase tracking-widest rounded-lg hover:bg-luxury-gold hover:text-white transition duration-300 shadow-md cursor-pointer"
+                            className="relative z-10 w-full py-3 bg-white text-neutral-950 font-black text-xs uppercase tracking-widest rounded-lg hover:bg-neutral-800 hover:text-white transition duration-300 shadow-md cursor-pointer"
                           >
                             Shop Gifting Solutions
                           </button>
@@ -351,7 +351,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                     className="w-40 sm:w-48 bg-luxury-bg text-luxury-text text-xs px-3 py-1.5 rounded-l-md border border-luxury-text/10 focus:outline-none focus:border-luxury-gold-dark"
                     autoFocus
                   />
-                  <button type="submit" className="bg-luxury-gold-dark text-white px-2.5 py-1.5 rounded-r-md border border-luxury-gold-dark hover:bg-luxury-gold transition cursor-pointer">
+                  <button type="submit" className="bg-black text-white px-2.5 py-1.5 rounded-r-md border border-black hover:bg-neutral-700 transition cursor-pointer">
                     <Search size={14} />
                   </button>
                   <button 
@@ -474,7 +474,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-transparent text-luxury-text text-xs px-2 focus:outline-none"
             />
-            <button type="submit" className="text-luxury-muted hover:text-luxury-gold p-1">
+            <button type="submit" className="text-luxury-muted hover:text-black p-1">
               <Search size={14} />
             </button>
           </form>
@@ -570,7 +570,7 @@ export default function Navbar({ onCartOpen, onPageChange, currentPage }) {
                     }}
                     className={`px-3 py-1 rounded border text-xs font-semibold ${
                       currentCurrency === code 
-                        ? 'border-luxury-gold bg-luxury-gold/5 text-luxury-gold' 
+                        ? 'border-black bg-black/5 text-black' 
                         : 'border-luxury-text/10 text-luxury-text'
                     }`}
                   >

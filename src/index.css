@@ -15,8 +15,8 @@
   --color-gold-900: #5d351d;
   --color-gold-950: #361b0f;
 
-  --color-luxury-gold: #c5a880;
-  --color-luxury-gold-dark: #93744d;
+  --color-luxury-gold: #ffffff;
+  --color-luxury-gold-dark: #0d0d0d;
   --color-luxury-red: #e10600; /* Signature Tissot Red */
   --color-luxury-dark: #ffffff; /* White cards */
   --color-luxury-bg: #ffffff; /* Full white */
@@ -47,7 +47,7 @@ body {
 /* Custom Scrollbar */
 html {
   scrollbar-width: thin; /* Firefox */
-  scrollbar-color: var(--color-luxury-gold) transparent; /* Firefox */
+  scrollbar-color: #888888 transparent; /* Firefox */
 }
 
 ::-webkit-scrollbar {
@@ -60,7 +60,7 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c5a880;
+  background: #888888;
   border-radius: 4px;
 }
 
@@ -105,8 +105,8 @@ html {
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0px 0px rgba(197,168,128,0); }
-  50%       { box-shadow: 0 0 22px 6px rgba(197,168,128,0.35); }
+  0%, 100% { box-shadow: 0 0 0px 0px rgba(255,255,255,0); }
+  50%       { box-shadow: 0 0 22px 6px rgba(255,255,255,0.2); }
 }
 
 @keyframes spin-slow {
@@ -176,8 +176,8 @@ html {
 
 /* Custom Animations */
 .hover-gold-glow:hover {
-  box-shadow: 0 0 15px rgba(197, 168, 128, 0.35);
-  border-color: var(--color-luxury-gold);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .star-shine {
@@ -246,7 +246,7 @@ input:not([type="checkbox"]):not([type="radio"]), select, textarea {
 input:focus, select:focus, textarea:focus {
   border-color: var(--color-luxury-gold-dark) !important;
   outline: none !important;
-  box-shadow: 0 0 0 2px rgba(147, 116, 77, 0.15) !important;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.12) !important;
 }
 
 /* Adapting card, list and sidebar backgrounds to the warm light sand style */

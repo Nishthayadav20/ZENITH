@@ -304,7 +304,7 @@ export default function Shop({ onPageChange, filterParams }) {
               <p className="text-luxury-muted text-sm">No luxury watches match your current filter selections.</p>
               <button
                 onClick={resetFilters}
-                className="px-6 py-2.5 bg-luxury-gold-dark text-white text-xs font-bold uppercase tracking-widest hover:bg-luxury-gold transition cursor-pointer"
+                className="px-6 py-2.5 bg-luxury-gold-dark text-white text-xs font-bold uppercase tracking-widest hover:bg-neutral-700 transition cursor-pointer"
               >
                 Clear Filters
               </button>
@@ -507,7 +507,7 @@ export default function Shop({ onPageChange, filterParams }) {
               </button>
               <button
                 onClick={() => setShowFiltersMobile(false)}
-                className="py-2.5 bg-luxury-gold-dark text-white font-bold text-xs tracking-wider uppercase hover:bg-luxury-gold transition cursor-pointer"
+                className="py-2.5 bg-luxury-gold-dark text-white font-bold text-xs tracking-wider uppercase hover:bg-neutral-700 transition cursor-pointer"
               >
                 Apply
               </button>

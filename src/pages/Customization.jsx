@@ -319,7 +319,7 @@ export default function Customization({ onPageChange, params }) {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     {/* Customizable badge */}
-                    <div className="absolute top-3 right-3 text-white text-[9px] font-black tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1.5" style={{ background: '#1e3a8a' }}>
+                    <div className="absolute top-3 right-3 text-white text-[9px] font-black tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1.5" style={{ background: 'transparent' }}>
                       <Paintbrush size={9} />
                       CUSTOMIZABLE
                     </div>
@@ -328,8 +328,8 @@ export default function Customization({ onPageChange, params }) {
                     <p className="text-[10px] uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.7)' }}>{product.category}</p>
                     <h3 className="font-bold text-sm leading-tight" style={{ color: '#ffffff' }}>{product.name}</h3>
                     <div className="flex items-center justify-between">
-                      <span className="font-black" style={{ color: '#3b82f6' }}>{formatPrice(product.price)}</span>
-                      <span className="text-[10px] border px-2.5 py-1 rounded font-bold tracking-wider transition" style={{ color: '#2563eb', borderColor: 'rgba(37,99,235,0.4)' }}>
+                      <span className="font-black" style={{ color: '#ffffff' }}>{formatPrice(product.price)}</span>
+                      <span className="text-[10px] border px-2.5 py-1 rounded font-bold tracking-wider transition" style={{ color: '#ffffff', borderColor: 'rgba(255,255,255,0.4)' }}>
                         CUSTOMISE →
                       </span>
                     </div>
