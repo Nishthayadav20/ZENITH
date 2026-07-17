@@ -800,6 +800,8 @@ export default function Home({ onPageChange, onUpdatesOpen }) {
           <HeroVideoCycler />
           <div className="absolute inset-0 bg-black/28" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.65)_100%)]" />
+          {/* Masking overlay to cover the bottom-right Gemini watermark on the video */}
+          <div className="absolute bottom-0 right-0 w-36 h-20 bg-gradient-to-br from-transparent via-black/85 to-black blur-md pointer-events-none z-10" />
         </motion.div>
 
         {/* Ambient orb — furthest opposite */}
