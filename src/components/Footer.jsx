@@ -104,13 +104,13 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
           MANIFESTO BAND
       ══════════════════════════════════════════════════════ */}
       <div ref={heroRef}
-           style={{ borderBottom: '1px solid rgba(197,168,128,0.15)' }}
+           style={{ borderBottom: '1px solid rgba(4,120,87,0.15)' }}
            className="relative">
 
         {/* thin gold top-border accent */}
         <div style={{
           height:'2px',
-          background:'linear-gradient(90deg, transparent 0%, #c5a880 30%, #e8d5a3 50%, #c5a880 70%, transparent 100%)',
+          background:'linear-gradient(90deg, transparent 0%, #047857 30%, #10b981 50%, #047857 70%, transparent 100%)',
         }} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -137,7 +137,7 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
               </div>
 
               {/* Divider */}
-              <div style={{ width:'48px', height:'1.5px', background:'#c5a880', marginBottom:'1.5rem' }} />
+              <div style={{ width:'48px', height:'1.5px', background:'#047857', marginBottom:'1.5rem' }} />
 
               {/* Manifesto headline */}
               <h2 style={{
@@ -148,7 +148,7 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
               }}>
                 Time is the only<br />
                 <span style={{
-                  background:'linear-gradient(90deg, #c5a880, #e8d5a3, #c5a880)',
+                  background:'linear-gradient(90deg, #047857, #10b981, #047857)',
                   backgroundSize:'200% auto',
                   WebkitBackgroundClip:'text',
                   WebkitTextFillColor:'transparent',
@@ -168,17 +168,17 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
                   <div key={label} className="flex items-center space-x-3 group" style={{ cursor:'default' }}>
                     <div style={{
                       width:'36px', height:'36px', borderRadius:'50%',
-                      border:'1px solid rgba(197,168,128,0.3)',
+                      border:'1px solid rgba(4,120,87,0.3)',
                       display:'flex', alignItems:'center', justifyContent:'center',
                       transition:'border-color 0.3s, background 0.3s',
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor='#c5a880'; e.currentTarget.style.background='rgba(197,168,128,0.1)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(197,168,128,0.3)'; e.currentTarget.style.background='transparent'; }}>
-                      <Icon size={15} style={{ color:'#c5a880' }} />
+                    onMouseEnter={e => { e.currentTarget.style.borderColor='#047857'; e.currentTarget.style.background='rgba(4,120,87,0.1)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(4,120,87,0.3)'; e.currentTarget.style.background='transparent'; }}>
+                      <Icon size={15} style={{ color:'#047857' }} />
                     </div>
                     <div>
                       <p style={{ fontSize:'0.65rem', fontWeight:700, letterSpacing:'0.12em', color:'#ffffff', textTransform:'uppercase' }}>{label}</p>
-                      <p style={{ fontSize:'0.6rem', color:'rgba(197,168,128,0.55)', marginTop:'1px' }}>{sub}</p>
+                      <p style={{ fontSize:'0.6rem', color:'rgba(4,120,87,0.55)', marginTop:'1px' }}>{sub}</p>
                     </div>
                   </div>
                 ))}
@@ -193,7 +193,7 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
             }}>
               <div style={{
                 background:'rgba(255,255,255,0.025)',
-                border:'1px solid rgba(197,168,128,0.2)',
+                border:'1px solid rgba(4,120,87,0.2)',
                 borderRadius:'2px',
                 padding:'2.5rem',
                 backdropFilter:'blur(8px)',
@@ -202,17 +202,17 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
               }}>
                 {/* corner accents */}
                 {[
-                  { top:0, left:0, borderTop:'1.5px solid #c5a880', borderLeft:'1.5px solid #c5a880' },
-                  { top:0, right:0, borderTop:'1.5px solid #c5a880', borderRight:'1.5px solid #c5a880' },
-                  { bottom:0, left:0, borderBottom:'1.5px solid #c5a880', borderLeft:'1.5px solid #c5a880' },
-                  { bottom:0, right:0, borderBottom:'1.5px solid #c5a880', borderRight:'1.5px solid #c5a880' },
+                  { top:0, left:0, borderTop:'1.5px solid #047857', borderLeft:'1.5px solid #047857' },
+                  { top:0, right:0, borderTop:'1.5px solid #047857', borderRight:'1.5px solid #047857' },
+                  { bottom:0, left:0, borderBottom:'1.5px solid #047857', borderLeft:'1.5px solid #047857' },
+                  { bottom:0, right:0, borderBottom:'1.5px solid #047857', borderRight:'1.5px solid #047857' },
                 ].map((s, i) => (
                   <div key={i} style={{ position:'absolute', width:'18px', height:'18px', ...s }} />
                 ))}
 
                 <p style={{
                   fontSize:'0.6rem', letterSpacing:'0.25em', textTransform:'uppercase',
-                  color:'#c5a880', fontWeight:700, marginBottom:'0.6rem',
+                  color:'#047857', fontWeight:700, marginBottom:'0.6rem',
                 }}>Exclusive Access</p>
 
                 <h3 style={{
@@ -231,13 +231,13 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
                 {subscribed ? (
                   <div style={{
                     padding:'1rem 1.5rem',
-                    background:'rgba(197,168,128,0.1)',
-                    border:'1px solid rgba(197,168,128,0.35)',
+                    background:'rgba(4,120,87,0.1)',
+                    border:'1px solid rgba(4,120,87,0.35)',
                     borderRadius:'2px',
                     textAlign:'center',
                   }}>
                     <LogoMark className="w-5 h-5 mx-auto mb-2" />
-                    <p style={{ fontSize:'0.75rem', color:'#c5a880', fontWeight:600, letterSpacing:'0.05em' }}>
+                    <p style={{ fontSize:'0.75rem', color:'#047857', fontWeight:600, letterSpacing:'0.05em' }}>
                       Welcome to the Inner Circle.
                     </p>
                     <p style={{ fontSize:'0.65rem', color:'#ffffff', marginTop:'0.3rem' }}>
@@ -249,7 +249,7 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
                     <div style={{ position:'relative', marginBottom:'0.75rem' }}>
                       <Mail size={14} style={{
                         position:'absolute', left:'14px', top:'50%',
-                        transform:'translateY(-50%)', color:'rgba(197,168,128,0.5)',
+                        transform:'translateY(-50%)', color:'rgba(4,120,87,0.5)',
                         pointerEvents:'none',
                       }} />
                       <input
@@ -261,7 +261,7 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
                         style={{
                           width:'100%', boxSizing:'border-box',
                           background:'rgba(255,255,255,0.04)',
-                          border:'1px solid rgba(197,168,128,0.2)',
+                          border:'1px solid rgba(4,120,87,0.2)',
                           borderRadius:'2px',
                           padding:'0.85rem 1rem 0.85rem 2.5rem',
                           fontSize:'0.75rem',
@@ -269,8 +269,8 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
                           outline:'none',
                           transition:'border-color 0.3s',
                         }}
-                        onFocus={e => { e.target.style.borderColor='#c5a880'; e.target.style.background='rgba(197,168,128,0.05)'; }}
-                        onBlur={e => { e.target.style.borderColor='rgba(197,168,128,0.2)'; e.target.style.background='rgba(255,255,255,0.04)'; }}
+                        onFocus={e => { e.target.style.borderColor='#047857'; e.target.style.background='rgba(4,120,87,0.05)'; }}
+                        onBlur={e => { e.target.style.borderColor='rgba(4,120,87,0.2)'; e.target.style.background='rgba(255,255,255,0.04)'; }}
                       />
                     </div>
                     <button
@@ -278,11 +278,11 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
                       className="group"
                       style={{
                         width:'100%',
-                        background:'linear-gradient(135deg, #c5a880 0%, #a68a60 100%)',
+                        background:'linear-gradient(135deg, #047857 0%, #065f46 100%)',
                         border:'none',
                         borderRadius:'2px',
                         padding:'0.9rem',
-                        color:'#0f0e0c',
+                        color:'#ffffff',
                         fontSize:'0.7rem',
                         fontWeight:700,
                         letterSpacing:'0.2em',
@@ -316,7 +316,7 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
       ══════════════════════════════════════════════════════ */}
       <div ref={bodyRef}
            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-           style={{ borderBottom: '1px solid rgba(197,168,128,0.1)' }}>
+           style={{ borderBottom: '1px solid rgba(4,120,87,0.1)' }}>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 py-14">
 
           {NAV_COLS.map(({ title, links }, ci) => (
@@ -331,7 +331,7 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
                   fontSize:'0.6rem', fontWeight:700, letterSpacing:'0.22em',
                   textTransform:'uppercase', color:'#ffffff', marginBottom:'0.5rem',
                 }}>{title}</h4>
-                <div style={{ width:'20px', height:'1.5px', background:'#c5a880' }} />
+                <div style={{ width:'20px', height:'1.5px', background:'#047857' }} />
               </div>
               <ul style={{ listStyle:'none', margin:0, padding:0, display:'flex', flexDirection:'column', gap:'0.6rem' }}>
                 {links.map(({ label, page, args }) => {
@@ -347,7 +347,7 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
                             display:'flex', alignItems:'center', gap:'6px',
                             fontFamily:'inherit',
                           }}
-                          onMouseEnter={e => { e.currentTarget.style.color='#c5a880'; }}
+                          onMouseEnter={e => { e.currentTarget.style.color='#047857'; }}
                           onMouseLeave={e => { e.currentTarget.style.color='#ffffff'; }}
                         >
                           <span style={{
@@ -398,7 +398,7 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
                           display:'flex', alignItems:'center', gap:'6px',
                           fontFamily:'inherit',
                         }}
-                        onMouseEnter={e => { e.currentTarget.style.color='#c5a880'; }}
+                        onMouseEnter={e => { e.currentTarget.style.color='#047857'; }}
                         onMouseLeave={e => { e.currentTarget.style.color='#ffffff'; }}
                       >
                         <span style={{
@@ -426,7 +426,7 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
                 fontSize:'0.6rem', fontWeight:700, letterSpacing:'0.22em',
                 textTransform:'uppercase', color:'#ffffff', marginBottom:'0.5rem',
               }}>Connect</h4>
-              <div style={{ width:'20px', height:'1.5px', background:'#c5a880' }} />
+              <div style={{ width:'20px', height:'1.5px', background:'#047857' }} />
             </div>
 
             <p style={{ fontSize:'0.68rem', color:'#ffffff', lineHeight:1.7, marginBottom:'1.25rem' }}>
@@ -434,7 +434,7 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
             </p>
 
             {/* Clock-hours decoration */}
-            <p style={{ fontSize:'0.6rem', color:'#c5a880', letterSpacing:'0.1em', marginBottom:'1rem' }}>
+            <p style={{ fontSize:'0.6rem', color:'#047857', letterSpacing:'0.1em', marginBottom:'1rem' }}>
               <Clock size={10} style={{ display:'inline', marginRight:'5px', verticalAlign:'middle' }} />
               MON–SAT · 9AM–7PM CET
             </p>
@@ -451,10 +451,10 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
                      transition:'color 0.3s, border-color 0.3s, background 0.3s, box-shadow 0.3s',
                    }}
                    onMouseEnter={e => {
-                     e.currentTarget.style.color='#c5a880';
-                     e.currentTarget.style.borderColor='#c5a880';
-                     e.currentTarget.style.background='rgba(197,168,128,0.1)';
-                     e.currentTarget.style.boxShadow='0 0 12px rgba(197,168,128,0.2)';
+                     e.currentTarget.style.color='#047857';
+                     e.currentTarget.style.borderColor='#047857';
+                     e.currentTarget.style.background='rgba(4,120,87,0.1)';
+                     e.currentTarget.style.boxShadow='0 0 12px rgba(4,120,87,0.2)';
                    }}
                    onMouseLeave={e => {
                      e.currentTarget.style.color='#ffffff';
@@ -506,7 +506,7 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
                   cursor:'pointer', letterSpacing:'0.06em',
                   transition:'color 0.25s', fontFamily:'inherit',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.color='#c5a880'; e.currentTarget.style.opacity = '1'; }}
+                onMouseEnter={e => { e.currentTarget.style.color='#047857'; e.currentTarget.style.opacity = '1'; }}
                 onMouseLeave={e => { e.currentTarget.style.color='#ffffff'; e.currentTarget.style.opacity = '0.6'; }}
               >{label}</button>
             ))}
@@ -523,12 +523,12 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
           <img 
             src="/assets/logo_icon.png" 
             alt="KHRONIQ Logo" 
-            className="h-16 sm:h-28 lg:h-40 object-contain filter drop-shadow-[0_0_15px_rgba(197,168,128,0.2)]" 
+            className="h-16 sm:h-28 lg:h-40 object-contain filter drop-shadow-[0_0_15px_rgba(4,120,87,0.2)]" 
           />
           <img 
             src="/assets/logo_text.png" 
             alt="KHRONIQ" 
-            className="h-14 sm:h-24 lg:h-36 object-contain filter drop-shadow-[0_0_15px_rgba(197,168,128,0.2)]" 
+            className="h-14 sm:h-24 lg:h-36 object-contain filter drop-shadow-[0_0_15px_rgba(4,120,87,0.2)]" 
           />
         </div>
       </div>
@@ -536,7 +536,7 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
       {/* thin gold bottom line */}
       <div style={{
         height:'1.5px',
-        background:'linear-gradient(90deg, transparent 0%, #c5a880 30%, #e8d5a3 50%, #c5a880 70%, transparent 100%)',
+        background:'linear-gradient(90deg, transparent 0%, #047857 30%, #10b981 50%, #047857 70%, transparent 100%)',
       }} />
 
     </footer>
