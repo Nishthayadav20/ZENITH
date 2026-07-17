@@ -114,25 +114,7 @@ app.get('/api', (req, res) => {
 // Database Seed Function
 const seedDatabase = async () => {
   try {
-    // Delete old static mock products from DB
-    const deleteResult = await Product.deleteMany({
-      $or: [
-        { name: { $regex: /^Khroniq Heritage/i } },
-        { name: { $regex: /^Khroniq Khronomaster/i } },
-        { name: { $regex: /^Khroniq Elite/i } },
-        { name: { $regex: /^Khroniq Defy/i } },
-        { name: { $regex: /^Khroniq Crescent/i } },
-        { name: { $regex: /^Khroniq Gentleman/i } },
-        { name: { $regex: /^Khroniq Aurex/i } },
-        { image: { $regex: /^\/assets\/media__1782899491/ } },
-        { image: { $regex: /^\/assets\/crescent_product/ } },
-        { image: { $regex: /^\/assets\/gentleman_product/ } },
-        { image: { $regex: /^\/assets\/aurex_product/ } }
-      ]
-    });
-    if (deleteResult.deletedCount > 0) {
-      console.log(`Cleaned up ${deleteResult.deletedCount} old static mock products from the database.`);
-    }
+    // Startup seeding is completed. Product persistence is fully managed by admin dashboard.
     
     // Seed Default Blogs (only on first initialization)
     const blogCount = await Blog.countDocuments();
