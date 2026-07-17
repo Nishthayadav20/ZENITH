@@ -1118,22 +1118,34 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
         >
           {/* Left Curtain - Plain Green */}
           <motion.div 
-            className="w-1/2 h-full bg-[#047857] relative z-40 border-none"
+            className="w-1/2 h-full bg-white/12 backdrop-blur-lg relative z-40 border-none flex items-center justify-center overflow-hidden"
             style={{ 
-              boxShadow: 'inset -20px 0 30px rgba(0,0,0,0.5), -5px 0 15px rgba(0,0,0,0.2)'
+              boxShadow: 'inset -20px 0 30px rgba(0,0,0,0.15), -5px 0 15px rgba(0,0,0,0.05)'
             }}
             animate={{ x: curtainsOpenedByUser ? '-105%' : '0%' }}
             transition={{ duration: 2.0, ease: [0.77, 0, 0.175, 1] }}
-          />
+          >
+            <img 
+              src="/assets/t1.png" 
+              alt="Watch Left Silhouette" 
+              className="absolute w-[68%] h-[68%] object-contain opacity-35 select-none pointer-events-none filter brightness-95" 
+            />
+          </motion.div>
           {/* Right Curtain - Plain Green */}
           <motion.div 
-            className="w-1/2 h-full bg-[#047857] relative z-40 border-none"
+            className="w-1/2 h-full bg-white/12 backdrop-blur-lg relative z-40 border-none flex items-center justify-center overflow-hidden"
             style={{ 
-              boxShadow: 'inset 20px 0 30px rgba(0,0,0,0.5), 5px 0 15px rgba(0,0,0,0.2)'
+              boxShadow: 'inset 20px 0 30px rgba(0,0,0,0.15), 5px 0 15px rgba(0,0,0,0.05)'
             }}
             animate={{ x: curtainsOpenedByUser ? '105%' : '0%' }}
             transition={{ duration: 2.0, ease: [0.77, 0, 0.175, 1] }}
-          />
+          >
+            <img 
+              src="/assets/t2.png" 
+              alt="Watch Right Silhouette" 
+              className="absolute w-[68%] h-[68%] object-contain opacity-35 select-none pointer-events-none filter brightness-95" 
+            />
+          </motion.div>
           
           {/* Centered Curtains Text Overlay */}
           <motion.div 
