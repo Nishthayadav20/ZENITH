@@ -2455,9 +2455,10 @@ const handleEditImageUpload = async (e) => {
                 setEditingUpdateId(null);
               }}
               className="px-4 py-2 bg-neutral-900 hover:bg-black text-white text-xs font-bold uppercase tracking-wider flex items-center space-x-1.5 transition cursor-pointer rounded-sm"
+              style={{ color: '#ffffff' }}
             >
-              <Plus size={14} />
-              <span>{showAddUpdateForm ? 'Cancel Add' : 'Add New Update'}</span>
+              <Plus size={14} style={{ color: '#ffffff' }} />
+              <span style={{ color: '#ffffff' }}>{showAddUpdateForm ? 'Cancel Add' : 'Add New Update'}</span>
             </button>
           </div>
 
