@@ -1163,17 +1163,23 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
         <section
           className="w-full min-h-[110vh] flex flex-col justify-center py-24 space-y-12 relative overflow-hidden"
           style={{
-            backgroundColor: '#000000',
+            backgroundImage: "url('/assets/premium_metallic_bg.png')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundAttachment: 'fixed',
             color: '#ffffff',
             transition: 'background-color 0.6s ease',
           }}
         >
+          {/* Dark overlay for readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/30 to-black/80 z-0 pointer-events-none" />
+          
           {/* Section header — text stays white on dark/black bg */}
-          <div className="text-center max-w-2xl mx-auto space-y-3 px-4">
+          <div className="text-center max-w-2xl mx-auto space-y-3 px-4 relative z-10">
             <Reveal dir="up">
               <p
                 className="text-xs font-black tracking-[0.22em] uppercase"
-                style={{ color: '#ffffff' }}
+                style={{ color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
               >
                 Signature Catalog
               </p>
@@ -1181,14 +1187,14 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
             <SlideReveal delay={0.1}>
               <h2
                 className="text-4xl sm:text-5xl font-black font-serif tracking-wide uppercase"
-                style={{ color: '#ffffff' }}
+                style={{ color: '#ffffff', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}
               >
                 Featured Masterpieces
               </h2>
             </SlideReveal>
             <motion.div
               className="w-16 h-[3px] mx-auto"
-              style={{ background: '#ffffff' }}
+              style={{ background: '#ffffff', boxShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
               initial={{ scaleX: 0 }}
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true }}
@@ -1197,7 +1203,7 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
           </div>
 
           {/* Carousel */}
-          <div className="relative w-full px-4 sm:px-16 lg:px-20">
+          <div className="relative z-10 w-full px-4 sm:px-16 lg:px-20">
             {/* overflow-visible so the scaled-up card isn't clipped */}
             <div className="overflow-visible py-10 px-2">
               <motion.div

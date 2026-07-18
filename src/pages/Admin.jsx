@@ -986,7 +986,7 @@ const handleEditImageUpload = async (e) => {
               }}
             >
               <Icon size={14} style={{ color: activeTab === tab.key ? '#ffffff' : '#000000' }} />
-              <span>{tab.label}</span>
+              <span style={{ color: activeTab === tab.key ? '#ffffff' : '#000000' }}>{tab.label}</span>
               {tab.key === 'reviews' && activeReviews.length > 0 && (
                 <span className="bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-full font-sans font-medium ml-1">
                   {activeReviews.length}
