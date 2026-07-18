@@ -2220,7 +2220,7 @@ const handleEditImageUpload = async (e) => {
                       {p.discountPercent > 0 ? `${p.discountPercent}%` : '—'}
                     </td>
                     <td className="p-4">
-                      <span className="inline-block bg-black text-white font-black px-2.5 py-1 rounded border border-white/10 text-[10px] tracking-wider uppercase">
+                      <span className="inline-block bg-black text-white font-black px-2.5 py-1 rounded border border-white/10 text-[10px] tracking-wider uppercase" style={{ color: '#ffffff' }}>
                         {p.stock === 0 ? 'SOLD OUT' : `${p.stock} units`}
                       </span>
                     </td>
