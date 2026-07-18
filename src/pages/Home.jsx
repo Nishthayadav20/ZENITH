@@ -1,5 +1,6 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { selectCurrentCurrency, formatPrice, getDiscountedPrice } from '../store/slices/watchSlice';
 import ProductCard from '../components/ProductCard';
 import LogoMark from '../components/LogoMark';
 import {
@@ -590,6 +591,8 @@ function LifestyleShowcaseSlider({ products, onPageChange, homeImages }) {
 export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, updatesOpen }) {
   const products = useSelector(state => state.watch.products);
   const [homeImages, setHomeImages] = useState({});
+  const [selectedProductIndex, setSelectedProductIndex] = useState(0);
+  const currentCurrency = useSelector(selectCurrentCurrency);
 
   useEffect(() => {
     fetch('/api/admin/media/public')
@@ -623,21 +626,16 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
   const { scrollY } = useScroll();
   const scrollFade = useTransform(scrollY, [0, 180], [1, 0]);
 
-  // Featured Collection split curtain animation variables
+  // Featured Collection split curtain animation variables (auto-opens on scroll)
   const curtainSectionRef = useRef(null);
-  const isFeaturedInView = useInView(curtainSectionRef, { once: false, amount: 0.15 });
+  const isFeaturedInView = useInView(curtainSectionRef, { once: true, amount: 0.05 });
   const [curtainsOpenedByUser, setCurtainsOpenedByUser] = useState(false);
-  const [hasClickedCurtainsAtLeastOnce, setHasClickedCurtainsAtLeastOnce] = useState(false);
 
   useEffect(() => {
     if (isFeaturedInView) {
-      if (hasClickedCurtainsAtLeastOnce) {
-        setCurtainsOpenedByUser(true);
-      }
-    } else {
-      setCurtainsOpenedByUser(false);
+      setCurtainsOpenedByUser(true);
     }
-  }, [isFeaturedInView, hasClickedCurtainsAtLeastOnce]);
+  }, [isFeaturedInView]);
 
   const onMouseMove = useCallback((e) => {
     const r = heroRef.current?.getBoundingClientRect();
@@ -764,7 +762,42 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
     return () => clearInterval(timer);
   }, [nextSlide, visibleCards, products.length, currentIndex]);
 
-  const featured = products;
+  const fallbackFeatured = [
+    {
+      id: 'ap-ro-1',
+      name: 'ROYAL OAK SELFWINDING',
+      image: '/assets/new_featured_watch_1.png',
+      price: 44700,
+      description: 'Selfwinding watch with date display and centre seconds. 18-carat pink gold case, black dial, 18-carat pink gold bracelet.',
+      specs: { movement: 'Selfwinding Automatic', case: '18-carat Pink Gold' }
+    },
+    {
+      id: 'ap-ro-2',
+      name: 'ROYAL OAK CHRONOGRAPH',
+      image: '/assets/new_featured_watch_2.png',
+      price: 29500,
+      description: 'Selfwinding chronograph with date display and small seconds. Stainless steel case, blue dial, steel bracelet.',
+      specs: { movement: 'Selfwinding Chronograph', case: 'Stainless Steel' }
+    },
+    {
+      id: 'ap-ro-3',
+      name: 'ROYAL OAK DOUBLE BALANCE',
+      image: '/assets/aurex_product.png',
+      price: 72100,
+      description: 'Double balance wheel openworked, pink gold case, skeletonized dial, pink gold bracelet.',
+      specs: { movement: 'Double Balance Openworked', case: '18-carat Pink Gold' }
+    },
+    {
+      id: 'ap-ro-4',
+      name: 'ROYAL OAK OFFSHORE',
+      image: '/assets/crescent_product.png',
+      price: 36800,
+      description: 'Selfwinding chronograph with date display and small seconds. Titanium case, grey dial, rubber strap.',
+      specs: { movement: 'Selfwinding Chronograph', case: 'Titanium' }
+    }
+  ];
+
+  const featured = products && products.length > 0 ? products : fallbackFeatured;
 
   const collections = [
     {
@@ -1111,16 +1144,10 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
       <LifestyleShowcaseSlider products={products} onPageChange={onPageChange} homeImages={homeImages} />
 
       {/* ══════════ FEATURED PRODUCTS ══════════ */}
-      <div className="relative overflow-hidden" ref={curtainSectionRef}>
+      <div className="relative overflow-hidden bg-[#000000] py-24 sm:py-32" ref={curtainSectionRef}>
         {/* Auditorium Split-Curtain Screen */}
         <motion.div 
-          className={`absolute inset-0 z-45 overflow-hidden flex ${curtainsOpenedByUser ? 'pointer-events-none' : 'cursor-pointer'}`}
-          onClick={() => {
-            if (!curtainsOpenedByUser) {
-              setCurtainsOpenedByUser(true);
-              setHasClickedCurtainsAtLeastOnce(true);
-            }
-          }}
+          className="absolute inset-0 z-45 overflow-hidden flex pointer-events-none"
           animate={{ 
             pointerEvents: curtainsOpenedByUser ? 'none' : 'auto'
           }}
@@ -1151,119 +1178,98 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
             >
               KHRONIQ PRESENTS
             </h2>
-            <p 
-              className="text-xs sm:text-sm tracking-[0.35em] font-black uppercase drop-shadow-md mt-8 animate-pulse"
-              style={{ color: '#dfb76c' }}
-            >
-              CLICK TO OPEN
-            </p>
           </motion.div>
         </motion.div>
+        {/* Centered Heading */}
+        <div className="text-center mb-16 z-20 relative">
+          <h2 style={{ color: '#ffffff' }} className="text-sm font-sans font-bold tracking-[0.3em] uppercase">
+            Featured Collection
+          </h2>
+          <div className="w-12 h-[1px] bg-[#dfb76c] mx-auto mt-4" />
+        </div>
 
-        <section
-          className="w-full min-h-[110vh] flex flex-col justify-center py-24 space-y-12 relative overflow-hidden"
-          style={{
-            backgroundImage: "url('/assets/premium_metallic_bg.png')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundAttachment: 'fixed',
-            color: '#ffffff',
-            transition: 'background-color 0.6s ease',
-          }}
-        >
-          {/* Dark overlay for readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/30 to-black/80 z-0 pointer-events-none" />
-          
-          {/* Section header — text stays white on dark/black bg */}
-          <div className="text-center max-w-2xl mx-auto space-y-3 px-4 relative z-10">
-            <Reveal dir="up">
-              <p
-                className="text-xs font-black tracking-[0.22em] uppercase"
-                style={{ color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
-              >
-                Signature Catalog
-              </p>
-            </Reveal>
-            <SlideReveal delay={0.1}>
-              <h2
-                className="text-4xl sm:text-5xl font-black font-serif tracking-wide uppercase"
-                style={{ color: '#ffffff', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}
-              >
-                Featured Masterpieces
-              </h2>
-            </SlideReveal>
-            <motion.div
-              className="w-16 h-[3px] mx-auto"
-              style={{ background: '#ffffff', boxShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
-              initial={{ scaleX: 0 }}
-              whileInView={{ scaleX: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.25 }}
-            />
-          </div>
+        {featured.length > 0 ? (
+          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full z-20 relative">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+              
+              {/* Left Column: Big Watch Image, Squares (Variant Selector), Arrows, and Details Text (cols 1 to 7) */}
+              <div className="lg:col-span-7 flex flex-col items-center justify-start relative text-left">
+                {/* Big watch image in centre */}
+                <div className="w-full max-w-md aspect-square flex items-center justify-center p-6 relative">
+                  <motion.img
+                    key={selectedProductIndex}
+                    src={featured[selectedProductIndex].image}
+                    alt={featured[selectedProductIndex].name}
+                    className="max-h-[90%] max-w-[90%] object-contain drop-shadow-[0_25px_60px_rgba(0,0,0,0.85)] z-10"
+                    initial={{ opacity: 0, scale: 0.9, y: 15 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: 'easeOut' }}
+                  />
+                </div>
 
-          {/* Carousel */}
-          <div className="relative z-10 w-full px-4 sm:px-16 lg:px-20">
-            {/* overflow-visible so the scaled-up card isn't clipped */}
-            <div className="overflow-visible py-10 px-2">
-              <motion.div
-                className="flex gap-6"
-                animate={{
-                  x: `calc(-${currentIndex * 100 / visibleCards}% - ${currentIndex * 24 / visibleCards}px)`
-                }}
-                transition={{ type: 'spring', stiffness: 120, damping: 20 }}
-              >
-                {featured.map((product) => (
-                  <div
-                    key={product.id}
-                    className="h-full"
-                    style={{
-                      width: `calc(${100 / visibleCards}% - ${24 * (visibleCards - 1) / visibleCards}px)`,
-                      flexShrink: 0,
-                      position: 'relative',
-                    }}
-                    onMouseEnter={() => handleHoverStart(product)}
-                    onMouseLeave={handleHoverEnd}
-                  >
-                    <motion.div
-                      className="h-full w-full"
-                      whileHover={{ scale: 1.10, zIndex: 20 }}
-                      transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+                {/* Small squares (Variant Selector) below the big image */}
+                <div className="flex gap-4 mt-6 z-20">
+                  {featured.map((product, idx) => (
+                    <button
+                      key={product.id}
+                      onClick={() => setSelectedProductIndex(idx)}
+                      className={`w-12 h-12 rounded-none p-[2px] transition-all duration-300 cursor-pointer flex items-center justify-center ${
+                        selectedProductIndex === idx 
+                          ? 'border border-[#dfb76c] bg-[#1a1917] scale-105' 
+                          : 'border border-white/10 opacity-60 hover:opacity-100 hover:border-white/30'
+                      }`}
                     >
-                      <ProductCard product={product} onPageChange={onPageChange} />
-                    </motion.div>
-                  </div>
-                ))}
-              </motion.div>
+                      <div className="w-full h-full bg-neutral-900 overflow-hidden flex items-center justify-center p-0.5">
+                        <img 
+                          src={product.image} 
+                          alt={product.name} 
+                          className="w-full h-full object-contain" 
+                        />
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Arrows (Navigation Buttons) below the small squares */}
+                <div className="flex mt-6 z-20">
+                  <button
+                    onClick={() => {
+                      setSelectedProductIndex((prev) => (prev === 0 ? featured.length - 1 : prev - 1));
+                    }}
+                    className="w-12 h-10 border border-[#dfb76c]/40 hover:border-[#dfb76c] bg-[#12110f]/80 text-[#dfb76c] transition-all duration-300 flex items-center justify-center cursor-pointer"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedProductIndex((prev) => (prev === featured.length - 1 ? 0 : prev + 1));
+                    }}
+                    className="w-12 h-10 border-y border-r border-[#dfb76c]/40 hover:border-[#dfb76c] bg-[#12110f]/80 text-[#dfb76c] transition-all duration-300 flex items-center justify-center cursor-pointer"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Right Column: Name in bold and price written below it (cols 8 to 12) */}
+              <div className="lg:col-span-5 flex flex-col justify-start items-start text-left lg:pt-24 space-y-4">
+                 <h3 style={{ color: '#ffffff' }} className="text-4xl sm:text-5xl lg:text-[54px] font-sans font-bold tracking-[0.08em] uppercase leading-tight">
+                  {featured[selectedProductIndex].name}
+                </h3>
+                <p style={{ color: '#ffffff' }} className="text-2xl sm:text-3xl font-light tracking-wide">
+                  {featured[selectedProductIndex].id?.startsWith('ap-')
+                    ? `£ ${featured[selectedProductIndex].price.toLocaleString()}`
+                    : formatPrice(getDiscountedPrice(featured[selectedProductIndex]), currentCurrency)}
+                </p>
+              </div>
+
             </div>
-
-            {/* Navigation Arrows */}
-            {featured.length > visibleCards && (
-              <>
-                <button
-                  onClick={prevSlide}
-                  className="absolute left-2 sm:left-4 lg:left-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/60 border border-white/10 text-white flex items-center justify-center hover:bg-white hover:text-black hover:border-white transition duration-300 cursor-pointer shadow-lg"
-                  aria-label="Previous timepiece"
-                >
-                  <ChevronLeft size={20} />
-                </button>
-                <button
-                  onClick={nextSlide}
-                  className="absolute right-2 sm:right-4 lg:right-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/60 border border-white/10 text-white flex items-center justify-center hover:bg-white hover:text-black hover:border-white transition duration-300 cursor-pointer shadow-lg"
-                  aria-label="Next timepiece"
-                >
-                  <ChevronRight size={20} />
-                </button>
-              </>
-            )}
           </div>
-
-          {/* Bottom fade — dissolves white into dark Khroniq section below */}
-          <div
-            className="absolute bottom-0 left-0 right-0 h-56 pointer-events-none z-10"
-            style={{ background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.65) 65%, rgba(0,0,0,1) 100%)' }}
-          />
-        </section>
+        ) : (
+          <div className="text-center py-20 text-gray-400">
+            No masterpieces currently in stock.
+          </div>
+        )}
       </div>
 
       {/* Spacer to shift KHRONIQ updates section lower */}
