@@ -26,8 +26,8 @@ router.post('/', protect, adminOnly, (req, res, next) => {
         });
         return res.json({ success: true, imageUrl: uploadResponse.secure_url });
       } catch (cloudinaryError) {
-        console.warn('Cloudinary upload failed, falling back to base64 data URL:', cloudinaryError.message);
-        return res.json({ success: true, imageUrl: req.body.image });
+        console.error('Cloudinary upload failed:', cloudinaryError.message);
+        return res.status(500).json({ success: false, message: `Cloudinary upload failed: ${cloudinaryError.message}` });
       }
     }
 
