@@ -629,11 +629,11 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
   // Featured Collection split curtain animation variables (auto-opens on scroll)
   const curtainSectionRef = useRef(null);
   const isFeaturedInView = useInView(curtainSectionRef, { once: true, amount: 0.05 });
-  const [curtainsOpenedByUser, setCurtainsOpenedByUser] = useState(false);
+  const [curtainsOpened, setCurtainsOpened] = useState(false);
 
   useEffect(() => {
     if (isFeaturedInView) {
-      setCurtainsOpenedByUser(true);
+      setCurtainsOpened(true);
     }
   }, [isFeaturedInView]);
 
@@ -1148,28 +1148,24 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
         {/* Auditorium Split-Curtain Screen */}
         <motion.div 
           className="absolute inset-0 z-45 overflow-hidden flex pointer-events-none"
-          animate={{ 
-            pointerEvents: curtainsOpenedByUser ? 'none' : 'auto'
-          }}
-          transition={{ duration: 0.2 }}
         >
           {/* Left Curtain - Translucent Dark */}
           <motion.div 
             className="w-1/2 h-full bg-[#0e0d0b]/98 backdrop-blur-3xl relative z-40 border-none flex items-center justify-center overflow-hidden"
-            animate={{ x: curtainsOpenedByUser ? '-105%' : '0%' }}
+            animate={{ x: curtainsOpened ? '-105%' : '0%' }}
             transition={{ duration: 2.0, ease: [0.77, 0, 0.175, 1] }}
           />
           {/* Right Curtain - Translucent Dark */}
           <motion.div 
             className="w-1/2 h-full bg-[#0e0d0b]/98 backdrop-blur-3xl relative z-40 border-none flex items-center justify-center overflow-hidden"
-            animate={{ x: curtainsOpenedByUser ? '105%' : '0%' }}
+            animate={{ x: curtainsOpened ? '105%' : '0%' }}
             transition={{ duration: 2.0, ease: [0.77, 0, 0.175, 1] }}
           />
           
           {/* Centered Curtains Text Overlay */}
           <motion.div 
             className="absolute inset-0 flex flex-col items-center justify-center text-center z-50 px-4 pointer-events-none select-none"
-            animate={{ opacity: curtainsOpenedByUser ? 0 : 1, scale: curtainsOpenedByUser ? 0.85 : 1 }}
+            animate={{ opacity: curtainsOpened ? 0 : 1, scale: curtainsOpened ? 0.85 : 1 }}
             transition={{ duration: 0.8 }}
           >
             <h2 
