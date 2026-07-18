@@ -66,6 +66,7 @@ app.get('/api/health', (req, res) => {
       has_mongodb_uri: !!process.env.MONGODB_URI,
       has_jwt_secret: !!process.env.JWT_SECRET,
       has_cloudinary_cloud_name: !!process.env.CLOUDINARY_CLOUD_NAME,
+      cloudinary_cloud_name_value: process.env.CLOUDINARY_CLOUD_NAME,
       has_cloudinary_api_key: !!process.env.CLOUDINARY_API_KEY,
       has_cloudinary_api_secret: !!process.env.CLOUDINARY_API_SECRET,
       node_env: process.env.NODE_ENV
