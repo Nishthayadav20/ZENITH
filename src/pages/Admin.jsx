@@ -1437,7 +1437,7 @@ const handleEditImageUpload = async (e) => {
                         });
                       }}
                       className={`w-12 h-6 rounded-full transition-all duration-300 cursor-pointer relative ${
-                        newProduct.customizable ? 'bg-[#047857]' : 'bg-white/10'
+                        newProduct.customizable ? 'bg-[#047857]' : 'bg-gray-300'
                       }`}
                     >
                       <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
@@ -1664,7 +1664,8 @@ const handleEditImageUpload = async (e) => {
 
                 <button
                   type="submit"
-                  className="md:col-span-2 py-3 bg-black text-white border border-white/10 font-bold text-xs tracking-widest uppercase hover:bg-neutral-900 transition"
+                  className="md:col-span-2 py-3 bg-black border border-white/10 font-bold text-xs tracking-widest uppercase hover:bg-neutral-900 transition"
+                  style={{ color: '#ffffff' }}
                 >
                   Save Timepiece to Stock
                 </button>
@@ -1931,7 +1932,7 @@ const handleEditImageUpload = async (e) => {
                           });
                         }}
                         className={`w-12 h-6 rounded-full transition-all duration-300 cursor-pointer relative ${
-                          editForm.customizable ? 'bg-[#047857]' : 'bg-white/10'
+                          editForm.customizable ? 'bg-[#047857]' : 'bg-gray-300'
                         }`}
                       >
                         <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
@@ -2166,7 +2167,8 @@ const handleEditImageUpload = async (e) => {
                     </button>
                     <button
                       type="submit"
-                      className="py-2.5 bg-black text-white border border-white/10 font-bold uppercase hover:bg-neutral-900 transition"
+                      className="py-2.5 bg-black border border-white/10 font-bold uppercase hover:bg-neutral-900 transition"
+                      style={{ color: '#ffffff' }}
                     >
                       Save Modifications
                     </button>
@@ -2220,7 +2222,7 @@ const handleEditImageUpload = async (e) => {
                       {p.discountPercent > 0 ? `${p.discountPercent}%` : '—'}
                     </td>
                     <td className="p-4">
-                      <span className="inline-block bg-black text-white font-black px-2.5 py-1 rounded border border-white/10 text-[10px] tracking-wider uppercase" style={{ color: '#ffffff' }}>
+                      <span className="inline-block bg-black font-black px-2.5 py-1 rounded border border-white/10 text-[10px] tracking-wider uppercase" style={{ color: '#ffffff' }}>
                         {p.stock === 0 ? 'SOLD OUT' : `${p.stock} units`}
                       </span>
                     </td>

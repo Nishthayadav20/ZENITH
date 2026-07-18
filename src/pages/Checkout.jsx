@@ -805,7 +805,7 @@ const rzp = new window.Razorpay(options);
             </button>
             <button
               onClick={() => onPageChange('profile', { tab: 'orders' })}
-              className="py-3.5 bg-luxury-gold text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold-dark transition cursor-pointer"
+              className="py-3.5 bg-white text-luxury-dark font-bold text-xs tracking-widest uppercase hover:bg-gray-200 transition cursor-pointer"
             >
               Track My Order
             </button>

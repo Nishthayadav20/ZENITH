@@ -1190,77 +1190,104 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
 
         {featured.length > 0 ? (
           <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full z-20 relative">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center relative z-20">
               
-              {/* Left Column: Big Watch Image, Squares (Variant Selector), Arrows, and Details Text (cols 1 to 7) */}
-              <div className="lg:col-span-7 flex flex-col items-center justify-start relative text-left">
-                {/* Big watch image in centre */}
-                <div className="w-full max-w-md aspect-square flex items-center justify-center p-6 relative">
+              {/* --- BACKGROUND SVG LINING --- */}
+              <div className="absolute inset-0 pointer-events-none overflow-hidden flex justify-center z-0">
+                <svg width="100%" height="100%" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" className="opacity-100 hidden lg:block">
+                  
+                  {/* Faint circles for the subtle curved grey lines */}
+                  <circle cx="-50" cy="350" r="400" stroke="#ffffff" strokeWidth="1" fill="none" opacity="0.08" />
+                  <circle cx="1250" cy="300" r="400" stroke="#ffffff" strokeWidth="1" fill="none" opacity="0.08" />
+                  
+                  {/* Left Side AP-style Golden Line */}
+                  <path 
+                    d="M -50 60 L 180 60 L 300 180 L 300 640 L 90 850" 
+                    stroke="#dfb76c" strokeWidth="1.5" fill="none" opacity="0.85" 
+                  />
+                  
+                  {/* Right Side AP-style Golden Line */}
+                  <path 
+                    d="M 800 -50 L 800 350 L 950 500 L 1250 500" 
+                    stroke="#dfb76c" strokeWidth="1.5" fill="none" opacity="0.85" 
+                  />
+                  
+                </svg>
+              </div>
+
+              {/* Left Column: Big Watch Image and Arrows */}
+              <div className="flex flex-col items-center justify-center relative z-10">
+                <div className="w-full max-w-[320px] lg:max-w-md aspect-[3/4] flex items-center justify-center p-6 relative">
                   <motion.img
                     key={selectedProductIndex}
                     src={featured[selectedProductIndex].image}
                     alt={featured[selectedProductIndex].name}
-                    className="max-h-[90%] max-w-[90%] object-contain drop-shadow-[0_25px_60px_rgba(0,0,0,0.85)] z-10"
+                    className="max-h-full max-w-full object-contain drop-shadow-[0_25px_60px_rgba(0,0,0,0.85)] z-10"
                     initial={{ opacity: 0, scale: 0.9, y: 15 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{ duration: 0.5, ease: 'easeOut' }}
                   />
                 </div>
 
-                {/* Small squares (Variant Selector) below the big image */}
-                <div className="flex gap-4 mt-6 z-20">
+                {/* Arrows (Navigation Buttons) directly below watch */}
+                <div className="flex mt-2 z-20">
+                  <button
+                    onClick={() => {
+                      setSelectedProductIndex((prev) => (prev === 0 ? featured.length - 1 : prev - 1));
+                    }}
+                    className="w-10 h-10 border border-[#dfb76c]/40 hover:border-[#dfb76c] bg-[#12110f]/80 text-[#dfb76c] transition-all duration-300 flex items-center justify-center cursor-pointer"
+                  >
+                    <ChevronLeft size={18} />
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedProductIndex((prev) => (prev === featured.length - 1 ? 0 : prev + 1));
+                    }}
+                    className="w-10 h-10 border-y border-r border-[#dfb76c]/40 hover:border-[#dfb76c] bg-[#12110f]/80 text-[#dfb76c] transition-all duration-300 flex items-center justify-center cursor-pointer"
+                  >
+                    <ChevronRight size={18} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Right Column: Text and Small squares */}
+              <div className="flex flex-col justify-center items-start text-left space-y-8 relative z-10 lg:pl-12">
+                
+                <div className="space-y-4">
+                  <h3 style={{ color: '#ffffff' }} className="text-3xl sm:text-4xl lg:text-5xl font-sans font-bold tracking-[0.05em] uppercase leading-tight">
+                    {featured[selectedProductIndex].name}
+                  </h3>
+                  
+                  <p style={{ color: '#ffffff' }} className="text-xl sm:text-2xl font-light tracking-wide">
+                    {featured[selectedProductIndex].id?.startsWith('ap-')
+                      ? `£ ${featured[selectedProductIndex].price.toLocaleString()}`
+                      : formatPrice(getDiscountedPrice(featured[selectedProductIndex]), currentCurrency)}
+                  </p>
+                </div>
+
+                {/* Small squares (Variant Selector) below the text */}
+                <div className="flex flex-wrap gap-4 pt-4">
                   {featured.map((product, idx) => (
                     <button
                       key={product.id}
                       onClick={() => setSelectedProductIndex(idx)}
-                      className={`w-12 h-12 rounded-none p-[2px] transition-all duration-300 cursor-pointer flex items-center justify-center ${
+                      className={`w-12 h-12 rounded-full p-[2px] transition-all duration-300 cursor-pointer flex items-center justify-center ${
                         selectedProductIndex === idx 
-                          ? 'border border-[#dfb76c] bg-[#1a1917] scale-105' 
-                          : 'border border-white/10 opacity-60 hover:opacity-100 hover:border-white/30'
+                          ? 'border border-[#dfb76c] bg-transparent scale-110' 
+                          : 'border border-transparent opacity-50 hover:opacity-100'
                       }`}
                     >
-                      <div className="w-full h-full bg-neutral-900 overflow-hidden flex items-center justify-center p-0.5">
+                      <div className="w-full h-full bg-[#12110f] rounded-full overflow-hidden flex items-center justify-center p-1.5 border border-white/5">
                         <img 
                           src={product.image} 
                           alt={product.name} 
-                          className="w-full h-full object-contain" 
+                          className="w-full h-full object-contain drop-shadow-md" 
                         />
                       </div>
                     </button>
                   ))}
                 </div>
 
-                {/* Arrows (Navigation Buttons) below the small squares */}
-                <div className="flex mt-6 z-20">
-                  <button
-                    onClick={() => {
-                      setSelectedProductIndex((prev) => (prev === 0 ? featured.length - 1 : prev - 1));
-                    }}
-                    className="w-12 h-10 border border-[#dfb76c]/40 hover:border-[#dfb76c] bg-[#12110f]/80 text-[#dfb76c] transition-all duration-300 flex items-center justify-center cursor-pointer"
-                  >
-                    <ChevronLeft size={20} />
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSelectedProductIndex((prev) => (prev === featured.length - 1 ? 0 : prev + 1));
-                    }}
-                    className="w-12 h-10 border-y border-r border-[#dfb76c]/40 hover:border-[#dfb76c] bg-[#12110f]/80 text-[#dfb76c] transition-all duration-300 flex items-center justify-center cursor-pointer"
-                  >
-                    <ChevronRight size={20} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Right Column: Name in bold and price written below it (cols 8 to 12) */}
-              <div className="lg:col-span-5 flex flex-col justify-start items-start text-left lg:pt-24 space-y-4">
-                 <h3 style={{ color: '#ffffff' }} className="text-4xl sm:text-5xl lg:text-[54px] font-sans font-bold tracking-[0.08em] uppercase leading-tight">
-                  {featured[selectedProductIndex].name}
-                </h3>
-                <p style={{ color: '#ffffff' }} className="text-2xl sm:text-3xl font-light tracking-wide">
-                  {featured[selectedProductIndex].id?.startsWith('ap-')
-                    ? `£ ${featured[selectedProductIndex].price.toLocaleString()}`
-                    : formatPrice(getDiscountedPrice(featured[selectedProductIndex]), currentCurrency)}
-                </p>
               </div>
 
             </div>

@@ -234,7 +234,6 @@ export default function Customization({ onPageChange, params }) {
           <div className="rounded-xl p-20 text-center space-y-4" style={{ background: 'linear-gradient(135deg, #0a0a14 0%, #0d1a3a 50%, #0a0a14 100%)', border: '1px dashed rgba(59,130,246,0.3)' }}>
             <Sparkles size={36} className="mx-auto opacity-70" style={{ color: '#3b82f6' }} />
             <p className="text-sm" style={{ color: '#ffffff' }}>No customizable watches are available at the moment.</p>
-            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>Ask an admin to mark watches as customizable in the dashboard.</p>
             <button
               onClick={() => onPageChange('shop')}
               className="mt-4 px-8 py-2.5 text-white text-xs font-bold uppercase tracking-widest transition cursor-pointer rounded"
