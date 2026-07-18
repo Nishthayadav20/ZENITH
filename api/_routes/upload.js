@@ -14,6 +14,7 @@ router.post('/', protect, adminOnly, (req, res, next) => {
   }
   upload.single('image')(req, res, next);
 }, async (req, res) => {
+  try {
     if (req.body.image) {
       try {
         if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
