@@ -206,7 +206,7 @@ export default function Login({ params, onPageChange }) {
                 <button
                   type="button"
                   onClick={() => { setAuthMode('forgot'); setErrorMsg(''); }}
-                  className="text-[9px] text-luxury-gold hover:text-white transition uppercase font-semibold cursor-pointer"
+                  className="text-[9px] text-white hover:text-black transition uppercase font-semibold cursor-pointer"
                 >
                   Forgot Password?
                 </button>

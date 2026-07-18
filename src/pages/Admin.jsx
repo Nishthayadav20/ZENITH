@@ -1004,7 +1004,7 @@ const handleEditImageUpload = async (e) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-luxury-gray border border-white/5 p-6 rounded-md space-y-2">
               <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Gross Sales Revenue</span>
-<p className="text-2xl font-extrabold text-luxury-gold">{formatPrice(analytics?.totalRevenue ?? totalSales, currentCurrency)}</p>
+<p className="text-2xl font-extrabold text-white">{formatPrice(analytics?.totalRevenue ?? totalSales, currentCurrency)}</p>
               <span className="text-[9px] text-gray-500 font-light">Excludes cancelled orders</span>
             </div>
             
