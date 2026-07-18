@@ -134,7 +134,7 @@ export default function Login({ params, onPageChange }) {
             <button
               onClick={() => { setAuthMode('login'); setErrorMsg(''); }}
               className={`flex-1 pb-3 text-center text-xs font-bold uppercase tracking-wider border-b-2 cursor-pointer transition ${
-                authMode === 'login' ? 'border-luxury-gold text-luxury-gold' : 'border-transparent text-gray-500 hover:text-gray-300'
+                authMode === 'login' ? 'border-luxury-text text-luxury-text' : 'border-transparent text-gray-500 hover:text-gray-300'
               }`}
             >
               Sign In
@@ -143,7 +143,7 @@ export default function Login({ params, onPageChange }) {
             <button
               onClick={() => { setAuthMode('register'); setErrorMsg(''); }}
               className={`flex-1 pb-3 text-center text-xs font-bold uppercase tracking-wider border-b-2 cursor-pointer transition ${
-                authMode === 'register' ? 'border-luxury-gold text-luxury-gold' : 'border-transparent text-gray-500 hover:text-gray-300'
+                authMode === 'register' ? 'border-luxury-text text-luxury-text' : 'border-transparent text-gray-500 hover:text-gray-300'
               }`}
             >
               Register
