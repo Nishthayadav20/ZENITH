@@ -474,7 +474,45 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
               ))}
             </div>
           </div>
+        </div>
+      </div>
 
+      {/* ══════════════════════════════════════════════════════
+          DISCLAIMER SECTION
+      ══════════════════════════════════════════════════════ */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ borderBottom: '1px solid rgba(4,120,87,0.1)' }}>
+        <div style={{
+          background: 'rgba(255,255,255,0.01)',
+          border: '1px solid rgba(4,120,87,0.1)',
+          borderRadius: '4px',
+          padding: '1.5rem',
+        }}>
+          <h5 style={{
+            fontSize: '0.65rem',
+            fontWeight: 700,
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            color: '#047857',
+            marginBottom: '0.75rem'
+          }}>Disclaimer & Horological Notice</h5>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[0.62rem] leading-relaxed text-gray-400">
+            <div>
+              <p className="mb-2">
+                <strong className="text-gray-300">Product Representation:</strong> All timepieces featured are subject to availability. While we strive to show accurate details, high-resolution textures, and current pricing, errors or minor variations in hand-finished components may occasionally occur.
+              </p>
+              <p>
+                <strong className="text-gray-300">Aesthetic Homage:</strong> KHRONIQ is an independent boutique brand. Any design styles resembling classic haute horlogerie shapes are independent artistic expressions and tributes, completely unaffiliated with, and un-endorsed by, any third-party brands.
+              </p>
+            </div>
+            <div>
+              <p className="mb-2">
+                <strong className="text-gray-300">Intellectual Property:</strong> KHRONIQ and its brand marks, custom dials, and interface assets are proprietary designs. All website content, photography, and layout are protected by intellectual property rights.
+              </p>
+              <p>
+                <strong className="text-gray-300">Warranty Coverage:</strong> Our 3-Year Premium Swadeshi Warranty is valid only for watches purchased directly from our official portal or authorized concierge service. Watches obtained from unverified sources do not qualify for official servicing.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
