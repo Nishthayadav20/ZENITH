@@ -10,7 +10,7 @@ async function testLogin() {
     await mongoose.connect(mongoURI);
     console.log('Connected to DB');
     
-    const email = 'admin@khroniq.com';
+    const email = 'shashikantchaudhary1010@gmail.com';
     const user = await User.findOne({ email });
     
     if (!user) {

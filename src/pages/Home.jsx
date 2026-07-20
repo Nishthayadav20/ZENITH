@@ -367,6 +367,131 @@ function CollectionCard({ col, idx, onPageChange }) {
 }
 
 /* ─────────────────────────────────────────────────────────────────────
+   CIRCULAR WATCH WHEEL — Omega-style rotating selector (enhanced)
+───────────────────────────────────────────────────────────────────── */
+function WatchWheel({ products, selectedIndex, setSelectedIndex, size = 340 }) {
+  // Scale the ring outward as more watches are added so thumbnails never crowd each other
+  const extraRadius = Math.max(0, (products.length - 4)) * 11;
+  const radius = size / 2 - 40 + extraRadius;
+  const angleStep = 360 / products.length;
+  const rotation = -selectedIndex * angleStep;
+  const [hoverIdx, setHoverIdx] = useState(null);
+
+  const springCfg = { stiffness: 90, damping: 16, mass: 0.9 };
+
+  return (
+    <div className="relative mx-auto shrink-0" style={{ width: size, height: size }}>
+      {/* Outer ring */}
+      <div className="absolute inset-0 rounded-full border border-[#10b981]/25" />
+
+      {/* Tick marks around the ring */}
+      {products.map((_, i) => {
+        const angle = i * angleStep;
+        const rad = (angle * Math.PI) / 180;
+        const tickR = size / 2 - 6;
+        const x = tickR * Math.sin(rad);
+        const y = -tickR * Math.cos(rad);
+        const isActive = i === selectedIndex;
+        return (
+          <motion.div
+            key={`tick-${i}`}
+            className="absolute top-1/2 left-1/2 rounded-full pointer-events-none"
+            style={{
+              width: isActive ? 6 : 3,
+              height: isActive ? 6 : 3,
+              marginLeft: isActive ? -3 : -1.5,
+              marginTop: isActive ? -3 : -1.5,
+              x, y,
+              background: isActive ? '#10b981' : 'rgba(255,255,255,0.2)',
+            }}
+            animate={{ scale: isActive ? 1.3 : 1 }}
+            transition={{ duration: 0.5 }}
+          />
+        );
+      })}
+
+      {/* Soft glow behind active thumbnail */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 rounded-full pointer-events-none"
+        style={{
+          width: 100, height: 100, marginLeft: -50, marginTop: -50,
+          x: 0, y: -radius,
+          background: 'radial-gradient(circle, rgba(16,185,129,0.4) 0%, transparent 70%)',
+          filter: 'blur(10px)',
+        }}
+        animate={{ rotate: rotation }}
+        transition={{ type: 'spring', ...springCfg }}
+      />
+
+      {/* Rotating wheel */}
+      <motion.div
+        className="absolute inset-0"
+        animate={{ rotate: rotation }}
+        transition={{ type: 'spring', ...springCfg }}
+      >
+        {/* Spoke line to active item */}
+        <motion.div
+          className="absolute top-1/2 left-1/2 origin-top pointer-events-none"
+          style={{
+            width: 1, height: radius - 30, marginLeft: -0.5,
+            background: 'linear-gradient(to top, rgba(16,185,129,0.55), transparent)',
+          }}
+        />
+
+        {products.map((p, i) => {
+          const angle = i * angleStep;
+          const rad = (angle * Math.PI) / 180;
+          const x = radius * Math.sin(rad);
+          const y = -radius * Math.cos(rad);
+          const isActive = i === selectedIndex;
+          const isHovered = hoverIdx === i;
+          const dim = isActive ? 104 : isHovered ? 84 : 66;
+
+          return (
+            <motion.button
+              key={p.id}
+              onClick={() => setSelectedIndex(i)}
+              onMouseEnter={() => setHoverIdx(i)}
+              onMouseLeave={() => setHoverIdx(null)}
+              className="absolute top-1/2 left-1/2 rounded-full overflow-hidden flex items-center justify-center cursor-pointer"
+              style={{
+                width: dim, height: dim,
+                marginLeft: -dim / 2, marginTop: -dim / 2,
+                x, y,
+                background: '#12110f',
+                border: isActive ? '2px solid #10b981' : '1px solid rgba(255,255,255,0.15)',
+                boxShadow: isActive
+                  ? '0 0 0 6px rgba(16,185,129,0.12), 0 0 30px rgba(16,185,129,0.55), 0 8px 20px rgba(0,0,0,0.6)'
+                  : isHovered
+                    ? '0 0 16px rgba(16,185,129,0.3), 0 6px 14px rgba(0,0,0,0.5)'
+                    : '0 4px 10px rgba(0,0,0,0.4)',
+                zIndex: isActive ? 20 : isHovered ? 15 : 10,
+              }}
+              animate={{
+                rotate: rotation,
+                opacity: isActive ? 1 : isHovered ? 0.9 : 0.55,
+              }}
+              transition={{ type: 'spring', ...springCfg }}
+            >
+              <img src={p.image} alt={p.name} className="w-full h-full object-contain p-2" />
+            </motion.button>
+          );
+        })}
+      </motion.div>
+
+      {/* Center hub */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-[#10b981]/30 bg-black/50 backdrop-blur-sm flex items-center justify-center z-30 pointer-events-none">
+        <img src="/assets/logo_icon.png" alt="" className="w-5 h-5 opacity-80" />
+      </div>
+
+      {/* Position counter below wheel */}
+      <div className="absolute left-1/2 -translate-x-1/2 text-[10px] font-bold tracking-[0.25em] text-[#10b981]/80" style={{ bottom: -92 }}>
+        {String(selectedIndex + 1).padStart(2, '0')} / {String(products.length).padStart(2, '0')}
+      </div>
+    </div>
+  );
+}
+/* ─────────────────────────────────────────────────────────────────────
    HERO VIDEO CYCLER — plays video 1 → video 2 → video 1 … muted, no loop
 ───────────────────────────────────────────────────────────────────── */
 const HERO_VIDEOS = ['/assets/hero_video_1.mp4', '/assets/hero_video_2.mp4'];
@@ -427,6 +552,27 @@ function LifestyleShowcaseSlider({ products, onPageChange, homeImages }) {
       lifestyleImg: homeImages.hero_slide2_lifestyle || '/assets/lifestyle_green.png',
       productImg: homeImages.hero_slide2_product || '/assets/watch_green.jpg',
       lifestyleStyle: { filter: 'brightness(0.78) contrast(1.12) saturate(1.08)', backgroundPosition: 'center 35%' },
+    },
+    {
+      name: 'MIDNIGHT BLACK',
+      fullName: 'Khroniq Midnight Black',
+      lifestyleImg: '/assets/lifestyle_black_new.png',
+      productImg: '/assets/watch_uploaded_1.jpg',
+      lifestyleStyle: { filter: 'brightness(0.85) contrast(1.1)', backgroundPosition: 'center 30%' },
+    },
+    {
+      name: 'COBALT BLUE',
+      fullName: 'Khroniq Cobalt Blue',
+      lifestyleImg: '/assets/lifestyle_blue_new.png',
+      productImg: '/assets/watch_uploaded_2.jpg',
+      lifestyleStyle: { filter: 'brightness(0.85) contrast(1.1)', backgroundPosition: 'center 30%' },
+    },
+    {
+      name: 'STERLING SILVER',
+      fullName: 'Khroniq Sterling Silver',
+      lifestyleImg: '/assets/lifestyle_silver_new.png',
+      productImg: '/assets/watch_uploaded_3.jpg',
+      lifestyleStyle: { filter: 'brightness(0.85) contrast(1.1)', backgroundPosition: 'center 30%' },
     }
   ];
 
@@ -438,18 +584,16 @@ function LifestyleShowcaseSlider({ products, onPageChange, homeImages }) {
     if (!isPlaying) return;
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % slides.length);
-    }, 5000);
+    }, 3500); // 3.5 seconds
     return () => clearInterval(interval);
-  }, [isPlaying, slides.length]);
+  }, [isPlaying, slides.length, activeIndex]);
 
 
   const handlePrev = () => {
-    setIsPlaying(false);
     setActiveIndex((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
   const handleNext = () => {
-    setIsPlaying(false);
     setActiveIndex((prev) => (prev + 1) % slides.length);
   };
 
@@ -559,7 +703,7 @@ function LifestyleShowcaseSlider({ products, onPageChange, homeImages }) {
               <button 
                 onClick={handlePrev}
                 className={`w-12 h-12 flex items-center justify-center border border-black/15 hover:border-black transition duration-300 font-bold cursor-pointer rounded-sm ${
-                  activeIndex === 2 ? 'bg-white text-black' : 'bg-black text-white hover:bg-neutral-800'
+                  activeIndex === slides.length - 1 ? 'bg-white text-black' : 'bg-black text-white hover:bg-neutral-800'
                 }`}
                 aria-label="Previous slide"
               >
@@ -571,7 +715,7 @@ function LifestyleShowcaseSlider({ products, onPageChange, homeImages }) {
               <button 
                 onClick={handleNext}
                 className={`w-12 h-12 flex items-center justify-center border border-black/15 hover:border-black transition duration-300 font-bold cursor-pointer rounded-sm ${
-                  activeIndex === 2 ? 'bg-black text-white hover:bg-neutral-800' : 'bg-white text-black'
+                  activeIndex === slides.length - 1 ? 'bg-black text-white hover:bg-neutral-800' : 'bg-white text-black'
                 }`}
                 aria-label="Next slide"
               >
@@ -626,16 +770,7 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
   const { scrollY } = useScroll();
   const scrollFade = useTransform(scrollY, [0, 180], [1, 0]);
 
-  // Featured Collection split curtain animation variables (auto-opens on scroll)
-  const curtainSectionRef = useRef(null);
-  const isFeaturedInView = useInView(curtainSectionRef, { once: true, amount: 0.05 });
-  const [curtainsOpened, setCurtainsOpened] = useState(false);
-
-  useEffect(() => {
-    if (isFeaturedInView) {
-      setCurtainsOpened(true);
-    }
-  }, [isFeaturedInView]);
+  
 
   const onMouseMove = useCallback((e) => {
     const r = heroRef.current?.getBoundingClientRect();
@@ -764,36 +899,68 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
 
   const fallbackFeatured = [
     {
-      id: 'ap-ro-1',
-      name: 'ROYAL OAK SELFWINDING',
-      image: '/assets/new_featured_watch_1.png',
-      price: 44700,
-      description: 'Selfwinding watch with date display and centre seconds. 18-carat pink gold case, black dial, 18-carat pink gold bracelet.',
-      specs: { movement: 'Selfwinding Automatic', case: '18-carat Pink Gold' }
+      id: 'kq-01',
+      name: 'KHRONIQ MIDNIGHT ROMAN',
+      image: '/assets/wt1.png',
+      price: 4999,
+      description: 'Classic Roman-numeral dial with a brushed steel bracelet. Timeless design for the everyday connoisseur.',
+      specs: { movement: 'Quartz Precision', case: 'Stainless Steel' }
     },
     {
-      id: 'ap-ro-2',
-      name: 'ROYAL OAK CHRONOGRAPH',
-      image: '/assets/new_featured_watch_2.png',
-      price: 29500,
-      description: 'Selfwinding chronograph with date display and small seconds. Stainless steel case, blue dial, steel bracelet.',
-      specs: { movement: 'Selfwinding Chronograph', case: 'Stainless Steel' }
+      id: 'kq-02',
+      name: 'KHRONIQ IVORY CLASSIC',
+      image: '/assets/wt2.png',
+      price: 3499,
+      description: 'Crisp white dial paired with a polished steel bracelet, presented in a signature velvet case.',
+      specs: { movement: 'Quartz Precision', case: 'Stainless Steel' }
     },
     {
-      id: 'ap-ro-3',
-      name: 'ROYAL OAK DOUBLE BALANCE',
-      image: '/assets/aurex_product.png',
-      price: 72100,
-      description: 'Double balance wheel openworked, pink gold case, skeletonized dial, pink gold bracelet.',
-      specs: { movement: 'Double Balance Openworked', case: '18-carat Pink Gold' }
+      id: 'kq-03',
+      name: 'KHRONIQ PEARL EDITION',
+      image: '/assets/wt3.png',
+      price: 3999,
+      description: 'Minimalist white dial with mirror-polished steel case and bracelet for an elevated everyday look.',
+      specs: { movement: 'Quartz Precision', case: 'Stainless Steel' }
     },
     {
-      id: 'ap-ro-4',
-      name: 'ROYAL OAK OFFSHORE',
-      image: '/assets/crescent_product.png',
-      price: 36800,
-      description: 'Selfwinding chronograph with date display and small seconds. Titanium case, grey dial, rubber strap.',
-      specs: { movement: 'Selfwinding Chronograph', case: 'Titanium' }
+      id: 'kq-04',
+      name: 'KHRONIQ HERITAGE TAN',
+      image: '/assets/wt4.png',
+      price: 2999,
+      description: 'Rugged black dial on a genuine tan leather strap with contrast green stitching.',
+      specs: { movement: 'Quartz Precision', case: 'Genuine Leather' }
+    },
+    {
+      id: 'kq-05',
+      name: 'KHRONIQ BLUSH SCALE',
+      image: '/assets/wt5.png',
+      price: 4499,
+      description: 'Fish-scale textured rose dial on a rich brown leather strap. A refined statement piece.',
+      specs: { movement: 'Quartz Precision', case: 'Genuine Leather' }
+    },
+    {
+      id: 'kq-06',
+      name: 'KHRONIQ COBALT BLUE',
+      image: '/assets/wt6.png',
+      price: 4299,
+      description: 'Striking cobalt blue textured dial paired with a rich brown leather strap.',
+      specs: { movement: 'Quartz Precision', case: 'Genuine Leather' }
+    },
+    {
+      id: 'kq-07',
+      name: 'KHRONIQ ONYX ROMAN',
+      image: '/assets/wt7.png',
+      price: 5499,
+      description: 'Elegant black dial with Roman numerals on a fine-link stainless steel bracelet.',
+      specs: { movement: 'Quartz Precision', case: 'Stainless Steel' }
+    },
+    {
+      id: 'kq-08',
+      name: 'KHRONIQ TREKKER TAN',
+      image: '/assets/wt8.png',
+      price: 2799,
+      description: 'Sharp black dial on a durable tan leather strap with green underside detailing.',
+      specs: { movement: 'Quartz Precision', case: 'Genuine Leather' }
     }
   ];
 
@@ -1143,158 +1310,110 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
       {/* ══════════ LIFESTYLE SHOWCASE SLIDER ══════════ */}
       <LifestyleShowcaseSlider products={products} onPageChange={onPageChange} homeImages={homeImages} />
 
-      {/* ══════════ FEATURED PRODUCTS ══════════ */}
-      <div className="relative overflow-hidden bg-[#000000] py-24 sm:py-32" ref={curtainSectionRef}>
-        {/* Auditorium Split-Curtain Screen */}
-        <motion.div 
-          className="absolute inset-0 z-45 overflow-hidden flex pointer-events-none"
-        >
-          {/* Left Curtain - Translucent Dark */}
-          <motion.div 
-            className="w-1/2 h-full bg-[#0e0d0b]/98 backdrop-blur-3xl relative z-40 border-none flex items-center justify-center overflow-hidden"
-            animate={{ x: curtainsOpened ? '-105%' : '0%' }}
-            transition={{ duration: 2.0, ease: [0.77, 0, 0.175, 1] }}
-          />
-          {/* Right Curtain - Translucent Dark */}
-          <motion.div 
-            className="w-1/2 h-full bg-[#0e0d0b]/98 backdrop-blur-3xl relative z-40 border-none flex items-center justify-center overflow-hidden"
-            animate={{ x: curtainsOpened ? '105%' : '0%' }}
-            transition={{ duration: 2.0, ease: [0.77, 0, 0.175, 1] }}
-          />
-          
-          {/* Centered Curtains Text Overlay */}
-          <motion.div 
-            className="absolute inset-0 flex flex-col items-center justify-center text-center z-50 px-4 pointer-events-none select-none"
-            animate={{ opacity: curtainsOpened ? 0 : 1, scale: curtainsOpened ? 0.85 : 1 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 
-              className="text-5xl sm:text-7xl lg:text-8xl font-serif font-black tracking-[0.26em] uppercase leading-tight drop-shadow-[0_6px_16px_rgba(0,0,0,0.95)]"
-              style={{ color: '#dfb76c' }}
-            >
-              KHRONIQ PRESENTS
-            </h2>
-          </motion.div>
-        </motion.div>
-        {/* Centered Heading */}
-        <div className="text-center mb-16 z-20 relative">
-          <h2 style={{ color: '#ffffff' }} className="text-sm font-sans font-bold tracking-[0.3em] uppercase">
-            Featured Collection
-          </h2>
-          <div className="w-12 h-[1px] bg-[#dfb76c] mx-auto mt-4" />
+     
+   {/* ══════════ FEATURED PRODUCTS ══════════ */}
+<div className="relative overflow-hidden bg-white py-24 sm:py-32">
+  
+
+  {/* Centered Heading */}
+  <div className="text-center mb-16 z-20 relative">
+    <h2 style={{ color: '#111111' }} className="text-sm font-serif font-bold tracking-[0.3em] uppercase">
+      Featured Collection
+    </h2>
+    <div className="w-12 h-[1px] bg-[#047857] mx-auto mt-4" />
+  </div>
+
+  {featured.length > 0 ? (
+    <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full z-20 relative">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center relative z-20">
+
+        {/* --- BACKGROUND SVG LINING (unchanged, already black/green) --- */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden flex justify-center z-0">
+          <svg width="100%" height="100%" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" className="opacity-100 hidden lg:block">
+            <circle cx="-50" cy="350" r="400" stroke="#000000" strokeWidth="1" fill="none" opacity="0.05" />
+            <circle cx="1250" cy="300" r="400" stroke="#000000" strokeWidth="1" fill="none" opacity="0.05" />
+            <path d="M -50 60 L 180 60 L 300 180 L 300 640 L 90 850" stroke="#047857" strokeWidth="1.5" fill="none" opacity="0.7" />
+            <path d="M 800 -50 L 800 350 L 950 500 L 1250 500" stroke="#047857" strokeWidth="1.5" fill="none" opacity="0.7" />
+          </svg>
         </div>
 
-        {featured.length > 0 ? (
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full z-20 relative">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center relative z-20">
-              
-              {/* --- BACKGROUND SVG LINING --- */}
-              <div className="absolute inset-0 pointer-events-none overflow-hidden flex justify-center z-0">
-                <svg width="100%" height="100%" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" className="opacity-100 hidden lg:block">
-                  
-                  {/* Faint circles for the subtle curved grey lines */}
-                  <circle cx="-50" cy="350" r="400" stroke="#ffffff" strokeWidth="1" fill="none" opacity="0.08" />
-                  <circle cx="1250" cy="300" r="400" stroke="#ffffff" strokeWidth="1" fill="none" opacity="0.08" />
-                  
-                  {/* Left Side AP-style Golden Line */}
-                  <path 
-                    d="M -50 60 L 180 60 L 300 180 L 300 640 L 90 850" 
-                    stroke="#dfb76c" strokeWidth="1.5" fill="none" opacity="0.85" 
-                  />
-                  
-                  {/* Right Side AP-style Golden Line */}
-                  <path 
-                    d="M 800 -50 L 800 350 L 950 500 L 1250 500" 
-                    stroke="#dfb76c" strokeWidth="1.5" fill="none" opacity="0.85" 
-                  />
-                  
-                </svg>
-              </div>
-
-              {/* Left Column: Big Watch Image and Arrows */}
-              <div className="flex flex-col items-center justify-center relative z-10">
-                <div className="w-full max-w-[320px] lg:max-w-md aspect-[3/4] flex items-center justify-center p-6 relative">
-                  <motion.img
-                    key={selectedProductIndex}
-                    src={featured[selectedProductIndex].image}
-                    alt={featured[selectedProductIndex].name}
-                    className="max-h-full max-w-full object-contain drop-shadow-[0_25px_60px_rgba(0,0,0,0.85)] z-10"
-                    initial={{ opacity: 0, scale: 0.9, y: 15 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease: 'easeOut' }}
-                  />
-                </div>
-
-                {/* Arrows (Navigation Buttons) directly below watch */}
-                <div className="flex mt-2 z-20">
-                  <button
-                    onClick={() => {
-                      setSelectedProductIndex((prev) => (prev === 0 ? featured.length - 1 : prev - 1));
-                    }}
-                    className="w-10 h-10 border border-[#dfb76c]/40 hover:border-[#dfb76c] bg-[#12110f]/80 text-[#dfb76c] transition-all duration-300 flex items-center justify-center cursor-pointer"
-                  >
-                    <ChevronLeft size={18} />
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSelectedProductIndex((prev) => (prev === featured.length - 1 ? 0 : prev + 1));
-                    }}
-                    className="w-10 h-10 border-y border-r border-[#dfb76c]/40 hover:border-[#dfb76c] bg-[#12110f]/80 text-[#dfb76c] transition-all duration-300 flex items-center justify-center cursor-pointer"
-                  >
-                    <ChevronRight size={18} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Right Column: Text and Small squares */}
-              <div className="flex flex-col justify-center items-start text-left space-y-8 relative z-10 lg:pl-12">
-                
-                <div className="space-y-4">
-                  <h3 style={{ color: '#ffffff' }} className="text-3xl sm:text-4xl lg:text-5xl font-sans font-bold tracking-[0.05em] uppercase leading-tight">
-                    {featured[selectedProductIndex].name}
-                  </h3>
-                  
-                  <p style={{ color: '#ffffff' }} className="text-xl sm:text-2xl font-light tracking-wide">
-                    {featured[selectedProductIndex].id?.startsWith('ap-')
-                      ? `£ ${featured[selectedProductIndex].price.toLocaleString()}`
-                      : formatPrice(getDiscountedPrice(featured[selectedProductIndex]), currentCurrency)}
-                  </p>
-                </div>
-
-                {/* Small squares (Variant Selector) below the text */}
-                <div className="flex flex-wrap gap-4 pt-4">
-                  {featured.map((product, idx) => (
-                    <button
-                      key={product.id}
-                      onClick={() => setSelectedProductIndex(idx)}
-                      className={`w-12 h-12 rounded-full p-[2px] transition-all duration-300 cursor-pointer flex items-center justify-center ${
-                        selectedProductIndex === idx 
-                          ? 'border border-[#dfb76c] bg-transparent scale-110' 
-                          : 'border border-transparent opacity-50 hover:opacity-100'
-                      }`}
-                    >
-                      <div className="w-full h-full bg-[#12110f] rounded-full overflow-hidden flex items-center justify-center p-1.5 border border-white/5">
-                        <img 
-                          src={product.image} 
-                          alt={product.name} 
-                          className="w-full h-full object-contain drop-shadow-md" 
-                        />
-                      </div>
-                    </button>
-                  ))}
-                </div>
-
-              </div>
-
-            </div>
+        {/* Left Column: Big Watch Image and Arrows (unchanged) */}
+        <div className="flex flex-col items-center justify-center relative z-10">
+          <div className="w-full max-w-[320px] lg:max-w-md aspect-[3/4] flex items-center justify-center p-6 relative">
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: 'radial-gradient(circle at 50% 45%, rgba(16,185,129,0.22) 0%, rgba(16,185,129,0.06) 40%, transparent 70%)',
+                filter: 'blur(18px)',
+              }}
+            />
+            <motion.img
+              key={selectedProductIndex}
+              src={featured[selectedProductIndex].image}
+              alt={featured[selectedProductIndex].name}
+              className="max-h-full max-w-full object-contain drop-shadow-[0_15px_35px_rgba(0,0,0,0.25)] z-10"
+              initial={{ opacity: 0, scale: 0.9, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+            />
           </div>
-        ) : (
-          <div className="text-center py-20 text-gray-400">
-            No masterpieces currently in stock.
+
+          <div className="flex mt-2 z-20">
+            <button
+              onClick={() => setSelectedProductIndex((prev) => (prev === 0 ? featured.length - 1 : prev - 1))}
+              className="w-10 h-10 border border-[#10b981]/40 hover:border-[#10b981] bg-[#12110f]/80 text-[#10b981] transition-all duration-300 flex items-center justify-center cursor-pointer"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              onClick={() => setSelectedProductIndex((prev) => (prev === featured.length - 1 ? 0 : prev + 1))}
+              className="w-10 h-10 border-y border-r border-[#10b981]/40 hover:border-[#10b981] bg-[#12110f]/80 text-[#10b981] transition-all duration-300 flex items-center justify-center cursor-pointer"
+            >
+              <ChevronRight size={18} />
+            </button>
           </div>
-        )}
+        </div>
+
+        {/* Right Column: Text */}
+        <div className="flex flex-col justify-center items-start text-left space-y-8 relative z-10 lg:pl-12">
+
+          <div className="space-y-4">
+            <h3
+              style={{ color: '#111111' }}
+              className="text-3xl sm:text-4xl lg:text-5xl font-serif italic font-light tracking-wide uppercase leading-tight"
+            >
+              {featured[selectedProductIndex].name}
+            </h3>
+
+            <p
+              style={{ color: '#047857' }}
+              className="text-xl sm:text-2xl font-serif italic font-light tracking-wider uppercase"
+            >
+              {featured[selectedProductIndex].id?.startsWith('ap-')
+                ? `£ ${featured[selectedProductIndex].price.toLocaleString()}`
+                : formatPrice(getDiscountedPrice(featured[selectedProductIndex]), currentCurrency)}
+            </p>
+          </div>
+
+          <div className="pt-4 w-full flex justify-center lg:justify-start">
+            <WatchWheel
+              products={featured}
+              selectedIndex={selectedProductIndex}
+              setSelectedIndex={setSelectedProductIndex}
+              size={360}
+            />
+          </div>
+
+        </div>
+
       </div>
-
+    </div>
+  ) : (
+    <div className="text-center py-20 text-neutral-500">
+      No masterpieces currently in stock.
+    </div>
+  )}
+</div>
       {/* Spacer to shift KHRONIQ updates section lower */}
       <div className="w-full h-32 bg-black relative z-30" />
 
