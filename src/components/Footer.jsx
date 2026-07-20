@@ -498,18 +498,15 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[0.62rem] leading-relaxed text-gray-400">
             <div>
               <p className="mb-2">
-                <strong className="text-gray-300">Product Representation:</strong> All timepieces featured are subject to availability. While we strive to show accurate details, high-resolution textures, and current pricing, errors or minor variations in hand-finished components may occasionally occur.
+                <strong className="text-gray-300">Product Representation:</strong> All timepieces featured are subject to availability. While we strive to show accurate details, technical specifications, and current pricing, errors or minor variations in hand-finished components may occasionally occur.
               </p>
               <p>
-                <strong className="text-gray-300">Aesthetic Homage:</strong> KHRONIQ is an independent boutique brand. Any design styles resembling classic haute horlogerie shapes are independent artistic expressions and tributes, completely unaffiliated with, and un-endorsed by, any third-party brands.
+                <strong className="text-gray-300">Warranty Coverage:</strong> Our 3-Year Premium Swadeshi Warranty is valid only for watches purchased directly from our official portal or authorized concierge boutique service. Watches obtained from unverified sources do not qualify for official servicing.
               </p>
             </div>
             <div>
-              <p className="mb-2">
-                <strong className="text-gray-300">Intellectual Property:</strong> KHRONIQ and its brand marks, custom dials, and interface assets are proprietary designs. All website content, photography, and layout are protected by intellectual property rights.
-              </p>
               <p>
-                <strong className="text-gray-300">Warranty Coverage:</strong> Our 3-Year Premium Swadeshi Warranty is valid only for watches purchased directly from our official portal or authorized concierge service. Watches obtained from unverified sources do not qualify for official servicing.
+                <strong className="text-gray-300">Intellectual Property:</strong> KHRONIQ and its brand marks, logos, custom dials, and interface assets are proprietary designs. All website content, photography, and layout are protected under trademark and intellectual property rights.
               </p>
             </div>
           </div>
