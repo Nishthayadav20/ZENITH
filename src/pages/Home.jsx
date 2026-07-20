@@ -480,10 +480,7 @@ function WatchWheel({ products, selectedIndex, setSelectedIndex, size = 340 }) {
       </motion.div>
 
       {/* Center hub */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-[#10b981]/30 bg-black/50 backdrop-blur-sm flex items-center justify-center z-30 pointer-events-none">
-        <img src="/assets/logo_icon.png" alt="" className="w-5 h-5 opacity-80" />
-      </div>
-
+     
       {/* Position counter below wheel */}
       <div className="absolute left-1/2 -translate-x-1/2 text-[10px] font-bold tracking-[0.25em] text-[#10b981]/80" style={{ bottom: -92 }}>
         {String(selectedIndex + 1).padStart(2, '0')} / {String(products.length).padStart(2, '0')}
@@ -736,6 +733,24 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
   const products = useSelector(state => state.watch.products);
   const [homeImages, setHomeImages] = useState({});
   const [selectedProductIndex, setSelectedProductIndex] = useState(0);
+  const spotlightImages = [
+  "/assets/media1.jpg",
+  "/assets/media2.jpg",
+  "/assets/media3.jpg",
+  "/assets/media4.jpg",
+];
+
+const [spotlightIndex, setSpotlightIndex] = useState(0);
+
+const nextSpotlight = () => {
+  setSpotlightIndex((prev) => (prev + 1) % spotlightImages.length);
+};
+
+const prevSpotlight = () => {
+  setSpotlightIndex((prev) =>
+    prev === 0 ? spotlightImages.length - 1 : prev - 1
+  );
+};
   const currentCurrency = useSelector(selectCurrentCurrency);
 
   useEffect(() => {
@@ -1182,18 +1197,67 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
           </div>
 
           {/* Right — large hero image: dramatic angled editorial shot */}
-          <div className="relative overflow-hidden min-h-[420px] lg:min-h-0">
-            <motion.div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url('${homeImages.dive_deeper_hero || '/assets/spotlight_red_angled.png'}')`, backgroundPosition: 'center center' }}
-              initial={{ scale: 1.08 }}
-              whileInView={{ scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ scale: 1.04 }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-transparent to-transparent" />
-          </div>
+          <div
+  className="relative overflow-hidden min-h-[420px] lg:min-h-0 group"
+  style={{ perspective: "1800px" }}
+>
+
+  <AnimatePresence mode="sync">
+<motion.div
+  key={spotlightIndex}
+  onClick={nextSpotlight}
+  className="absolute inset-0 bg-cover bg-center cursor-pointer"
+  style={{
+    backgroundImage: `url('${spotlightImages[spotlightIndex]}')`,
+    backgroundPosition: "center center",
+    transformOrigin: "left center",
+    backfaceVisibility: "hidden",
+  }}
+  initial={{
+    rotateY: -90,
+    scale: 0.98,
+  }}
+  animate={{
+    rotateY: 0,
+    scale: 1,
+  }}
+  exit={{
+    rotateY: 90,
+    scale: 0.98,
+  }}
+  transition={{
+    duration: 0.7,
+    ease: [0.22, 1, 0.36, 1],
+  }}
+  whileHover={{ scale: 1.03 }}
+/>
+  </AnimatePresence>
+
+  <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-transparent to-transparent" />
+
+  {/* Left Arrow */}
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+      prevSpotlight();
+    }}
+    className="absolute bottom-6 left-6 z-20 w-12 h-12 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-[#047857] transition"
+  >
+    <ChevronLeft size={18} />
+  </button>
+
+  {/* Right Arrow */}
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+      nextSpotlight();
+    }}
+    className="absolute bottom-6 right-6 z-20 w-12 h-12 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-[#047857] transition"
+  >
+    <ChevronRight size={18} />
+  </button>
+
+</div>
         </motion.div>
 
         {/* Bottom half — 2-up product mini grid */}
@@ -1259,11 +1323,7 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
               transition={{ duration: 1, ease: 'easeOut' }}
               style={{ width: '80px' }}
             />
-            <img 
-              src="/assets/logo_icon.png" 
-              alt="Logo Mark" 
-              className="w-5 h-5 object-contain opacity-90 filter brightness-0" 
-            />
+            
             <motion.div 
               className="h-[1.5px] bg-gradient-to-l from-transparent to-[#047857]"
               initial={{ width: 0 }}
