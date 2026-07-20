@@ -514,7 +514,7 @@ const rzp = new window.Razorpay(options);
 
               {/* Gift Note Input field */}
               <div className="space-y-2 mt-4 pt-4 border-t border-white/5">
-                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Write a Gift Note (Optional)</label>
+                <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Write a Gift Note (Optional)</label>
                 <textarea
                   value={giftNote}
                   onChange={(e) => setGiftNote(e.target.value.slice(0, 260))}
@@ -561,7 +561,7 @@ const rzp = new window.Razorpay(options);
             <h2 className="text-sm font-bold tracking-widest text-white uppercase border-b border-white/5 pb-3">Delivery Information</h2>
             <form onSubmit={handleShippingSubmit} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Recipient Name</label>
+                <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Recipient Name</label>
                 <input
                   type="text"
                   required
@@ -573,7 +573,7 @@ const rzp = new window.Razorpay(options);
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Street Address</label>
+                <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Street Address</label>
                 <input
                   type="text"
                   required
@@ -586,7 +586,7 @@ const rzp = new window.Razorpay(options);
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">City</label>
+                  <label className="text-[10px] text-black font-bold uppercase tracking-widest block">City</label>
                   <input
                     type="text"
                     required
@@ -598,7 +598,7 @@ const rzp = new window.Razorpay(options);
                 </div>
                 
                 <div className="space-y-1.5">
-                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Postal Code</label>
+                  <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Postal Code</label>
                   <input
                     type="text"
                     required
@@ -611,7 +611,7 @@ const rzp = new window.Razorpay(options);
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Country</label>
+                <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Country</label>
                 <select
                   value={shippingForm.country}
                   onChange={(e) => setShippingForm({ ...shippingForm, country: e.target.value })}
@@ -627,7 +627,7 @@ const rzp = new window.Razorpay(options);
 
               {/* Coupon Code */}
               <div className="space-y-1.5 pt-2 border-t border-white/5">
-                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest flex items-center gap-1.5 pt-3">
+                <label className="text-[10px] text-black font-bold uppercase tracking-widest flex items-center gap-1.5 pt-3">
                   <Tag size={11} className="text-luxury-gold" />
                   Coupon Code
                 </label>
