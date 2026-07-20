@@ -1312,14 +1312,25 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
 
      
    {/* ══════════ FEATURED PRODUCTS ══════════ */}
-<div className="relative overflow-hidden bg-white py-24 sm:py-32">
+<div className="relative overflow-hidden bg-white py-24 sm:py-32" style={{
+  background:
+    "linear-gradient(180deg,#faf8f3,#f2eee5)",
+}}>
   
 
   {/* Centered Heading */}
   <div className="text-center mb-16 z-20 relative">
-    <h2 style={{ color: '#111111' }} className="text-sm font-serif font-bold tracking-[0.3em] uppercase">
-      Featured Collection
-    </h2>
+   <h2
+  style={{
+    color: "#111111",
+    fontFamily: "'Cormorant Garamond', serif",
+    fontWeight: 700,
+    letterSpacing: "0.25em",
+  }}
+  className="text-lg sm:text-xl lg:text-2xl uppercase"
+  >
+    FEATURED COLLECTION
+  </h2>
     <div className="w-12 h-[1px] bg-[#047857] mx-auto mt-4" />
   </div>
 
@@ -1330,15 +1341,18 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
         {/* --- BACKGROUND SVG LINING (unchanged, already black/green) --- */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden flex justify-center z-0">
           <svg width="100%" height="100%" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" className="opacity-100 hidden lg:block">
-            <circle cx="-50" cy="350" r="400" stroke="#000000" strokeWidth="1" fill="none" opacity="0.05" />
+            <circle cx="-50" cy="350" r="400" stroke="#000000" strokeWidth="1" fill="none" opacity="0.09" />
             <circle cx="1250" cy="300" r="400" stroke="#000000" strokeWidth="1" fill="none" opacity="0.05" />
             <path d="M -50 60 L 180 60 L 300 180 L 300 640 L 90 850" stroke="#047857" strokeWidth="1.5" fill="none" opacity="0.7" />
-            <path d="M 800 -50 L 800 350 L 950 500 L 1250 500" stroke="#047857" strokeWidth="1.5" fill="none" opacity="0.7" />
+            <path d="M 800 -50 L 800 420 L 950 570 L 1250 570" stroke="#047857" strokeWidth="1.5" fill="none" opacity="0.7" />
           </svg>
         </div>
 
         {/* Left Column: Big Watch Image and Arrows (unchanged) */}
-        <div className="flex flex-col items-center justify-center relative z-10">
+       <div
+  className="flex flex-col items-center justify-center relative z-10"
+  style={{ transform: "translateY(40px)" }}
+>
           <div className="w-full max-w-[320px] lg:max-w-md aspect-[3/4] flex items-center justify-center p-6 relative">
             <div
               className="absolute inset-0 pointer-events-none"
@@ -1353,21 +1367,40 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
               alt={featured[selectedProductIndex].name}
               className="max-h-full max-w-full object-contain drop-shadow-[0_15px_35px_rgba(0,0,0,0.25)] z-10"
               initial={{ opacity: 0, scale: 0.9, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
+              animate={{
+              opacity: 1,
+              scale: 1,
+              y: [0, -12, 0],
+              rotate: [0, 1, -1, 0]
+              }}
+
+              transition={{
+              opacity: { duration: 0.5 },
+              scale: { duration: 0.5 },
+              y: {
+              repeat: Infinity,
+              duration: 4,
+              ease: "easeInOut"
+              },
+              rotate: {
+              repeat: Infinity,
+              duration: 8,
+              ease: "easeInOut"
+                }
+              }}
             />
           </div>
 
           <div className="flex mt-2 z-20">
             <button
               onClick={() => setSelectedProductIndex((prev) => (prev === 0 ? featured.length - 1 : prev - 1))}
-              className="w-10 h-10 border border-[#10b981]/40 hover:border-[#10b981] bg-[#12110f]/80 text-[#10b981] transition-all duration-300 flex items-center justify-center cursor-pointer"
+              className="w-10 h-10 border border-[#047857] bg-white text-[#047857] hover:bg-[#047857] hover:text-white transition-all duration-300 flex items-center justify-center cursor-pointer"
             >
               <ChevronLeft size={18} />
             </button>
             <button
               onClick={() => setSelectedProductIndex((prev) => (prev === featured.length - 1 ? 0 : prev + 1))}
-              className="w-10 h-10 border-y border-r border-[#10b981]/40 hover:border-[#10b981] bg-[#12110f]/80 text-[#10b981] transition-all duration-300 flex items-center justify-center cursor-pointer"
+              className="w-10 h-10 border border-[#047857] bg-white text-[#047857] hover:bg-[#047857] hover:text-white transition-all duration-300 flex items-center justify-center cursor-pointer"
             >
               <ChevronRight size={18} />
             </button>
@@ -1379,12 +1412,41 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
 
           <div className="space-y-4">
             <h3
-              style={{ color: '#111111' }}
-              className="text-3xl sm:text-4xl lg:text-5xl font-serif italic font-light tracking-wide uppercase leading-tight"
-            >
-              {featured[selectedProductIndex].name}
-            </h3>
+  className="text-4xl sm:text-5xl lg:text-6xl uppercase leading-none"
+  style={{
+    color: "#111111",
+    fontFamily: "'Cormorant Garamond', serif",
+    fontWeight: 500,
+    fontStyle: "italic",
+    letterSpacing: "0.03em",
+  }}
+>
+  {featured[selectedProductIndex].name.split(" ").slice(0, 1).join(" ")}
+</h3>
 
+<p
+  style={{
+    color: "#4b4b4b",
+    fontFamily: "'Cormorant Garamond', serif",
+    fontSize: "1.8rem",
+    letterSpacing: "0.05em",
+  }}
+  className="uppercase"
+>
+  {featured[selectedProductIndex].name
+    .split(" ")
+    .slice(1)
+    .join(" ")}
+</p>
+            <p
+  className="uppercase text-sm font-bold tracking-[0.35em]"
+  style={{
+    color: "#047857",
+    letterSpacing: "0.25em",
+  }}
+>
+  PRECISION AT EVERY LEVEL
+</p>
             <p
               style={{ color: '#047857' }}
               className="text-xl sm:text-2xl font-serif italic font-light tracking-wider uppercase"
@@ -1392,7 +1454,17 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
               {featured[selectedProductIndex].id?.startsWith('ap-')
                 ? `£ ${featured[selectedProductIndex].price.toLocaleString()}`
                 : formatPrice(getDiscountedPrice(featured[selectedProductIndex]), currentCurrency)}
-            </p>
+            </p><button
+  onClick={() =>
+    onPageChange("product-detail", {
+      id: featured[selectedProductIndex].id,
+    })
+  }
+  className="uppercase font-bold text-xs tracking-[0.28em] border-b border-black pb-1 hover:text-[#047857] transition-all duration-300"
+>
+  EXPLORE
+</button>
+
           </div>
 
           <div className="pt-4 w-full flex justify-center lg:justify-start">
