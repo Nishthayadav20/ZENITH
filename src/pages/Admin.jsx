@@ -379,6 +379,7 @@ export default function Admin({ onPageChange }) {
   const [newBlog, setNewBlog] = useState({ title: '', category: 'Horology', image: '', content: '', author: '' });
   const [editingBlogId, setEditingBlogId] = useState(null);
   const [editBlogForm, setEditBlogForm] = useState(null);
+  const [uploadingBlogImage, setUploadingBlogImage] = useState(false);
 
   const handleStrapImageChange = async (e, isEdit = false) => {
     const file = e.target.files[0];
@@ -503,6 +504,66 @@ export default function Admin({ onPageChange }) {
       alert(res?.message || 'Failed to create blog post.');
     }
   };
+
+  const handleBlogImageUpload = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  setUploadingBlogImage(true);
+  try {
+    const formData = new FormData();
+    formData.append('image', file);
+    const token = localStorage.getItem('khroniq_token');
+
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      setNewBlog({ ...newBlog, image: data.imageUrl });
+    } else {
+      alert(data.message || 'Failed to upload image');
+    }
+  } catch (error) {
+    console.error('Blog image upload error:', error);
+    alert('Failed to upload image');
+  } finally {
+    setUploadingBlogImage(false);
+  }
+};
+
+const handleEditBlogImageUpload = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  setUploadingBlogImage(true);
+  try {
+    const formData = new FormData();
+    formData.append('image', file);
+    const token = localStorage.getItem('khroniq_token');
+
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      setEditBlogForm({ ...editBlogForm, image: data.imageUrl });
+    } else {
+      alert(data.message || 'Failed to upload image');
+    }
+  } catch (error) {
+    console.error('Blog image upload error:', error);
+    alert('Failed to upload image');
+  } finally {
+    setUploadingBlogImage(false);
+  }
+};
 
   const handleDeleteBlog = async (blogId) => {
     if (window.confirm('Are you sure you want to delete this blog post?')) {
@@ -2819,14 +2880,25 @@ const handleEditImageUpload = async (e) => {
                 </div>
 
                 <div className="md:col-span-2 space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Featured Image URL / Path</label>
+                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Featured Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleBlogImageUpload}
+                    disabled={uploadingBlogImage}
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
+                  />
                   <input
                     type="text"
                     value={newBlog.image}
                     onChange={(e) => setNewBlog({ ...newBlog, image: e.target.value })}
-                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
-                    placeholder="e.g. /assets/gentleman_lifestyle.png"
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 mt-1.5 focus:outline-none"
+                    placeholder="Or enter image path/URL manually (e.g. /assets/gentleman_lifestyle.png)"
                   />
+                  {uploadingBlogImage && <p className="text-[10px] text-luxury-gold">Uploading...</p>}
+                  {newBlog.image && !uploadingBlogImage && (
+                    <img src={newBlog.image} alt="Preview" className="mt-2 h-20 w-20 object-cover rounded border border-white/10" />
+                  )}
                 </div>
 
                 <div className="md:col-span-2 space-y-1.5">
@@ -2894,14 +2966,25 @@ const handleEditImageUpload = async (e) => {
                 </div>
 
                 <div className="md:col-span-2 space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Featured Image URL / Path</label>
+                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Featured Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleEditBlogImageUpload}
+                    disabled={uploadingBlogImage}
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
+                  />
                   <input
                     type="text"
                     value={editBlogForm.image}
                     onChange={(e) => setEditBlogForm({ ...editBlogForm, image: e.target.value })}
-                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
-                    placeholder="Image URL"
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 mt-1.5 focus:outline-none"
+                    placeholder="Or enter image URL manually"
                   />
+                  {uploadingBlogImage && <p className="text-[10px] text-luxury-gold">Uploading...</p>}
+                  {editBlogForm.image && !uploadingBlogImage && (
+                    <img src={editBlogForm.image} alt="Preview" className="mt-2 h-20 w-20 object-cover rounded border border-white/10" />
+                  )}
                 </div>
 
                 <div className="md:col-span-2 space-y-1.5">
