@@ -318,4 +318,135 @@ router.post('/reset-password/:token', async (req, res) => {
   }
 });
 
+// @route   POST /api/auth/check-admin
+// @desc    Check whether an email belongs to an admin account (no data revealed beyond that)
+// @access  Public
+router.post('/check-admin', async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.json({ success: true, isAdmin: false });
+  }
+
+  try {
+    const user = await User.findOne({ email: email.trim().toLowerCase() });
+    res.json({ success: true, isAdmin: !!(user && user.role === 'admin') });
+  } catch (error) {
+    console.error('Check admin error:', error);
+    res.json({ success: true, isAdmin: false });
+  }
+});
+
+// @route   POST /api/auth/admin/request-code
+// @desc    Email a one-time login code to an admin account
+// @access  Public
+router.post('/admin/request-code', async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ success: false, message: 'Please enter your email.' });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+
+    // Don't reveal whether the account exists or is an admin
+    if (!user || user.role !== 'admin') {
+      return res.json({ success: true, message: 'If that email belongs to an admin account, a code has been sent.' });
+    }
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit code
+    const hashedCode = crypto.createHash('sha256').update(code).digest('hex');
+
+    user.adminLoginCode = hashedCode;
+    user.adminLoginCodeExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
+    await user.save();
+
+    await sendEmail({
+      to: user.email,
+      subject: 'KHRONIQ Admin - Your Sign-In Code',
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;background:#ffffff;">
+          <div style="background:#1a1a1a;padding:24px 32px;text-align:center;">
+            <span style="color:#ffffff;font-size:20px;font-weight:bold;letter-spacing:2px;">KHRONIQ</span>
+          </div>
+          <div style="padding:32px;">
+            <h2 style="color:#1a1a1a;margin-top:0;">Your admin sign-in code</h2>
+            <p style="color:#444;font-size:14px;line-height:1.6;">Hello ${user.name},</p>
+            <p style="color:#444;font-size:14px;line-height:1.6;">
+              Use this code to sign in to the KHRONIQ admin panel. This code is valid for <strong>10 minutes</strong>.
+            </p>
+            <div style="text-align:center;margin:32px 0;">
+              <span style="background:#f6f6f6;color:#1a1a1a;padding:14px 32px;font-size:24px;font-weight:bold;letter-spacing:6px;border-radius:2px;display:inline-block;">
+                ${code}
+              </span>
+            </div>
+            <p style="color:#999;font-size:12px;line-height:1.6;">
+              If you didn't request this, you can safely ignore this email.
+            </p>
+          </div>
+          <div style="background:#f6f6f6;padding:16px 32px;text-align:center;">
+            <p style="color:#999;font-size:11px;margin:0;">© ${new Date().getFullYear()} KHRONIQ Watches. All rights reserved.</p>
+          </div>
+        </div>
+      `
+    });
+
+    res.json({ success: true, message: 'If that email belongs to an admin account, a code has been sent.' });
+  } catch (error) {
+    console.error('Admin code request error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// @route   POST /api/auth/admin/verify-code
+// @desc    Verify an admin's emailed code and log them in
+// @access  Public
+router.post('/admin/verify-code', async (req, res) => {
+  const { email, code } = req.body;
+
+  if (!email || !code) {
+    return res.status(400).json({ success: false, message: 'Please enter the code sent to your email.' });
+  }
+
+  try {
+    const user = await User.findOne({ email, role: 'admin' });
+
+    if (!user || !user.adminLoginCode || !user.adminLoginCodeExpire) {
+      return res.status(401).json({ success: false, message: 'Invalid or expired code.' });
+    }
+
+    if (user.adminLoginCodeExpire < Date.now()) {
+      return res.status(401).json({ success: false, message: 'This code has expired. Please request a new one.' });
+    }
+
+    const hashedCode = crypto.createHash('sha256').update(code).digest('hex');
+    if (hashedCode !== user.adminLoginCode) {
+      return res.status(401).json({ success: false, message: 'Invalid or expired code.' });
+    }
+
+    user.adminLoginCode = undefined;
+    user.adminLoginCodeExpire = undefined;
+    user.loginAttempts = 0;
+    user.lockUntil = null;
+    await user.save();
+
+    const token = generateToken(user);
+
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    console.error('Admin code verify error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
 export default router;

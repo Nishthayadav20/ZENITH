@@ -622,6 +622,64 @@ export const logoutUser = () => (dispatch) => {
   dispatch(logoutUserAction());
 };
 
+export const checkAdminEmail = (email) => async () => {
+  try {
+    const res = await fetch('/api/auth/check-admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    return { isAdmin: !!data.isAdmin };
+  } catch (error) {
+    return { isAdmin: false };
+  }
+};
+
+export const requestAdminCode = (email) => async () => {
+  try {
+    const res = await fetch('/api/auth/admin/request-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    return { success: data.success, message: data.message };
+  } catch (error) {
+    return { success: false, message: 'Failed to send code. Server error.' };
+  }
+};
+
+export const verifyAdminCode = (email, code) => async (dispatch, getState) => {
+  try {
+    const res = await fetch('/api/auth/admin/verify-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, code })
+    });
+    const data = await res.json();
+    if (data.success) {
+      localStorage.setItem('khroniq_token', data.token);
+      dispatch(setCurrentUserAction(data.user));
+      dispatch(fetchOrders());
+
+      const guestCart = getState().watch.cart;
+      if (guestCart && guestCart.length > 0) {
+        dispatch(syncCartWithDb(guestCart));
+      } else {
+        dispatch(fetchCartFromDb());
+      }
+      dispatch(fetchWishlistFromDb());
+
+      return { success: true, role: data.user.role };
+    } else {
+      return { success: false, message: data.message };
+    }
+  } catch (error) {
+    return { success: false, message: 'Verification failed. Server error.' };
+  }
+};
+
 export const updateUserProfile = (name, email, shippingAddress) => async (dispatch) => {
   try {
     const res = await fetch('/api/auth/profile', {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { loginUser, registerUser } from '../store/slices/watchSlice';
+import { loginUser, registerUser, checkAdminEmail, requestAdminCode, verifyAdminCode } from '../store/slices/watchSlice';
 import { Star, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { forgotPassword } from '../store/slices/watchSlice';
 
@@ -24,6 +24,25 @@ export default function Login({ params, onPageChange }) {
   const [forgotSuccess, setForgotSuccess] = useState(false);
   const [showPasswordPopup, setShowPasswordPopup] = useState(false);
   const [lockoutCountdown, setLockoutCountdown] = useState(0);
+  const [isAdminEmail, setIsAdminEmail] = useState(false);
+  const [adminStep, setAdminStep] = useState('email'); // 'email' | 'code'
+  const [adminCode, setAdminCode] = useState('');
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    // Reset admin detection while typing a new email — re-checked on blur
+    if (authMode === 'login') {
+      setIsAdminEmail(false);
+      setAdminStep('email');
+      setAdminCode('');
+    }
+  };
+
+  const handleEmailBlur = async () => {
+    if (authMode !== 'login' || !email) return;
+    const res = await dispatch(checkAdminEmail(email));
+    setIsAdminEmail(res.isAdmin);
+  };
 
   useEffect(() => {
     if (lockoutCountdown <= 0) return;
@@ -47,6 +66,29 @@ export default function Login({ params, onPageChange }) {
     e.preventDefault();
     setErrorMsg('');
     setForgotSuccess(false);
+
+    if (authMode === 'login' && isAdminEmail) {
+      if (adminStep === 'email') {
+        const res = await dispatch(requestAdminCode(email));
+        if (res.success) {
+          setAdminStep('code');
+        } else {
+          setErrorMsg(res.message || 'Failed to send code.');
+        }
+      } else {
+        if (!adminCode) {
+          setErrorMsg('Please enter the code sent to your email.');
+          return;
+        }
+        const res = await dispatch(verifyAdminCode(email, adminCode));
+        if (res.success) {
+          onPageChange('admin');
+        } else {
+          setErrorMsg(res.message || 'Invalid code.');
+        }
+      }
+      return;
+    }
 
     if (authMode === 'forgot') {
   if (!email) {
@@ -132,7 +174,7 @@ export default function Login({ params, onPageChange }) {
         {authMode !== 'forgot' ? (
           <div className="flex border-b border-white/5">
             <button
-              onClick={() => { setAuthMode('login'); setErrorMsg(''); }}
+              onClick={() => { setAuthMode('login'); setErrorMsg(''); setIsAdminEmail(false); setAdminStep('email'); setAdminCode(''); }}
               className={`flex-1 pb-3 text-center text-xs font-bold uppercase tracking-wider border-b-2 cursor-pointer transition ${
                 authMode === 'login' ? 'border-luxury-text text-luxury-text' : 'border-transparent text-gray-500 hover:text-gray-300'
               }`}
@@ -141,7 +183,7 @@ export default function Login({ params, onPageChange }) {
             </button>
             
             <button
-              onClick={() => { setAuthMode('register'); setErrorMsg(''); }}
+              onClick={() => { setAuthMode('register'); setErrorMsg(''); setIsAdminEmail(false); setAdminStep('email'); setAdminCode(''); }}
               className={`flex-1 pb-3 text-center text-xs font-bold uppercase tracking-wider border-b-2 cursor-pointer transition ${
                 authMode === 'register' ? 'border-luxury-text text-luxury-text' : 'border-transparent text-gray-500 hover:text-gray-300'
               }`}
@@ -179,7 +221,7 @@ export default function Login({ params, onPageChange }) {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Georges Favre-Jacot"
+                placeholder="Username"
                 className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
               />
             </div>
@@ -191,15 +233,39 @@ export default function Login({ params, onPageChange }) {
             <input
               type="email"
               required
+              disabled={authMode === 'login' && isAdminEmail && adminStep === 'code'}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
+              onBlur={handleEmailBlur}
               placeholder="customer@domain.com"
-              className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
+              className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold disabled:opacity-50"
             />
           </div>
 
-          {/* Password (Login & Register Only) */}
-          {authMode !== 'forgot' && (
+          {/* Admin Sign-In Code (shown automatically once an admin email is detected) */}
+          {authMode === 'login' && isAdminEmail && adminStep === 'code' && (
+            <div className="space-y-1.5">
+              <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Sign-In Code</label>
+              <input
+                type="text"
+                required
+                value={adminCode}
+                onChange={(e) => setAdminCode(e.target.value)}
+                placeholder="6-digit code"
+                className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 tracking-[0.3em] focus:outline-none focus:border-luxury-gold"
+              />
+              <button
+                type="button"
+                onClick={() => { setAdminStep('email'); setAdminCode(''); setErrorMsg(''); }}
+                className="text-[9px] text-gray-400 hover:text-white transition uppercase font-semibold cursor-pointer"
+              >
+                Change email
+              </button>
+            </div>
+          )}
+
+          {/* Password (Login & Register Only — hidden once an admin email is detected) */}
+          {authMode !== 'forgot' && !(authMode === 'login' && isAdminEmail) && (
             <div className="space-y-1.5">
               <div className="flex justify-between items-center">
                 <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Password</label>
@@ -254,6 +320,8 @@ export default function Login({ params, onPageChange }) {
               ? 'Create Account' 
               : authMode === 'forgot'
               ? 'Request Reset Link'
+              : authMode === 'login' && isAdminEmail
+              ? (adminStep === 'email' ? 'Send Code' : 'Verify & Sign In')
               : lockoutCountdown > 0
               ? `Locked (${lockoutCountdown}s)`
               : 'Authenticate Credentials'

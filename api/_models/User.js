@@ -10,6 +10,8 @@ const userSchema = new mongoose.Schema({
   lockUntil: { type: Date },
   resetPasswordToken: { type: String },
   resetPasswordExpire: { type: Date },
+  adminLoginCode: { type: String },
+  adminLoginCodeExpire: { type: Date },
   cart: [{
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
     quantity: { type: Number, required: true, default: 1 }
