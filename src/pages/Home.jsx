@@ -427,6 +427,27 @@ function LifestyleShowcaseSlider({ products, onPageChange, homeImages }) {
       lifestyleImg: homeImages.hero_slide2_lifestyle || '/assets/lifestyle_green.png',
       productImg: homeImages.hero_slide2_product || '/assets/watch_green.jpg',
       lifestyleStyle: { filter: 'brightness(0.78) contrast(1.12) saturate(1.08)', backgroundPosition: 'center 35%' },
+    },
+    {
+      name: 'MIDNIGHT BLACK',
+      fullName: 'Khroniq Midnight Black',
+      lifestyleImg: '/assets/lifestyle_black_new.png',
+      productImg: '/assets/watch_uploaded_1.jpg',
+      lifestyleStyle: { filter: 'brightness(0.85) contrast(1.1)', backgroundPosition: 'center 30%' },
+    },
+    {
+      name: 'COBALT BLUE',
+      fullName: 'Khroniq Cobalt Blue',
+      lifestyleImg: '/assets/lifestyle_blue_new.png',
+      productImg: '/assets/watch_uploaded_2.jpg',
+      lifestyleStyle: { filter: 'brightness(0.85) contrast(1.1)', backgroundPosition: 'center 30%' },
+    },
+    {
+      name: 'STERLING SILVER',
+      fullName: 'Khroniq Sterling Silver',
+      lifestyleImg: '/assets/lifestyle_silver_new.png',
+      productImg: '/assets/watch_uploaded_3.jpg',
+      lifestyleStyle: { filter: 'brightness(0.85) contrast(1.1)', backgroundPosition: 'center 30%' },
     }
   ];
 
@@ -438,18 +459,16 @@ function LifestyleShowcaseSlider({ products, onPageChange, homeImages }) {
     if (!isPlaying) return;
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % slides.length);
-    }, 5000);
+    }, 3500); // 3.5 seconds
     return () => clearInterval(interval);
-  }, [isPlaying, slides.length]);
+  }, [isPlaying, slides.length, activeIndex]);
 
 
   const handlePrev = () => {
-    setIsPlaying(false);
     setActiveIndex((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
   const handleNext = () => {
-    setIsPlaying(false);
     setActiveIndex((prev) => (prev + 1) % slides.length);
   };
 
@@ -559,7 +578,7 @@ function LifestyleShowcaseSlider({ products, onPageChange, homeImages }) {
               <button 
                 onClick={handlePrev}
                 className={`w-12 h-12 flex items-center justify-center border border-black/15 hover:border-black transition duration-300 font-bold cursor-pointer rounded-sm ${
-                  activeIndex === 2 ? 'bg-white text-black' : 'bg-black text-white hover:bg-neutral-800'
+                  activeIndex === slides.length - 1 ? 'bg-white text-black' : 'bg-black text-white hover:bg-neutral-800'
                 }`}
                 aria-label="Previous slide"
               >
@@ -571,7 +590,7 @@ function LifestyleShowcaseSlider({ products, onPageChange, homeImages }) {
               <button 
                 onClick={handleNext}
                 className={`w-12 h-12 flex items-center justify-center border border-black/15 hover:border-black transition duration-300 font-bold cursor-pointer rounded-sm ${
-                  activeIndex === 2 ? 'bg-black text-white hover:bg-neutral-800' : 'bg-white text-black'
+                  activeIndex === slides.length - 1 ? 'bg-black text-white hover:bg-neutral-800' : 'bg-white text-black'
                 }`}
                 aria-label="Next slide"
               >
