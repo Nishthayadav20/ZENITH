@@ -47,6 +47,7 @@ export default function Checkout({ params, onPageChange }) {
   const [couponLoading, setCouponLoading] = useState(false);
 
   const isGiftingJourney = localStorage.getItem('khroniq_is_gifting_journey') === 'true';
+  const giftRelation = localStorage.getItem('khroniq_gift_relation') || '';
   const [step, setStep] = useState(isGiftingJourney ? 1 : 2); // 1: Gifting, 2: Shipping, 3: Payment, 4: Success
   const [shippingForm, setShippingForm] = useState({
     fullName: currentUser?.name || '',
@@ -161,6 +162,7 @@ const handleRazorpayPayment = async () => {
     const giftingOptions = isGiftingJourney ? {
       isGifting: true,
       occasion: giftOccasion,
+      relation: giftRelation,
       note: giftNote,
       packaging: packagingType
     } : { isGifting: false };
@@ -194,6 +196,7 @@ const handleRazorpayPayment = async () => {
           setOrderReceipt(verifyRes.order);
           setStep(4);
           localStorage.setItem('khroniq_is_gifting_journey', 'false');
+          localStorage.removeItem('khroniq_gift_relation');
 
           confetti({
             particleCount: 150,

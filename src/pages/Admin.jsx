@@ -2326,18 +2326,20 @@ const handleEditImageUpload = async (e) => {
                     <th className="p-4">Order ID</th>
                     <th className="p-4">Customer</th>
                     <th className="p-4">Items</th>
+                    <th className="p-4">Address</th>
                     <th className="p-4">Charged</th>
                     <th className="p-4">Status Dispatch</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5 text-gray-300">
-                  {orders.map((o) => (
-                    <tr key={o.id} className="hover:bg-white/5 transition">
-                      <td className="p-4 font-mono font-bold text-white tracking-wider uppercase">
+{orders.map((o) => (
+                    <React.Fragment key={o.id}>
+                    <tr className="hover:bg-white/5 transition">
+                      <td className="p-4 font-mono font-bold text-black tracking-wider uppercase">
                         <div className="flex items-center gap-1.5">
                           <span>{o.id}</span>
                           {(o.giftingOptions?.isGifting || o.giftingOptions?.occasion || o.giftingOptions?.note) && (
-                            <Gift size={13} className="text-luxury-gold animate-pulse" title={`Gifting Order: ${o.giftingOptions.occasion || 'Yes'}`} />
+                            <Gift size={13} className="text-black animate-pulse" title={`Gifting Order: ${o.giftingOptions.occasion || 'Yes'}`} />
                           )}
                         </div>
                       </td>
@@ -2350,31 +2352,31 @@ const handleEditImageUpload = async (e) => {
                           {o.items.map(item => `${item.name} (x${item.quantity})`).join(', ')}
                         </p>
                         {(o.giftingOptions?.isGifting || o.giftingOptions?.occasion || o.giftingOptions?.note) && (
-                          <div className="mt-1 text-[10px] text-luxury-gold space-y-0.5 bg-luxury-gold/5 border border-luxury-gold/20 p-2 rounded">
+                          <div className="mt-1 text-[10px] text-black space-y-0.5 bg-luxury-gold/5 border border-luxury-gold/20 p-2 rounded">
                             <p className="font-bold uppercase tracking-wider">🎁 Curated Gift Order</p>
-                            {o.giftingOptions.occasion && <p><span className="font-semibold text-gray-400">Occasion:</span> {o.giftingOptions.occasion}</p>}
-                            {o.giftingOptions.packaging && <p><span className="font-semibold text-gray-400">Packaging:</span> {o.giftingOptions.packaging === 'couple' ? 'Couple Packaging' : 'Single Packaging'}</p>}
+                            {o.giftingOptions.occasion && <p><span className="font-semibold text-black">Occasion:</span> {o.giftingOptions.occasion}</p>}
+                            {o.giftingOptions.packaging && <p><span className="font-semibold text-black">Packaging:</span> {o.giftingOptions.packaging === 'couple' ? 'Couple Packaging' : 'Single Packaging'}</p>}
                             {o.giftingOptions.note && (
                               <div className="mt-1.5 pt-1.5 border-t border-white/5">
                                 <button
                                   type="button"
                                   onClick={() => setExpandedNotes(prev => ({ ...prev, [o.id]: !prev[o.id] }))}
-                                  className="action-btn text-[9px] font-black tracking-widest uppercase bg-luxury-gold/20 hover:bg-luxury-gold/30 text-luxury-gold px-2 py-0.5 rounded cursor-pointer transition"
+                                  className="action-btn text-[9px] font-black tracking-widest uppercase bg-luxury-gold/20 hover:bg-luxury-gold/30 text-black px-2 py-0.5 rounded cursor-pointer transition"
                                 >
-                                  NOTE {expandedNotes[o.id] ? '▲' : '▼'}
+                                  {expandedNotes[o.id] ? '▲ Hide Note' : '▼ View Note'}
                                 </button>
-                                {expandedNotes[o.id] && (
-                                  <p className="italic text-gray-300 mt-1 bg-black/40 p-2 border border-white/5 rounded leading-relaxed whitespace-pre-wrap">
-                                    "{o.giftingOptions.note}"
-                                  </p>
-                                )}
                               </div>
                             )}
                           </div>
                         )}
-                        
                       </td>
-                      <td className="p-4 font-bold text-luxury-gold">{formatPrice(o.total, currentCurrency)}</td>
+                      <td className="p-4 max-w-[180px] text-[11px] text-gray-300 leading-relaxed">
+                        <p className="font-semibold text-white">{o.shippingDetails?.fullName}</p>
+                        <p>{o.shippingDetails?.streetAddress}</p>
+                        <p>{o.shippingDetails?.city}, {o.shippingDetails?.zipCode}</p>
+                        <p className="text-gray-500">{o.shippingDetails?.country}</p>
+                      </td>
+                      <td className="p-4 font-bold text-black">{formatPrice(o.total, currentCurrency)}</td>
                       <td className="p-4">
                         <select
                           value={o.status}
@@ -2400,6 +2402,19 @@ const handleEditImageUpload = async (e) => {
                         </select>
                       </td>
                     </tr>
+                    {expandedNotes[o.id] && o.giftingOptions?.note && (
+                      <tr className="bg-luxury-gold/5">
+                        <td colSpan={6} className="px-4 pb-4 pt-0">
+                          <div className="bg-black/40 border border-luxury-gold/20 rounded-md p-4">
+                            <p className="text-[9px] font-black uppercase tracking-widest text-luxury-gold mb-2">Gift Note</p>
+                            <p className="italic text-gray-200 text-sm leading-relaxed whitespace-pre-wrap">
+                              "{o.giftingOptions.note}"
+                            </p>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>

@@ -98,7 +98,8 @@ router.post('/verify', protect, async (req, res) => {
     discount,
     total,
     shippingDetails,
-    couponCode
+    couponCode,
+    giftingOptions
   } = req.body;
 
   try {
@@ -186,7 +187,8 @@ router.post('/verify', protect, async (req, res) => {
         method: 'Razorpay',
         last4: razorpay_payment_id.slice(-4)
       },
-      status: 'Paid'
+      status: 'Paid',
+      giftingOptions: giftingOptions || { isGifting: false }
     });
 
     const createdOrder = await order.save();
