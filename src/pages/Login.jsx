@@ -215,7 +215,7 @@ export default function Login({ params, onPageChange }) {
           {/* Name (Registration Only) */}
           {authMode === 'register' && (
             <div className="space-y-1.5">
-              <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Full Name</label>
+              <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Full Name</label>
               <input
                 type="text"
                 required
@@ -229,7 +229,7 @@ export default function Login({ params, onPageChange }) {
 
           {/* Email (Always Needed) */}
           <div className="space-y-1.5">
-            <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Email Address</label>
+            <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Email Address</label>
             <input
               type="email"
               required
@@ -238,14 +238,14 @@ export default function Login({ params, onPageChange }) {
               onChange={handleEmailChange}
               onBlur={handleEmailBlur}
               placeholder="customer@domain.com"
-              className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold disabled:opacity-50"
+              className="w-full bg-luxury-dark border border-white/10 rounded text-black text-xs p-3 focus:outline-none focus:border-luxury-gold disabled:opacity-50"
             />
           </div>
 
           {/* Admin Sign-In Code (shown automatically once an admin email is detected) */}
           {authMode === 'login' && isAdminEmail && adminStep === 'code' && (
             <div className="space-y-1.5">
-              <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Sign-In Code</label>
+              <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Sign-In Code</label>
               <input
                 type="text"
                 required
@@ -268,7 +268,7 @@ export default function Login({ params, onPageChange }) {
           {authMode !== 'forgot' && !(authMode === 'login' && isAdminEmail) && (
             <div className="space-y-1.5">
               <div className="flex justify-between items-center">
-                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Password</label>
+                <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Password</label>
                 <button
                   type="button"
                   onClick={() => { setAuthMode('forgot'); setErrorMsg(''); }}

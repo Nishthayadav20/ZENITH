@@ -462,7 +462,7 @@ export default function Profile({ params, onPageChange }) {
 
               <form onSubmit={handleSettingsSubmit} className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Full Name</label>
+                  <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Full Name</label>
                   <input
                     type="text"
                     required
@@ -473,7 +473,7 @@ export default function Profile({ params, onPageChange }) {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Email Address</label>
+                  <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Email Address</label>
                   <input
                     type="email"
                     required
@@ -487,7 +487,7 @@ export default function Profile({ params, onPageChange }) {
                 <h2 className="text-sm font-bold uppercase tracking-widest text-white border-b border-white/5 pt-6 pb-3">Default Shipping Address</h2>
 
                 <div className="space-y-1.5">
-                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Street Address</label>
+                  <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Street Address</label>
                   <input
                     type="text"
                     value={streetAddress}
@@ -499,7 +499,7 @@ export default function Profile({ params, onPageChange }) {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">City</label>
+                    <label className="text-[10px] text-black font-bold uppercase tracking-widest block">City</label>
                     <input
                       type="text"
                       value={city}
@@ -509,7 +509,7 @@ export default function Profile({ params, onPageChange }) {
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">State / Region</label>
+                    <label className="text-[10px] text-black font-bold uppercase tracking-widest block">State / Region</label>
                     <input
                       type="text"
                       value={stateVal}
@@ -522,7 +522,7 @@ export default function Profile({ params, onPageChange }) {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Postal Code</label>
+                    <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Postal Code</label>
                     <input
                       type="text"
                       value={postalCode}
@@ -532,7 +532,7 @@ export default function Profile({ params, onPageChange }) {
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Country</label>
+                    <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Country</label>
                     <input
                       type="text"
                       value={country}
@@ -544,7 +544,7 @@ export default function Profile({ params, onPageChange }) {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Phone Number</label>
+                  <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Phone Number</label>
                   <input
                     type="text"
                     value={phone}
