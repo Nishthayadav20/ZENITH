@@ -734,10 +734,10 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
   const [homeImages, setHomeImages] = useState({});
   const [selectedProductIndex, setSelectedProductIndex] = useState(0);
   const spotlightImages = [
-  "/assets/media1.jpg",
-  "/assets/media2.jpg",
-  "/assets/media3.jpg",
-  "/assets/media4.jpg",
+  "/assets/spotlight_green_side.png",
+  "/assets/watch_red.jpg",
+  "/assets/t6.png",
+  "/assets/watch_uploaded_3.jpg",
 ];
 
 const [spotlightIndex, setSpotlightIndex] = useState(0);
@@ -911,7 +911,13 @@ const prevSpotlight = () => {
     const timer = setInterval(nextSlide, 1600);
     return () => clearInterval(timer);
   }, [nextSlide, visibleCards, products.length, currentIndex]);
+  useEffect(() => {
+  const interval = setInterval(() => {
+    setSpotlightIndex((prev) => (prev + 1) % spotlightImages.length);
+  }, 3000); // 3 sec
 
+  return () => clearInterval(interval);
+}, []);
   const fallbackFeatured = [
     {
       id: 'kq-01',
@@ -1203,59 +1209,26 @@ const prevSpotlight = () => {
 >
 
   <AnimatePresence mode="sync">
-<motion.div
+  <motion.div
   key={spotlightIndex}
-  onClick={nextSpotlight}
-  className="absolute inset-0 bg-cover bg-center cursor-pointer"
+  className="absolute inset-0 bg-cover bg-center"
   style={{
-    backgroundImage: `url('${spotlightImages[spotlightIndex]}')`,
-    backgroundPosition: "center center",
-    transformOrigin: "left center",
-    backfaceVisibility: "hidden",
+    backgroundImage: `url(${spotlightImages[spotlightIndex]})`,
   }}
-  initial={{
-    rotateY: -90,
-    scale: 0.98,
-  }}
-  animate={{
-    rotateY: 0,
-    scale: 1,
-  }}
-  exit={{
-    rotateY: 90,
-    scale: 0.98,
-  }}
+  initial={{ opacity: 0, scale: 1.06 }}
+  animate={{ opacity: 1, scale: 1 }}
+  exit={{ opacity: 0, scale: 0.98 }}
   transition={{
-    duration: 0.7,
-    ease: [0.22, 1, 0.36, 1],
+    duration: 0.8,
+    ease: "easeInOut",
   }}
-  whileHover={{ scale: 1.03 }}
 />
   </AnimatePresence>
 
   <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-transparent to-transparent" />
 
   {/* Left Arrow */}
-  <button
-    onClick={(e) => {
-      e.stopPropagation();
-      prevSpotlight();
-    }}
-    className="absolute bottom-6 left-6 z-20 w-12 h-12 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-[#047857] transition"
-  >
-    <ChevronLeft size={18} />
-  </button>
-
-  {/* Right Arrow */}
-  <button
-    onClick={(e) => {
-      e.stopPropagation();
-      nextSpotlight();
-    }}
-    className="absolute bottom-6 right-6 z-20 w-12 h-12 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-[#047857] transition"
-  >
-    <ChevronRight size={18} />
-  </button>
+ 
 
 </div>
         </motion.div>
