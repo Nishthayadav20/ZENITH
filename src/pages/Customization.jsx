@@ -177,6 +177,7 @@ export default function Customization({ onPageChange, params }) {
   const [strapMaterial,   setStrapMaterial]   = useState(null);
   const [caseFinish,      setCaseFinish]      = useState(null);
   const [engraving,       setEngraving]       = useState('');
+  const [addedToCart,     setAddedToCart]     = useState(false);
   const options = selectedProduct ? buildOptions(selectedProduct) : null;
 
   const dialPrice = useMemo(() => {
