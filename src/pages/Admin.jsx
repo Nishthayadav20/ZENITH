@@ -1252,7 +1252,7 @@ const handleEditImageUpload = async (e) => {
             <div className="flex items-center gap-2">
               <button
                 onClick={handleDownloadInventoryCSV}
-                className="px-4 py-2 bg-luxury-gold/10 hover:bg-luxury-gold/20 border border-luxury-gold/30 text-luxury-gold text-[10px] font-black tracking-widest uppercase rounded flex items-center gap-2 cursor-pointer transition"
+                className="px-4 py-2 bg-luxury-gold/10 hover:bg-luxury-gold/20 border border-black text-black text-[10px] font-black tracking-widest uppercase rounded flex items-center gap-2 cursor-pointer transition"
               >
                 <Download size={13} />
                 Export Serial & Claim Codes (CSV)

@@ -74,7 +74,6 @@ router.post('/sync', protect, async (req, res) => {
         productId: item.productId._id,
         name: item.productId.name,
         image: item.productId.image,
-        price: item.productId.price,
         stock: item.productId.stock,
         quantity: item.quantity
       };
@@ -121,7 +120,6 @@ router.post('/add', protect, async (req, res) => {
         productId: item.productId._id,
         name: item.productId.name,
         image: item.productId.image,
-        price: item.productId.price,
         stock: item.productId.stock,
         quantity: item.quantity
       };
@@ -169,7 +167,6 @@ router.post('/update', protect, async (req, res) => {
         productId: item.productId._id,
         name: item.productId.name,
         image: item.productId.image,
-        price: item.productId.price,
         stock: item.productId.stock,
         quantity: item.quantity
       };
@@ -204,7 +201,6 @@ router.delete('/:productId', protect, async (req, res) => {
         productId: item.productId._id,
         name: item.productId.name,
         image: item.productId.image,
-        price: item.productId.price,
         stock: item.productId.stock,
         quantity: item.quantity
       };

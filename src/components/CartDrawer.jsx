@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateCartQty, removeFromCart, selectCurrentCurrency, formatPrice } from '../store/slices/watchSlice';
+import { updateCartQty, removeFromCart, selectCurrentCurrency, formatPrice, getDiscountedPrice  } from '../store/slices/watchSlice';
 import { X, Trash2, ShoppingBag, Plus, Minus, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -20,8 +20,7 @@ export default function CartDrawer({ isOpen, onClose, onPageChange }) {
     };
   }).filter(item => item.product !== undefined);
 
-  const subtotal = cartItemsWithDetails.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-
+const subtotal = cartItemsWithDetails.reduce((sum, item) => sum + ((item.price !== undefined ? item.price : getDiscountedPrice(item.product)) * item.quantity), 0);
   const handleCheckoutClick = () => {
     onClose();
     if (currentUser) {
@@ -114,7 +113,7 @@ export default function CartDrawer({ isOpen, onClose, onPageChange }) {
                           </button>
                         </div>
                         <p className="text-luxury-gold-dark text-xs font-medium mt-1">
-                          {formatPrice(item.product.price, currentCurrency)} each
+                          {formatPrice(item.price !== undefined ? item.price : getDiscountedPrice(item.product), currentCurrency)} each
                         </p>
                       </div>
 
@@ -140,7 +139,7 @@ export default function CartDrawer({ isOpen, onClose, onPageChange }) {
 
                         {/* Total Price for item */}
                         <p className="text-luxury-text text-sm font-bold">
-                          {formatPrice(item.product.price * item.quantity, currentCurrency)}
+                          {formatPrice((item.price !== undefined ? item.price : getDiscountedPrice(item.product)) * item.quantity, currentCurrency)}
                         </p>
                       </div>
                     </div>

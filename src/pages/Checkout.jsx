@@ -102,7 +102,7 @@ const [processingPayment, setProcessingPayment] = useState(false);
     return { ...item, product, itemPrice };
   }).filter(item => item.product !== undefined);
 
-  const subtotal = cartItemsWithDetails.reduce((sum, item) => sum + ((item.price || item.product.price) * item.quantity), 0);
+const subtotal = cartItemsWithDetails.reduce((sum, item) => sum + (item.itemPrice * item.quantity), 0);
   const discount = appliedCoupon ? Math.round(subtotal * (appliedCoupon.discountPercent / 100)) : 0;
   const total = subtotal - discount;
 
@@ -644,7 +644,7 @@ const rzp = new window.Razorpay(options);
                     <button
                       type="button"
                       onClick={handleRemoveCoupon}
-                      className="text-gray-400 hover:text-white transition p-1 cursor-pointer"
+                      className="text-black hover:text-black transition p-1 cursor-pointer"
                       aria-label="Remove coupon"
                     >
                       <X size={14} />
@@ -663,7 +663,7 @@ const rzp = new window.Razorpay(options);
                       type="button"
                       onClick={handleApplyCoupon}
                       disabled={couponLoading}
-                      className="px-5 border border-luxury-gold text-luxury-gold font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold hover:text-luxury-dark transition flex items-center justify-center cursor-pointer disabled:opacity-50 rounded"
+                      className="px-5 border border-black text-black font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold hover:text-black transition flex items-center justify-center cursor-pointer disabled:opacity-50 rounded"
                     >
                       {couponLoading ? <Loader2 size={14} className="animate-spin" /> : 'Apply'}
                     </button>
@@ -844,18 +844,21 @@ function CheckoutSummary({ cartItems, subtotal, discount, total, zipCode }) {
       
       {/* Items list */}
       <div className="space-y-4 max-h-60 overflow-y-auto">
-        {cartItems.map((item) => (
+        {cartItems.map((item) => {
+          const itemPrice = item.price !== undefined ? item.price : getDiscountedPrice(item.product);
+          return (
           <div key={item.productId} className="flex items-center space-x-3 pb-3 border-b border-white/5 last:border-b-0 last:pb-0">
             <div className="h-12 w-12 bg-luxury-dark rounded border border-white/5 flex-shrink-0 flex items-center justify-center p-0 overflow-hidden">
               <img src={item.product.image} alt={item.product.name} className="w-full h-full object-cover" />
             </div>
             <div className="flex-1 min-w-0">
               <h4 className="text-white text-xs font-semibold truncate uppercase tracking-wide">{item.product.name}</h4>
-              <p className="text-[10px] text-gray-500">Qty: {item.quantity} × {formatPrice(item.product.price, currentCurrency)}</p>
+              <p className="text-[10px] text-gray-500">Qty: {item.quantity} × {formatPrice(itemPrice, currentCurrency)}</p>
             </div>
-            <span className="text-white text-xs font-bold">{formatPrice(item.product.price * item.quantity, currentCurrency)}</span>
+            <span className="text-white text-xs font-bold">{formatPrice(itemPrice * item.quantity, currentCurrency)}</span>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="border-t border-white/5 pt-4 space-y-2 text-xs">
