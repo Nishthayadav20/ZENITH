@@ -2279,7 +2279,7 @@ const handleEditImageUpload = async (e) => {
                         formatPrice(p.price, currentCurrency)
                       )}
                     </td>
-                    <td className="p-4 text-[11px] text-luxury-gold font-semibold uppercase tracking-widest">
+                    <td className="p-4 text-[11px] text-red-500 font-semibold uppercase tracking-widest">
                       {p.discountPercent > 0 ? `${p.discountPercent}%` : '—'}
                     </td>
                     <td className="p-4">

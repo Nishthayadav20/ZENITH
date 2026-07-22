@@ -553,22 +553,22 @@ function LifestyleShowcaseSlider({ products, onPageChange, homeImages }) {
     {
       name: 'MIDNIGHT BLACK',
       fullName: 'Khroniq Midnight Black',
-      lifestyleImg: '/assets/lifestyle_black_new.png',
-      productImg: '/assets/watch_uploaded_1.jpg',
+      lifestyleImg: '/assets/lifestyle_pink_watch_generated.png',
+      productImg: '/assets/watch_uploaded_2.jpg',
       lifestyleStyle: { filter: 'brightness(0.85) contrast(1.1)', backgroundPosition: 'center 30%' },
     },
     {
       name: 'COBALT BLUE',
       fullName: 'Khroniq Cobalt Blue',
       lifestyleImg: '/assets/lifestyle_blue_new.png',
-      productImg: '/assets/watch_uploaded_2.jpg',
+      productImg: '/assets/watch_uploaded_1.jpg',
       lifestyleStyle: { filter: 'brightness(0.85) contrast(1.1)', backgroundPosition: 'center 30%' },
     },
     {
       name: 'STERLING SILVER',
       fullName: 'Khroniq Sterling Silver',
       lifestyleImg: '/assets/lifestyle_silver_new.png',
-      productImg: '/assets/watch_uploaded_3.jpg',
+      productImg: '/assets/watch_uploaded_5.jpg',
       lifestyleStyle: { filter: 'brightness(0.85) contrast(1.1)', backgroundPosition: 'center 30%' },
     }
   ];
@@ -734,10 +734,10 @@ export default function Home({ onPageChange, onUpdatesOpen, onUpdatesClose, upda
   const [homeImages, setHomeImages] = useState({});
   const [selectedProductIndex, setSelectedProductIndex] = useState(0);
   const spotlightImages = [
-  "/assets/media1.jpg",
-  "/assets/media2.jpg",
-  "/assets/media3.jpg",
-  "/assets/media4.jpg",
+  "/assets/spotlight_green_side.png",
+  "/assets/watch_red.jpg",
+  "/assets/t6.png",
+  "/assets/watch_uploaded_3.jpg",
 ];
 
 const [spotlightIndex, setSpotlightIndex] = useState(0);
@@ -911,7 +911,13 @@ const prevSpotlight = () => {
     const timer = setInterval(nextSlide, 1600);
     return () => clearInterval(timer);
   }, [nextSlide, visibleCards, products.length, currentIndex]);
+  useEffect(() => {
+  const interval = setInterval(() => {
+    setSpotlightIndex((prev) => (prev + 1) % spotlightImages.length);
+  }, 3000); // 3 sec
 
+  return () => clearInterval(interval);
+}, []);
   const fallbackFeatured = [
     {
       id: 'kq-01',
@@ -1172,7 +1178,7 @@ const prevSpotlight = () => {
           {/* Left — text */}
           <div className="flex flex-col justify-center px-10 sm:px-16 py-16 space-y-6 bg-white">
             <Reveal dir="left" delay={0}>
-              <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-luxury-gold-dark">Featured Collection</p>
+              <p className="text-[30px] font-bold tracking-[0.25em] uppercase text-luxury-gold-dark">Featured Collection</p>
             </Reveal>
             <SlideReveal delay={0.1}>
               <h2 className="text-4xl sm:text-5xl font-serif font-bold text-luxury-text leading-tight">
@@ -1203,59 +1209,26 @@ const prevSpotlight = () => {
 >
 
   <AnimatePresence mode="sync">
-<motion.div
+  <motion.div
   key={spotlightIndex}
-  onClick={nextSpotlight}
-  className="absolute inset-0 bg-cover bg-center cursor-pointer"
+  className="absolute inset-0 bg-cover bg-center"
   style={{
-    backgroundImage: `url('${spotlightImages[spotlightIndex]}')`,
-    backgroundPosition: "center center",
-    transformOrigin: "left center",
-    backfaceVisibility: "hidden",
+    backgroundImage: `url(${spotlightImages[spotlightIndex]})`,
   }}
-  initial={{
-    rotateY: -90,
-    scale: 0.98,
-  }}
-  animate={{
-    rotateY: 0,
-    scale: 1,
-  }}
-  exit={{
-    rotateY: 90,
-    scale: 0.98,
-  }}
+  initial={{ opacity: 0, scale: 1.06 }}
+  animate={{ opacity: 1, scale: 1 }}
+  exit={{ opacity: 0, scale: 0.98 }}
   transition={{
-    duration: 0.7,
-    ease: [0.22, 1, 0.36, 1],
+    duration: 0.8,
+    ease: "easeInOut",
   }}
-  whileHover={{ scale: 1.03 }}
 />
   </AnimatePresence>
 
   <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-transparent to-transparent" />
 
   {/* Left Arrow */}
-  <button
-    onClick={(e) => {
-      e.stopPropagation();
-      prevSpotlight();
-    }}
-    className="absolute bottom-6 left-6 z-20 w-12 h-12 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-[#047857] transition"
-  >
-    <ChevronLeft size={18} />
-  </button>
-
-  {/* Right Arrow */}
-  <button
-    onClick={(e) => {
-      e.stopPropagation();
-      nextSpotlight();
-    }}
-    className="absolute bottom-6 right-6 z-20 w-12 h-12 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-[#047857] transition"
-  >
-    <ChevronRight size={18} />
-  </button>
+ 
 
 </div>
         </motion.div>
@@ -1387,7 +1360,7 @@ const prevSpotlight = () => {
     fontWeight: 700,
     letterSpacing: "0.25em",
   }}
-  className="text-lg sm:text-xl lg:text-2xl uppercase"
+  className="text-2xl sm:text-3xl lg:text-5xl uppercase"
   >
     FEATURED COLLECTION
   </h2>
