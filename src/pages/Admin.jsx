@@ -2524,7 +2524,6 @@ const handleEditImageUpload = async (e) => {
                           )}
                         </div>
                       </div>
-                    )}          </div>
                     )}
                   </div>
 

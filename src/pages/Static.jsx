@@ -1132,6 +1132,8 @@ export default function Static({ params, _onPageChange }) {
         </div>
       </div>
     )
+  }
+];
   const disclaimerData = [
     {
       title: "1. Company Information",
@@ -1243,6 +1245,77 @@ export default function Static({ params, _onPageChange }) {
       )
     }
   ];
+
+  const cookieData = [
+    {
+      title: "1. Company Information",
+      content: (
+        <div className="space-y-2">
+          <p><span className="font-semibold text-luxury-text">Brand:</span> KHRONIQ</p>
+          <p><span className="font-semibold text-luxury-text">Owned & Marketed By:</span> True Knock Industries Private Limited</p>
+          <p className="font-semibold text-luxury-text mt-1">Registered Office:</p>
+          <p className="pl-3 border-l border-luxury-gold-dark/30 italic text-[11px] text-luxury-muted">
+            Office No. - 2, Chamber - 4,<br />
+            Udaigiri Tower, Kaushambi,<br />
+            Ghaziabad, Uttar Pradesh — 201010,<br />
+            India
+          </p>
+          <p><span className="font-semibold text-luxury-text">Website:</span> <a href="https://www.khroniq.com" target="_blank" rel="noopener noreferrer" className="text-luxury-gold-dark hover:underline">www.khroniq.com</a></p>
+          <p><span className="font-semibold text-luxury-text">Email:</span> support@khroniq.com</p>
+        </div>
+      )
+    },
+    {
+      title: "2. What are Cookies?",
+      content: "Cookies are small text files stored on your computer, smartphone, tablet, or other device when you visit a website. Cookies help websites recognize your device, remember your preferences, improve website performance, and provide a better browsing experience. Cookies do not normally contain information that directly identifies you; however, they may be associated with information you voluntarily provide to us."
+    },
+    {
+      title: "3. Types of Cookies We Use",
+      content: (
+        <div className="space-y-2">
+          <p><strong>A. Essential Cookies:</strong> Necessary for the operation of our Website. They enable secure browsing, maintain sessions, and process carts.</p>
+          <p><strong>B. Performance & Analytics Cookies:</strong> Collect anonymous info to help us understand visitor behavior and improve the user experience.</p>
+          <p><strong>C. Functional Cookies:</strong> Remember your settings, preferences (e.g. language, currency, currency conversion), and saved cart.</p>
+          <p><strong>D. Marketing & Advertising Cookies:</strong> Deliver relevant advertisements and measure campaign performance.</p>
+          <p><strong>E. Third-Party Cookies:</strong> Set by external services like payment gateways, video hosts, or analytics tools.</p>
+        </div>
+      )
+    },
+    {
+      title: "4. How We Use Cookies",
+      content: "Cookies are utilized to improve Website functionality, analyze performance, prevent fraudulent activities, secure transactions, and customize content and promotions."
+    },
+    {
+      title: "5. Managing Cookies",
+      content: "Most web browsers allow you to view, delete, or block cookies. Disabling cookies may affect the functionality of certain areas of the Website, including account logins and checkouts."
+    },
+    {
+      title: "6. Third-Party Services",
+      content: "KHRONIQ relies on trusted third-party service providers (like payment processors and shipping partners) who may place cookies on your device in accordance with their privacy policies."
+    },
+    {
+      title: "7. Data Protection",
+      content: "Information collected via cookies is governed by the KHRONIQ Privacy Policy and applicable data protection laws, protected under technical and administrative safeguards."
+    },
+    {
+      title: "8. Policy Updates",
+      content: "KHRONIQ reserves the right to amend or update this Cookie Policy at any time. The latest version will always be published on the Website."
+    },
+    {
+      title: "9. Governing Law & Jurisdiction",
+      content: "This Cookie Policy is governed by Indian law. Any disputes shall be subject to the exclusive jurisdiction of the competent courts at Lucknow, Uttar Pradesh."
+    },
+    {
+      title: "10. Contact Us",
+      content: (
+        <div className="space-y-2">
+          <p className="font-bold text-luxury-text">KHRONIQ Customer Support</p>
+          <p>Email: support@khroniq.com</p>
+          <p>Registered Office: True Knock Industries Private Limited, Office No. - 2, Chamber - 4, Udaigiri Tower, Kaushambi, Ghaziabad, Uttar Pradesh — 201010, India</p>
+        </div>
+      )
+    }
+  ];
   return (
     <div className="space-y-8 pb-12">
       {/* Header Banner */}
@@ -1269,7 +1342,8 @@ export default function Static({ params, _onPageChange }) {
           { key: 'faq', label: 'Client FAQ' },
           { key: 'blogs', label: 'Blogs & Editorial' },
           { key: 'policies', label: 'Legal Policies' },
-          { key: 'disclaimer', label: 'Disclaimer' }
+          { key: 'disclaimer', label: 'Disclaimer' },
+          { key: 'cookie', label: 'Cookie Policy' }
         ].map((tab) => (
           <button
             key={tab.key}
@@ -1919,6 +1993,47 @@ export default function Static({ params, _onPageChange }) {
                 <p className="text-[11px] text-luxury-muted italic mb-4">Effective Date: 1st July 2026</p>
                 {disclaimerData.map((item, idx) => (
                   <section key={idx} id={`disclaimer-section-${idx}`} className="space-y-2 scroll-mt-24 pb-4 border-b border-luxury-text/5 last:border-b-0">
+                    <h4 className="font-bold text-luxury-text uppercase text-[10px] tracking-wider">{item.title}</h4>
+                    <div className="text-[11px] font-light text-luxury-muted leading-relaxed">
+                      {item.content}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* COOKIE POLICY TAB */}
+        {activeTab === 'cookie' && (
+          <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
+            <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Cookie Policy</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
+              {/* Sticky Sidebar Table of Contents */}
+              <div className="md:col-span-4 space-y-2 max-h-[500px] overflow-y-auto pr-2 border-r border-luxury-text/10 sticky top-24 hidden md:block">
+                <p className="text-[10px] font-bold text-luxury-text uppercase tracking-widest mb-3">Table of Contents</p>
+                {cookieData.map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      const element = document.getElementById(`cookie-section-${idx}`);
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }}
+                    className="block text-left w-full text-[10px] py-1.5 px-2 hover:bg-luxury-gold-dark/5 hover:text-luxury-gold-dark transition rounded font-medium truncate cursor-pointer"
+                  >
+                    {item.title}
+                  </button>
+                ))}
+              </div>
+
+              {/* Scrollable Policy Text */}
+              <div className="md:col-span-8 space-y-6 max-h-[600px] overflow-y-auto pr-2">
+                <p className="text-[11px] text-luxury-muted italic mb-4">Effective Date: 1st July 2026</p>
+                {cookieData.map((item, idx) => (
+                  <section key={idx} id={`cookie-section-${idx}`} className="space-y-2 scroll-mt-24 pb-4 border-b border-luxury-text/5 last:border-b-0">
                     <h4 className="font-bold text-luxury-text uppercase text-[10px] tracking-wider">{item.title}</h4>
                     <div className="text-[11px] font-light text-luxury-muted leading-relaxed">
                       {item.content}
