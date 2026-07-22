@@ -112,7 +112,7 @@ export default function CartPage({ onPageChange }) {
           <div className="space-y-6">
             {cartItemsWithDetails.map((item) => (
               <div 
-                key={item.productId}
+                key={item.productId + '-' + JSON.stringify(item.customization || {})}
                 className="flex flex-col md:grid md:grid-cols-12 items-center gap-4 bg-white border border-luxury-text/10 p-4 rounded-md shadow-sm"
               >
                 {/* Info (Column 6) */}
@@ -135,8 +135,16 @@ export default function CartPage({ onPageChange }) {
                       {item.product.name}
                     </h3>
                     <p className="text-[10px] text-luxury-muted uppercase tracking-widest mt-1">Category: {item.product.category}</p>
+                    {item.customization && (
+                      <div className="text-[10px] text-luxury-muted space-y-0.5 mt-1 font-sans">
+                        {item.customization.dialColor && <div>Dial Color: <span className="font-semibold">{item.customization.dialColor}</span></div>}
+                        {item.customization.strapMaterial && <div>Strap: <span className="font-semibold">{item.customization.strapMaterial}</span></div>}
+                        {item.customization.caseFinish && <div>Case: <span className="font-semibold">{item.customization.caseFinish}</span></div>}
+                        {item.customization.engraving && <div className="italic">Engraving: "{item.customization.engraving}"</div>}
+                      </div>
+                    )}
                     <button
-                      onClick={() => dispatch(removeFromCart(item.productId))}
+                      onClick={() => dispatch(removeFromCart(item.productId, item.customization))}
                       className="text-[10px] text-luxury-red hover:text-red-400 font-semibold tracking-wider uppercase mt-2 flex items-center space-x-1 cursor-pointer"
                     >
                       <Trash2 size={12} />
@@ -165,14 +173,14 @@ export default function CartPage({ onPageChange }) {
                   <span className="md:hidden text-[10px] text-luxury-muted font-bold uppercase">Quantity</span>
                   <div className="flex items-center border border-luxury-text/10 rounded bg-luxury-bg">
                     <button
-                      onClick={() => dispatch(updateCartQty(item.productId, item.quantity - 1))}
+                      onClick={() => dispatch(updateCartQty(item.productId, item.quantity - 1, item.customization))}
                       className="p-1 text-luxury-muted hover:text-luxury-text cursor-pointer"
                     >
                       <Minus size={12} />
                     </button>
                     <span className="px-3 text-xs font-bold text-luxury-text">{item.quantity}</span>
                     <button
-                      onClick={() => dispatch(updateCartQty(item.productId, item.quantity + 1))}
+                      onClick={() => dispatch(updateCartQty(item.productId, item.quantity + 1, item.customization))}
                       className="p-1 text-luxury-muted hover:text-luxury-text cursor-pointer"
                     >
                       <Plus size={12} />

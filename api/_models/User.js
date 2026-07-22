@@ -14,7 +14,14 @@ const userSchema = new mongoose.Schema({
   adminLoginCodeExpire: { type: Date },
   cart: [{
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-    quantity: { type: Number, required: true, default: 1 }
+    quantity: { type: Number, required: true, default: 1 },
+    price: { type: Number },
+    customization: {
+      dialColor: { type: String },
+      strapMaterial: { type: String },
+      caseFinish: { type: String },
+      engraving: { type: String }
+    }
   }],
   wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
   shippingAddress: {

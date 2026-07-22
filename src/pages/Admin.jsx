@@ -34,6 +34,14 @@ const PRESET_STRAPS = [
   { name: 'Brushed Steel Link', image: '/assets/strap_steel_link.jpg' }
 ];
 
+const PRESET_CASES = [
+  { name: 'Polished', color: '#c0c0c0' },
+  { name: 'Brushed', color: '#888888' },
+  { name: 'PVD Black', color: '#1a1a1a' },
+  { name: 'Rose Gold PVD', color: '#c8856a' },
+  { name: 'Matte Grey', color: '#555555' }
+];
+
 const generateUnitCodePair = () => ({
   serialNumber: `KHQ-${new Date().getFullYear()}-${Math.random().toString(16).slice(2, 8).toUpperCase()}`,
   claimCode: `CLM-${Math.random().toString(16).slice(2, 12).toUpperCase()}`
@@ -131,12 +139,16 @@ export default function Admin({ onPageChange }) {
     customizationOptions: {
       dialColors: [],
       strapMaterials: [],
+      caseFinishes: [],
       customStrapName: '',
       customStrapImage: '',
       customCaseName: '',
       customCaseColor: '#ffffff',
       customStraps: [],
-      customCases: []
+      customCases: [],
+      dialPrices: {},
+      strapPrices: {},
+      casePrices: {}
     }
   });
 
@@ -154,8 +166,10 @@ export default function Admin({ onPageChange }) {
   // Customization Options temporary states and helper functions
   const [tempStrapName, setTempStrapName] = useState('');
   const [tempStrapImage, setTempStrapImage] = useState('');
+  const [tempStrapPrice, setTempStrapPrice] = useState('');
   const [tempCaseName, setTempCaseName] = useState('');
   const [tempCaseColor, setTempCaseColor] = useState('#ffffff');
+  const [tempCasePrice, setTempCasePrice] = useState('');
 
   const handleTempStrapImageChange = async (e) => {
     const file = e.target.files[0];
@@ -173,49 +187,65 @@ export default function Admin({ onPageChange }) {
       alert('Please enter a name for the custom strap.');
       return;
     }
-    const newStrap = { name: tempStrapName.trim(), image: tempStrapImage };
+    const priceVal = Number(tempStrapPrice) || 0;
+    const newStrap = { name: tempStrapName.trim(), image: tempStrapImage, price: priceVal };
     if (isEdit) {
       const currentStraps = editForm.customizationOptions?.customStraps || [];
+      const updatedPrices = { ...(editForm.customizationOptions?.strapPrices || {}) };
+      updatedPrices[newStrap.name] = priceVal;
       setEditForm({
         ...editForm,
         customizationOptions: {
           ...editForm.customizationOptions,
-          customStraps: [...currentStraps, newStrap]
+          customStraps: [...currentStraps, newStrap],
+          strapPrices: updatedPrices
         }
       });
     } else {
       const currentStraps = newProduct.customizationOptions?.customStraps || [];
+      const updatedPrices = { ...(newProduct.customizationOptions?.strapPrices || {}) };
+      updatedPrices[newStrap.name] = priceVal;
       setNewProduct({
         ...newProduct,
         customizationOptions: {
           ...newProduct.customizationOptions,
-          customStraps: [...currentStraps, newStrap]
+          customStraps: [...currentStraps, newStrap],
+          strapPrices: updatedPrices
         }
       });
     }
     setTempStrapName('');
     setTempStrapImage('');
+    setTempStrapPrice('');
   };
 
   const handleRemoveCustomStrap = (idx, isEdit = false) => {
     if (isEdit) {
       const currentStraps = editForm.customizationOptions?.customStraps || [];
+      const strapToRemove = currentStraps[idx];
       const updated = currentStraps.filter((_, i) => i !== idx);
+      const updatedPrices = { ...(editForm.customizationOptions?.strapPrices || {}) };
+      if (strapToRemove) delete updatedPrices[strapToRemove.name];
       setEditForm({
         ...editForm,
         customizationOptions: {
           ...editForm.customizationOptions,
-          customStraps: updated
+          customStraps: updated,
+          strapPrices: updatedPrices
         }
       });
     } else {
       const currentStraps = newProduct.customizationOptions?.customStraps || [];
+      const strapToRemove = currentStraps[idx];
       const updated = currentStraps.filter((_, i) => i !== idx);
+      const updatedPrices = { ...(newProduct.customizationOptions?.strapPrices || {}) };
+      if (strapToRemove) delete updatedPrices[strapToRemove.name];
       setNewProduct({
         ...newProduct,
         customizationOptions: {
           ...newProduct.customizationOptions,
-          customStraps: updated
+          customStraps: updated,
+          strapPrices: updatedPrices
         }
       });
     }
@@ -226,49 +256,65 @@ export default function Admin({ onPageChange }) {
       alert('Please enter a name for the custom case finish.');
       return;
     }
-    const newCase = { name: tempCaseName.trim(), color: tempCaseColor };
+    const priceVal = Number(tempCasePrice) || 0;
+    const newCase = { name: tempCaseName.trim(), color: tempCaseColor, price: priceVal };
     if (isEdit) {
       const currentCases = editForm.customizationOptions?.customCases || [];
+      const updatedPrices = { ...(editForm.customizationOptions?.casePrices || {}) };
+      updatedPrices[newCase.name] = priceVal;
       setEditForm({
         ...editForm,
         customizationOptions: {
           ...editForm.customizationOptions,
-          customCases: [...currentCases, newCase]
+          customCases: [...currentCases, newCase],
+          casePrices: updatedPrices
         }
       });
     } else {
       const currentCases = newProduct.customizationOptions?.customCases || [];
+      const updatedPrices = { ...(newProduct.customizationOptions?.casePrices || {}) };
+      updatedPrices[newCase.name] = priceVal;
       setNewProduct({
         ...newProduct,
         customizationOptions: {
           ...newProduct.customizationOptions,
-          customCases: [...currentCases, newCase]
+          customCases: [...currentCases, newCase],
+          casePrices: updatedPrices
         }
       });
     }
     setTempCaseName('');
     setTempCaseColor('#ffffff');
+    setTempCasePrice('');
   };
 
   const handleRemoveCustomCase = (idx, isEdit = false) => {
     if (isEdit) {
       const currentCases = editForm.customizationOptions?.customCases || [];
+      const caseToRemove = currentCases[idx];
       const updated = currentCases.filter((_, i) => i !== idx);
+      const updatedPrices = { ...(editForm.customizationOptions?.casePrices || {}) };
+      if (caseToRemove) delete updatedPrices[caseToRemove.name];
       setEditForm({
         ...editForm,
         customizationOptions: {
           ...editForm.customizationOptions,
-          customCases: updated
+          customCases: updated,
+          casePrices: updatedPrices
         }
       });
     } else {
       const currentCases = newProduct.customizationOptions?.customCases || [];
+      const caseToRemove = currentCases[idx];
       const updated = currentCases.filter((_, i) => i !== idx);
+      const updatedPrices = { ...(newProduct.customizationOptions?.casePrices || {}) };
+      if (caseToRemove) delete updatedPrices[caseToRemove.name];
       setNewProduct({
         ...newProduct,
         customizationOptions: {
           ...newProduct.customizationOptions,
-          customCases: updated
+          customCases: updated,
+          casePrices: updatedPrices
         }
       });
     }
@@ -455,6 +501,107 @@ export default function Admin({ onPageChange }) {
         customizationOptions: {
           ...newProduct.customizationOptions,
           dialColors: updatedColors
+        }
+      });
+    }
+  };
+
+  const handleDialPriceChange = (colorHex, price, isEdit = false) => {
+    const target = isEdit ? editForm : newProduct;
+    const currentPrices = { ...(target.customizationOptions?.dialPrices || {}) };
+    currentPrices[colorHex] = Number(price) || 0;
+    
+    if (isEdit) {
+      setEditForm({
+        ...editForm,
+        customizationOptions: {
+          ...editForm.customizationOptions,
+          dialPrices: currentPrices
+        }
+      });
+    } else {
+      setNewProduct({
+        ...newProduct,
+        customizationOptions: {
+          ...newProduct.customizationOptions,
+          dialPrices: currentPrices
+        }
+      });
+    }
+  };
+
+  const handleStrapPriceChange = (strapName, price, isEdit = false) => {
+    const target = isEdit ? editForm : newProduct;
+    const currentPrices = { ...(target.customizationOptions?.strapPrices || {}) };
+    currentPrices[strapName] = Number(price) || 0;
+    
+    if (isEdit) {
+      setEditForm({
+        ...editForm,
+        customizationOptions: {
+          ...editForm.customizationOptions,
+          strapPrices: currentPrices
+        }
+      });
+    } else {
+      setNewProduct({
+        ...newProduct,
+        customizationOptions: {
+          ...newProduct.customizationOptions,
+          strapPrices: currentPrices
+        }
+      });
+    }
+  };
+
+  const handleCasePriceChange = (caseFinishName, price, isEdit = false) => {
+    const target = isEdit ? editForm : newProduct;
+    const currentPrices = { ...(target.customizationOptions?.casePrices || {}) };
+    currentPrices[caseFinishName] = Number(price) || 0;
+    
+    if (isEdit) {
+      setEditForm({
+        ...editForm,
+        customizationOptions: {
+          ...editForm.customizationOptions,
+          casePrices: currentPrices
+        }
+      });
+    } else {
+      setNewProduct({
+        ...newProduct,
+        customizationOptions: {
+          ...newProduct.customizationOptions,
+          casePrices: currentPrices
+        }
+      });
+    }
+  };
+
+  const handleCaseFinishCheckboxChange = (finishName, isEdit = false) => {
+    const target = isEdit ? editForm : newProduct;
+    const currentFinishes = target.customizationOptions?.caseFinishes || [];
+    let updatedFinishes;
+    if (currentFinishes.includes(finishName)) {
+      updatedFinishes = currentFinishes.filter(f => f !== finishName);
+    } else {
+      updatedFinishes = [...currentFinishes, finishName];
+    }
+    
+    if (isEdit) {
+      setEditForm({
+        ...editForm,
+        customizationOptions: {
+          ...editForm.customizationOptions,
+          caseFinishes: updatedFinishes
+        }
+      });
+    } else {
+      setNewProduct({
+        ...newProduct,
+        customizationOptions: {
+          ...newProduct.customizationOptions,
+          caseFinishes: updatedFinishes
         }
       });
     }
@@ -831,10 +978,16 @@ const handleEditImageUpload = async (e) => {
       customizationOptions: {
         dialColors: product.customizationOptions?.dialColors || [],
         strapMaterials: product.customizationOptions?.strapMaterials || [],
+        caseFinishes: product.customizationOptions?.caseFinishes || [],
         customStrapName: product.customizationOptions?.customStrapName || '',
         customStrapImage: product.customizationOptions?.customStrapImage || '',
         customCaseName: product.customizationOptions?.customCaseName || '',
-        customCaseColor: product.customizationOptions?.customCaseColor || '#ffffff'
+        customCaseColor: product.customizationOptions?.customCaseColor || '#ffffff',
+        customStraps: product.customizationOptions?.customStraps || [],
+        customCases: product.customizationOptions?.customCases || [],
+        dialPrices: product.customizationOptions?.dialPrices || {},
+        strapPrices: product.customizationOptions?.strapPrices || {},
+        casePrices: product.customizationOptions?.casePrices || {}
       }
     });
   };
@@ -1472,17 +1625,29 @@ const handleEditImageUpload = async (e) => {
                               <div className="grid grid-cols-2 gap-2">
                                 {PRESET_STRAPS.map(s => {
                                   const isChecked = (newProduct.customizationOptions?.strapMaterials || []).includes(s.name);
+                                  const priceVal = newProduct.customizationOptions?.strapPrices?.[s.name] || '';
                                   return (
-                                    <label key={s.name} className="flex items-center space-x-2 p-1.5 rounded border border-white/5 bg-luxury-dark/85 cursor-pointer hover:border-white/10 select-none">
-                                      <input
-                                        type="checkbox"
-                                        checked={isChecked}
-                                        onChange={() => handleStrapCheckboxChange(s.name, false)}
-                                        className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
-                                      />
-                                      <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded" />
-                                      <span className="text-[10px] text-gray-300 font-medium">{s.name}</span>
-                                    </label>
+                                    <div key={s.name} className="flex flex-col p-1.5 rounded border border-white/5 bg-luxury-dark/85 space-y-1">
+                                      <label className="flex items-center space-x-2 cursor-pointer select-none">
+                                        <input
+                                          type="checkbox"
+                                          checked={isChecked}
+                                          onChange={() => handleStrapCheckboxChange(s.name, false)}
+                                          className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
+                                        />
+                                        <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded" />
+                                        <span className="text-[10px] text-gray-300 font-medium">{s.name}</span>
+                                      </label>
+                                      {isChecked && (
+                                        <input
+                                          type="number"
+                                          placeholder="Price modifier ($)"
+                                          value={priceVal}
+                                          onChange={(e) => handleStrapPriceChange(s.name, e.target.value, false)}
+                                          className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
+                                        />
+                                      )}
+                                    </div>
                                   );
                                 })}
                               </div>
@@ -1491,12 +1656,19 @@ const handleEditImageUpload = async (e) => {
                             {/* Multiple Custom Straps Addition */}
                             <div className="space-y-2 pt-2 border-t border-white/5">
                               <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Straps</label>
-                              <div className="grid grid-cols-2 gap-2">
+                              <div className="grid grid-cols-3 gap-2">
                                 <input
                                   type="text"
                                   placeholder="Strap Name..."
                                   value={tempStrapName}
                                   onChange={(e) => setTempStrapName(e.target.value)}
+                                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
+                                />
+                                <input
+                                  type="number"
+                                  placeholder="Price modifier ($)..."
+                                  value={tempStrapPrice}
+                                  onChange={(e) => setTempStrapPrice(e.target.value)}
                                   className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
                                 />
                                 <input
@@ -1530,13 +1702,16 @@ const handleEditImageUpload = async (e) => {
                                         <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded bg-white/5" />
                                         <span className="text-[9px] text-gray-300 font-medium">{s.name}</span>
                                       </div>
-                                      <button
-                                        type="button"
-                                        onClick={() => handleRemoveCustomStrap(idx, false)}
-                                        className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
-                                      >
-                                        Remove
-                                      </button>
+                                      <div className="flex items-center space-x-2">
+                                        <span className="text-[9px] text-gray-400 font-mono">+${s.price || 0}</span>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveCustomStrap(idx, false)}
+                                          className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
+                                        >
+                                          Remove
+                                        </button>
+                                      </div>
                                     </div>
                                   ))}
                                 </div>
@@ -1560,16 +1735,57 @@ const handleEditImageUpload = async (e) => {
                           </label>
                         </div>
                         {newProduct.allowCaseCustomization && (
-                          <div className="pl-6 space-y-2 border-l border-white/10 my-2">
-                            {/* Multiple Custom Cases Addition */}
+                          <div className="pl-6 space-y-3 border-l border-white/10 my-2">
+                            {/* Preset Case Finishes Selectors */}
                             <div className="space-y-1.5">
-                              <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Case Finish (Optional)</label>
+                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Enable Preset Case Finishes</label>
                               <div className="grid grid-cols-2 gap-2">
+                                {PRESET_CASES.map(c => {
+                                  const isChecked = (newProduct.customizationOptions?.caseFinishes || []).includes(c.name);
+                                  const priceVal = newProduct.customizationOptions?.casePrices?.[c.name] || '';
+                                  return (
+                                    <div key={c.name} className="flex flex-col p-1.5 rounded border border-white/5 bg-luxury-dark/85 space-y-1">
+                                      <label className="flex items-center space-x-2 cursor-pointer select-none">
+                                        <input
+                                          type="checkbox"
+                                          checked={isChecked}
+                                          onChange={() => handleCaseFinishCheckboxChange(c.name, false)}
+                                          className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
+                                        />
+                                        <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: c.color }} />
+                                        <span className="text-[10px] text-gray-300 font-medium">{c.name}</span>
+                                      </label>
+                                      {isChecked && (
+                                        <input
+                                          type="number"
+                                          placeholder="Price modifier ($)"
+                                          value={priceVal}
+                                          onChange={(e) => handleCasePriceChange(c.name, e.target.value, false)}
+                                          className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
+                                        />
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+
+                            {/* Multiple Custom Cases Addition */}
+                            <div className="space-y-1.5 pt-2 border-t border-white/5">
+                              <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Case Finish (Optional)</label>
+                              <div className="grid grid-cols-3 gap-2">
                                 <input
                                   type="text"
                                   placeholder="Finish Name (e.g. Matte Gold)..."
                                   value={tempCaseName}
                                   onChange={(e) => setTempCaseName(e.target.value)}
+                                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
+                                />
+                                <input
+                                  type="number"
+                                  placeholder="Price modifier ($)..."
+                                  value={tempCasePrice}
+                                  onChange={(e) => setTempCasePrice(e.target.value)}
                                   className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
                                 />
                                 <div className="flex items-center space-x-2">
@@ -1606,13 +1822,16 @@ const handleEditImageUpload = async (e) => {
                                         <span className="w-4 h-4 rounded-full border border-white/10" style={{ backgroundColor: c.color }} />
                                         <span className="text-[9px] text-gray-300 font-medium">{c.name}</span>
                                       </div>
-                                      <button
-                                        type="button"
-                                        onClick={() => handleRemoveCustomCase(idx, false)}
-                                        className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
-                                      >
-                                        Remove
-                                      </button>
+                                      <div className="flex items-center space-x-2">
+                                        <span className="text-[9px] text-gray-400 font-mono">+${c.price || 0}</span>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveCustomCase(idx, false)}
+                                          className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
+                                        >
+                                          Remove
+                                        </button>
+                                      </div>
                                     </div>
                                   ))}
                                 </div>
@@ -1641,17 +1860,29 @@ const handleEditImageUpload = async (e) => {
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                               {DIAL_COLOR_PRESETS.map(color => {
                                 const isChecked = (newProduct.customizationOptions?.dialColors || []).includes(color.hex);
+                                const priceVal = newProduct.customizationOptions?.dialPrices?.[color.hex] || '';
                                 return (
-                                  <label key={color.hex} className="flex items-center space-x-2 p-1.5 rounded border border-white/5 bg-luxury-dark/80 cursor-pointer hover:border-white/10 select-none">
-                                    <input
-                                      type="checkbox"
-                                      checked={isChecked}
-                                      onChange={() => handleDialColorCheckboxChange(color.hex, false)}
-                                      className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
-                                    />
-                                    <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: color.hex }} />
-                                    <span className="text-[10px] text-gray-300 font-medium">{color.name}</span>
-                                  </label>
+                                  <div key={color.hex} className="flex flex-col p-1.5 rounded border border-white/5 bg-luxury-dark/80 space-y-1">
+                                    <label className="flex items-center space-x-2 cursor-pointer select-none">
+                                      <input
+                                        type="checkbox"
+                                        checked={isChecked}
+                                        onChange={() => handleDialColorCheckboxChange(color.hex, false)}
+                                        className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
+                                      />
+                                      <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: color.hex }} />
+                                      <span className="text-[10px] text-gray-300 font-medium">{color.name}</span>
+                                    </label>
+                                    {isChecked && (
+                                      <input
+                                        type="number"
+                                        placeholder="Price modifier ($)"
+                                        value={priceVal}
+                                        onChange={(e) => handleDialPriceChange(color.hex, e.target.value, false)}
+                                        className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
+                                      />
+                                    )}
+                                  </div>
                                 );
                               })}
                             </div>
@@ -1967,17 +2198,29 @@ const handleEditImageUpload = async (e) => {
                                 <div className="grid grid-cols-2 gap-2">
                                   {PRESET_STRAPS.map(s => {
                                     const isChecked = (editForm.customizationOptions?.strapMaterials || []).includes(s.name);
+                                    const priceVal = editForm.customizationOptions?.strapPrices?.[s.name] || '';
                                     return (
-                                      <label key={s.name} className="flex items-center space-x-2 p-1.5 rounded border border-white/5 bg-luxury-dark/85 cursor-pointer hover:border-white/10 select-none">
-                                        <input
-                                          type="checkbox"
-                                          checked={isChecked}
-                                          onChange={() => handleStrapCheckboxChange(s.name, true)}
-                                          className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
-                                        />
-                                        <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded" />
-                                        <span className="text-[10px] text-gray-300 font-medium">{s.name}</span>
-                                      </label>
+                                      <div key={s.name} className="flex flex-col p-1.5 rounded border border-white/5 bg-luxury-dark/85 space-y-1">
+                                        <label className="flex items-center space-x-2 cursor-pointer select-none">
+                                          <input
+                                            type="checkbox"
+                                            checked={isChecked}
+                                            onChange={() => handleStrapCheckboxChange(s.name, true)}
+                                            className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
+                                          />
+                                          <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded" />
+                                          <span className="text-[10px] text-gray-300 font-medium">{s.name}</span>
+                                        </label>
+                                        {isChecked && (
+                                          <input
+                                            type="number"
+                                            placeholder="Price modifier ($)"
+                                            value={priceVal}
+                                            onChange={(e) => handleStrapPriceChange(s.name, e.target.value, true)}
+                                            className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
+                                          />
+                                        )}
+                                      </div>
                                     );
                                   })}
                                 </div>
@@ -1986,12 +2229,19 @@ const handleEditImageUpload = async (e) => {
                               {/* Multiple Custom Straps Addition */}
                               <div className="space-y-2 pt-2 border-t border-white/5">
                                 <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Straps</label>
-                                <div className="grid grid-cols-2 gap-2">
+                                <div className="grid grid-cols-3 gap-2">
                                   <input
                                     type="text"
                                     placeholder="Strap Name..."
                                     value={tempStrapName}
                                     onChange={(e) => setTempStrapName(e.target.value)}
+                                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
+                                  />
+                                  <input
+                                    type="number"
+                                    placeholder="Price modifier ($)..."
+                                    value={tempStrapPrice}
+                                    onChange={(e) => setTempStrapPrice(e.target.value)}
                                     className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
                                   />
                                   <input
@@ -2025,13 +2275,16 @@ const handleEditImageUpload = async (e) => {
                                           <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded bg-white/5" />
                                           <span className="text-[9px] text-gray-300 font-medium">{s.name}</span>
                                         </div>
-                                        <button
-                                          type="button"
-                                          onClick={() => handleRemoveCustomStrap(idx, true)}
-                                          className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
-                                        >
-                                          Remove
-                                        </button>
+                                        <div className="flex items-center space-x-2">
+                                          <span className="text-[9px] text-gray-400 font-mono">+${s.price || 0}</span>
+                                          <button
+                                            type="button"
+                                            onClick={() => handleRemoveCustomStrap(idx, true)}
+                                            className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
+                                          >
+                                            Remove
+                                          </button>
+                                        </div>
                                       </div>
                                     ))}
                                   </div>
@@ -2054,17 +2307,58 @@ const handleEditImageUpload = async (e) => {
                               Allow Case Finish Customization
                             </label>
                           </div>
-                           {editForm.allowCaseCustomization && (
-                            <div className="pl-6 space-y-2 border-l border-white/10 my-2">
-                              {/* Multiple Custom Cases Addition */}
+                          {editForm.allowCaseCustomization && (
+                            <div className="pl-6 space-y-3 border-l border-white/10 my-2">
+                              {/* Preset Case Finishes Selectors */}
                               <div className="space-y-1.5">
-                                <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Case Finish (Optional)</label>
+                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Enable Preset Case Finishes</label>
                                 <div className="grid grid-cols-2 gap-2">
+                                  {PRESET_CASES.map(c => {
+                                    const isChecked = (editForm.customizationOptions?.caseFinishes || []).includes(c.name);
+                                    const priceVal = editForm.customizationOptions?.casePrices?.[c.name] || '';
+                                    return (
+                                      <div key={c.name} className="flex flex-col p-1.5 rounded border border-white/5 bg-luxury-dark/85 space-y-1">
+                                        <label className="flex items-center space-x-2 cursor-pointer select-none">
+                                          <input
+                                            type="checkbox"
+                                            checked={isChecked}
+                                            onChange={() => handleCaseFinishCheckboxChange(c.name, true)}
+                                            className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
+                                          />
+                                          <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: c.color }} />
+                                          <span className="text-[10px] text-gray-300 font-medium">{c.name}</span>
+                                        </label>
+                                        {isChecked && (
+                                          <input
+                                            type="number"
+                                            placeholder="Price modifier ($)"
+                                            value={priceVal}
+                                            onChange={(e) => handleCasePriceChange(c.name, e.target.value, true)}
+                                            className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
+                                          />
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+
+                              {/* Multiple Custom Cases Addition */}
+                              <div className="space-y-1.5 pt-2 border-t border-white/5">
+                                <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Case Finish (Optional)</label>
+                                <div className="grid grid-cols-3 gap-2">
                                   <input
                                     type="text"
                                     placeholder="Finish Name (e.g. Matte Gold)..."
                                     value={tempCaseName}
                                     onChange={(e) => setTempCaseName(e.target.value)}
+                                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
+                                  />
+                                  <input
+                                    type="number"
+                                    placeholder="Price modifier ($)..."
+                                    value={tempCasePrice}
+                                    onChange={(e) => setTempCasePrice(e.target.value)}
                                     className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
                                   />
                                   <div className="flex items-center space-x-2">
@@ -2101,13 +2395,16 @@ const handleEditImageUpload = async (e) => {
                                           <span className="w-4 h-4 rounded-full border border-white/10" style={{ backgroundColor: c.color }} />
                                           <span className="text-[9px] text-gray-300 font-medium">{c.name}</span>
                                         </div>
-                                        <button
-                                          type="button"
-                                          onClick={() => handleRemoveCustomCase(idx, true)}
-                                          className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
-                                        >
-                                          Remove
-                                        </button>
+                                        <div className="flex items-center space-x-2">
+                                          <span className="text-[9px] text-gray-400 font-mono">+${c.price || 0}</span>
+                                          <button
+                                            type="button"
+                                            onClick={() => handleRemoveCustomCase(idx, true)}
+                                            className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
+                                          >
+                                            Remove
+                                          </button>
+                                        </div>
                                       </div>
                                     ))}
                                   </div>
@@ -2136,17 +2433,29 @@ const handleEditImageUpload = async (e) => {
                               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                 {DIAL_COLOR_PRESETS.map(color => {
                                   const isChecked = (editForm.customizationOptions?.dialColors || []).includes(color.hex);
+                                  const priceVal = editForm.customizationOptions?.dialPrices?.[color.hex] || '';
                                   return (
-                                    <label key={color.hex} className="flex items-center space-x-2 p-1.5 rounded border border-white/5 bg-luxury-dark/80 cursor-pointer hover:border-white/10 select-none">
-                                      <input
-                                        type="checkbox"
-                                        checked={isChecked}
-                                        onChange={() => handleDialColorCheckboxChange(color.hex, true)}
-                                        className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
-                                      />
-                                      <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: color.hex }} />
-                                      <span className="text-[10px] text-gray-300 font-medium">{color.name}</span>
-                                    </label>
+                                    <div key={color.hex} className="flex flex-col p-1.5 rounded border border-white/5 bg-luxury-dark/80 space-y-1">
+                                      <label className="flex items-center space-x-2 cursor-pointer select-none">
+                                        <input
+                                          type="checkbox"
+                                          checked={isChecked}
+                                          onChange={() => handleDialColorCheckboxChange(color.hex, true)}
+                                          className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
+                                        />
+                                        <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: color.hex }} />
+                                        <span className="text-[10px] text-gray-300 font-medium">{color.name}</span>
+                                      </label>
+                                      {isChecked && (
+                                        <input
+                                          type="number"
+                                          placeholder="Price modifier ($)"
+                                          value={priceVal}
+                                          onChange={(e) => handleDialPriceChange(color.hex, e.target.value, true)}
+                                          className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
+                                        />
+                                      )}
+                                    </div>
                                   );
                                 })}
                               </div>
@@ -2154,6 +2463,7 @@ const handleEditImageUpload = async (e) => {
                           )}
                         </div>
                       </div>
+                    )}          </div>
                     )}
                   </div>
 

@@ -101,7 +101,7 @@ const [processingPayment, setProcessingPayment] = useState(false);
     return { ...item, product, itemPrice };
   }).filter(item => item.product !== undefined);
 
-  const subtotal = cartItemsWithDetails.reduce((sum, item) => sum + ((item.price || item.product.price) * item.quantity), 0);
+  const subtotal = cartItemsWithDetails.reduce((sum, item) => sum + (item.itemPrice * item.quantity), 0);
   const discount = appliedCoupon ? Math.round(subtotal * (appliedCoupon.discountPercent / 100)) : 0;
   const total = subtotal - discount;
 

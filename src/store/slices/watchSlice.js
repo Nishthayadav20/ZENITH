@@ -341,20 +341,30 @@ const watchSlice = createSlice({
       state.orders = [];
     },
     addToCartAction: (state, action) => {
-      const { productId, quantity, price } = action.payload;
-      const existing = state.cart.find(item => item.productId === productId);
+      const { productId, quantity, price, customization } = action.payload;
+      const existing = state.cart.find(item => 
+        item.productId === productId && 
+        JSON.stringify(item.customization || {}) === JSON.stringify(customization || {})
+      );
       if (existing) {
         existing.quantity += quantity;
       } else {
-        state.cart.push({ productId, quantity, price });
+        state.cart.push({ productId, quantity, price, customization });
       }
     },
     removeFromCartAction: (state, action) => {
-      state.cart = state.cart.filter(item => item.productId !== action.payload);
+      const { productId, customization } = action.payload;
+      state.cart = state.cart.filter(item => 
+        !(item.productId === productId && 
+          JSON.stringify(item.customization || {}) === JSON.stringify(customization || {}))
+      );
     },
     updateCartQtyAction: (state, action) => {
-      const { productId, qty } = action.payload;
-      const existing = state.cart.find(item => item.productId === productId);
+      const { productId, qty, customization } = action.payload;
+      const existing = state.cart.find(item => 
+        item.productId === productId && 
+        JSON.stringify(item.customization || {}) === JSON.stringify(customization || {})
+      );
       if (existing) {
         existing.quantity = qty;
       }
@@ -700,24 +710,29 @@ export const updateUserProfile = (name, email, shippingAddress) => async (dispat
   }
 };
 
-export const addToCart = (productId, quantity = 1) => async (dispatch, getState) => {
+export const addToCart = (productId, quantity = 1, price = null, customization = null) => async (dispatch, getState) => {
   const { products, cart, currentUser } = getState().watch;
   const product = products.find(p => p.id === productId);
   if (!product) return { success: false, message: 'Product not found' };
 
-  const cartItem = cart.find(item => item.productId === productId);
+  const cartItem = cart.find(item => 
+    item.productId === productId && 
+    JSON.stringify(item.customization || {}) === JSON.stringify(customization || {})
+  );
   const currentQty = cartItem ? cartItem.quantity : 0;
 
   if (currentQty + quantity > product.stock) {
     return { success: false, message: `Only ${product.stock} items in stock.` };
   }
 
+  const finalPrice = price !== null ? price : getDiscountedPrice(product);
+
   if (currentUser) {
     try {
       const res = await fetch('/api/cart/add', {
         method: 'POST',
         headers: getHeaders(),
-        body: JSON.stringify({ productId, quantity })
+        body: JSON.stringify({ productId, quantity, price: finalPrice, customization })
       });
       const data = await res.json();
       if (data.success) {
@@ -729,17 +744,17 @@ export const addToCart = (productId, quantity = 1) => async (dispatch, getState)
     }
   }
 
-  dispatch(addToCartAction({ productId, quantity, price: getDiscountedPrice(product) }));
+  dispatch(addToCartAction({ productId, quantity, price: finalPrice, customization }));
   return { success: true, message: 'Added to Cart' };
 };
 
-export const updateCartQty = (productId, qty) => async (dispatch, getState) => {
+export const updateCartQty = (productId, qty, customization = null) => async (dispatch, getState) => {
   const { products, currentUser } = getState().watch;
   const product = products.find(p => p.id === productId);
   if (!product) return;
 
   if (qty <= 0) {
-    dispatch(removeFromCart(productId));
+    dispatch(removeFromCart(productId, customization));
     return;
   }
 
@@ -753,7 +768,7 @@ export const updateCartQty = (productId, qty) => async (dispatch, getState) => {
       const res = await fetch('/api/cart/update', {
         method: 'POST',
         headers: getHeaders(),
-        body: JSON.stringify({ productId, qty })
+        body: JSON.stringify({ productId, qty, customization })
       });
       const data = await res.json();
       if (data.success) {
@@ -765,17 +780,18 @@ export const updateCartQty = (productId, qty) => async (dispatch, getState) => {
     }
   }
 
-  dispatch(updateCartQtyAction({ productId, qty }));
+  dispatch(updateCartQtyAction({ productId, qty, customization }));
 };
 
-export const removeFromCart = (productId) => async (dispatch, getState) => {
+export const removeFromCart = (productId, customization = null) => async (dispatch, getState) => {
   const { currentUser } = getState().watch;
 
   if (currentUser) {
     try {
-      const res = await fetch(`/api/cart/${productId}`, {
-        method: 'DELETE',
-        headers: getHeaders()
+      const res = await fetch('/api/cart/remove', {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ productId, customization })
       });
       const data = await res.json();
       if (data.success) {
@@ -787,7 +803,7 @@ export const removeFromCart = (productId) => async (dispatch, getState) => {
     }
   }
 
-  dispatch(removeFromCartAction(productId));
+  dispatch(removeFromCartAction({ productId, customization }));
 };
 
 export const toggleWishlist = (productId) => async (dispatch, getState) => {
@@ -821,11 +837,12 @@ export const placeOrder = (shippingDetails, paymentDetails, appliedCoupon, gifti
   let subtotal = 0;
   const items = cart.map(item => {
     const p = products.find(prod => prod.id === item.productId);
-    subtotal += p.price * item.quantity;
+    const finalPrice = item.price !== undefined ? item.price : getDiscountedPrice(p);
+    subtotal += finalPrice * item.quantity;
     return {
       productId: item.productId,
       name: p.name,
-      price: p.price,
+      price: finalPrice,
       quantity: item.quantity,
       image: p.image
     };

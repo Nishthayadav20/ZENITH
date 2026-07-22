@@ -177,9 +177,34 @@ export default function Customization({ onPageChange, params }) {
   const [strapMaterial,   setStrapMaterial]   = useState(null);
   const [caseFinish,      setCaseFinish]      = useState(null);
   const [engraving,       setEngraving]       = useState('');
-  const [addedToCart,     setAddedToCart]     = useState(false);
-
   const options = selectedProduct ? buildOptions(selectedProduct) : null;
+
+  const dialPrice = useMemo(() => {
+    if (!selectedProduct || !dialColor) return 0;
+    return selectedProduct.customizationOptions?.dialPrices?.[dialColor.value] || 0;
+  }, [selectedProduct, dialColor]);
+
+  const strapPrice = useMemo(() => {
+    if (!selectedProduct || !strapMaterial) return 0;
+    const matchingCustom = (options?.customStraps || []).find(cs => cs.name === strapMaterial);
+    if (matchingCustom) return matchingCustom.price || 0;
+    return selectedProduct.customizationOptions?.strapPrices?.[strapMaterial] || 0;
+  }, [selectedProduct, strapMaterial, options]);
+
+  const casePrice = useMemo(() => {
+    if (!selectedProduct || !caseFinish) return 0;
+    const matchingCustom = (options?.customCases || []).find(cc => cc.name === caseFinish);
+    if (matchingCustom) return matchingCustom.price || 0;
+    return selectedProduct.customizationOptions?.casePrices?.[caseFinish] || 0;
+  }, [selectedProduct, caseFinish, options]);
+
+  const totalPrice = useMemo(() => {
+    if (!selectedProduct) return 0;
+    const finalBasePrice = selectedProduct.discountPercent 
+      ? Math.round(selectedProduct.price * (1 - selectedProduct.discountPercent / 100))
+      : selectedProduct.price;
+    return finalBasePrice + dialPrice + strapPrice + casePrice;
+  }, [selectedProduct, dialPrice, strapPrice, casePrice]);
 
   // Reset page back to customizable models selection when params.reset is received from Navbar
   useEffect(() => {
@@ -203,7 +228,13 @@ export default function Customization({ onPageChange, params }) {
 
   const handleAddToCart = async () => {
     if (!selectedProduct) return;
-    const result = await dispatch(addToCart(selectedProduct.id, 1));
+    const customConfig = {
+      dialColor: dialColor?.value || '',
+      strapMaterial: strapMaterial || '',
+      caseFinish: caseFinish || '',
+      engraving: engraving || ''
+    };
+    const result = await dispatch(addToCart(selectedProduct.id, 1, totalPrice, customConfig));
     if (result?.success !== false) {
       setAddedToCart(true);
       setTimeout(() => setAddedToCart(false), 2500);
@@ -348,7 +379,7 @@ export default function Customization({ onPageChange, params }) {
               <div className="text-center space-y-1">
                 <p className="text-white font-bold text-lg">{selectedProduct.name}</p>
                 <p className="text-gray-400 text-xs">{selectedProduct.category} · {selectedProduct.gender}</p>
-                <p className="font-black text-xl mt-2" style={{ color: '#3b82f6' }}>{formatPrice(selectedProduct.price)}</p>
+                <p className="font-black text-xl mt-2" style={{ color: '#3b82f6' }}>{formatPrice(totalPrice)}</p>
               </div>
             </div>
 
@@ -387,24 +418,31 @@ export default function Customization({ onPageChange, params }) {
                 <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-300">
                   Dial Color — <span className="text-white">{dialColor?.label}</span>
                 </h3>
-                <div className="flex flex-wrap gap-3">
-                  {options.dialColors.map((color) => (
-                    <button
-                      key={color.value}
-                      onClick={() => setDialColor(color)}
-                      title={color.label}
-                      className="relative w-10 h-10 rounded-full border-2 transition-all duration-200 cursor-pointer"
-                      style={{
-                        background: color.value,
-                        borderColor: dialColor?.value === color.value ? '#2563eb' : 'transparent',
-                        boxShadow: dialColor?.value === color.value ? '0 0 0 3px rgba(37,99,235,0.35)' : 'none',
-                      }}
-                    >
-                      {dialColor?.value === color.value && (
-                        <Check size={14} className="absolute inset-0 m-auto" style={{ color: color.textDark ? '#000' : '#fff' }} />
-                      )}
-                    </button>
-                  ))}
+                <div className="flex flex-wrap gap-4">
+                  {options.dialColors.map((color) => {
+                    const priceVal = selectedProduct.customizationOptions?.dialPrices?.[color.value] || 0;
+                    return (
+                      <div key={color.value} className="flex flex-col items-center space-y-1">
+                        <button
+                          onClick={() => setDialColor(color)}
+                          title={color.label}
+                          className="relative w-10 h-10 rounded-full border-2 transition-all duration-200 cursor-pointer"
+                          style={{
+                            background: color.value,
+                            borderColor: dialColor?.value === color.value ? '#2563eb' : 'transparent',
+                            boxShadow: dialColor?.value === color.value ? '0 0 0 3px rgba(37,99,235,0.35)' : 'none',
+                          }}
+                        >
+                          {dialColor?.value === color.value && (
+                            <Check size={14} className="absolute inset-0 m-auto" style={{ color: color.textDark ? '#000' : '#fff' }} />
+                          )}
+                        </button>
+                        <span className="text-[9px] text-gray-400 font-mono">
+                          {priceVal > 0 ? `+$${priceVal}` : 'Free'}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -423,6 +461,9 @@ export default function Customization({ onPageChange, params }) {
                       : ((mat === options.customStrapName && options.customStrapImage) 
                         ? options.customStrapImage 
                         : (STRAP_IMAGES[mat] || '/assets/strap_leather_tan.jpg'));
+                    const priceVal = matchingCustom 
+                      ? (matchingCustom.price || 0) 
+                      : (selectedProduct.customizationOptions?.strapPrices?.[mat] || 0);
                     return (
                       <button
                         key={mat}
@@ -444,6 +485,9 @@ export default function Customization({ onPageChange, params }) {
                         <span className="text-[8px] font-bold uppercase tracking-widest text-center leading-tight">
                           {mat}
                         </span>
+                        <span className="text-[9px] text-gray-400 font-mono mt-1">
+                          {priceVal > 0 ? `+$${priceVal}` : 'Free'}
+                        </span>
                       </button>
                     );
                   })}
@@ -458,20 +502,26 @@ export default function Customization({ onPageChange, params }) {
                   Case Finish — <span className="text-white">{caseFinish}</span>
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {options.caseFinishes.map((fin) => (
-                    <button
-                      key={fin}
-                      onClick={() => setCaseFinish(fin)}
-                      className={`px-3 py-2 text-xs font-bold rounded border transition-all cursor-pointer ${
-                        caseFinish === fin
-                          ? 'border-blue-500'
-                          : 'border-white/10 text-gray-300 hover:border-white/30 hover:text-white'
-                      }`}
-                      style={caseFinish === fin ? { background: 'rgba(37,99,235,0.1)', color: '#3b82f6' } : {}}
-                    >
-                      {fin}
-                    </button>
-                  ))}
+                  {options.caseFinishes.map((fin) => {
+                    const matchingCustom = (options.customCases || []).find(cc => cc.name === fin);
+                    const priceVal = matchingCustom 
+                      ? (matchingCustom.price || 0) 
+                      : (selectedProduct.customizationOptions?.casePrices?.[fin] || 0);
+                    return (
+                      <button
+                        key={fin}
+                        onClick={() => setCaseFinish(fin)}
+                        className={`px-3 py-2 text-xs font-bold rounded border transition-all cursor-pointer ${
+                          caseFinish === fin
+                            ? 'border-blue-500'
+                            : 'border-white/10 text-gray-300 hover:border-white/30 hover:text-white'
+                        }`}
+                        style={caseFinish === fin ? { background: 'rgba(37,99,235,0.1)', color: '#3b82f6' } : {}}
+                      >
+                        {fin} {priceVal > 0 ? `(+$${priceVal})` : '(Free)'}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}

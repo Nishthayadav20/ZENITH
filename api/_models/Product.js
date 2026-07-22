@@ -54,12 +54,17 @@ const productSchema = new mongoose.Schema({
     customCaseColor: { type: String, default: '' },
     customStraps: [{
       name: { type: String, default: '' },
-      image: { type: String, default: '' }
+      image: { type: String, default: '' },
+      price: { type: Number, default: 0 }
     }],
     customCases: [{
       name: { type: String, default: '' },
-      color: { type: String, default: '' }
-    }]
+      color: { type: String, default: '' },
+      price: { type: Number, default: 0 }
+    }],
+    dialPrices: { type: Map, of: Number, default: {} },
+    strapPrices: { type: Map, of: Number, default: {} },
+    casePrices: { type: Map, of: Number, default: {} }
   },
   reviews: [reviewSchema]
 }, {

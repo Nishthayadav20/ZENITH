@@ -538,6 +538,554 @@ export default function Static({ params, _onPageChange }) {
     }
   ];
 
+  const cancellationData = [
+    {
+      title: "1. Company Information",
+      content: (
+        <div className="space-y-2">
+          <p><span className="font-semibold text-luxury-text">Brand:</span> KHRONIQ</p>
+          <p><span className="font-semibold text-luxury-text">Owned & Marketed By:</span> True Knock Industries Private Limited</p>
+          <p className="font-semibold text-luxury-text mt-1">Registered Office:</p>
+          <p className="pl-3 border-l border-luxury-gold-dark/30 italic text-[11px] text-luxury-muted">
+            OFFICE NO. - 2, CHAMBER - 4,<br />
+            UDAIGIRI TOWER, KAUSHAMBI,<br />
+            GHAZIABAD, UTTAR PRADESH — 201010,<br />
+            India
+          </p>
+          <p><span className="font-semibold text-luxury-text">Website:</span> <a href="https://www.khroniq.com" target="_blank" rel="noopener noreferrer" className="text-luxury-gold-dark hover:underline">www.khroniq.com</a></p>
+          <p><span className="font-semibold text-luxury-text">Email:</span> support@khroniq.com</p>
+        </div>
+      )
+    },
+    {
+      title: "2. Order Cancellation by Customer",
+      content: (
+        <div className="space-y-2">
+          <p>Customers may request cancellation of an order only before the order has been dispatched from our warehouse.</p>
+          <p>Cancellation requests should be submitted as soon as possible by contacting KHRONIQ Customer Support with the following details:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Order Number</li>
+            <li>Customer Name</li>
+            <li>Registered Email Address</li>
+            <li>Registered Mobile Number</li>
+            <li>Reason for Cancellation</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted italic mt-1">Cancellation requests received after dispatch cannot be accepted and will be governed by the applicable Return & Refund Policy.</p>
+        </div>
+      )
+    },
+    {
+      title: "3. Cancellation of Prepaid Orders",
+      content: (
+        <div className="space-y-2">
+          <p>If a prepaid order is successfully cancelled before dispatch:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>The full product amount paid by the customer will be refunded to the original payment method.</li>
+            <li>Refund processing shall generally be initiated within 7–10 Business Days after cancellation approval.</li>
+            <li>The actual credit timeline may vary depending on the customer's bank, card issuer, UPI provider, or payment gateway.</li>
+          </ul>
+        </div>
+      )
+    },
+    {
+      title: "4. Cancellation of Cash on Delivery (COD) Orders",
+      content: (
+        <div className="space-y-2">
+          <p>Where Cash on Delivery (COD) is available:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>COD orders may be cancelled before dispatch without any cancellation charges.</li>
+            <li>Repeated cancellation of COD orders may result in temporary or permanent restriction of COD services for the customer.</li>
+            <li>KHRONIQ reserves the right to require prepaid payment for future orders from customers with excessive cancellations.</li>
+          </ul>
+        </div>
+      )
+    },
+    {
+      title: "5. Orders That Cannot Be Cancelled",
+      content: (
+        <div className="space-y-2">
+          <p>The following orders cannot be cancelled once confirmed or dispatched:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Orders already shipped.</li>
+            <li>Customized or engraved watches.</li>
+            <li>Personalized products.</li>
+            <li>Special-order or made-to-order products.</li>
+            <li>Limited Edition products specifically manufactured against customer orders.</li>
+            <li>Orders already delivered.</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted italic mt-1">Such orders shall be governed by the applicable Return, Refund, Replacement, or Warranty Policies, where eligible.</p>
+        </div>
+      )
+    },
+    {
+      title: "6. Cancellation by KHRONIQ",
+      content: (
+        <div className="space-y-2">
+          <p>KHRONIQ reserves the right to cancel any order, in whole or in part, at its sole discretion, including but not limited to the following circumstances:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Product becomes unavailable.</li>
+            <li>Pricing error.</li>
+            <li>Technical error on the Website.</li>
+            <li>Payment verification failure.</li>
+            <li>Fraudulent or suspicious transactions.</li>
+            <li>Violation of our Terms & Conditions.</li>
+            <li>Incomplete or incorrect customer information.</li>
+            <li>Delivery to restricted or non-serviceable locations.</li>
+            <li>Regulatory or legal restrictions.</li>
+            <li>Events beyond our reasonable control.</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted italic mt-1">Where payment has already been received for a cancelled order, an eligible refund shall be processed in accordance with this Policy.</p>
+        </div>
+      )
+    },
+    {
+      title: "7. Price or Typographical Errors",
+      content: "Despite our best efforts, pricing inaccuracies, typographical errors, incorrect product descriptions, or system errors may occasionally occur. KHRONIQ reserves the right to cancel affected orders even after order confirmation. In such cases, customers shall receive a full refund of the amount paid."
+    },
+    {
+      title: "8. Fraud Prevention",
+      content: (
+        <div className="space-y-2">
+          <p>KHRONIQ actively monitors transactions to prevent fraud. Orders may be cancelled where:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Identity verification fails.</li>
+            <li>Payment appears unauthorized.</li>
+            <li>Multiple suspicious transactions are detected.</li>
+            <li>False customer information is provided.</li>
+            <li>Chargeback abuse is suspected.</li>
+            <li>The order violates applicable laws or our policies.</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted italic mt-1">KHRONIQ may request additional verification before processing certain orders.</p>
+        </div>
+      )
+    },
+    {
+      title: "9. Refund After Cancellation",
+      content: (
+        <div className="space-y-2">
+          <p>Approved refunds shall be processed through the original payment method used during purchase.</p>
+          <p>Refund timelines may vary depending on Bank processing, Card issuer processing, UPI settlement, or Payment gateway processing. KHRONIQ shall not be responsible for delays caused by financial institutions or payment service providers.</p>
+        </div>
+      )
+    },
+    {
+      title: "10. Promotional Orders",
+      content: "If an order placed under a promotional offer, discount campaign, coupon, cashback program, or bundle offer is cancelled, the refund amount shall be calculated based on the actual amount paid after applying the relevant discounts or promotional benefits."
+    },
+    {
+      title: "11. Force Majeure",
+      content: "KHRONIQ shall not be liable for delays in cancellation processing or refunds resulting from circumstances beyond its reasonable control, including but not limited to pandemics, floods, earthquakes, fires, natural disasters, government restrictions, curfews, wars, civil unrest, labour strikes, transport disruptions, customs delays, internet outages, cyber incidents, payment gateway failures, or any other Force Majeure event."
+    },
+    {
+      title: "12. Policy Modifications",
+      content: "KHRONIQ reserves the right to amend, modify, or update this Cancellation Policy at any time without prior notice. The latest version shall always be available on www.khroniq.com. Continued use of the Website after such modifications constitutes acceptance of the revised Policy."
+    },
+    {
+      title: "13. Governing Law & Jurisdiction",
+      content: "This Cancellation Policy shall be governed by and interpreted in accordance with the laws of India. Any dispute arising out of or relating to this Policy shall be subject to the exclusive jurisdiction of the competent courts at Lucknow, Uttar Pradesh, unless otherwise required by applicable law."
+    },
+    {
+      title: "14. Contact Us",
+      content: (
+        <div className="space-y-2">
+          <p className="font-bold text-luxury-text">KHRONIQ</p>
+          <p>A Premium Watch Brand by True Knock Industries Private Limited</p>
+          <div className="pl-3 border-l border-luxury-gold-dark/30 text-[11px] text-luxury-muted space-y-0.5">
+            <p><span className="font-semibold text-luxury-text">Registered Office:</span> OFFICE NO. - 2, CHAMBER - 4, UDAIGIRI TOWER, KAUSHAMBI, GHAZIABAD, UTTAR PRADESH — 201010, India</p>
+            <p><span className="font-semibold text-luxury-text">Website:</span> www.khroniq.com</p>
+            <p><span className="font-semibold text-luxury-text">Email:</span> support@khroniq.com</p>
+          </div>
+          <p className="text-[11px] text-luxury-muted italic mt-2">If you wish to cancel an order or have any questions regarding this Cancellation Policy, please contact our Customer Support team before your order is dispatched. By placing an order through www.khroniq.com, you acknowledge that you have read, understood, and agreed to this Cancellation Policy.</p>
+        </div>
+      )
+    }
+  ];
+
+  const cookieData = [
+    {
+      title: "1. Company Information",
+      content: (
+        <div className="space-y-2">
+          <p><span className="font-semibold text-luxury-text">Brand:</span> KHRONIQ</p>
+          <p><span className="font-semibold text-luxury-text">Owned & Marketed By:</span> True Knock Industries Private Limited</p>
+          <p className="font-semibold text-luxury-text mt-1">Registered Office:</p>
+          <p className="pl-3 border-l border-luxury-gold-dark/30 italic text-[11px] text-luxury-muted">
+            OFFICE NO. - 2, CHAMBER - 4,<br />
+            UDAIGIRI TOWER, KAUSHAMBI,<br />
+            GHAZIABAD, UTTAR PRADESH — 201010,<br />
+            India
+          </p>
+          <p><span className="font-semibold text-luxury-text">Website:</span> <a href="https://www.khroniq.com" target="_blank" rel="noopener noreferrer" className="text-luxury-gold-dark hover:underline">www.khroniq.com</a></p>
+          <p><span className="font-semibold text-luxury-text">Email:</span> support@khroniq.com</p>
+        </div>
+      )
+    },
+    {
+      title: "2. What Are Cookies?",
+      content: "Cookies are small text files stored on your computer, smartphone, tablet, or other device when you visit a website. Cookies help websites recognize your device, remember your preferences, improve website performance, and provide a better browsing experience. Cookies do not normally contain information that directly identifies you; however, they may be associated with information you voluntarily provide to us."
+    },
+    {
+      title: "3. Types of Cookies We Use",
+      content: (
+        <div className="space-y-3">
+          <div>
+            <p className="font-bold text-luxury-text uppercase text-[9px] tracking-wider mb-1">A. Essential Cookies</p>
+            <p className="mb-1">These cookies are necessary for the operation of our Website and cannot be disabled through our systems. They help us:</p>
+            <ul className="list-disc pl-5 space-y-0.5">
+              <li>Enable secure browsing.</li>
+              <li>Maintain login sessions.</li>
+              <li>Process shopping cart functions.</li>
+              <li>Complete checkout.</li>
+              <li>Protect against fraudulent activity.</li>
+              <li>Improve website security.</li>
+            </ul>
+            <p className="text-[11px] text-luxury-muted italic mt-1">Without these cookies, certain Website features may not function correctly.</p>
+          </div>
+
+          <div>
+            <p className="font-bold text-luxury-text uppercase text-[9px] tracking-wider mb-1">B. Performance & Analytics Cookies</p>
+            <p className="mb-1">These cookies help us understand how visitors interact with our Website by collecting anonymous information such as:</p>
+            <ul className="list-disc pl-5 space-y-0.5">
+              <li>Pages visited</li>
+              <li>Time spent on pages</li>
+              <li>Website traffic</li>
+              <li>Visitor behaviour</li>
+              <li>Device type</li>
+              <li>Browser type</li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-bold text-luxury-text uppercase text-[9px] tracking-wider mb-1">C. Functional Cookies</p>
+            <p className="mb-1">These cookies remember your preferences and settings, including:</p>
+            <ul className="list-disc pl-5 space-y-0.5">
+              <li>Preferred language</li>
+              <li>Country selection</li>
+              <li>Currency preference (where applicable)</li>
+              <li>Saved shopping cart</li>
+              <li>Login preferences</li>
+              <li>User interface settings</li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-bold text-luxury-text uppercase text-[9px] tracking-wider mb-1">D. Marketing & Advertising Cookies</p>
+            <p className="mb-1">With your consent, these cookies may be used to:</p>
+            <ul className="list-disc pl-5 space-y-0.5">
+              <li>Display relevant advertisements.</li>
+              <li>Measure advertising performance.</li>
+              <li>Limit repeated advertisements.</li>
+              <li>Deliver personalized marketing content.</li>
+              <li>Support promotional campaigns.</li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-bold text-luxury-text uppercase text-[9px] tracking-wider mb-1">E. Third-Party Cookies</p>
+            <p className="mb-1">Certain features of our Website may rely on third-party services that may place cookies on your device, including but not limited to payment gateways, analytics providers, customer support platforms, social media integrations, video hosting services, and marketing tools. KHRONIQ does not control the cookies placed by third-party services.</p>
+          </div>
+        </div>
+      )
+    },
+    {
+      title: "4. How We Use Cookies",
+      content: (
+        <div className="space-y-2">
+          <p>Cookies may be used to:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Improve Website functionality.</li>
+            <li>Remember user preferences.</li>
+            <li>Process purchases securely.</li>
+            <li>Maintain shopping carts.</li>
+            <li>Prevent fraudulent activity.</li>
+            <li>Analyze Website performance.</li>
+            <li>Understand customer behaviour.</li>
+            <li>Improve products and services.</li>
+            <li>Enhance Website security.</li>
+            <li>Deliver personalized content and promotions.</li>
+          </ul>
+        </div>
+      )
+    },
+    {
+      title: "5. Managing Cookies",
+      content: (
+        <div className="space-y-2">
+          <p>Most web browsers allow you to view stored cookies, delete cookies, block all cookies, block third-party cookies, or receive notifications before cookies are stored.</p>
+          <p className="text-[11px] text-luxury-muted italic">Disabling cookies may affect the functionality of certain areas of the Website, including account login, shopping cart, and checkout.</p>
+        </div>
+      )
+    },
+    {
+      title: "6. Third-Party Services",
+      content: "KHRONIQ may use trusted third-party service providers for secure payment processing, website analytics, shipping and logistics, customer communication, marketing campaigns, and performance monitoring. These providers may use cookies in accordance with their own privacy policies."
+    },
+    {
+      title: "7. Data Protection",
+      content: "Information collected through cookies is handled in accordance with the KHRONIQ Privacy Policy and applicable data protection laws. KHRONIQ implements reasonable administrative, technical, and organizational safeguards to protect information collected through cookies."
+    },
+    {
+      title: "8. Policy Updates",
+      content: "KHRONIQ reserves the right to modify or update this Cookie Policy at any time without prior notice. The latest version will always be available on www.khroniq.com. Continued use of the Website after changes become effective constitutes acceptance of the updated Cookie Policy."
+    },
+    {
+      title: "9. Governing Law & Jurisdiction",
+      content: "This Cookie Policy shall be governed by and interpreted in accordance with the laws of India. Any dispute arising out of or relating to this Cookie Policy shall be subject to the exclusive jurisdiction of the competent courts at Lucknow, Uttar Pradesh, unless otherwise required by applicable law."
+    },
+    {
+      title: "10. Contact Us",
+      content: (
+        <div className="space-y-2">
+          <p className="font-bold text-luxury-text">KHRONIQ</p>
+          <p>A Premium Watch Brand by True Knock Industries Private Limited</p>
+          <div className="pl-3 border-l border-luxury-gold-dark/30 text-[11px] text-luxury-muted space-y-0.5">
+            <p><span className="font-semibold text-luxury-text">Registered Office:</span> OFFICE NO. - 2, CHAMBER - 4, UDAIGIRI TOWER, KAUSHAMBI, GHAZIABAD, UTTAR PRADESH — 201010, India</p>
+            <p><span className="font-semibold text-luxury-text">Website:</span> www.khroniq.com</p>
+            <p><span className="font-semibold text-luxury-text">Email:</span> support@khroniq.com</p>
+          </div>
+          <p className="text-[11px] text-luxury-muted italic mt-2">If you have any questions regarding this Cookie Policy or how cookies are used on our Website, please contact us using the details above. By continuing to use www.khroniq.com, you acknowledge that you have read, understood, and agreed to this Cookie Policy.</p>
+        </div>
+      )
+    }
+  ];
+
+  const codData = [
+    {
+      title: "1. Company Information",
+      content: (
+        <div className="space-y-2">
+          <p><span className="font-semibold text-luxury-text">Brand:</span> KHRONIQ</p>
+          <p><span className="font-semibold text-luxury-text">Owned & Marketed By:</span> True Knock Industries Private Limited</p>
+          <p className="font-semibold text-luxury-text mt-1">Registered Office:</p>
+          <p className="pl-3 border-l border-luxury-gold-dark/30 italic text-[11px] text-luxury-muted">
+            OFFICE NO. - 2, CHAMBER - 4,<br />
+            UDAIGIRI TOWER, KAUSHAMBI,<br />
+            GHAZIABAD, UTTAR PRADESH — 201010,<br />
+            India
+          </p>
+          <p><span className="font-semibold text-luxury-text">Website:</span> <a href="https://www.khroniq.com" target="_blank" rel="noopener noreferrer" className="text-luxury-gold-dark hover:underline">www.khroniq.com</a></p>
+          <p><span className="font-semibold text-luxury-text">Email:</span> support@khroniq.com</p>
+        </div>
+      )
+    },
+    {
+      title: "2. Cash on Delivery (COD)",
+      content: "KHRONIQ currently does not offer Cash on Delivery (COD) as a payment option. All orders placed through our Website must be paid in full at the time of purchase using one of our supported online payment methods."
+    },
+    {
+      title: "3. Accepted Payment Methods",
+      content: (
+        <div className="space-y-2">
+          <p>Customers may complete their purchase using secure online payment options, including but not limited to:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>UPI</li>
+            <li>Credit Cards</li>
+            <li>Debit Cards</li>
+            <li>Net Banking</li>
+            <li>Digital Wallets (where available)</li>
+            <li>Other payment methods displayed during checkout</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted italic mt-1">All payments are processed through secure payment gateways.</p>
+        </div>
+      )
+    },
+    {
+      title: "4. Why COD is Not Available",
+      content: (
+        <div className="space-y-2">
+          <p>To ensure a secure and efficient shopping experience, KHRONIQ operates on a 100% prepaid order model. This helps us:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Verify genuine customer orders.</li>
+            <li>Reduce fraudulent transactions.</li>
+            <li>Ensure faster order processing and dispatch.</li>
+            <li>Maintain inventory accuracy.</li>
+            <li>Provide a seamless customer experience.</li>
+          </ul>
+        </div>
+      )
+    },
+    {
+      title: "5. Order Confirmation",
+      content: "An order will be confirmed only after successful payment authorization. Customers will receive an order confirmation via email and/or SMS once payment has been successfully received."
+    },
+    {
+      title: "6. Payment Security",
+      content: "KHRONIQ does not store customers' payment card details. Payments are processed using trusted third-party payment service providers that employ industry-standard encryption and security measures."
+    },
+    {
+      title: "7. Payment Failure",
+      content: (
+        <div className="space-y-2">
+          <p>If a payment fails or remains incomplete:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>The order will not be confirmed.</li>
+            <li>Products will not be reserved indefinitely.</li>
+            <li>Customers may place a new order after successful payment.</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted italic mt-1">KHRONIQ is not responsible for payment failures caused by banks, payment gateways, internet connectivity issues, or other third-party service interruptions.</p>
+        </div>
+      )
+    },
+    {
+      title: "8. Refunds",
+      content: "Where a refund is approved under the applicable Return & Refund Policy or Cancellation Policy, the amount will be refunded to the original payment method used during the purchase. Refund processing timelines are subject to the relevant policy and the processing time of banks or payment service providers."
+    },
+    {
+      title: "9. Future Availability of COD",
+      content: "KHRONIQ may introduce Cash on Delivery (COD) for selected products, locations, or customers in the future. If COD becomes available, the applicable terms and conditions will be published on www.khroniq.com and may vary based on order value, delivery location, customer history, or operational requirements."
+    },
+    {
+      title: "10. Policy Modifications",
+      content: "KHRONIQ reserves the right to amend, modify, suspend, or discontinue this COD Policy at any time without prior notice. The latest version will always be available on www.khroniq.com. Continued use of the Website constitutes acceptance of the updated Policy."
+    },
+    {
+      title: "11. Governing Law & Jurisdiction",
+      content: "This COD Policy shall be governed by and interpreted in accordance with the laws of India. Any dispute arising out of or relating to this Policy shall be subject to the exclusive jurisdiction of the competent courts at Lucknow, Uttar Pradesh, unless otherwise required by applicable law."
+    },
+    {
+      title: "12. Contact Us",
+      content: (
+        <div className="space-y-2">
+          <p className="font-bold text-luxury-text">KHRONIQ</p>
+          <p>A Premium Watch Brand by True Knock Industries Private Limited</p>
+          <div className="pl-3 border-l border-luxury-gold-dark/30 text-[11px] text-luxury-muted space-y-0.5">
+            <p><span className="font-semibold text-luxury-text">Registered Office:</span> OFFICE NO. - 2, CHAMBER - 4, UDAIGIRI TOWER, KAUSHAMBI, GHAZIABAD, UTTAR PRADESH — 201010, India</p>
+            <p><span className="font-semibold text-luxury-text">Website:</span> www.khroniq.com</p>
+            <p><span className="font-semibold text-luxury-text">Email:</span> support@khroniq.com</p>
+          </div>
+          <p className="text-[11px] text-luxury-muted italic mt-2">If you have any questions regarding payment methods or this Cash on Delivery (COD) Policy, please contact our Customer Support team. By placing an order through www.khroniq.com, you acknowledge that you have read, understood, and agreed to this Cash on Delivery (COD) Policy.</p>
+        </div>
+      )
+    }
+  ];
+
+  const disclaimerData = [
+    {
+      title: "1. Company Information",
+      content: (
+        <div className="space-y-2">
+          <p><span className="font-semibold text-luxury-text">Brand:</span> KHRONIQ</p>
+          <p><span className="font-semibold text-luxury-text">Owned & Marketed By:</span> True Knock Industries Private Limited</p>
+          <p className="font-semibold text-luxury-text mt-1">Registered Office:</p>
+          <p className="pl-3 border-l border-luxury-gold-dark/30 italic text-[11px] text-luxury-muted">
+            OFFICE NO. - 2, CHAMBER - 4,<br />
+            UDAIGIRI TOWER, KAUSHAMBI,<br />
+            GHAZIABAD, UTTAR PRADESH — 201010,<br />
+            India
+          </p>
+          <p><span className="font-semibold text-luxury-text">Website:</span> <a href="https://www.khroniq.com" target="_blank" rel="noopener noreferrer" className="text-luxury-gold-dark hover:underline">www.khroniq.com</a></p>
+          <p><span className="font-semibold text-luxury-text">Email:</span> support@khroniq.com</p>
+        </div>
+      )
+    },
+    {
+      title: "2. General Information",
+      content: "The information provided on this Website is intended for general informational and commercial purposes only. While KHRONIQ makes reasonable efforts to ensure that the information on this Website is accurate and up to date, we do not guarantee that all content is complete, current, accurate, or free from errors."
+    },
+    {
+      title: "3. Product Information",
+      content: (
+        <div className="space-y-2">
+          <p>KHRONIQ strives to accurately display product specifications, descriptions, dimensions, colours, finishes, and images. However:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Product colours may vary depending on screen settings and lighting.</li>
+            <li>Natural leather straps may display variations in grain, texture, and colour.</li>
+            <li>Minor differences in finishing, polishing, or appearance may occur due to manufacturing processes.</li>
+            <li>Product packaging may change without prior notice.</li>
+            <li>Product specifications may be updated to improve quality or performance.</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted italic mt-1">Such variations shall not be considered manufacturing defects.</p>
+        </div>
+      )
+    },
+    {
+      title: "4. Watch Accuracy Disclaimer",
+      content: "Quartz and other watch movements may exhibit minor variations in timekeeping within industry-accepted tolerances. Such normal deviations do not constitute manufacturing defects."
+    },
+    {
+      title: "5. Water Resistance Disclaimer",
+      content: (
+        <div className="space-y-2">
+          <p>Water resistance ratings indicate laboratory-tested performance under controlled conditions. Water resistance is not permanent and may decrease over time due to normal wear and tear, aging of seals and gaskets, accidental impacts, improper handling, or unauthorized servicing.</p>
+          <p className="text-[11px] text-luxury-muted italic">Customers should always follow the water-resistance instructions provided with the product. KHRONIQ shall not be responsible for damage resulting from improper use beyond the specified water-resistance rating.</p>
+        </div>
+      )
+    },
+    {
+      title: "6. Warranty Disclaimer",
+      content: "Warranty coverage is governed exclusively by the KHRONIQ Warranty Policy. This Disclaimer does not extend, modify, or replace any warranty offered by KHRONIQ."
+    },
+    {
+      title: "7. Pricing Disclaimer",
+      content: "Prices displayed on the Website are subject to change without prior notice. Despite our best efforts, pricing or typographical errors may occasionally occur. KHRONIQ reserves the right to cancel or refuse any order resulting from incorrect pricing, product descriptions, or technical errors."
+    },
+    {
+      title: "8. Website Availability",
+      content: "KHRONIQ does not guarantee uninterrupted or error-free operation of this Website. The Website may be temporarily unavailable due to scheduled maintenance, software updates, technical issues, internet outages, cybersecurity measures, or circumstances beyond our reasonable control."
+    },
+    {
+      title: "9. Third-Party Links",
+      content: "This Website may contain links to third-party websites or services. KHRONIQ does not control, endorse, or assume responsibility for the content, products, services, privacy practices, or policies of any third-party website. Users access such websites at their own risk."
+    },
+    {
+      title: "10. Intellectual Property",
+      content: "All Website content, including but not limited to KHRONIQ name, logos, product designs, watch dial designs, photographs, videos, graphics, packaging, product descriptions, QR Codes, Model Numbers, Serial Number systems, website design, software, and marketing materials is the exclusive property of True Knock Industries Private Limited and is protected by applicable intellectual property laws. Unauthorized use, reproduction, distribution, modification, or commercial exploitation is strictly prohibited."
+    },
+    {
+      title: "11. Product Authenticity",
+      content: "Only products purchased directly from KHRONIQ or its authorized dealers are guaranteed to be genuine. KHRONIQ is not responsible for counterfeit, altered, refurbished, or unauthorized products purchased from third parties. Customers are encouraged to verify authenticity using official serial numbers or QR codes, where applicable."
+    },
+    {
+      title: "12. Limitation of Liability",
+      content: (
+        <div className="space-y-2">
+          <p>To the fullest extent permitted by applicable law, KHRONIQ shall not be liable for:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Indirect, incidental, special, or consequential damages.</li>
+            <li>Loss of profits or business opportunities.</li>
+            <li>Loss of goodwill or reputation.</li>
+            <li>Loss of data.</li>
+            <li>Delay in delivery caused by courier partners.</li>
+            <li>Website interruptions or technical failures.</li>
+            <li>Customer misuse of products or unauthorized repairs.</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted italic mt-1">KHRONIQ's total liability shall not exceed the purchase price actually paid for the product giving rise to the claim.</p>
+        </div>
+      )
+    },
+    {
+      title: "13. User Responsibility",
+      content: "Users are responsible for providing accurate information, maintaining account security, reviewing product specifications before purchase, following product care instructions, and using products in accordance with the User Manual and Warranty Policy. Improper use of products may void applicable warranty coverage."
+    },
+    {
+      title: "14. Force Majeure",
+      content: "KHRONIQ shall not be liable for any delay or failure in performing its obligations due to events beyond its reasonable control, including but not limited to pandemics, epidemics, floods, earthquakes, fires, natural disasters, government restrictions, curfews, transport disruptions, customs delays, power failures, internet outages, cyber incidents, war, terrorism, civil unrest, labour strikes, or lockouts."
+    },
+    {
+      title: "15. Changes to This Disclaimer",
+      content: "KHRONIQ reserves the right to amend or update this Disclaimer at any time without prior notice. The latest version shall always be available on www.khroniq.com. Continued use of the Website constitutes acceptance of the revised Disclaimer."
+    },
+    {
+      title: "16. Governing Law & Jurisdiction",
+      content: "This Disclaimer shall be governed by and interpreted in accordance with the laws of India. Any dispute arising out of or relating to this Disclaimer shall be subject to the exclusive jurisdiction of the competent courts at Lucknow, Uttar Pradesh, unless otherwise required by applicable law."
+    },
+    {
+      title: "17. Contact Us",
+      content: (
+        <div className="space-y-2">
+          <p className="font-bold text-luxury-text">KHRONIQ</p>
+          <p>A Premium Watch Brand by True Knock Industries Private Limited</p>
+          <div className="pl-3 border-l border-luxury-gold-dark/30 text-[11px] text-luxury-muted space-y-0.5">
+            <p><span className="font-semibold text-luxury-text">Registered Office:</span> OFFICE NO. - 2, CHAMBER - 4, UDAIGIRI TOWER, KAUSHAMBI, GHAZIABAD, UTTAR PRADESH — 201010, India</p>
+            <p><span className="font-semibold text-luxury-text">Website:</span> www.khroniq.com</p>
+            <p><span className="font-semibold text-luxury-text">Email:</span> support@khroniq.com</p>
+          </div>
+          <p className="text-[11px] text-luxury-muted italic mt-2">If you have any questions regarding this Disclaimer or the use of this Website, please contact us using the details above. By accessing or using www.khroniq.com, you acknowledge that you have read, understood, and agreed to this Disclaimer.</p>
+        </div>
+      )
+    }
+  ];
+
   return (
     <div className="space-y-8 pb-12">
       {/* Header Banner */}
@@ -553,10 +1101,14 @@ export default function Static({ params, _onPageChange }) {
           { key: 'about', label: 'Our Story' },
           { key: 'contact', label: 'Boutique Contact' },
           { key: 'shipping', label: 'Shipping Policy' },
+          { key: 'cancellation', label: 'Cancellation Policy' },
           { key: 'exchange', label: 'Exchange Policy' },
           { key: 'refund', label: 'Refund Policy' },
           { key: 'warranty', label: 'Warranty Policy' },
           { key: 'privacy', label: 'Privacy Policy' },
+          { key: 'cookie', label: 'Cookie Policy' },
+          { key: 'cod', label: 'COD Policy' },
+          { key: 'disclaimer', label: 'Disclaimer' },
           { key: 'faq', label: 'Client FAQ' },
           { key: 'blogs', label: 'Blogs & Editorial' },
           { key: 'policies', label: 'Legal Policies' }
@@ -758,6 +1310,50 @@ export default function Static({ params, _onPageChange }) {
           </div>
         )}
 
+        {/* CANCELLATION POLICY TAB */}
+        {activeTab === 'cancellation' && (
+          <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
+            <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Cancellation Policy</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
+              {/* Sticky Sidebar Table of Contents */}
+              <div className="md:col-span-4 space-y-2 max-h-[500px] overflow-y-auto pr-2 border-r border-luxury-text/10 sticky top-24 hidden md:block">
+                <p className="text-[10px] font-bold text-luxury-text uppercase tracking-widest mb-3">Table of Contents</p>
+                {cancellationData.map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      const element = document.getElementById(`cancellation-section-${idx}`);
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }}
+                    className="block text-left w-full text-[10px] py-1.5 px-2 hover:bg-luxury-gold-dark/5 hover:text-luxury-gold-dark transition rounded font-medium truncate cursor-pointer"
+                  >
+                    {item.title}
+                  </button>
+                ))}
+              </div>
+
+              {/* Scrollable Policy Text */}
+              <div className="md:col-span-8 space-y-6 max-h-[600px] overflow-y-auto pr-2">
+                <p className="text-[11px] text-luxury-muted italic mb-4">Effective Date: 1st July 2026</p>
+                <p className="text-[11px] text-luxury-muted mb-4">
+                  Welcome to KHRONIQ, a premium watch brand owned and marketed by True Knock Industries Private Limited (&quot;KHRONIQ&quot;, &quot;Company&quot;, &quot;we&quot;, &quot;our&quot;, or &quot;us&quot;). This Cancellation Policy explains the terms and conditions under which an order placed through https://www.khroniq.com/ may be cancelled. By placing an order on our Website, you agree to this Cancellation Policy.
+                </p>
+                {cancellationData.map((item, idx) => (
+                  <section key={idx} id={`cancellation-section-${idx}`} className="space-y-2 scroll-mt-24 pb-4 border-b border-luxury-text/5 last:border-b-0">
+                    <h4 className="font-bold text-luxury-text uppercase text-[10px] tracking-wider">{item.title}</h4>
+                    <div className="text-[11px] font-light text-luxury-muted leading-relaxed">
+                      {item.content}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* EXCHANGE POLICY TAB */}
         {activeTab === 'exchange' && (
           <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
@@ -843,6 +1439,179 @@ export default function Static({ params, _onPageChange }) {
                 </p>
                 {warrantyData.map((item, idx) => (
                   <section key={idx} id={`warranty-section-${idx}`} className="space-y-2 scroll-mt-24 pb-4 border-b border-luxury-text/5 last:border-b-0">
+                    <h4 className="font-bold text-luxury-text uppercase text-[10px] tracking-wider">{item.title}</h4>
+                    <div className="text-[11px] font-light text-luxury-muted leading-relaxed">
+                      {item.content}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* PRIVACY POLICY TAB */}
+        {activeTab === 'privacy' && (
+          <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
+            <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Privacy Policy</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
+              {/* Sticky Sidebar Table of Contents */}
+              <div className="md:col-span-4 space-y-2 max-h-[500px] overflow-y-auto pr-2 border-r border-luxury-text/10 sticky top-24 hidden md:block">
+                <p className="text-[10px] font-bold text-luxury-text uppercase tracking-widest mb-3">Table of Contents</p>
+                {privacyData.map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      const element = document.getElementById(`privacy-section-${idx}`);
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }}
+                    className="block text-left w-full text-[10px] py-1.5 px-2 hover:bg-luxury-gold-dark/5 hover:text-luxury-gold-dark transition rounded font-medium truncate cursor-pointer"
+                  >
+                    {item.title}
+                  </button>
+                ))}
+              </div>
+
+              {/* Scrollable Policy Text */}
+              <div className="md:col-span-8 space-y-6 max-h-[600px] overflow-y-auto pr-2">
+                <p className="text-[11px] text-luxury-muted italic mb-4">Effective Date: 1st July 2026</p>
+                {privacyData.map((item, idx) => (
+                  <section key={idx} id={`privacy-section-${idx}`} className="space-y-2 scroll-mt-24 pb-4 border-b border-luxury-text/5 last:border-b-0">
+                    <h4 className="font-bold text-luxury-text uppercase text-[10px] tracking-wider">{item.title}</h4>
+                    <div className="text-[11px] font-light text-luxury-muted leading-relaxed">
+                      {item.content}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* COOKIE POLICY TAB */}
+        {activeTab === 'cookie' && (
+          <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
+            <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Cookie Policy</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
+              {/* Sticky Sidebar Table of Contents */}
+              <div className="md:col-span-4 space-y-2 max-h-[500px] overflow-y-auto pr-2 border-r border-luxury-text/10 sticky top-24 hidden md:block">
+                <p className="text-[10px] font-bold text-luxury-text uppercase tracking-widest mb-3">Table of Contents</p>
+                {cookieData.map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      const element = document.getElementById(`cookie-section-${idx}`);
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }}
+                    className="block text-left w-full text-[10px] py-1.5 px-2 hover:bg-luxury-gold-dark/5 hover:text-luxury-gold-dark transition rounded font-medium truncate cursor-pointer"
+                  >
+                    {item.title}
+                  </button>
+                ))}
+              </div>
+
+              {/* Scrollable Policy Text */}
+              <div className="md:col-span-8 space-y-6 max-h-[600px] overflow-y-auto pr-2">
+                <p className="text-[11px] text-luxury-muted italic mb-4">Effective Date: 1st July 2026</p>
+                <p className="text-[11px] text-luxury-muted mb-4">
+                  Welcome to KHRONIQ, a premium watch brand owned and marketed by True Knock Industries Private Limited (&quot;KHRONIQ&quot;, &quot;Company&quot;, &quot;we&quot;, &quot;our&quot;, or &quot;us&quot;). This Cookie Policy explains how we use cookies and similar technologies when you visit https://www.khroniq.com/ (&quot;Website&quot;). By accessing or using our Website, you consent to the use of cookies in accordance with this Cookie Policy.
+                </p>
+                {cookieData.map((item, idx) => (
+                  <section key={idx} id={`cookie-section-${idx}`} className="space-y-2 scroll-mt-24 pb-4 border-b border-luxury-text/5 last:border-b-0">
+                    <h4 className="font-bold text-luxury-text uppercase text-[10px] tracking-wider">{item.title}</h4>
+                    <div className="text-[11px] font-light text-luxury-muted leading-relaxed">
+                      {item.content}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* COD POLICY TAB */}
+        {activeTab === 'cod' && (
+          <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
+            <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Cash on Delivery (COD) Policy</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
+              {/* Sticky Sidebar Table of Contents */}
+              <div className="md:col-span-4 space-y-2 max-h-[500px] overflow-y-auto pr-2 border-r border-luxury-text/10 sticky top-24 hidden md:block">
+                <p className="text-[10px] font-bold text-luxury-text uppercase tracking-widest mb-3">Table of Contents</p>
+                {codData.map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      const element = document.getElementById(`cod-section-${idx}`);
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }}
+                    className="block text-left w-full text-[10px] py-1.5 px-2 hover:bg-luxury-gold-dark/5 hover:text-luxury-gold-dark transition rounded font-medium truncate cursor-pointer"
+                  >
+                    {item.title}
+                  </button>
+                ))}
+              </div>
+
+              {/* Scrollable Policy Text */}
+              <div className="md:col-span-8 space-y-6 max-h-[600px] overflow-y-auto pr-2">
+                <p className="text-[11px] text-luxury-muted italic mb-4">Effective Date: 1st July 2026</p>
+                <p className="text-[11px] text-luxury-muted mb-4">
+                  Welcome to KHRONIQ, a premium watch brand owned and marketed by True Knock Industries Private Limited (&quot;KHRONIQ&quot;, &quot;Company&quot;, &quot;we&quot;, &quot;our&quot;, or &quot;us&quot;). At present, Cash on Delivery (COD) is not available for any orders placed through https://www.khroniq.com/. This Policy explains our payment terms regarding COD.
+                </p>
+                {codData.map((item, idx) => (
+                  <section key={idx} id={`cod-section-${idx}`} className="space-y-2 scroll-mt-24 pb-4 border-b border-luxury-text/5 last:border-b-0">
+                    <h4 className="font-bold text-luxury-text uppercase text-[10px] tracking-wider">{item.title}</h4>
+                    <div className="text-[11px] font-light text-luxury-muted leading-relaxed">
+                      {item.content}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* DISCLAIMER TAB */}
+        {activeTab === 'disclaimer' && (
+          <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
+            <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Disclaimer & Legal Notice</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
+              {/* Sticky Sidebar Table of Contents */}
+              <div className="md:col-span-4 space-y-2 max-h-[500px] overflow-y-auto pr-2 border-r border-luxury-text/10 sticky top-24 hidden md:block">
+                <p className="text-[10px] font-bold text-luxury-text uppercase tracking-widest mb-3">Table of Contents</p>
+                {disclaimerData.map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      const element = document.getElementById(`disclaimer-section-${idx}`);
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }}
+                    className="block text-left w-full text-[10px] py-1.5 px-2 hover:bg-luxury-gold-dark/5 hover:text-luxury-gold-dark transition rounded font-medium truncate cursor-pointer"
+                  >
+                    {item.title}
+                  </button>
+                ))}
+              </div>
+
+              {/* Scrollable Policy Text */}
+              <div className="md:col-span-8 space-y-6 max-h-[600px] overflow-y-auto pr-2">
+                <p className="text-[11px] text-luxury-muted italic mb-4">Effective Date: 1st July 2026</p>
+                <p className="text-[11px] text-luxury-muted mb-4">
+                  Welcome to KHRONIQ, a premium watch brand owned and marketed by True Knock Industries Private Limited (&quot;KHRONIQ&quot;, &quot;Company&quot;, &quot;we&quot;, &quot;our&quot;, or &quot;us&quot;). This Disclaimer governs your use of https://www.khroniq.com/ (&quot;Website&quot;). By accessing or using this Website, you acknowledge that you have read, understood, and agreed to this Disclaimer.
+                </p>
+                {disclaimerData.map((item, idx) => (
+                  <section key={idx} id={`disclaimer-section-${idx}`} className="space-y-2 scroll-mt-24 pb-4 border-b border-luxury-text/5 last:border-b-0">
                     <h4 className="font-bold text-luxury-text uppercase text-[10px] tracking-wider">{item.title}</h4>
                     <div className="text-[11px] font-light text-luxury-muted leading-relaxed">
                       {item.content}

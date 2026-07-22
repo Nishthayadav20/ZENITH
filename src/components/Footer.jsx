@@ -35,9 +35,12 @@ const NAV_COLS = [
       { label: 'Book an Appointment', page: 'static',  args: { view: 'contact' } },
       { label: 'Register My Watch',   action: 'warranty' },
       { label: 'Shipping Policy',     page: 'static',  args: { view: 'shipping' } },
+      { label: 'Cancellation Policy', page: 'static',  args: { view: 'cancellation' } },
       { label: 'Exchange Policy',     page: 'static',  args: { view: 'exchange' } },
       { label: 'Refund Policy',       page: 'static',  args: { view: 'refund' } },
       { label: 'Warranty Policy',     page: 'static',  args: { view: 'warranty' } },
+      { label: 'COD Policy',          page: 'static',  args: { view: 'cod' } },
+      { label: 'Cookie Policy',       page: 'static',  args: { view: 'cookie' } },
       { label: 'FAQ',                 page: 'static',  args: { view: 'faq' } },
     ],
   },
@@ -487,26 +490,36 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
           borderRadius: '4px',
           padding: '1.5rem',
         }}>
-          <h5 style={{
-            fontSize: '0.65rem',
-            fontWeight: 700,
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            color: '#047857',
-            marginBottom: '0.75rem'
-          }}>Disclaimer & Horological Notice</h5>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
+            <h5 style={{
+              fontSize: '0.65rem',
+              fontWeight: 700,
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              color: '#047857',
+            }}>Disclaimer & Legal Notice</h5>
+            <button
+              onClick={() => onPageChange('static', { view: 'disclaimer' })}
+              className="text-[10px] font-bold text-[#047857] hover:underline uppercase tracking-wider self-start sm:self-auto cursor-pointer"
+            >
+              Read Full Disclaimer &rarr;
+            </button>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[0.62rem] leading-relaxed text-gray-400">
             <div>
               <p className="mb-2">
-                <strong className="text-gray-300">Product Representation:</strong> All timepieces featured are subject to availability. While we strive to show accurate details, technical specifications, and current pricing, errors or minor variations in hand-finished components may occasionally occur.
+                <strong className="text-gray-300">General & Product Representation:</strong> Information on this Website is provided for informational and commercial purposes. KHRONIQ strives to display product specifications, finishes, and colors accurately, but minor variations in screen display, natural leather grain, or hand-polishing may occur and do not constitute manufacturing defects.
               </p>
               <p>
-                <strong className="text-gray-300">Warranty Coverage:</strong> Our 3-Year Premium Swadeshi Warranty is valid only for watches purchased directly from our official portal or authorized concierge boutique service. Watches obtained from unverified sources do not qualify for official servicing.
+                <strong className="text-gray-300">Accuracy & Water Resistance:</strong> Watch timekeeping variations and water resistance ratings reflect laboratory conditions. Water resistance is not permanent and decreases over time with normal wear, requiring proper care as detailed in product guidelines.
               </p>
             </div>
             <div>
+              <p className="mb-2">
+                <strong className="text-gray-300">Intellectual Property & Authenticity:</strong> KHRONIQ logos, designs, custom dials, software, and serial systems are exclusive property of True Knock Industries Private Limited. Only products purchased directly from KHRONIQ or authorized dealers are guaranteed genuine.
+              </p>
               <p>
-                <strong className="text-gray-300">Intellectual Property:</strong> KHRONIQ and its brand marks, logos, custom dials, and interface assets are proprietary designs. All website content, photography, and layout are protected under trademark and intellectual property rights.
+                <strong className="text-gray-300">Limitation of Liability:</strong> Total liability shall not exceed the purchase price paid for the product. Prices and availability are subject to change without prior notice.
               </p>
             </div>
           </div>
@@ -528,11 +541,12 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
           </div>
 
           {/* Right – legal links */}
-          <div style={{ display:'flex', gap:'1.5rem' }}>
+          <div style={{ display:'flex', gap:'1.5rem', flexWrap:'wrap' }}>
             {[
               { label:'Terms of Use',      page:'static', args:{ view:'policies' } },
-              { label:'Privacy Policy',    page:'static', args:{ view:'policies' } },
-              { label:'Cookie Preferences',page:'static', args:{ view:'policies' } },
+              { label:'Privacy Policy',    page:'static', args:{ view:'privacy' } },
+              { label:'Cookie Policy',     page:'static', args:{ view:'cookie' } },
+              { label:'Disclaimer',        page:'static', args:{ view:'disclaimer' } },
             ].map(({ label, page, args }) => (
               <button
                 key={label}

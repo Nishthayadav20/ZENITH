@@ -20,7 +20,7 @@ export default function CartDrawer({ isOpen, onClose, onPageChange }) {
     };
   }).filter(item => item.product !== undefined);
 
-  const subtotal = cartItemsWithDetails.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+  const subtotal = cartItemsWithDetails.reduce((sum, item) => sum + ((item.price !== undefined ? item.price : item.product.price) * item.quantity), 0);
 
   const handleCheckoutClick = () => {
     onClose();
@@ -106,7 +106,7 @@ export default function CartDrawer({ isOpen, onClose, onPageChange }) {
                             {item.product.name}
                           </h4>
                           <button
-                            onClick={() => dispatch(removeFromCart(item.productId))}
+                            onClick={() => dispatch(removeFromCart(item.productId, item.customization))}
                             className="text-luxury-muted hover:text-luxury-red transition ml-2 cursor-pointer"
                             title="Remove item"
                           >
@@ -114,7 +114,7 @@ export default function CartDrawer({ isOpen, onClose, onPageChange }) {
                           </button>
                         </div>
                         <p className="text-luxury-gold-dark text-xs font-medium mt-1">
-                          {formatPrice(item.product.price, currentCurrency)} each
+                          {formatPrice(item.price !== undefined ? item.price : item.product.price, currentCurrency)} each
                         </p>
                       </div>
 
@@ -122,7 +122,7 @@ export default function CartDrawer({ isOpen, onClose, onPageChange }) {
                         {/* Quantity controls */}
                         <div className="flex items-center border border-luxury-text/10 rounded-md bg-luxury-bg">
                           <button
-                            onClick={() => dispatch(updateCartQty(item.productId, item.quantity - 1))}
+                            onClick={() => dispatch(updateCartQty(item.productId, item.quantity - 1, item.customization))}
                             className="p-1.5 text-luxury-muted hover:text-luxury-text transition cursor-pointer"
                           >
                             <Minus size={12} />
@@ -131,7 +131,7 @@ export default function CartDrawer({ isOpen, onClose, onPageChange }) {
                             {item.quantity}
                           </span>
                           <button
-                            onClick={() => dispatch(updateCartQty(item.productId, item.quantity + 1))}
+                            onClick={() => dispatch(updateCartQty(item.productId, item.quantity + 1, item.customization))}
                             className="p-1.5 text-luxury-muted hover:text-luxury-text transition cursor-pointer"
                           >
                             <Plus size={12} />
@@ -140,7 +140,7 @@ export default function CartDrawer({ isOpen, onClose, onPageChange }) {
 
                         {/* Total Price for item */}
                         <p className="text-luxury-text text-sm font-bold">
-                          {formatPrice(item.product.price * item.quantity, currentCurrency)}
+                          {formatPrice((item.price !== undefined ? item.price : item.product.price) * item.quantity, currentCurrency)}
                         </p>
                       </div>
                     </div>
