@@ -30,6 +30,37 @@ const STRAP_IMAGES = {
 
 const FALLBACK_FINISHES = ['Polished', 'Brushed', 'PVD Black', 'Rose Gold PVD', 'Matte Grey'];
 
+const DEFAULT_DIAL_PRICES = {
+  '#0a0a0f': 100, // Midnight Black
+  '#f5f0e8': 120, // Pearl White
+  '#1a2a4a': 140, // Navy Blue
+  '#1c3a2a': 160, // Forest Green
+  '#c8a96a': 180, // Champagne Gold
+  '#6b1515': 200, // Crimson Red
+  '#f5f5dc': 150  // Beige Dial
+};
+
+const DEFAULT_STRAP_PRICES = {
+  'Tan Leather': 150,
+  'Diamond Silver Link': 450,
+  'Classic Gold Chain': 500,
+  'Forest Green Rubber': 200,
+  'Brushed Steel Link': 300,
+  'Alligator Leather': 250,
+  'Steel Bracelet': 350,
+  'Rubber Sport': 180,
+  'Satin Fabric': 220,
+  'Titanium Mesh': 400
+};
+
+const DEFAULT_CASE_PRICES = {
+  'Polished': 100,
+  'Brushed': 150,
+  'PVD Black': 200,
+  'Rose Gold PVD': 250,
+  'Matte Grey': 300
+};
+
 // ─── Utility ─────────────────────────────────────────────────────────────────
 function buildOptions(product) {
   const opts = product.customizationOptions || {};
@@ -182,21 +213,27 @@ export default function Customization({ onPageChange, params }) {
 
   const dialPrice = useMemo(() => {
     if (!selectedProduct || !dialColor) return 0;
-    return selectedProduct.customizationOptions?.dialPrices?.[dialColor.value] || 0;
+    const dbVal = selectedProduct.customizationOptions?.dialPrices?.[dialColor.value];
+    if (dbVal !== undefined && dbVal !== null && dbVal !== '') return Number(dbVal);
+    return DEFAULT_DIAL_PRICES[dialColor.value] || 150;
   }, [selectedProduct, dialColor]);
 
   const strapPrice = useMemo(() => {
     if (!selectedProduct || !strapMaterial) return 0;
     const matchingCustom = (options?.customStraps || []).find(cs => cs.name === strapMaterial);
-    if (matchingCustom) return matchingCustom.price || 0;
-    return selectedProduct.customizationOptions?.strapPrices?.[strapMaterial] || 0;
+    if (matchingCustom && matchingCustom.price !== undefined && matchingCustom.price !== null) return Number(matchingCustom.price);
+    const dbVal = selectedProduct.customizationOptions?.strapPrices?.[strapMaterial];
+    if (dbVal !== undefined && dbVal !== null && dbVal !== '') return Number(dbVal);
+    return DEFAULT_STRAP_PRICES[strapMaterial] || 250;
   }, [selectedProduct, strapMaterial, options]);
 
   const casePrice = useMemo(() => {
     if (!selectedProduct || !caseFinish) return 0;
     const matchingCustom = (options?.customCases || []).find(cc => cc.name === caseFinish);
-    if (matchingCustom) return matchingCustom.price || 0;
-    return selectedProduct.customizationOptions?.casePrices?.[caseFinish] || 0;
+    if (matchingCustom && matchingCustom.price !== undefined && matchingCustom.price !== null) return Number(matchingCustom.price);
+    const dbVal = selectedProduct.customizationOptions?.casePrices?.[caseFinish];
+    if (dbVal !== undefined && dbVal !== null && dbVal !== '') return Number(dbVal);
+    return DEFAULT_CASE_PRICES[caseFinish] || 200;
   }, [selectedProduct, caseFinish, options]);
 
   const totalPrice = useMemo(() => {
@@ -421,7 +458,11 @@ export default function Customization({ onPageChange, params }) {
                 </h3>
                 <div className="flex flex-wrap gap-4">
                   {options.dialColors.map((color) => {
-                    const priceVal = selectedProduct.customizationOptions?.dialPrices?.[color.value] || 0;
+                    const priceVal = (() => {
+                      const dbVal = selectedProduct.customizationOptions?.dialPrices?.[color.value];
+                      if (dbVal !== undefined && dbVal !== null && dbVal !== '') return Number(dbVal);
+                      return DEFAULT_DIAL_PRICES[color.value] || 150;
+                    })();
                     return (
                       <div key={color.value} className="flex flex-col items-center space-y-1">
                         <button
@@ -439,7 +480,7 @@ export default function Customization({ onPageChange, params }) {
                           )}
                         </button>
                         <span className="text-[9px] text-gray-400 font-mono">
-                          {priceVal > 0 ? `+$${priceVal}` : 'Free'}
+                          +${priceVal}
                         </span>
                       </div>
                     );
@@ -462,9 +503,12 @@ export default function Customization({ onPageChange, params }) {
                       : ((mat === options.customStrapName && options.customStrapImage) 
                         ? options.customStrapImage 
                         : (STRAP_IMAGES[mat] || '/assets/strap_leather_tan.jpg'));
-                    const priceVal = matchingCustom 
-                      ? (matchingCustom.price || 0) 
-                      : (selectedProduct.customizationOptions?.strapPrices?.[mat] || 0);
+                    const priceVal = (() => {
+                      if (matchingCustom && matchingCustom.price !== undefined && matchingCustom.price !== null) return Number(matchingCustom.price);
+                      const dbVal = selectedProduct.customizationOptions?.strapPrices?.[mat];
+                      if (dbVal !== undefined && dbVal !== null && dbVal !== '') return Number(dbVal);
+                      return DEFAULT_STRAP_PRICES[mat] || 250;
+                    })();
                     return (
                       <button
                         key={mat}
@@ -487,7 +531,7 @@ export default function Customization({ onPageChange, params }) {
                           {mat}
                         </span>
                         <span className="text-[9px] text-gray-400 font-mono mt-1">
-                          {priceVal > 0 ? `+$${priceVal}` : 'Free'}
+                          +${priceVal}
                         </span>
                       </button>
                     );
@@ -505,9 +549,12 @@ export default function Customization({ onPageChange, params }) {
                 <div className="flex flex-wrap gap-2">
                   {options.caseFinishes.map((fin) => {
                     const matchingCustom = (options.customCases || []).find(cc => cc.name === fin);
-                    const priceVal = matchingCustom 
-                      ? (matchingCustom.price || 0) 
-                      : (selectedProduct.customizationOptions?.casePrices?.[fin] || 0);
+                    const priceVal = (() => {
+                      if (matchingCustom && matchingCustom.price !== undefined && matchingCustom.price !== null) return Number(matchingCustom.price);
+                      const dbVal = selectedProduct.customizationOptions?.casePrices?.[fin];
+                      if (dbVal !== undefined && dbVal !== null && dbVal !== '') return Number(dbVal);
+                      return DEFAULT_CASE_PRICES[fin] || 200;
+                    })();
                     return (
                       <button
                         key={fin}
@@ -519,7 +566,7 @@ export default function Customization({ onPageChange, params }) {
                         }`}
                         style={caseFinish === fin ? { background: 'rgba(37,99,235,0.1)', color: '#3b82f6' } : {}}
                       >
-                        {fin} {priceVal > 0 ? `(+$${priceVal})` : '(Free)'}
+                        {fin} (+${priceVal})
                       </button>
                     );
                   })}

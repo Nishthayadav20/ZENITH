@@ -42,6 +42,37 @@ const PRESET_CASES = [
   { name: 'Matte Grey', color: '#555555' }
 ];
 
+const DEFAULT_DIAL_PRICES = {
+  '#0a0a0f': 100, // Midnight Black
+  '#f5f0e8': 120, // Pearl White
+  '#1a2a4a': 140, // Navy Blue
+  '#1c3a2a': 160, // Forest Green
+  '#c8a96a': 180, // Champagne Gold
+  '#6b1515': 200, // Crimson Red
+  '#f5f5dc': 150  // Beige Dial
+};
+
+const DEFAULT_STRAP_PRICES = {
+  'Tan Leather': 150,
+  'Diamond Silver Link': 450,
+  'Classic Gold Chain': 500,
+  'Forest Green Rubber': 200,
+  'Brushed Steel Link': 300,
+  'Alligator Leather': 250,
+  'Steel Bracelet': 350,
+  'Rubber Sport': 180,
+  'Satin Fabric': 220,
+  'Titanium Mesh': 400
+};
+
+const DEFAULT_CASE_PRICES = {
+  'Polished': 100,
+  'Brushed': 150,
+  'PVD Black': 200,
+  'Rose Gold PVD': 250,
+  'Matte Grey': 300
+};
+
 const generateUnitCodePair = () => ({
   serialNumber: `KHQ-${new Date().getFullYear()}-${Math.random().toString(16).slice(2, 8).toUpperCase()}`,
   claimCode: `CLM-${Math.random().toString(16).slice(2, 12).toUpperCase()}`
@@ -1702,7 +1733,7 @@ const handleEditImageUpload = async (e) => {
                                       {isChecked && (
                                         <input
                                           type="number"
-                                          placeholder="Price modifier ($)"
+                                          placeholder={`Default: $${DEFAULT_STRAP_PRICES[s.name] || 250}`}
                                           value={priceVal}
                                           onChange={(e) => handleStrapPriceChange(s.name, e.target.value, false)}
                                           className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
@@ -1819,7 +1850,7 @@ const handleEditImageUpload = async (e) => {
                                       {isChecked && (
                                         <input
                                           type="number"
-                                          placeholder="Price modifier ($)"
+                                          placeholder={`Default: $${DEFAULT_CASE_PRICES[c.name] || 200}`}
                                           value={priceVal}
                                           onChange={(e) => handleCasePriceChange(c.name, e.target.value, false)}
                                           className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
@@ -1937,7 +1968,7 @@ const handleEditImageUpload = async (e) => {
                                     {isChecked && (
                                       <input
                                         type="number"
-                                        placeholder="Price modifier ($)"
+                                        placeholder={`Default: $${DEFAULT_DIAL_PRICES[color.hex] || 150}`}
                                         value={priceVal}
                                         onChange={(e) => handleDialPriceChange(color.hex, e.target.value, false)}
                                         className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
@@ -2275,7 +2306,7 @@ const handleEditImageUpload = async (e) => {
                                         {isChecked && (
                                           <input
                                             type="number"
-                                            placeholder="Price modifier ($)"
+                                            placeholder={`Default: $${DEFAULT_STRAP_PRICES[s.name] || 250}`}
                                             value={priceVal}
                                             onChange={(e) => handleStrapPriceChange(s.name, e.target.value, true)}
                                             className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
@@ -2392,7 +2423,7 @@ const handleEditImageUpload = async (e) => {
                                         {isChecked && (
                                           <input
                                             type="number"
-                                            placeholder="Price modifier ($)"
+                                            placeholder={`Default: $${DEFAULT_CASE_PRICES[c.name] || 200}`}
                                             value={priceVal}
                                             onChange={(e) => handleCasePriceChange(c.name, e.target.value, true)}
                                             className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
@@ -2510,7 +2541,7 @@ const handleEditImageUpload = async (e) => {
                                       {isChecked && (
                                         <input
                                           type="number"
-                                          placeholder="Price modifier ($)"
+                                          placeholder={`Default: $${DEFAULT_DIAL_PRICES[color.hex] || 150}`}
                                           value={priceVal}
                                           onChange={(e) => handleDialPriceChange(color.hex, e.target.value, true)}
                                           className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
