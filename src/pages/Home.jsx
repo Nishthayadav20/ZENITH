@@ -1178,7 +1178,7 @@ const prevSpotlight = () => {
           {/* Left — text */}
           <div className="flex flex-col justify-center px-10 sm:px-16 py-16 space-y-6 bg-white">
             <Reveal dir="left" delay={0}>
-              <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-luxury-gold-dark">Featured Collection</p>
+              <p className="text-[30px] font-bold tracking-[0.25em] uppercase text-luxury-gold-dark">Featured Collection</p>
             </Reveal>
             <SlideReveal delay={0.1}>
               <h2 className="text-4xl sm:text-5xl font-serif font-bold text-luxury-text leading-tight">
@@ -1360,7 +1360,7 @@ const prevSpotlight = () => {
     fontWeight: 700,
     letterSpacing: "0.25em",
   }}
-  className="text-lg sm:text-xl lg:text-2xl uppercase"
+  className="text-2xl sm:text-3xl lg:text-5xl uppercase"
   >
     FEATURED COLLECTION
   </h2>
