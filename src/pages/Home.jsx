@@ -468,7 +468,7 @@ function WatchWheel({ products, selectedIndex, setSelectedIndex, size = 340 }) {
                 zIndex: isActive ? 20 : isHovered ? 15 : 10,
               }}
               animate={{
-                rotate: rotation,
+                rotate: -rotation,
                 opacity: isActive ? 1 : isHovered ? 0.9 : 0.55,
               }}
               transition={{ type: 'spring', ...springCfg }}
