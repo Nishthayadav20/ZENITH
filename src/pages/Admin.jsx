@@ -425,6 +425,7 @@ export default function Admin({ onPageChange }) {
   const [newBlog, setNewBlog] = useState({ title: '', category: 'Horology', image: '', content: '', author: '' });
   const [editingBlogId, setEditingBlogId] = useState(null);
   const [editBlogForm, setEditBlogForm] = useState(null);
+  const [uploadingBlogImage, setUploadingBlogImage] = useState(false);
 
   const handleStrapImageChange = async (e, isEdit = false) => {
     const file = e.target.files[0];
@@ -650,6 +651,66 @@ export default function Admin({ onPageChange }) {
       alert(res?.message || 'Failed to create blog post.');
     }
   };
+
+  const handleBlogImageUpload = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  setUploadingBlogImage(true);
+  try {
+    const formData = new FormData();
+    formData.append('image', file);
+    const token = localStorage.getItem('khroniq_token');
+
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      setNewBlog({ ...newBlog, image: data.imageUrl });
+    } else {
+      alert(data.message || 'Failed to upload image');
+    }
+  } catch (error) {
+    console.error('Blog image upload error:', error);
+    alert('Failed to upload image');
+  } finally {
+    setUploadingBlogImage(false);
+  }
+};
+
+const handleEditBlogImageUpload = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  setUploadingBlogImage(true);
+  try {
+    const formData = new FormData();
+    formData.append('image', file);
+    const token = localStorage.getItem('khroniq_token');
+
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      setEditBlogForm({ ...editBlogForm, image: data.imageUrl });
+    } else {
+      alert(data.message || 'Failed to upload image');
+    }
+  } catch (error) {
+    console.error('Blog image upload error:', error);
+    alert('Failed to upload image');
+  } finally {
+    setUploadingBlogImage(false);
+  }
+};
 
   const handleDeleteBlog = async (blogId) => {
     if (window.confirm('Are you sure you want to delete this blog post?')) {
@@ -1344,7 +1405,7 @@ const handleEditImageUpload = async (e) => {
             <div className="flex items-center gap-2">
               <button
                 onClick={handleDownloadInventoryCSV}
-                className="px-4 py-2 bg-luxury-gold/10 hover:bg-luxury-gold/20 border border-luxury-gold/30 text-luxury-gold text-[10px] font-black tracking-widest uppercase rounded flex items-center gap-2 cursor-pointer transition"
+                className="px-4 py-2 bg-luxury-gold/10 hover:bg-luxury-gold/20 border border-black text-black text-[10px] font-black tracking-widest uppercase rounded flex items-center gap-2 cursor-pointer transition"
               >
                 <Download size={13} />
                 Export Serial & Claim Codes (CSV)
@@ -1366,7 +1427,7 @@ const handleEditImageUpload = async (e) => {
               
               <form onSubmit={handleCreateProduct} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Watch Name</label>
+                  <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Watch Name</label>
                   <input
                     type="text"
                     required
@@ -1379,7 +1440,7 @@ const handleEditImageUpload = async (e) => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Price (₹)</label>
+                    <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Price (₹)</label>
                     <input
                       type="number"
                       required
@@ -1390,7 +1451,7 @@ const handleEditImageUpload = async (e) => {
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Stock Count</label>
+                    <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Stock Count</label>
                     <input
                       type="number"
                       required
@@ -1409,7 +1470,7 @@ const handleEditImageUpload = async (e) => {
                   </div>
                   {newProduct.unitCodes.length > 0 && (
                     <div className="col-span-full space-y-2">
-                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">
+                      <label className="text-[9px] text-black font-bold uppercase tracking-widest block">
                         Serial Numbers & Claim Codes ({newProduct.unitCodes.length})
                       </label>
                       <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
@@ -1455,7 +1516,7 @@ const handleEditImageUpload = async (e) => {
                     </div>
                   )}
                   <div className="space-y-1.5">
-                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Discount (%)</label>
+                    <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Discount (%)</label>
                     <input
                       type="number"
                       min="0"
@@ -1467,7 +1528,7 @@ const handleEditImageUpload = async (e) => {
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Warranty Period (Months)</label>
+                    <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Warranty Period (Months)</label>
                     <input
                       type="number"
                       required
@@ -1481,7 +1542,7 @@ const handleEditImageUpload = async (e) => {
                 </div>
 
                 <div className="space-y-1.5">
-                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Badge</label>
+                    <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Badge</label>
                     <select
                       value={newProduct.badgeMode || 'none'}
                       onChange={(e) => {
@@ -1512,7 +1573,7 @@ const handleEditImageUpload = async (e) => {
                   </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Collection / Category</label>
+                  <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Collection / Category</label>
                   <select
                     value={newProduct.category}
                     onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
@@ -1526,7 +1587,7 @@ const handleEditImageUpload = async (e) => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Target Gender</label>
+                  <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Target Gender</label>
                   <select
                     value={newProduct.gender}
                     onChange={(e) => setNewProduct({ ...newProduct, gender: e.target.value })}
@@ -1539,12 +1600,12 @@ const handleEditImageUpload = async (e) => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Watch Image</label>
+                  <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Watch Image</label>
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleImageUpload}
-                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none file:mr-3 file:py-1 file:px-3 file:border-0 file:text-xs file:bg-luxury-gold file:text-luxury-dark file:font-bold file:uppercase file:cursor-pointer"
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-black text-xs p-2.5 focus:outline-none file:mr-3 file:py-1 file:px-3 file:border-0 file:text-xs file:bg-luxury-gold file:text-luxury-dark file:font-bold file:uppercase file:cursor-pointer"
                   />
                   <input
                     type="text"
@@ -1560,7 +1621,7 @@ const handleEditImageUpload = async (e) => {
                 </div>
 
                 <div className="md:col-span-2 space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Product Description</label>
+                  <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Product Description</label>
                   <textarea
                     rows="3"
                     value={newProduct.description}
@@ -1613,7 +1674,7 @@ const handleEditImageUpload = async (e) => {
                             onChange={(e) => setNewProduct({ ...newProduct, allowStrapCustomization: e.target.checked })}
                             className="w-4 h-4 accent-luxury-gold cursor-pointer"
                           />
-                          <label htmlFor="newAllowStrapCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                          <label htmlFor="newAllowStrapCustomization" className="text-xs text-black cursor-pointer select-none">
                             Allow Strap Customization
                           </label>
                         </div>
@@ -1621,7 +1682,7 @@ const handleEditImageUpload = async (e) => {
                           <div className="pl-6 space-y-3 border-l border-white/10 my-2">
                             {/* Preset Straps Selectors (Multiple Checkboxes) */}
                             <div className="space-y-1.5">
-                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Enable Preset Straps</label>
+                              <label className="text-[8px] text-black font-bold uppercase tracking-wider block">Enable Preset Straps</label>
                               <div className="grid grid-cols-2 gap-2">
                                 {PRESET_STRAPS.map(s => {
                                   const isChecked = (newProduct.customizationOptions?.strapMaterials || []).includes(s.name);
@@ -1675,7 +1736,7 @@ const handleEditImageUpload = async (e) => {
                                   type="file"
                                   accept="image/*"
                                   onChange={handleTempStrapImageChange}
-                                  className="text-[10px] text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:bg-white/10 file:text-white hover:file:bg-white/20 cursor-pointer"
+                                  className="text-[10px] text-black file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:bg-white/10 file:text-black hover:file:bg-white/20 cursor-pointer"
                                 />
                               </div>
                               <button
@@ -1730,7 +1791,7 @@ const handleEditImageUpload = async (e) => {
                             onChange={(e) => setNewProduct({ ...newProduct, allowCaseCustomization: e.target.checked })}
                             className="w-4 h-4 accent-luxury-gold cursor-pointer"
                           />
-                          <label htmlFor="newAllowCaseCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                          <label htmlFor="newAllowCaseCustomization" className="text-xs text-black cursor-pointer select-none">
                             Allow Case Finish Customization
                           </label>
                         </div>
@@ -1850,13 +1911,13 @@ const handleEditImageUpload = async (e) => {
                             onChange={(e) => setNewProduct({ ...newProduct, allowDialCustomization: e.target.checked })}
                             className="w-4 h-4 accent-luxury-gold cursor-pointer"
                           />
-                          <label htmlFor="newAllowDialCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                          <label htmlFor="newAllowDialCustomization" className="text-xs text-black cursor-pointer select-none">
                             Allow Dial Color Customization
                           </label>
                         </div>
                         {newProduct.allowDialCustomization && (
                           <div className="pl-6 space-y-1.5 border-l border-white/10 my-2">
-                            <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block font-sans">Available Dial Colors</label>
+                            <label className="text-[8px] text-black font-bold uppercase tracking-wider block font-sans">Available Dial Colors</label>
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                               {DIAL_COLOR_PRESETS.map(color => {
                                 const isChecked = (newProduct.customizationOptions?.dialColors || []).includes(color.hex);
@@ -1917,7 +1978,7 @@ const handleEditImageUpload = async (e) => {
 
                 <form onSubmit={handleUpdateProduct} className="space-y-4 text-xs">
                   <div className="space-y-1.5">
-                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Watch Name</label>
+                    <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Watch Name</label>
                     <input
                       type="text"
                       required
@@ -1929,7 +1990,7 @@ const handleEditImageUpload = async (e) => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Price (₹)</label>
+                      <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Price (₹)</label>
                       <input
                         type="number"
                         required
@@ -1939,7 +2000,7 @@ const handleEditImageUpload = async (e) => {
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Stock</label>
+                      <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Stock</label>
                       <input
                         type="number"
                         required
@@ -1964,7 +2025,7 @@ const handleEditImageUpload = async (e) => {
 
 {editForm.existingUnitCodes?.length > 0 && (
                       <div className="col-span-full space-y-1.5">
-                        <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">
+                        <label className="text-[9px] text-black font-bold uppercase tracking-widest block">
                           Existing Codes ({editForm.existingUnitCodes.length})
                         </label>
                         <div className="space-y-1 max-h-40 overflow-y-auto">
@@ -1983,7 +2044,7 @@ const handleEditImageUpload = async (e) => {
                     )}
                     {editForm.newUnitCodes?.length > 0 && (
                       <div className="col-span-full space-y-2">
-                        <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">
+                        <label className="text-[9px] text-black font-bold uppercase tracking-widest block">
                           New Units to Add ({editForm.newUnitCodes.length})
                         </label>
                         <div className="space-y-2">
@@ -2029,7 +2090,7 @@ const handleEditImageUpload = async (e) => {
                     )}
 
                     <div className="space-y-1.5">
-                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Discount (%)</label>
+                      <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Discount (%)</label>
                       <input
                         type="number"
                         min="0"
@@ -2040,7 +2101,7 @@ const handleEditImageUpload = async (e) => {
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Warranty Period (Months)</label>
+                      <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Warranty Period (Months)</label>
                       <input
                         type="number"
                         required
@@ -2054,7 +2115,7 @@ const handleEditImageUpload = async (e) => {
 
 
 <div className="space-y-1.5">
-                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Badge</label>
+                    <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Badge</label>
                     <select
                       value={editForm.badgeMode || 'none'}
                       onChange={(e) => {
@@ -2086,7 +2147,7 @@ const handleEditImageUpload = async (e) => {
                   
 
                   <div className="space-y-1.5">
-                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Collection</label>
+                    <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Collection</label>
                     <select
                       value={editForm.category}
                       onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
@@ -2100,7 +2161,7 @@ const handleEditImageUpload = async (e) => {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Target Gender</label>
+                    <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Target Gender</label>
                     <select
                       value={editForm.gender}
                       onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })}
@@ -2113,12 +2174,12 @@ const handleEditImageUpload = async (e) => {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Watch Image</label>
+                    <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Watch Image</label>
                     <input
                       type="file"
                       accept="image/*"
                       onChange={handleEditImageUpload}
-                      className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none file:mr-3 file:py-1 file:px-3 file:border-0 file:text-xs file:bg-luxury-gold file:text-luxury-dark file:font-bold file:uppercase file:cursor-pointer"
+                      className="w-full bg-luxury-dark border border-white/10 rounded text-black text-xs p-2.5 focus:outline-none file:mr-3 file:py-1 file:px-3 file:border-0 file:text-xs file:bg-luxury-gold file:text-luxury-dark file:font-bold file:uppercase file:cursor-pointer"
                     />
                     <input
                       type="text"
@@ -2134,7 +2195,7 @@ const handleEditImageUpload = async (e) => {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Description</label>
+                    <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Description</label>
                     <textarea
                       rows="3"
                       value={editForm.description}
@@ -2186,7 +2247,7 @@ const handleEditImageUpload = async (e) => {
                               onChange={(e) => setEditForm({ ...editForm, allowStrapCustomization: e.target.checked })}
                               className="w-4 h-4 accent-luxury-gold cursor-pointer"
                             />
-                            <label htmlFor="allowStrapCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                            <label htmlFor="allowStrapCustomization" className="text-xs text-black cursor-pointer select-none">
                               Allow Strap Customization
                             </label>
                           </div>
@@ -2194,7 +2255,7 @@ const handleEditImageUpload = async (e) => {
                             <div className="pl-6 space-y-3 border-l border-white/10 my-2">
                               {/* Preset Straps Selectors (Multiple Checkboxes) */}
                               <div className="space-y-1.5">
-                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Enable Preset Straps</label>
+                                <label className="text-[8px] text-black font-bold uppercase tracking-wider block">Enable Preset Straps</label>
                                 <div className="grid grid-cols-2 gap-2">
                                   {PRESET_STRAPS.map(s => {
                                     const isChecked = (editForm.customizationOptions?.strapMaterials || []).includes(s.name);
@@ -2248,7 +2309,7 @@ const handleEditImageUpload = async (e) => {
                                     type="file"
                                     accept="image/*"
                                     onChange={handleTempStrapImageChange}
-                                    className="text-[10px] text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:bg-white/10 file:text-white hover:file:bg-white/20 cursor-pointer"
+                                    className="text-[10px] text-black file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:bg-white/10 file:text-black hover:file:bg-white/20 cursor-pointer"
                                   />
                                 </div>
                                 <button
@@ -2303,7 +2364,7 @@ const handleEditImageUpload = async (e) => {
                               onChange={(e) => setEditForm({ ...editForm, allowCaseCustomization: e.target.checked })}
                               className="w-4 h-4 accent-luxury-gold cursor-pointer"
                             />
-                            <label htmlFor="allowCaseCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                            <label htmlFor="allowCaseCustomization" className="text-xs text-black cursor-pointer select-none">
                               Allow Case Finish Customization
                             </label>
                           </div>
@@ -2423,13 +2484,13 @@ const handleEditImageUpload = async (e) => {
                               onChange={(e) => setEditForm({ ...editForm, allowDialCustomization: e.target.checked })}
                               className="w-4 h-4 accent-luxury-gold cursor-pointer"
                             />
-                            <label htmlFor="allowDialCustomization" className="text-xs text-gray-300 cursor-pointer select-none">
+                            <label htmlFor="allowDialCustomization" className="text-xs text-black cursor-pointer select-none">
                               Allow Dial Color Customization
                             </label>
                           </div>
                           {editForm.allowDialCustomization && (
                             <div className="pl-6 space-y-1.5 border-l border-white/10 my-2">
-                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block font-sans">Available Dial Colors</label>
+                              <label className="text-[8px] text-black font-bold uppercase tracking-wider block font-sans">Available Dial Colors</label>
                               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                 {DIAL_COLOR_PRESETS.map(color => {
                                   const isChecked = (editForm.customizationOptions?.dialColors || []).includes(color.hex);
@@ -2528,7 +2589,7 @@ const handleEditImageUpload = async (e) => {
                         formatPrice(p.price, currentCurrency)
                       )}
                     </td>
-                    <td className="p-4 text-[11px] text-luxury-gold font-semibold uppercase tracking-widest">
+                    <td className="p-4 text-[11px] text-red-500 font-semibold uppercase tracking-widest">
                       {p.discountPercent > 0 ? `${p.discountPercent}%` : '—'}
                     </td>
                     <td className="p-4">
@@ -2575,18 +2636,20 @@ const handleEditImageUpload = async (e) => {
                     <th className="p-4">Order ID</th>
                     <th className="p-4">Customer</th>
                     <th className="p-4">Items</th>
+                    <th className="p-4">Address</th>
                     <th className="p-4">Charged</th>
                     <th className="p-4">Status Dispatch</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5 text-gray-300">
-                  {orders.map((o) => (
-                    <tr key={o.id} className="hover:bg-white/5 transition">
-                      <td className="p-4 font-mono font-bold text-white tracking-wider uppercase">
+{orders.map((o) => (
+                    <React.Fragment key={o.id}>
+                    <tr className="hover:bg-white/5 transition">
+                      <td className="p-4 font-mono font-bold text-black tracking-wider uppercase">
                         <div className="flex items-center gap-1.5">
                           <span>{o.id}</span>
                           {(o.giftingOptions?.isGifting || o.giftingOptions?.occasion || o.giftingOptions?.note) && (
-                            <Gift size={13} className="text-luxury-gold animate-pulse" title={`Gifting Order: ${o.giftingOptions.occasion || 'Yes'}`} />
+                            <Gift size={13} className="text-black animate-pulse" title={`Gifting Order: ${o.giftingOptions.occasion || 'Yes'}`} />
                           )}
                         </div>
                       </td>
@@ -2599,31 +2662,31 @@ const handleEditImageUpload = async (e) => {
                           {o.items.map(item => `${item.name} (x${item.quantity})`).join(', ')}
                         </p>
                         {(o.giftingOptions?.isGifting || o.giftingOptions?.occasion || o.giftingOptions?.note) && (
-                          <div className="mt-1 text-[10px] text-luxury-gold space-y-0.5 bg-luxury-gold/5 border border-luxury-gold/20 p-2 rounded">
+                          <div className="mt-1 text-[10px] text-black space-y-0.5 bg-luxury-gold/5 border border-luxury-gold/20 p-2 rounded">
                             <p className="font-bold uppercase tracking-wider">🎁 Curated Gift Order</p>
-                            {o.giftingOptions.occasion && <p><span className="font-semibold text-gray-400">Occasion:</span> {o.giftingOptions.occasion}</p>}
-                            {o.giftingOptions.packaging && <p><span className="font-semibold text-gray-400">Packaging:</span> {o.giftingOptions.packaging === 'couple' ? 'Couple Packaging' : 'Single Packaging'}</p>}
+                            {o.giftingOptions.occasion && <p><span className="font-semibold text-black">Occasion:</span> {o.giftingOptions.occasion}</p>}
+                            {o.giftingOptions.packaging && <p><span className="font-semibold text-black">Packaging:</span> {o.giftingOptions.packaging === 'couple' ? 'Couple Packaging' : 'Single Packaging'}</p>}
                             {o.giftingOptions.note && (
                               <div className="mt-1.5 pt-1.5 border-t border-white/5">
                                 <button
                                   type="button"
                                   onClick={() => setExpandedNotes(prev => ({ ...prev, [o.id]: !prev[o.id] }))}
-                                  className="action-btn text-[9px] font-black tracking-widest uppercase bg-luxury-gold/20 hover:bg-luxury-gold/30 text-luxury-gold px-2 py-0.5 rounded cursor-pointer transition"
+                                  className="action-btn text-[9px] font-black tracking-widest uppercase bg-luxury-gold/20 hover:bg-luxury-gold/30 text-black px-2 py-0.5 rounded cursor-pointer transition"
                                 >
-                                  NOTE {expandedNotes[o.id] ? '▲' : '▼'}
+                                  {expandedNotes[o.id] ? '▲ Hide Note' : '▼ View Note'}
                                 </button>
-                                {expandedNotes[o.id] && (
-                                  <p className="italic text-gray-300 mt-1 bg-black/40 p-2 border border-white/5 rounded leading-relaxed whitespace-pre-wrap">
-                                    "{o.giftingOptions.note}"
-                                  </p>
-                                )}
                               </div>
                             )}
                           </div>
                         )}
-                        
                       </td>
-                      <td className="p-4 font-bold text-luxury-gold">{formatPrice(o.total, currentCurrency)}</td>
+                      <td className="p-4 max-w-[180px] text-[11px] text-gray-300 leading-relaxed">
+                        <p className="font-semibold text-white">{o.shippingDetails?.fullName}</p>
+                        <p>{o.shippingDetails?.streetAddress}</p>
+                        <p>{o.shippingDetails?.city}, {o.shippingDetails?.zipCode}</p>
+                        <p className="text-gray-500">{o.shippingDetails?.country}</p>
+                      </td>
+                      <td className="p-4 font-bold text-black">{formatPrice(o.total, currentCurrency)}</td>
                       <td className="p-4">
                         <select
                           value={o.status}
@@ -2649,6 +2712,19 @@ const handleEditImageUpload = async (e) => {
                         </select>
                       </td>
                     </tr>
+                    {expandedNotes[o.id] && o.giftingOptions?.note && (
+                      <tr className="bg-luxury-gold/5">
+                        <td colSpan={6} className="px-4 pb-4 pt-0">
+                          <div className="bg-black/40 border border-luxury-gold/20 rounded-md p-4">
+                            <p className="text-[9px] font-black uppercase tracking-widest text-luxury-gold mb-2">Gift Note</p>
+                            <p className="italic text-gray-200 text-sm leading-relaxed whitespace-pre-wrap">
+                              "{o.giftingOptions.note}"
+                            </p>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>
@@ -2667,7 +2743,7 @@ const handleEditImageUpload = async (e) => {
             
             <form onSubmit={handleCreateCoupon} className="space-y-4 text-xs">
               <div className="space-y-1.5">
-                <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Coupon Name/Code</label>
+                <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Coupon Name/Code</label>
                 <input
                   type="text"
                   required
@@ -2679,7 +2755,7 @@ const handleEditImageUpload = async (e) => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Discount Amount (%)</label>
+                <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Discount Amount (%)</label>
                 <input
                   type="number"
                   required
@@ -2693,7 +2769,7 @@ const handleEditImageUpload = async (e) => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Description Tag</label>
+                <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Description Tag</label>
                 <input
                   type="text"
                   value={newCouponDesc}
@@ -3055,7 +3131,7 @@ const handleEditImageUpload = async (e) => {
                   )}
                 </div>
                 <p className="text-[10px] text-gray-300 font-semibold">{section.label}</p>
-                <label className="block w-full text-center py-2 bg-luxury-dark border border-white/10 hover:border-luxury-gold text-[9px] font-bold uppercase tracking-widest text-gray-300 rounded cursor-pointer transition">
+                <label className="block w-full text-center py-2 bg-luxury-dark border border-white/10 hover:border-luxury-gold text-[9px] font-bold uppercase tracking-widest text-black rounded cursor-pointer transition">
                   {uploadingMedia ? 'Uploading...' : 'Upload / Replace'}
                   <input
                     type="file"
@@ -3093,7 +3169,7 @@ const handleEditImageUpload = async (e) => {
               
               <form onSubmit={handleCreateBlog} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Article Title</label>
+                  <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Article Title</label>
                   <input
                     type="text"
                     required
@@ -3106,7 +3182,7 @@ const handleEditImageUpload = async (e) => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Category</label>
+                    <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Category</label>
                     <input
                       type="text"
                       required
@@ -3117,7 +3193,7 @@ const handleEditImageUpload = async (e) => {
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Author</label>
+                    <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Author</label>
                     <input
                       type="text"
                       value={newBlog.author}
@@ -3129,18 +3205,29 @@ const handleEditImageUpload = async (e) => {
                 </div>
 
                 <div className="md:col-span-2 space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Featured Image URL / Path</label>
+                  <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Featured Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleBlogImageUpload}
+                    disabled={uploadingBlogImage}
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-black text-xs p-2.5 focus:outline-none"
+                  />
                   <input
                     type="text"
                     value={newBlog.image}
                     onChange={(e) => setNewBlog({ ...newBlog, image: e.target.value })}
-                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
-                    placeholder="e.g. /assets/gentleman_lifestyle.png"
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 mt-1.5 focus:outline-none"
+                    placeholder="Or enter image path/URL manually (e.g. /assets/gentleman_lifestyle.png)"
                   />
+                  {uploadingBlogImage && <p className="text-[10px] text-luxury-gold">Uploading...</p>}
+                  {newBlog.image && !uploadingBlogImage && (
+                    <img src={newBlog.image} alt="Preview" className="mt-2 h-20 w-20 object-cover rounded border border-white/10" />
+                  )}
                 </div>
 
                 <div className="md:col-span-2 space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Content</label>
+                  <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Content</label>
                   <textarea
                     rows="6"
                     required
@@ -3168,7 +3255,7 @@ const handleEditImageUpload = async (e) => {
               
               <form onSubmit={handleUpdateBlogSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Article Title</label>
+                  <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Article Title</label>
                   <input
                     type="text"
                     required
@@ -3181,7 +3268,7 @@ const handleEditImageUpload = async (e) => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Category</label>
+                    <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Category</label>
                     <input
                       type="text"
                       required
@@ -3192,7 +3279,7 @@ const handleEditImageUpload = async (e) => {
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Author</label>
+                    <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Author</label>
                     <input
                       type="text"
                       value={editBlogForm.author}
@@ -3204,18 +3291,29 @@ const handleEditImageUpload = async (e) => {
                 </div>
 
                 <div className="md:col-span-2 space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Featured Image URL / Path</label>
+                  <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Featured Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleEditBlogImageUpload}
+                    disabled={uploadingBlogImage}
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-black text-xs p-2.5 focus:outline-none"
+                  />
                   <input
                     type="text"
                     value={editBlogForm.image}
                     onChange={(e) => setEditBlogForm({ ...editBlogForm, image: e.target.value })}
-                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none"
-                    placeholder="Image URL"
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 mt-1.5 focus:outline-none"
+                    placeholder="Or enter image URL manually"
                   />
+                  {uploadingBlogImage && <p className="text-[10px] text-luxury-gold">Uploading...</p>}
+                  {editBlogForm.image && !uploadingBlogImage && (
+                    <img src={editBlogForm.image} alt="Preview" className="mt-2 h-20 w-20 object-cover rounded border border-white/10" />
+                  )}
                 </div>
 
                 <div className="md:col-span-2 space-y-1.5">
-                  <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Content</label>
+                  <label className="text-[9px] text-black font-bold uppercase tracking-widest block">Content</label>
                   <textarea
                     rows="6"
                     required

@@ -229,6 +229,7 @@ export default function Gifting({ onPageChange }) {
 
   const handleShopForRecipient = (recipient) => {
     localStorage.setItem('khroniq_is_gifting_journey', 'true');
+    localStorage.setItem('khroniq_gift_relation', recipient.label || '');
     onPageChange('shop', recipient.filter || {});
   };
 

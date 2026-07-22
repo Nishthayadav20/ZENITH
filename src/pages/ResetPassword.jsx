@@ -67,7 +67,7 @@ export default function ResetPassword({ params, onPageChange }) {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">New Password</label>
+              <label className="text-[10px] text-black font-bold uppercase tracking-widest block">New Password</label>
               <input
                 type="password"
                 required
@@ -78,7 +78,7 @@ export default function ResetPassword({ params, onPageChange }) {
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Confirm Password</label>
+              <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Confirm Password</label>
               <input
                 type="password"
                 required

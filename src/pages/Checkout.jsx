@@ -47,6 +47,7 @@ export default function Checkout({ params, onPageChange }) {
   const [couponLoading, setCouponLoading] = useState(false);
 
   const isGiftingJourney = localStorage.getItem('khroniq_is_gifting_journey') === 'true';
+  const giftRelation = localStorage.getItem('khroniq_gift_relation') || '';
   const [step, setStep] = useState(isGiftingJourney ? 1 : 2); // 1: Gifting, 2: Shipping, 3: Payment, 4: Success
   const [shippingForm, setShippingForm] = useState({
     fullName: currentUser?.name || '',
@@ -161,6 +162,7 @@ const handleRazorpayPayment = async () => {
     const giftingOptions = isGiftingJourney ? {
       isGifting: true,
       occasion: giftOccasion,
+      relation: giftRelation,
       note: giftNote,
       packaging: packagingType
     } : { isGifting: false };
@@ -194,6 +196,7 @@ const handleRazorpayPayment = async () => {
           setOrderReceipt(verifyRes.order);
           setStep(4);
           localStorage.setItem('khroniq_is_gifting_journey', 'false');
+          localStorage.removeItem('khroniq_gift_relation');
 
           confetti({
             particleCount: 150,
@@ -514,7 +517,7 @@ const rzp = new window.Razorpay(options);
 
               {/* Gift Note Input field */}
               <div className="space-y-2 mt-4 pt-4 border-t border-white/5">
-                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Write a Gift Note (Optional)</label>
+                <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Write a Gift Note (Optional)</label>
                 <textarea
                   value={giftNote}
                   onChange={(e) => setGiftNote(e.target.value.slice(0, 260))}
@@ -561,7 +564,7 @@ const rzp = new window.Razorpay(options);
             <h2 className="text-sm font-bold tracking-widest text-white uppercase border-b border-white/5 pb-3">Delivery Information</h2>
             <form onSubmit={handleShippingSubmit} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Recipient Name</label>
+                <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Recipient Name</label>
                 <input
                   type="text"
                   required
@@ -573,7 +576,7 @@ const rzp = new window.Razorpay(options);
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Street Address</label>
+                <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Street Address</label>
                 <input
                   type="text"
                   required
@@ -586,7 +589,7 @@ const rzp = new window.Razorpay(options);
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">City</label>
+                  <label className="text-[10px] text-black font-bold uppercase tracking-widest block">City</label>
                   <input
                     type="text"
                     required
@@ -598,7 +601,7 @@ const rzp = new window.Razorpay(options);
                 </div>
                 
                 <div className="space-y-1.5">
-                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Postal Code</label>
+                  <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Postal Code</label>
                   <input
                     type="text"
                     required
@@ -611,7 +614,7 @@ const rzp = new window.Razorpay(options);
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Country</label>
+                <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Country</label>
                 <select
                   value={shippingForm.country}
                   onChange={(e) => setShippingForm({ ...shippingForm, country: e.target.value })}
@@ -627,7 +630,7 @@ const rzp = new window.Razorpay(options);
 
               {/* Coupon Code */}
               <div className="space-y-1.5 pt-2 border-t border-white/5">
-                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest flex items-center gap-1.5 pt-3">
+                <label className="text-[10px] text-black font-bold uppercase tracking-widest flex items-center gap-1.5 pt-3">
                   <Tag size={11} className="text-luxury-gold" />
                   Coupon Code
                 </label>
@@ -641,7 +644,7 @@ const rzp = new window.Razorpay(options);
                     <button
                       type="button"
                       onClick={handleRemoveCoupon}
-                      className="text-gray-400 hover:text-white transition p-1 cursor-pointer"
+                      className="text-black hover:text-black transition p-1 cursor-pointer"
                       aria-label="Remove coupon"
                     >
                       <X size={14} />
@@ -660,7 +663,7 @@ const rzp = new window.Razorpay(options);
                       type="button"
                       onClick={handleApplyCoupon}
                       disabled={couponLoading}
-                      className="px-5 border border-luxury-gold text-luxury-gold font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold hover:text-luxury-dark transition flex items-center justify-center cursor-pointer disabled:opacity-50 rounded"
+                      className="px-5 border border-black text-black font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold hover:text-black transition flex items-center justify-center cursor-pointer disabled:opacity-50 rounded"
                     >
                       {couponLoading ? <Loader2 size={14} className="animate-spin" /> : 'Apply'}
                     </button>
@@ -841,18 +844,21 @@ function CheckoutSummary({ cartItems, subtotal, discount, total, zipCode }) {
       
       {/* Items list */}
       <div className="space-y-4 max-h-60 overflow-y-auto">
-        {cartItems.map((item) => (
+        {cartItems.map((item) => {
+          const itemPrice = item.price !== undefined ? item.price : getDiscountedPrice(item.product);
+          return (
           <div key={item.productId} className="flex items-center space-x-3 pb-3 border-b border-white/5 last:border-b-0 last:pb-0">
             <div className="h-12 w-12 bg-luxury-dark rounded border border-white/5 flex-shrink-0 flex items-center justify-center p-0 overflow-hidden">
               <img src={item.product.image} alt={item.product.name} className="w-full h-full object-cover" />
             </div>
             <div className="flex-1 min-w-0">
               <h4 className="text-white text-xs font-semibold truncate uppercase tracking-wide">{item.product.name}</h4>
-              <p className="text-[10px] text-gray-500">Qty: {item.quantity} × {formatPrice(item.product.price, currentCurrency)}</p>
+              <p className="text-[10px] text-gray-500">Qty: {item.quantity} × {formatPrice(itemPrice, currentCurrency)}</p>
             </div>
-            <span className="text-white text-xs font-bold">{formatPrice(item.product.price * item.quantity, currentCurrency)}</span>
+            <span className="text-white text-xs font-bold">{formatPrice(itemPrice * item.quantity, currentCurrency)}</span>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="border-t border-white/5 pt-4 space-y-2 text-xs">

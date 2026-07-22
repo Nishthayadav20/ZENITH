@@ -42,6 +42,11 @@ const NAV_COLS = [
       { label: 'COD Policy',          page: 'static',  args: { view: 'cod' } },
       { label: 'Cookie Policy',       page: 'static',  args: { view: 'cookie' } },
       { label: 'FAQ',                 page: 'static',  args: { view: 'faq' } },
+      { label: 'Privacy Policy',   page: 'static', args: { view: 'privacy' } },
+      { label: 'COD Policy',       page: 'static', args: { view: 'cod' } },
+      { label: 'Gifting Policy',   page: 'static', args: { view: 'gifting' } },
+      { label: 'Repair & Service', page: 'static', args: { view: 'repair' } },
+      { label: 'Community Guidelines', page: 'static', args: { view: 'community' } },
     ],
   },
   {
@@ -505,21 +510,21 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
               Read Full Disclaimer &rarr;
             </button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[0.62rem] leading-relaxed text-gray-400">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[0.62rem] leading-relaxed text-gray-400 font-sans">
             <div>
               <p className="mb-2">
-                <strong className="text-gray-300">General & Product Representation:</strong> Information on this Website is provided for informational and commercial purposes. KHRONIQ strives to display product specifications, finishes, and colors accurately, but minor variations in screen display, natural leather grain, or hand-polishing may occur and do not constitute manufacturing defects.
+                <strong className="text-gray-300">General & Product Representation:</strong> Website information is for general informational and commercial purposes. KHRONIQ is owned and marketed by True Knock Industries Private Limited. We strive to display watch specifications, colors, and finishes accurately; however, minor variations in screen display, natural leather grain, or hand-polishing may occur and do not constitute manufacturing defects.
               </p>
               <p>
-                <strong className="text-gray-300">Accuracy & Water Resistance:</strong> Watch timekeeping variations and water resistance ratings reflect laboratory conditions. Water resistance is not permanent and decreases over time with normal wear, requiring proper care as detailed in product guidelines.
+                <strong className="text-gray-300">Accuracy & Water Resistance:</strong> Watch movements may exhibit minor timekeeping variations within industry-accepted tolerances. Water resistance ratings indicate laboratory-tested performance and are not permanent, decreasing over time with wear. KHRONIQ is not responsible for damage resulting from use beyond specified ratings.
               </p>
             </div>
             <div>
               <p className="mb-2">
-                <strong className="text-gray-300">Intellectual Property & Authenticity:</strong> KHRONIQ logos, designs, custom dials, software, and serial systems are exclusive property of True Knock Industries Private Limited. Only products purchased directly from KHRONIQ or authorized dealers are guaranteed genuine.
+                <strong className="text-gray-300">Intellectual Property & Authenticity:</strong> All Website content, including designs, dials, logos, graphics, and software, is the exclusive property of True Knock Industries Private Limited. Only products purchased directly from KHRONIQ or authorized dealers are guaranteed genuine.
               </p>
               <p>
-                <strong className="text-gray-300">Limitation of Liability:</strong> Total liability shall not exceed the purchase price paid for the product. Prices and availability are subject to change without prior notice.
+                <strong className="text-gray-300">Limitation of Liability & Jurisdiction:</strong> KHRONIQ's total liability shall not exceed the purchase price paid for the product. This Disclaimer is governed by the laws of India, and all disputes are subject to the exclusive jurisdiction of the competent courts at Lucknow, Uttar Pradesh.
               </p>
             </div>
           </div>
