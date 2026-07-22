@@ -39,6 +39,11 @@ const NAV_COLS = [
       { label: 'Refund Policy',       page: 'static',  args: { view: 'refund' } },
       { label: 'Warranty Policy',     page: 'static',  args: { view: 'warranty' } },
       { label: 'FAQ',                 page: 'static',  args: { view: 'faq' } },
+      { label: 'Privacy Policy',   page: 'static', args: { view: 'privacy' } },
+      { label: 'COD Policy',       page: 'static', args: { view: 'cod' } },
+      { label: 'Gifting Policy',   page: 'static', args: { view: 'gifting' } },
+      { label: 'Repair & Service', page: 'static', args: { view: 'repair' } },
+      { label: 'Community Guidelines', page: 'static', args: { view: 'community' } },
     ],
   },
   {
