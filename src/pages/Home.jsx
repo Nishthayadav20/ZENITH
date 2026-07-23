@@ -1082,19 +1082,24 @@ const prevSpotlight = () => {
           <div className="col-span-1 sm:col-span-8 space-y-6 text-center sm:text-left" style={{ transform: 'translate(-20px, 30px)' }}>
             {/* Badge */}
             <motion.div initial={{ opacity: 0, y: -26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }} className="flex justify-center sm:justify-start">
-              <motion.span className="inline-flex items-center gap-2 border border-luxury-gold/45 text-luxury-gold px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-black/45 backdrop-blur-sm"
-                whileHover={{ scale: 1.05, borderColor: 'rgba(197,168,128,0.85)' }} transition={{ duration: 0.15 }}>
-                <Star size={10} fill="var(--color-luxury-gold)" className="animate-spin" style={{ animationDuration: '6s' }} />
-                YOUR TRUSTED INDIAN MANUFACTURER PRESENTS
+              <motion.span
+                className="inline-flex items-center border border-luxury-gold/50 px-5 py-2 rounded-full bg-black/50 backdrop-blur-sm"
+                whileHover={{ scale: 1.05, borderColor: 'rgba(197,168,128,0.9)' }} transition={{ duration: 0.15 }}>
+                <img
+                  src="/assets/logo_text.png"
+                  alt="KHRONIQ"
+                  className="h-10 object-contain"
+                  style={{ filter: 'brightness(1.05) saturate(1.1)' }}
+                />
               </motion.span>
             </motion.div>
 
             {/* Heading — both lines same depth */}
             <motion.div initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.85, delay: 0.16, ease: [0.22, 1, 0.36, 1] }} className="select-none cursor-default">
-              <div className="font-cinzel font-bold text-4xl sm:text-5xl md:text-7xl tracking-wider text-white uppercase leading-tight">
+              <div className="font-cinzel font-bold text-4xl sm:text-5xl md:text-6xl tracking-wider text-white uppercase leading-tight">
                 Born from the
               </div>
-              <div className="font-cinzel font-bold text-4xl sm:text-5xl md:text-7xl tracking-wider uppercase leading-tight mt-1">
+              <div className="font-cinzel font-bold text-4xl sm:text-5xl md:text-6xl tracking-wider uppercase leading-tight mt-1">
                 <span style={{
                   background: 'linear-gradient(135deg, #047857 0%, #065f46 45%, #022c22 100%)',
                   WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',

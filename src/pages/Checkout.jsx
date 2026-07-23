@@ -53,8 +53,9 @@ export default function Checkout({ params, onPageChange }) {
     fullName: currentUser?.name || '',
     streetAddress: currentUser?.shippingAddress?.streetAddress || '',
     city: currentUser?.shippingAddress?.city || '',
+    state: currentUser?.shippingAddress?.state || '',
     zipCode: currentUser?.shippingAddress?.postalCode || '',
-    country: currentUser?.shippingAddress?.country || 'United States'
+    country: currentUser?.shippingAddress?.country || 'India'
   });
   const [processingPayment, setProcessingPayment] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('card');
@@ -458,17 +459,19 @@ export default function Checkout({ params, onPageChange }) {
                     key={occ.id}
                     type="button"
                     onClick={() => setGiftOccasion(occ.id)}
-                    className={`relative p-4 rounded border text-center transition-all duration-200 cursor-pointer ${giftOccasion === occ.id
-                      ? 'border-luxury-gold bg-luxury-gold/5'
-                      : 'border-white/10 hover:border-white/20'
-                      }`}
+                    className={`relative p-4 rounded border text-center transition-all duration-200 cursor-pointer ${
+                      giftOccasion === occ.id
+                        ? 'border-luxury-gold bg-luxury-gold/5'
+                        : 'border-white/10 hover:border-white/20'
+                    }`}
                   >
                     {giftOccasion === occ.id && (
-                      <Check size={10} className="absolute top-2 right-2 text-luxury-gold" strokeWidth={3} />
+                      <Check size={10} className="absolute top-2 right-2 text-[#b8892a]" strokeWidth={3} />
                     )}
                     <span className="text-lg block mb-1">{occ.emoji}</span>
-                    <p className={`text-[10px] font-bold tracking-wide uppercase ${giftOccasion === occ.id ? 'text-luxury-gold' : 'text-neutral-800'
-                      }`}>{occ.label}</p>
+                    <p className={`text-[10px] font-bold tracking-wide uppercase ${
+                      giftOccasion === occ.id ? 'text-luxury-gold' : 'text-neutral-800'
+                    }`}>{occ.label}</p>
                   </button>
                 ))}
               </div>
@@ -489,16 +492,18 @@ export default function Checkout({ params, onPageChange }) {
                     key={pkg.id}
                     type="button"
                     onClick={() => setPackagingType(pkg.id)}
-                    className={`relative p-4 rounded border text-left transition-all duration-200 cursor-pointer ${packagingType === pkg.id
-                      ? 'border-luxury-gold bg-luxury-gold/5'
-                      : 'border-white/10 hover:border-white/20'
-                      }`}
+                    className={`relative p-4 rounded border text-left transition-all duration-200 cursor-pointer ${
+                      packagingType === pkg.id
+                        ? 'border-luxury-gold bg-luxury-gold/5'
+                        : 'border-white/10 hover:border-white/20'
+                    }`}
                   >
                     {packagingType === pkg.id && (
-                      <Check size={10} className="absolute top-2 right-2 text-luxury-gold" strokeWidth={3} />
+                      <Check size={10} className="absolute top-2 right-2 text-[#b8892a]" strokeWidth={3} />
                     )}
-                    <p className={`text-xs font-bold tracking-wide uppercase ${packagingType === pkg.id ? 'text-luxury-gold' : 'text-white'
-                      }`}>{pkg.label}</p>
+                    <p className={`text-xs font-bold tracking-wide uppercase ${
+                      packagingType === pkg.id ? 'text-luxury-gold' : 'text-white'
+                    }`}>{pkg.label}</p>
                     <p className="text-[10px] text-gray-500 mt-1 leading-normal">{pkg.desc}</p>
                   </button>
                 ))}
@@ -565,13 +570,13 @@ export default function Checkout({ params, onPageChange }) {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Street Address</label>
+                <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Local Address</label>
                 <input
                   type="text"
                   required
                   value={shippingForm.streetAddress}
                   onChange={(e) => setShippingForm({ ...shippingForm, streetAddress: e.target.value })}
-                  placeholder="House No., Locality, Area"
+                  placeholder="120 Luxury Avenue, Suite 4B"
                   className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
                 />
               </div>
@@ -600,6 +605,18 @@ export default function Checkout({ params, onPageChange }) {
                     className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
                   />
                 </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] text-black font-bold uppercase tracking-widest block">State</label>
+                <input
+                  type="text"
+                  required
+                  value={shippingForm.state}
+                  onChange={(e) => setShippingForm({ ...shippingForm, state: e.target.value })}
+                  placeholder="e.g. Maharashtra, Delhi, Karnataka"
+                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">

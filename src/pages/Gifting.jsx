@@ -326,7 +326,7 @@ export default function Gifting({ onPageChange }) {
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
               onClick={() => onPageChange('shop')}
-              className="px-8 py-4 bg-luxury-gold-dark text-white text-xs font-black tracking-widest uppercase border border-luxury-gold-dark hover:bg-luxury-gold transition-colors duration-200 cursor-pointer min-w-[200px]"
+              className="px-8 py-4 bg-luxury-gold-dark text-white text-xs font-black tracking-widest uppercase border border-luxury-gold-dark hover:bg-[#047857] hover:border-[#047857] transition-colors duration-200 cursor-pointer min-w-[200px]"
             >
               Shop All Watches
             </motion.button>
@@ -501,7 +501,7 @@ export default function Gifting({ onPageChange }) {
                     const rec = RECIPIENTS.find(r => r.id === selectedRecipient);
                     if (rec) handleShopForRecipient(rec);
                   }}
-                  className="flex items-center gap-3 px-10 py-4 bg-luxury-gold-dark text-white text-sm font-black tracking-widest uppercase cursor-pointer border border-luxury-gold-dark hover:bg-luxury-gold transition-colors duration-200 shadow-xl shadow-luxury-gold/20"
+                  className="flex items-center gap-3 px-10 py-4 bg-luxury-gold-dark text-white text-sm font-black tracking-widest uppercase cursor-pointer border border-luxury-gold-dark hover:bg-[#047857] hover:border-[#047857] transition-colors duration-200 shadow-xl shadow-luxury-gold/20"
                 >
                   <Gift size={16} />
                   Shop Watches for {RECIPIENTS.find(r => r.id === selectedRecipient)?.label}

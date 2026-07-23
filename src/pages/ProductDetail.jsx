@@ -508,7 +508,10 @@ export default function ProductDetail({ params, onPageChange }) {
 
               <button
                 type="submit"
-                className="w-full py-3 bg-luxury-gold-dark text-white font-bold text-xs tracking-widest uppercase hover:bg-luxury-gold transition cursor-pointer shadow-sm"
+                className="w-full py-3 font-bold text-xs tracking-widest uppercase transition cursor-pointer shadow-sm"
+                style={{ background: '#111111', color: '#ffffff' }}
+                onMouseEnter={e => e.currentTarget.style.background = '#047857'}
+                onMouseLeave={e => e.currentTarget.style.background = '#111111'}
               >
                 Submit Review
               </button>
