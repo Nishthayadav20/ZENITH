@@ -39,18 +39,19 @@ export default function MainLayout({ children, onPageChange, currentPage }) {
         onClose={() => setUpdatesOpen(false)}
       />
 
-      {/* Floating Warranty Tab */}
       <button
         onClick={() => setWarrantyOpen(true)}
-        className="fixed right-0 bottom-24 text-white font-extrabold text-[10px] sm:text-[11px] tracking-[0.22em] uppercase py-4 px-2 rounded-l border border-r-0 border-[#047857]/40 shadow-[0_4px_25px_rgba(0,0,0,0.55)] hover:opacity-90 transition-all duration-300 z-40 cursor-pointer"
+        className="fixed right-0 bottom-24 font-extrabold text-[11px] sm:text-[12px] tracking-[0.22em] uppercase py-4 px-2 rounded-l border border-r-0 border-[#047857]/40 shadow-[0_4px_25px_rgba(0,0,0,0.55)] hover:opacity-90 transition-all duration-300 z-40 cursor-pointer"
         style={{
-          writingMode: 'vertical-rl',
-          textOrientation: 'mixed',
-          background: 'linear-gradient(135deg, #047857 0%, #065f46 45%, #022c22 100%)',
-          color: '#ffffff',
+          writingMode: "vertical-rl",
+          textOrientation: "mixed",
+          background: "linear-gradient(135deg, #047857 0%, #065f46 45%, #022c22 100%)",
+          color: "#FFFFFF",
+          WebkitTextFillColor: "#FFFFFF",
+          textShadow: "0 0 2px rgba(255,255,255,0.8)",
         }}
       >
-        Warranty
+        WARRANTY
       </button>
       {/* Main Content Area */}
       <main className={['home', 'gifting', 'shop'].includes(currentPage) ? 'flex-1 w-full' : 'flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'}>
