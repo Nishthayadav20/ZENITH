@@ -89,7 +89,7 @@ export default function Checkout({ params, onPageChange }) {
         localAddress: prev.localAddress || currentUser.shippingAddress?.localAddress || '',
         city: prev.city || currentUser.shippingAddress?.city || '',
         zipCode: prev.zipCode || currentUser.shippingAddress?.postalCode || '',
-        country: (prev.country === 'United States' || !prev.country) && currentUser.shippingAddress?.country
+        country: (prev.country === 'India' || !prev.country) && currentUser.shippingAddress?.country
           ? currentUser.shippingAddress.country
           : prev.country
       }));
