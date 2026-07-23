@@ -51,7 +51,7 @@ export default function Checkout({ params, onPageChange }) {
   const [step, setStep] = useState(isGiftingJourney ? 1 : 2); // 1: Gifting, 2: Shipping, 3: Payment, 4: Success
   const [shippingForm, setShippingForm] = useState({
     fullName: currentUser?.name || '',
-    localAddress: currentUser?.shippingAddress?.streetAddress || '',
+    streetAddress: currentUser?.shippingAddress?.streetAddress || '',
     city: currentUser?.shippingAddress?.city || '',
     zipCode: currentUser?.shippingAddress?.postalCode || '',
     country: currentUser?.shippingAddress?.country || 'United States'
@@ -569,8 +569,8 @@ export default function Checkout({ params, onPageChange }) {
                 <input
                   type="text"
                   required
-                  value={shippingForm.localAddress}
-                  onChange={(e) => setShippingForm({ ...shippingForm, localAddress: e.target.value })}
+                  value={shippingForm.streetAddress}
+                  onChange={(e) => setShippingForm({ ...shippingForm, streetAddress: e.target.value })}
                   placeholder="House No., Locality, Area"
                   className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
                 />
