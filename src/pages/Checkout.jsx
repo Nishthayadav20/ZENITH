@@ -40,7 +40,7 @@ export default function Checkout({ params, onPageChange }) {
   const products = useSelector(state => state.watch.products);
   const currentUser = useSelector(state => state.watch.currentUser);
   const currentCurrency = useSelector(selectCurrentCurrency);
-  
+
   const [appliedCoupon, setAppliedCoupon] = useState(params?.appliedCoupon || null);
   const [couponInput, setCouponInput] = useState('');
   const [couponError, setCouponError] = useState('');
@@ -51,13 +51,13 @@ export default function Checkout({ params, onPageChange }) {
   const [step, setStep] = useState(isGiftingJourney ? 1 : 2); // 1: Gifting, 2: Shipping, 3: Payment, 4: Success
   const [shippingForm, setShippingForm] = useState({
     fullName: currentUser?.name || '',
-    streetAddress: currentUser?.shippingAddress?.streetAddress || '',
+    localAddress: currentUser?.shippingAddress?.streetAddress || '',
     city: currentUser?.shippingAddress?.city || '',
     zipCode: currentUser?.shippingAddress?.postalCode || '',
     country: currentUser?.shippingAddress?.country || 'United States'
   });
-const [processingPayment, setProcessingPayment] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('card'); 
+  const [processingPayment, setProcessingPayment] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('card');
   const [giftPackage, setGiftPackage] = useState('standard'); // standard | gift-box | luxury
   const [giftNote, setGiftNote] = useState('');
   const [giftOccasion, setGiftOccasion] = useState('birthday'); // anniversary | birthday | retirement | other
@@ -85,11 +85,11 @@ const [processingPayment, setProcessingPayment] = useState(false);
       setShippingForm(prev => ({
         ...prev,
         fullName: prev.fullName || currentUser.name || '',
-        streetAddress: prev.streetAddress || currentUser.shippingAddress?.streetAddress || '',
+        localAddress: prev.localAddress || currentUser.shippingAddress?.localAddress || '',
         city: prev.city || currentUser.shippingAddress?.city || '',
         zipCode: prev.zipCode || currentUser.shippingAddress?.postalCode || '',
-        country: (prev.country === 'United States' || !prev.country) && currentUser.shippingAddress?.country 
-          ? currentUser.shippingAddress.country 
+        country: (prev.country === 'United States' || !prev.country) && currentUser.shippingAddress?.country
+          ? currentUser.shippingAddress.country
           : prev.country
       }));
     }
@@ -137,7 +137,7 @@ const [processingPayment, setProcessingPayment] = useState(false);
     setCouponError('');
   };
 
-const handleRazorpayPayment = async () => {
+  const handleRazorpayPayment = async () => {
     setProcessingPayment(true);
 
     const items = cartItemsWithDetails.map(item => ({
@@ -222,7 +222,7 @@ const handleRazorpayPayment = async () => {
       }
     };
 
-const rzp = new window.Razorpay(options);
+    const rzp = new window.Razorpay(options);
     rzp.on('payment.failed', function () {
       alert('Payment failed. Please try again.');
       setProcessingPayment(false);
@@ -274,7 +274,7 @@ const rzp = new window.Razorpay(options);
     doc.text(shipping.fullName || '-', marginX, y);
     doc.text(`Date: ${new Date(orderReceipt.createdAt || Date.now()).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}`, pageWidth / 2 + 5, y);
     y += 5;
-    doc.text(shipping.streetAddress || '-', marginX, y);
+    doc.text(shipping.localAddress || '-', marginX, y);
     doc.text(`Payment: Razorpay`, pageWidth / 2 + 5, y);
     y += 5;
     doc.text(`${shipping.city || ''}${shipping.city ? ', ' : ''}${shipping.zipCode || ''}`, marginX, y);
@@ -377,65 +377,58 @@ const rzp = new window.Razorpay(options);
 
     doc.save(`KHRONIQ-Invoice-${orderReceipt.id}.pdf`);
   };
-      
+
 
 
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-12">
-      
+
       {/* Checkout Progress Stepper */}
       <div className="flex items-center justify-center space-x-4 border-b border-white/5 pb-6">
         {isGiftingJourney ? (
           <>
             <div className="flex items-center space-x-2">
-              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                step >= 1 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
-              }`}>1</span>
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 1 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+                }`}>1</span>
               <span className={`text-xs font-bold tracking-wider uppercase ${step >= 1 ? 'text-white' : 'text-gray-500'}`}>Gifting</span>
             </div>
             <div className="w-12 h-[1px] bg-white/10" />
             <div className="flex items-center space-x-2">
-              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                step >= 2 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
-              }`}>2</span>
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 2 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+                }`}>2</span>
               <span className={`text-xs font-bold tracking-wider uppercase ${step >= 2 ? 'text-white' : 'text-gray-500'}`}>Shipping</span>
             </div>
             <div className="w-12 h-[1px] bg-white/10" />
             <div className="flex items-center space-x-2">
-              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                step >= 3 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
-              }`}>3</span>
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 3 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+                }`}>3</span>
               <span className={`text-xs font-bold tracking-wider uppercase ${step >= 3 ? 'text-white' : 'text-gray-500'}`}>Payment</span>
             </div>
             <div className="w-12 h-[1px] bg-white/10" />
             <div className="flex items-center space-x-2">
-              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                step === 4 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
-              }`}>4</span>
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${step === 4 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+                }`}>4</span>
               <span className={`text-xs font-bold tracking-wider uppercase ${step === 4 ? 'text-white' : 'text-gray-500'}`}>Receipt</span>
             </div>
           </>
         ) : (
           <>
             <div className="flex items-center space-x-2">
-              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                step >= 2 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
-              }`}>1</span>
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 2 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+                }`}>1</span>
               <span className={`text-xs font-bold tracking-wider uppercase ${step >= 2 ? 'text-white' : 'text-gray-500'}`}>Shipping</span>
             </div>
             <div className="w-12 h-[1px] bg-white/10" />
             <div className="flex items-center space-x-2">
-              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                step >= 3 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
-              }`}>2</span>
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= 3 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+                }`}>2</span>
               <span className={`text-xs font-bold tracking-wider uppercase ${step >= 3 ? 'text-white' : 'text-gray-500'}`}>Payment</span>
             </div>
             <div className="w-12 h-[1px] bg-white/10" />
             <div className="flex items-center space-x-2">
-              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                step === 4 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
-              }`}>3</span>
+              <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${step === 4 ? 'bg-luxury-gold text-luxury-dark' : 'bg-luxury-gray text-gray-500'
+                }`}>3</span>
               <span className={`text-xs font-bold tracking-wider uppercase ${step === 4 ? 'text-white' : 'text-gray-500'}`}>Receipt</span>
             </div>
           </>
@@ -465,19 +458,17 @@ const rzp = new window.Razorpay(options);
                     key={occ.id}
                     type="button"
                     onClick={() => setGiftOccasion(occ.id)}
-                    className={`relative p-4 rounded border text-center transition-all duration-200 cursor-pointer ${
-                      giftOccasion === occ.id
-                        ? 'border-luxury-gold bg-luxury-gold/5'
-                        : 'border-white/10 hover:border-white/20'
-                    }`}
+                    className={`relative p-4 rounded border text-center transition-all duration-200 cursor-pointer ${giftOccasion === occ.id
+                      ? 'border-luxury-gold bg-luxury-gold/5'
+                      : 'border-white/10 hover:border-white/20'
+                      }`}
                   >
                     {giftOccasion === occ.id && (
                       <Check size={10} className="absolute top-2 right-2 text-luxury-gold" strokeWidth={3} />
                     )}
                     <span className="text-lg block mb-1">{occ.emoji}</span>
-                    <p className={`text-[10px] font-bold tracking-wide uppercase ${
-                      giftOccasion === occ.id ? 'text-luxury-gold' : 'text-neutral-800'
-                    }`}>{occ.label}</p>
+                    <p className={`text-[10px] font-bold tracking-wide uppercase ${giftOccasion === occ.id ? 'text-luxury-gold' : 'text-neutral-800'
+                      }`}>{occ.label}</p>
                   </button>
                 ))}
               </div>
@@ -498,18 +489,16 @@ const rzp = new window.Razorpay(options);
                     key={pkg.id}
                     type="button"
                     onClick={() => setPackagingType(pkg.id)}
-                    className={`relative p-4 rounded border text-left transition-all duration-200 cursor-pointer ${
-                      packagingType === pkg.id
-                        ? 'border-luxury-gold bg-luxury-gold/5'
-                        : 'border-white/10 hover:border-white/20'
-                    }`}
+                    className={`relative p-4 rounded border text-left transition-all duration-200 cursor-pointer ${packagingType === pkg.id
+                      ? 'border-luxury-gold bg-luxury-gold/5'
+                      : 'border-white/10 hover:border-white/20'
+                      }`}
                   >
                     {packagingType === pkg.id && (
                       <Check size={10} className="absolute top-2 right-2 text-luxury-gold" strokeWidth={3} />
                     )}
-                    <p className={`text-xs font-bold tracking-wide uppercase ${
-                      packagingType === pkg.id ? 'text-luxury-gold' : 'text-white'
-                    }`}>{pkg.label}</p>
+                    <p className={`text-xs font-bold tracking-wide uppercase ${packagingType === pkg.id ? 'text-luxury-gold' : 'text-white'
+                      }`}>{pkg.label}</p>
                     <p className="text-[10px] text-gray-500 mt-1 leading-normal">{pkg.desc}</p>
                   </button>
                 ))}
@@ -580,9 +569,9 @@ const rzp = new window.Razorpay(options);
                 <input
                   type="text"
                   required
-                  value={shippingForm.streetAddress}
-                  onChange={(e) => setShippingForm({ ...shippingForm, streetAddress: e.target.value })}
-                  placeholder="120 Luxury Avenue, Suite 4B"
+                  value={shippingForm.localAddress}
+                  onChange={(e) => setShippingForm({ ...shippingForm, localAddress: e.target.value })}
+                  placeholder="House No., Locality, Area"
                   className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
                 />
               </div>
@@ -599,7 +588,7 @@ const rzp = new window.Razorpay(options);
                     className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
                   />
                 </div>
-                
+
                 <div className="space-y-1.5">
                   <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Postal Code</label>
                   <input
@@ -613,19 +602,43 @@ const rzp = new window.Razorpay(options);
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] text-black font-bold uppercase tracking-widest block">Country</label>
-                <select
-                  value={shippingForm.country}
-                  onChange={(e) => setShippingForm({ ...shippingForm, country: e.target.value })}
-                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
-                >
-                  <option value="United States">United States</option>
-                  <option value="Switzerland">Switzerland</option>
-                  <option value="United Kingdom">United Kingdom</option>
-                  <option value="India">India</option>
-                  <option value="Japan">Japan</option>
-                </select>
+              <div className="grid grid-cols-2 gap-4">
+                {/* State */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] text-black font-bold uppercase tracking-widest block">
+                    State
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={shippingForm.state}
+                    onChange={(e) =>
+                      setShippingForm({ ...shippingForm, state: e.target.value })
+                    }
+                    placeholder="Uttar Pradesh"
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
+                  />
+                </div>
+
+                {/* Country */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] text-black font-bold uppercase tracking-widest block">
+                    Country
+                  </label>
+                  <select
+                    value={shippingForm.country}
+                    onChange={(e) =>
+                      setShippingForm({ ...shippingForm, country: e.target.value })
+                    }
+                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
+                  >
+                    <option value="India">India</option>
+                    <option value="United States">United States</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Switzerland">Switzerland</option>
+                    <option value="Japan">Japan</option>
+                  </select>
+                </div>
               </div>
 
               {/* Coupon Code */}
@@ -674,7 +687,7 @@ const rzp = new window.Razorpay(options);
                 )}
               </div>
 
-<div className="flex space-x-4 pt-4">
+              <div className="flex space-x-4 pt-4">
                 <button
                   type="button"
                   onClick={() => {
@@ -743,7 +756,7 @@ const rzp = new window.Razorpay(options);
               </button>
             </div>
           </div>
-          
+
 
           {/* Right Summary */}
           <div className="lg:col-span-5 space-y-6">
@@ -751,14 +764,14 @@ const rzp = new window.Razorpay(options);
           </div>
         </div>
       )}
-        
 
-      
+
+
 
       {/* Step 4: Success Screen */}
       {step === 4 && orderReceipt && (
         <div className="bg-luxury-gray border border-white/5 rounded-md p-8 sm:p-12 text-center max-w-2xl mx-auto space-y-8">
-          
+
           <div className="h-20 w-20 rounded-full bg-emerald-400/10 border border-emerald-400/35 flex items-center justify-center mx-auto text-emerald-400">
             <CheckCircle2 size={40} />
           </div>
@@ -777,7 +790,7 @@ const rzp = new window.Razorpay(options);
               <span className="text-gray-400 uppercase tracking-widest font-bold text-[10px]">Order Reference</span>
               <span className="text-white font-bold text-sm tracking-wide font-mono">{orderReceipt.id}</span>
             </div>
-            
+
             <div className="space-y-2">
               {orderReceipt.items.map((item, idx) => (
                 <div key={idx} className="flex justify-between items-center text-gray-300">
@@ -825,63 +838,63 @@ const rzp = new window.Razorpay(options);
     </div>
   );
 
-// Sub-component for Order Summary
-function CheckoutSummary({ cartItems, subtotal, discount, total, zipCode }) {
-  const currentCurrency = useSelector(selectCurrentCurrency);
-  const deliveryDate = getExpectedDeliveryDate(zipCode);
-  return (
-    <div className="bg-luxury-gray border border-white/5 rounded-md p-6 space-y-4">
-      <h3 className="text-xs font-bold tracking-widest text-white uppercase border-b border-white/5 pb-3">Bag Review</h3>
-      
-{/* Expected Delivery Date Alert Box */}
-      {deliveryDate && (
-        <div className="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded text-xs">
-          <span className="text-[9px] font-bold uppercase tracking-widest text-emerald-450 block mb-0.5">Expected Delivery</span>
-          <p className="text-white font-semibold">{deliveryDate}</p>
-          <p className="text-[9px] text-gray-500 font-light mt-0.5">Calculated based on shipping pincode: {zipCode}</p>
-        </div>
-      )}
-      
-      {/* Items list */}
-      <div className="space-y-4 max-h-60 overflow-y-auto">
-        {cartItems.map((item) => {
-          const itemPrice = item.price !== undefined ? item.price : getDiscountedPrice(item.product);
-          return (
-          <div key={item.productId} className="flex items-center space-x-3 pb-3 border-b border-white/5 last:border-b-0 last:pb-0">
-            <div className="h-12 w-12 bg-luxury-dark rounded border border-white/5 flex-shrink-0 flex items-center justify-center p-0 overflow-hidden">
-              <img src={item.product.image} alt={item.product.name} className="w-full h-full object-cover" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h4 className="text-white text-xs font-semibold truncate uppercase tracking-wide">{item.product.name}</h4>
-              <p className="text-[10px] text-gray-500">Qty: {item.quantity} × {formatPrice(itemPrice, currentCurrency)}</p>
-            </div>
-            <span className="text-white text-xs font-bold">{formatPrice(itemPrice * item.quantity, currentCurrency)}</span>
-          </div>
-          );
-        })}
-      </div>
+  // Sub-component for Order Summary
+  function CheckoutSummary({ cartItems, subtotal, discount, total, zipCode }) {
+    const currentCurrency = useSelector(selectCurrentCurrency);
+    const deliveryDate = getExpectedDeliveryDate(zipCode);
+    return (
+      <div className="bg-luxury-gray border border-white/5 rounded-md p-6 space-y-4">
+        <h3 className="text-xs font-bold tracking-widest text-white uppercase border-b border-white/5 pb-3">Bag Review</h3>
 
-      <div className="border-t border-white/5 pt-4 space-y-2 text-xs">
-        <div className="flex justify-between text-gray-300">
-          <span>Subtotal</span>
-          <span>{formatPrice(subtotal, currentCurrency)}</span>
-        </div>
-        {discount > 0 && (
-          <div className="flex justify-between text-emerald-400">
-            <span>Coupon Discount</span>
-            <span>-{formatPrice(discount, currentCurrency)}</span>
+        {/* Expected Delivery Date Alert Box */}
+        {deliveryDate && (
+          <div className="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded text-xs">
+            <span className="text-[9px] font-bold uppercase tracking-widest text-emerald-450 block mb-0.5">Expected Delivery</span>
+            <p className="text-white font-semibold">{deliveryDate}</p>
+            <p className="text-[9px] text-gray-500 font-light mt-0.5">Calculated based on shipping pincode: {zipCode}</p>
           </div>
         )}
-        <div className="flex justify-between text-gray-300">
-          <span>Courier Delivery</span>
-          <span className="text-emerald-400 uppercase tracking-widest text-[9px] font-bold">Free</span>
+
+        {/* Items list */}
+        <div className="space-y-4 max-h-60 overflow-y-auto">
+          {cartItems.map((item) => {
+            const itemPrice = item.price !== undefined ? item.price : getDiscountedPrice(item.product);
+            return (
+              <div key={item.productId} className="flex items-center space-x-3 pb-3 border-b border-white/5 last:border-b-0 last:pb-0">
+                <div className="h-12 w-12 bg-luxury-dark rounded border border-white/5 flex-shrink-0 flex items-center justify-center p-0 overflow-hidden">
+                  <img src={item.product.image} alt={item.product.name} className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-white text-xs font-semibold truncate uppercase tracking-wide">{item.product.name}</h4>
+                  <p className="text-[10px] text-gray-500">Qty: {item.quantity} × {formatPrice(itemPrice, currentCurrency)}</p>
+                </div>
+                <span className="text-white text-xs font-bold">{formatPrice(itemPrice * item.quantity, currentCurrency)}</span>
+              </div>
+            );
+          })}
         </div>
-        <div className="flex justify-between items-center text-sm font-bold text-white border-t border-white/5 pt-3">
-          <span className="uppercase tracking-widest text-[10px]">Grand Total</span>
-          <span className="text-base text-luxury-gold font-extrabold">{formatPrice(total, currentCurrency)}</span>
+
+        <div className="border-t border-white/5 pt-4 space-y-2 text-xs">
+          <div className="flex justify-between text-gray-300">
+            <span>Subtotal</span>
+            <span>{formatPrice(subtotal, currentCurrency)}</span>
+          </div>
+          {discount > 0 && (
+            <div className="flex justify-between text-emerald-400">
+              <span>Coupon Discount</span>
+              <span>-{formatPrice(discount, currentCurrency)}</span>
+            </div>
+          )}
+          <div className="flex justify-between text-gray-300">
+            <span>Courier Delivery</span>
+            <span className="text-emerald-400 uppercase tracking-widest text-[9px] font-bold">Free</span>
+          </div>
+          <div className="flex justify-between items-center text-sm font-bold text-white border-t border-white/5 pt-3">
+            <span className="uppercase tracking-widest text-[10px]">Grand Total</span>
+            <span className="text-base text-luxury-gold font-extrabold">{formatPrice(total, currentCurrency)}</span>
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 }
