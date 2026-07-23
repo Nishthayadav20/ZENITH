@@ -481,13 +481,13 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                         key={i}
                         type="button"
                         onClick={() => handleSelectWatch(p)}
-                        className="w-full text-left px-3 py-2.5 text-[10px] text-white hover:bg-luxury-gold/10 hover:text-luxury-gold transition border-b border-white/5 last:border-0 cursor-pointer flex items-center justify-between"
+                        className="w-full text-left px-3 py-2.5 text-[10px] !text-white hover:bg-luxury-gold/10 hover:!text-luxury-gold transition border-b border-white/5 last:border-0 cursor-pointer flex items-center justify-between"
                       >
-                        <span className="flex items-center gap-1.5 font-semibold">
+                        <span className="flex items-center gap-1.5 font-semibold !text-white">
                           {p.name}
                           {p.claimed && <span className="text-[7px] text-emerald-500 border border-emerald-500/40 rounded px-1">CLAIMED</span>}
                         </span>
-                        <span className="text-[8px] text-gray-400 font-mono">{p.orderId}</span>
+                        <span className="text-[8px] !text-gray-400 font-mono">{p.orderId}</span>
                       </button>
                     ))}
                   </div>
