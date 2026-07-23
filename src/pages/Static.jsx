@@ -764,6 +764,269 @@ export default function Static({ params, _onPageChange }) {
       )
     }
   ];
+    const shippingData = [
+    {
+      title: "1. Company Information",
+      content: (
+        <div className="space-y-2">
+          <p><span className="font-semibold text-luxury-text">Brand:</span> KHRONIQ</p>
+          <p><span className="font-semibold text-luxury-text">Owned & Marketed By:</span> True Knock Industries Private Limited</p>
+          <p className="font-semibold text-luxury-text mt-1">Registered Office:</p>
+          <p className="pl-3 border-l border-luxury-gold-dark/30 italic text-[11px] text-luxury-muted">
+            Office No. - 2, Chamber - 4,<br />
+            Udaigiri Tower, Kaushambi,<br />
+            Ghaziabad, Uttar Pradesh — 201010,<br />
+            India
+          </p>
+          <p><span className="font-semibold text-luxury-text">Website:</span> <a href="https://www.khroniq.com" target="_blank" rel="noopener noreferrer" className="text-luxury-gold-dark hover:underline">www.khroniq.com</a></p>
+          <p><span className="font-semibold text-luxury-text">Email:</span> support@khroniq.com</p>
+        </div>
+      )
+    },
+    { title: "2. Shipping Coverage", content: "KHRONIQ currently delivers products across India. International shipping may be introduced in the future. If available, eligible countries, shipping charges, customs information, and delivery timelines will be displayed during checkout." },
+    {
+      title: "3. Order Processing",
+      content: (
+        <div className="space-y-2">
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Orders are processed only after successful payment verification.</li>
+            <li>Standard processing time is 1–3 Business Days.</li>
+            <li>During festivals, product launches, promotional campaigns, public holidays, or high-volume periods, processing may take additional time.</li>
+            <li>Orders placed on Sundays or Government Holidays will be processed on the next Business Day.</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted italic">Processing time is separate from shipping and delivery time.</p>
+        </div>
+      )
+    },
+    {
+      title: "4. Shipping Partners",
+      content: (
+        <div className="space-y-2">
+          <p>To ensure secure and timely deliveries, KHRONIQ may ship orders through reputed logistics partners, including but not limited to:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Blue Dart</li>
+            <li>Delhivery</li>
+            <li>DTDC</li>
+            <li>Xpressbees</li>
+            <li>Ecom Express</li>
+            <li>India Post</li>
+            <li>Other authorized courier partners</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted">KHRONIQ reserves the right to choose the most appropriate shipping partner for each order.</p>
+        </div>
+      )
+    },
+    {
+      title: "5. Shipping Charges",
+      content: (
+        <div className="space-y-2">
+          <p>Shipping charges, if applicable, will be displayed during checkout before payment. KHRONIQ may, at its sole discretion, offer:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Free Shipping</li>
+            <li>Express Shipping</li>
+            <li>Promotional Shipping Offers</li>
+            <li>Limited-Time Shipping Discounts</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted">Such offers may be modified or withdrawn without prior notice.</p>
+        </div>
+      )
+    },
+    {
+      title: "6. Delivery Estimates",
+      content: (
+        <div className="space-y-2">
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Metro Cities: 2–5 Business Days</li>
+            <li>Tier-2 & Tier-3 Cities: 3–7 Business Days</li>
+            <li>Remote & Rural Areas: 5–10 Business Days</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted">These are estimated timelines only and are not guaranteed delivery commitments.</p>
+        </div>
+      )
+    },
+    {
+      title: "7. Order Tracking",
+      content: (
+        <div className="space-y-2">
+          <p>Once your order is dispatched, you will receive:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Order Dispatch Confirmation</li>
+            <li>Courier Name</li>
+            <li>Tracking Number</li>
+            <li>Tracking Link (where available)</li>
+          </ul>
+        </div>
+      )
+    },
+    {
+      title: "8. Delivery Address",
+      content: (
+        <div className="space-y-2">
+          <p>Customers are responsible for providing:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Correct Full Name</li>
+            <li>Complete Delivery Address</li>
+            <li>Landmark (if applicable)</li>
+            <li>PIN Code</li>
+            <li>Mobile Number</li>
+            <li>Email Address</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted">KHRONIQ shall not be liable for delays, failed deliveries, or additional shipping costs arising from incorrect or incomplete address information provided by the customer.</p>
+        </div>
+      )
+    },
+    { title: "9. Delivery Attempts", content: "Courier partners generally make multiple delivery attempts. If delivery cannot be completed because the customer is unavailable, the address is incorrect, delivery is refused, or the customer cannot be contacted, the shipment may be returned to KHRONIQ. Any re-shipping charges may be payable by the customer." },
+    { title: "10. Package Inspection", content: "Customers are advised to inspect the package before accepting delivery. If the package appears damaged, opened, tampered, wet, torn, or broken, please refuse delivery (where possible) and immediately notify KHRONIQ Customer Support with photographs. Acceptance of a visibly damaged package may affect the resolution process." },
+    { title: "11. Risk of Loss", content: "Ownership and risk of loss shall pass to the customer upon successful delivery of the shipment to the delivery address provided during checkout." },
+    { title: "12. Shipping Delays", content: "Delivery timelines may be affected by circumstances beyond KHRONIQ's reasonable control, including weather conditions, floods, earthquakes, cyclones, fire, natural disasters, pandemics, government restrictions, curfew, public holidays, customs clearance delays, road closures, traffic restrictions, transport disruptions, political unrest, strikes, lockouts, war, terrorism, or other Force Majeure events. KHRONIQ shall not be liable for delays arising from such circumstances." },
+    { title: "13. Partial Shipments", content: "Where necessary, KHRONIQ may dispatch an order in multiple shipments. Customers shall not incur additional shipping charges solely because an order is shipped in separate consignments by KHRONIQ." },
+    { title: "14. Failed Delivery", content: "Orders returned due to incorrect address, customer unavailable, delivery refusal, non-collection, or incomplete address may be cancelled or re-shipped after payment of applicable re-shipping charges." },
+    { title: "15. Pre-Order Products", content: "Products sold as Pre-Order or Coming Soon items shall be dispatched according to the estimated shipping date displayed on the respective product page. Estimated dispatch dates may change due to manufacturing schedules, quality control, customs clearance, or logistics requirements." },
+    { title: "16. Lost or Missing Shipments", content: "If your shipment appears lost or remains undelivered beyond the estimated timeline, please contact KHRONIQ Customer Support within 7 days of the expected delivery date. KHRONIQ will coordinate with the courier partner to investigate the shipment before approving any replacement or refund, where applicable." },
+    { title: "17. International Orders", content: "If international shipping is available, import duties, customs charges, local taxes, VAT/GST, clearance fees, and brokerage charges shall be the sole responsibility of the customer unless expressly stated otherwise at checkout. KHRONIQ is not responsible for delays caused by customs authorities in the destination country." },
+    { title: "18. Force Majeure", content: "KHRONIQ shall not be responsible for delays or failures in shipping caused by events beyond its reasonable control, including but not limited to pandemics, floods, earthquakes, fires, storms, wars, civil disturbances, strikes, transport failures, traffic restrictions, customs delays, government actions, internet outages, cyber incidents, or any other Force Majeure event." },
+    { title: "19. Policy Modifications", content: "KHRONIQ reserves the right to modify, amend, or update this Shipping Policy at any time without prior notice. The latest version will always be available on the Website. Continued use of the Website after such modifications constitutes acceptance of the revised Shipping Policy." },
+    { title: "20. Governing Law & Jurisdiction", content: "This Shipping Policy shall be governed by the laws of India. Any dispute arising out of or relating to this Shipping Policy shall be subject to the exclusive jurisdiction of the competent courts at Lucknow, Uttar Pradesh, unless otherwise required by applicable law." },
+    {
+      title: "21. Contact Us",
+      content: (
+        <div className="space-y-2">
+          <p className="font-bold text-luxury-text">KHRONIQ</p>
+          <p>A Premium Watch Brand by True Knock Industries Private Limited</p>
+          <div className="pl-3 border-l border-luxury-gold-dark/30 text-[11px] text-luxury-muted space-y-0.5">
+            <p><span className="font-semibold text-luxury-text">Registered Office:</span> OFFICE NO. - 2, CHAMBER - 4, UDAIGIRI TOWER, KAUSHAMBI, GHAZIABAD, UTTAR PRADESH — 201010, India</p>
+            <p><span className="font-semibold text-luxury-text">Website:</span> www.khroniq.com</p>
+            <p><span className="font-semibold text-luxury-text">Email:</span> support@khroniq.com</p>
+          </div>
+        </div>
+      )
+    }
+  ];
+    const refundData = [
+    {
+      title: "1. Company Information",
+      content: (
+        <div className="space-y-2">
+          <p><span className="font-semibold text-luxury-text">Brand:</span> KHRONIQ</p>
+          <p><span className="font-semibold text-luxury-text">Owned & Marketed By:</span> True Knock Industries Private Limited</p>
+          <p className="font-semibold text-luxury-text mt-1">Registered Office:</p>
+          <p className="pl-3 border-l border-luxury-gold-dark/30 italic text-[11px] text-luxury-muted">
+            Office No. - 2, Chamber - 4,<br />
+            Udaigiri Tower, Kaushambi,<br />
+            Ghaziabad, Uttar Pradesh — 201010,<br />
+            India
+          </p>
+          <p><span className="font-semibold text-luxury-text">Website:</span> <a href="https://www.khroniq.com" target="_blank" rel="noopener noreferrer" className="text-luxury-gold-dark hover:underline">www.khroniq.com</a></p>
+          <p><span className="font-semibold text-luxury-text">Email:</span> support@khroniq.com</p>
+        </div>
+      )
+    },
+    {
+      title: "2. Return Eligibility",
+      content: (
+        <div className="space-y-2">
+          <p>A return request may be accepted only if:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>The product delivered is incorrect.</li>
+            <li>The product is received in a damaged condition.</li>
+            <li>The product has a verified manufacturing defect.</li>
+            <li>The customer receives an incomplete order or missing item.</li>
+            <li>The wrong model, colour, or variant has been shipped by KHRONIQ.</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted">All return requests must be submitted within 7 calendar days from the date of delivery.</p>
+        </div>
+      )
+    },
+    {
+      title: "3. Non-Returnable Products",
+      content: (
+        <div className="space-y-2">
+          <p>Returns shall not be accepted for:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Change of mind after purchase.</li>
+            <li>Incorrect product selection by the customer.</li>
+            <li>Personal preference regarding colour, design, size, or appearance.</li>
+            <li>Normal wear and tear after use.</li>
+            <li>Scratches, dents, or accidental damage after delivery.</li>
+            <li>Damage caused by misuse, negligence, improper handling, or unauthorized repairs.</li>
+            <li>Products with removed, altered, or damaged serial numbers or QR codes.</li>
+            <li>Customized, engraved, or personalized watches.</li>
+            <li>Products purchased from unauthorized sellers.</li>
+            <li>Gift cards, promotional items, or complimentary accessories.</li>
+          </ul>
+        </div>
+      )
+    },
+    {
+      title: "4. Return Conditions",
+      content: (
+        <div className="space-y-2">
+          <p>To qualify for a return, the product must:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Be unused and unworn.</li>
+            <li>Be returned in its original condition.</li>
+            <li>Include the original watch box, warranty card, manuals, accessories, tags, and protective packaging.</li>
+            <li>Be accompanied by the original purchase invoice or order confirmation.</li>
+            <li>Be securely packed to avoid damage during return transit.</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted">KHRONIQ reserves the right to reject returns that do not satisfy these conditions.</p>
+        </div>
+      )
+    },
+    {
+      title: "5. How to Request a Return",
+      content: (
+        <div className="space-y-2">
+          <ol className="list-decimal pl-5 space-y-1">
+            <li>Contact KHRONIQ Customer Support within the eligible return period.</li>
+            <li>Provide your Order Number or Invoice.</li>
+            <li>Share clear photographs or videos of the product and packaging.</li>
+            <li>Wait for written return authorization from KHRONIQ.</li>
+            <li>Follow the return instructions provided by our support team.</li>
+          </ol>
+          <p className="text-[11px] text-luxury-muted">Returns sent without prior approval may not be accepted.</p>
+        </div>
+      )
+    },
+    { title: "6. Product Inspection", content: "Every returned product shall undergo a quality inspection. If the returned product is found to have been used, be damaged by the customer, be incomplete, be tampered with, contain missing accessories, or not match the reported issue, KHRONIQ reserves the right to reject the return request." },
+    {
+      title: "7. Refund Policy",
+      content: (
+        <div className="space-y-2">
+          <p>Refunds may be approved only in the following circumstances:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>The order is cancelled before dispatch.</li>
+            <li>A return is approved after inspection.</li>
+            <li>The product has a confirmed manufacturing defect and cannot be repaired or replaced.</li>
+            <li>The ordered product is unavailable or cannot be fulfilled by KHRONIQ.</li>
+          </ul>
+          <p className="text-[11px] text-luxury-muted">Refunds shall not be issued merely because the customer changes their mind after receiving the product.</p>
+        </div>
+      )
+    },
+    { title: "8. Refund Process", content: "Approved refunds shall be processed to the original payment method used at the time of purchase. Refunds are generally initiated within 7–10 Business Days after approval. Actual credit timelines may vary depending on the customer's bank, card issuer, or payment gateway. Shipping charges, gift wrapping charges, Cash on Delivery fees (if applicable), and other service charges are non-refundable unless the return is due to an error on the part of KHRONIQ." },
+    { title: "9. Damaged or Tampered Shipments", content: "If your package appears opened, tampered, damaged, torn, or wet, please refuse delivery wherever possible and immediately notify KHRONIQ within 24 hours with supporting photographs. Failure to report such issues promptly may affect eligibility for return or refund." },
+    { title: "10. Return Shipping", content: "If the return is approved due to manufacturing defect, wrong product, incorrect variant, or shipping damage, KHRONIQ may arrange return pickup or reimburse reasonable return shipping charges at its discretion. If the return is accepted for any other permissible reason, the customer may be responsible for return shipping costs." },
+    { title: "11. Fraud Prevention", content: "KHRONIQ reserves the right to refuse returns or refunds where fraudulent activity, abuse of this Policy, false claims, excessive return patterns, or suspicious transactions are detected." },
+    { title: "12. Limitation of Liability", content: "KHRONIQ shall not be liable for delays caused by courier partners, delays in banking or payment gateway processing, loss or damage during unauthorized return shipments, or claims arising from misuse, negligence, accidental damage, or unauthorized repairs. Our maximum liability shall not exceed the purchase price actually paid for the concerned product." },
+    { title: "13. Force Majeure", content: "KHRONIQ shall not be responsible for delays in processing returns or refunds caused by events beyond its reasonable control, including pandemics, floods, earthquakes, fires, government restrictions, transport disruptions, customs delays, strikes, wars, cyber incidents, or other Force Majeure events." },
+    { title: "14. Policy Modifications", content: "KHRONIQ reserves the right to amend or update this Return & Refund Policy at any time without prior notice. The latest version shall always be available on the Website. Continued use of the Website after such modifications constitutes acceptance of the revised Policy." },
+    { title: "15. Governing Law & Jurisdiction", content: "This Policy shall be governed by and interpreted in accordance with the laws of India. Any dispute arising out of or relating to this Policy shall be subject to the exclusive jurisdiction of the competent courts at Lucknow, Uttar Pradesh, unless otherwise required by applicable law." },
+    {
+      title: "16. Contact Us",
+      content: (
+        <div className="space-y-2">
+          <p className="font-bold text-luxury-text">KHRONIQ</p>
+          <p>A Premium Watch Brand by True Knock Industries Private Limited</p>
+          <div className="pl-3 border-l border-luxury-gold-dark/30 text-[11px] text-luxury-muted space-y-0.5">
+            <p><span className="font-semibold text-luxury-text">Registered Office:</span> OFFICE NO. - 2, CHAMBER - 4, UDAIGIRI TOWER, KAUSHAMBI, GHAZIABAD, UTTAR PRADESH — 201010, India</p>
+            <p><span className="font-semibold text-luxury-text">Website:</span> www.khroniq.com</p>
+            <p><span className="font-semibold text-luxury-text">Email:</span> support@khroniq.com</p>
+          </div>
+        </div>
+      )
+    }
+  ];
 
   const repairServiceData = [
     {
@@ -1518,29 +1781,42 @@ export default function Static({ params, _onPageChange }) {
           </div>
         )}
 
-        {/* SHIPPING POLICY TAB */}
-        {activeTab === 'shipping' && (
-          <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
-            <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Shipping Policy</h3>
-            <div className="space-y-4">
-              <p>
-                We offer complementary insured priority shipping on all KHRONIQ acquisitions worldwide. Every shipment is carefully packaged in a secure, unbranded outer box to guarantee discretion and security.
-              </p>
-              <p>
-                <strong>Delivery Timelines:</strong>
-                <br />
-                - Ready Stock: Dispatched within 24-48 hours, arriving within 3-5 business days.
-                <br />
-                - Bespoke / Customized Pieces: Handcrafted to order; delivery takes approximately 4-6 weeks.
-              </p>
-              <p>
-                <strong>Secure Signature Required:</strong>
-                <br />
-                Due to the high value of our horological products, all shipments require a physical signature by an adult upon delivery. Packages will not be left at doorsteps or with neighbors under any circumstances.
-              </p>
-            </div>
-          </div>
-        )}
+       {/* SHIPPING POLICY TAB */}
+{activeTab === 'shipping' && (
+  <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
+    <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Shipping Policy</h3>
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
+      <div className="md:col-span-4 space-y-2 max-h-[500px] overflow-y-auto pr-2 border-r border-luxury-text/10 sticky top-24 hidden md:block">
+        <p className="text-[10px] font-bold text-luxury-text uppercase tracking-widest mb-3">Table of Contents</p>
+        {shippingData.map((item, idx) => (
+          <button
+            key={idx}
+            onClick={() => {
+              const element = document.getElementById(`shipping-section-${idx}`);
+              if (element) element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }}
+            className="block text-left w-full text-[10px] py-1.5 px-2 hover:bg-luxury-gold-dark/5 hover:text-luxury-gold-dark transition rounded font-medium truncate cursor-pointer"
+          >
+            {item.title}
+          </button>
+        ))}
+      </div>
+      <div className="md:col-span-8 space-y-6 max-h-[600px] overflow-y-auto pr-2">
+        <p className="text-[11px] text-luxury-muted italic mb-4">Effective Date: 1st July 2026</p>
+        <p className="text-[11px] text-luxury-muted mb-4">
+          This Shipping Policy explains how KHRONIQ processes, dispatches, ships, and delivers orders placed through our Website.
+        </p>
+        {shippingData.map((item, idx) => (
+          <section key={idx} id={`shipping-section-${idx}`} className="space-y-2 scroll-mt-24 pb-4 border-b border-luxury-text/5 last:border-b-0">
+            <h4 className="font-bold text-luxury-text uppercase text-[10px] tracking-wider">{item.title}</h4>
+            <div className="text-[11px] font-light text-luxury-muted leading-relaxed">{item.content}</div>
+          </section>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+
 
         {/* EXCHANGE POLICY TAB */}
         {activeTab === 'exchange' && (
@@ -1566,33 +1842,42 @@ export default function Static({ params, _onPageChange }) {
           </div>
         )}
 
-        {/* REFUND POLICY TAB */}
-        {activeTab === 'refund' && (
-          <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
-            <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Refund Policy</h3>
-            <div className="space-y-4">
-              <p>
-                Our refund window is open for 14 days starting from the date of physical package receipt.
-              </p>
-              <p>
-                <strong>Refund Process:</strong>
-                <br />
-                1. Request a return through your customer profile or contact our Concierge Desk.
-                <br />
-                2. Our secure courier will coordinate a complimentary pick-up from your shipping address.
-                <br />
-                3. Once received at our manufacture, the timepiece undergoes a rigorous inspection.
-                <br />
-                4. Following approval, refunds are credited back to your original payment method within 7-10 business days.
-              </p>
-              <p>
-                <strong>Non-Refundable Items:</strong>
-                <br />
-                Any timepiece showing signs of wear, sizing modifications (e.g. link removal), or missing original box/papers cannot be refunded. Bespoke engraved or custom-configured watches are non-refundable.
-              </p>
-            </div>
-          </div>
-        )}
+      {/* REFUND POLICY TAB */}
+{activeTab === 'refund' && (
+  <div className="space-y-6 text-xs text-luxury-muted leading-relaxed font-light">
+    <h3 className="text-lg font-bold text-luxury-text font-serif uppercase tracking-wide">Return & Refund Policy</h3>
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
+      <div className="md:col-span-4 space-y-2 max-h-[500px] overflow-y-auto pr-2 border-r border-luxury-text/10 sticky top-24 hidden md:block">
+        <p className="text-[10px] font-bold text-luxury-text uppercase tracking-widest mb-3">Table of Contents</p>
+        {refundData.map((item, idx) => (
+          <button
+            key={idx}
+            onClick={() => {
+              const element = document.getElementById(`refund-section-${idx}`);
+              if (element) element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }}
+            className="block text-left w-full text-[10px] py-1.5 px-2 hover:bg-luxury-gold-dark/5 hover:text-luxury-gold-dark transition rounded font-medium truncate cursor-pointer"
+          >
+            {item.title}
+          </button>
+        ))}
+      </div>
+      <div className="md:col-span-8 space-y-6 max-h-[600px] overflow-y-auto pr-2">
+        <p className="text-[11px] text-luxury-muted italic mb-4">Effective Date: 1st July 2026</p>
+        <p className="text-[11px] text-luxury-muted mb-4">
+          This Return & Refund Policy explains the terms under which products purchased through our Website may be returned or refunded.
+        </p>
+        {refundData.map((item, idx) => (
+          <section key={idx} id={`refund-section-${idx}`} className="space-y-2 scroll-mt-24 pb-4 border-b border-luxury-text/5 last:border-b-0">
+            <h4 className="font-bold text-luxury-text uppercase text-[10px] tracking-wider">{item.title}</h4>
+            <div className="text-[11px] font-light text-luxury-muted leading-relaxed">{item.content}</div>
+          </section>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+
 
         {/* WARRANTY POLICY TAB */}
         {activeTab === 'warranty' && (
