@@ -14,27 +14,27 @@ export default function MainLayout({ children, onPageChange, currentPage }) {
   return (
     <div className="min-h-screen bg-luxury-bg flex flex-col font-sans select-none">
       {/* Navigation */}
-      <Navbar 
-        onCartOpen={() => setCartDrawerOpen(true)} 
+      <Navbar
+        onCartOpen={() => setCartDrawerOpen(true)}
         onPageChange={onPageChange}
         currentPage={currentPage}
       />
 
       {/* Cart Drawer */}
-      <CartDrawer 
-        isOpen={cartDrawerOpen} 
-        onClose={() => setCartDrawerOpen(false)} 
+      <CartDrawer
+        isOpen={cartDrawerOpen}
+        onClose={() => setCartDrawerOpen(false)}
         onPageChange={onPageChange}
       />
 
       {/* Warranty Drawer */}
-      <WarrantyDrawer 
+      <WarrantyDrawer
         isOpen={warrantyOpen}
         onClose={() => setWarrantyOpen(false)}
       />
 
       {/* Updates Drawer */}
-      <UpdatesDrawer 
+      <UpdatesDrawer
         isOpen={updatesOpen}
         onClose={() => setUpdatesOpen(false)}
       />
@@ -42,11 +42,12 @@ export default function MainLayout({ children, onPageChange, currentPage }) {
       {/* Floating Warranty Tab */}
       <button
         onClick={() => setWarrantyOpen(true)}
-        className="fixed right-0 bottom-24 text-white font-bold text-[9px] sm:text-[10px] tracking-[0.22em] uppercase py-4 px-2 rounded-l border border-r-0 border-[#047857]/40 shadow-[0_4px_25px_rgba(0,0,0,0.55)] hover:opacity-90 transition-all duration-300 z-40 cursor-pointer"
+        className="fixed right-0 bottom-24 text-white font-extrabold text-[10px] sm:text-[11px] tracking-[0.22em] uppercase py-4 px-2 rounded-l border border-r-0 border-[#047857]/40 shadow-[0_4px_25px_rgba(0,0,0,0.55)] hover:opacity-90 transition-all duration-300 z-40 cursor-pointer"
         style={{
           writingMode: 'vertical-rl',
           textOrientation: 'mixed',
           background: 'linear-gradient(135deg, #047857 0%, #065f46 45%, #022c22 100%)',
+          color: '#ffffff',
         }}
       >
         Warranty
@@ -55,7 +56,7 @@ export default function MainLayout({ children, onPageChange, currentPage }) {
       <main className={['home', 'gifting', 'shop'].includes(currentPage) ? 'flex-1 w-full' : 'flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'}>
         {React.Children.map(children, child => {
           if (React.isValidElement(child)) {
-            return React.cloneElement(child, { 
+            return React.cloneElement(child, {
               onUpdatesOpen: () => setUpdatesOpen(true),
               onUpdatesClose: () => setUpdatesOpen(false),
               updatesOpen
