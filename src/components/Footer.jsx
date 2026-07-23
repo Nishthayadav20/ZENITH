@@ -39,11 +39,15 @@ const NAV_COLS = [
       { label: 'Exchange Policy',     page: 'static',  args: { view: 'exchange' } },
       { label: 'Refund Policy',       page: 'static',  args: { view: 'refund' } },
       { label: 'Warranty Policy',     page: 'static',  args: { view: 'warranty' } },
-      { label: 'COD Policy',          page: 'static',  args: { view: 'cod' } },
-      { label: 'Cookie Policy',       page: 'static',  args: { view: 'cookie' } },
+    ],
+  },
+  {
+    title: 'More Policies',
+    links: [
       { label: 'FAQ',                 page: 'static',  args: { view: 'faq' } },
       { label: 'Privacy Policy',   page: 'static', args: { view: 'privacy' } },
       { label: 'COD Policy',       page: 'static', args: { view: 'cod' } },
+      { label: 'Cookie Policy',    page: 'static', args: { view: 'cookie' } },
       { label: 'Gifting Policy',   page: 'static', args: { view: 'gifting' } },
       { label: 'Repair & Service', page: 'static', args: { view: 'repair' } },
       { label: 'Community Guidelines', page: 'static', args: { view: 'community' } },
@@ -60,7 +64,6 @@ const NAV_COLS = [
     ],
   },
 ];
-
 const BADGES = [
   { icon: ShieldCheck, label: 'Indian Guarantee',   sub: '3-Year Premium Warranty' },
   { icon: Award,       label: 'Master Craftsmanship', sub: 'Hand-finished movements' },
@@ -495,36 +498,26 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
           borderRadius: '4px',
           padding: '1.5rem',
         }}>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
-            <h5 style={{
-              fontSize: '0.65rem',
-              fontWeight: 700,
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              color: '#047857',
-            }}>Disclaimer & Legal Notice</h5>
-            <button
-              onClick={() => onPageChange('static', { view: 'disclaimer' })}
-              className="text-[10px] font-bold text-[#047857] hover:underline uppercase tracking-wider self-start sm:self-auto cursor-pointer"
-            >
-              Read Full Disclaimer &rarr;
-            </button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[0.62rem] leading-relaxed text-gray-400 font-sans">
+          <h5 style={{
+            fontSize: '0.65rem',
+            fontWeight: 700,
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            color: '#047857',
+            marginBottom: '0.75rem'
+          }}>Disclaimer & Horological Notice</h5>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[0.62rem] leading-relaxed text-gray-400">
             <div>
               <p className="mb-2">
-                <strong className="text-gray-300">General & Product Representation:</strong> Website information is for general informational and commercial purposes. KHRONIQ is owned and marketed by True Knock Industries Private Limited. We strive to display watch specifications, colors, and finishes accurately; however, minor variations in screen display, natural leather grain, or hand-polishing may occur and do not constitute manufacturing defects.
+                <strong className="text-gray-300">Product Representation:</strong> All timepieces featured are subject to availability. While we strive to show accurate details, technical specifications, and current pricing, errors or minor variations in hand-finished components may occasionally occur.
               </p>
               <p>
-                <strong className="text-gray-300">Accuracy & Water Resistance:</strong> Watch movements may exhibit minor timekeeping variations within industry-accepted tolerances. Water resistance ratings indicate laboratory-tested performance and are not permanent, decreasing over time with wear. KHRONIQ is not responsible for damage resulting from use beyond specified ratings.
+                <strong className="text-gray-300">Warranty Coverage:</strong> Our 3-Year Premium Swadeshi Warranty is valid only for watches purchased directly from our official portal or authorized concierge boutique service. Watches obtained from unverified sources do not qualify for official servicing.
               </p>
             </div>
             <div>
-              <p className="mb-2">
-                <strong className="text-gray-300">Intellectual Property & Authenticity:</strong> All Website content, including designs, dials, logos, graphics, and software, is the exclusive property of True Knock Industries Private Limited. Only products purchased directly from KHRONIQ or authorized dealers are guaranteed genuine.
-              </p>
               <p>
-                <strong className="text-gray-300">Limitation of Liability & Jurisdiction:</strong> KHRONIQ's total liability shall not exceed the purchase price paid for the product. This Disclaimer is governed by the laws of India, and all disputes are subject to the exclusive jurisdiction of the competent courts at Lucknow, Uttar Pradesh.
+                <strong className="text-gray-300">Intellectual Property:</strong> KHRONIQ and its brand marks, logos, custom dials, and interface assets are proprietary designs. All website content, photography, and layout are protected under trademark and intellectual property rights.
               </p>
             </div>
           </div>
@@ -546,12 +539,11 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
           </div>
 
           {/* Right – legal links */}
-          <div style={{ display:'flex', gap:'1.5rem', flexWrap:'wrap' }}>
+          <div style={{ display:'flex', gap:'1.5rem' }}>
             {[
               { label:'Terms of Use',      page:'static', args:{ view:'policies' } },
-              { label:'Privacy Policy',    page:'static', args:{ view:'privacy' } },
-              { label:'Cookie Policy',     page:'static', args:{ view:'cookie' } },
-              { label:'Disclaimer',        page:'static', args:{ view:'disclaimer' } },
+              { label:'Privacy Policy',    page:'static', args:{ view:'policies' } },
+              { label:'Cookie Preferences',page:'static', args:{ view:'policies' } },
             ].map(({ label, page, args }) => (
               <button
                 key={label}
