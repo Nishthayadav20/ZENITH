@@ -595,7 +595,7 @@ export default function Customization({ onPageChange, params }) {
             {/* Add to Cart */}
             <button
               onClick={handleAddToCart}
-              className={`w-full py-4 rounded-xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all duration-300 cursor-pointer text-white ${
+              className={`w-full py-4 rounded-xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all duration-300 cursor-pointer !text-white ${
                 addedToCart
                   ? 'bg-green-600'
                   : ''

@@ -459,17 +459,19 @@ export default function Checkout({ params, onPageChange }) {
                     key={occ.id}
                     type="button"
                     onClick={() => setGiftOccasion(occ.id)}
-                    className={`relative p-4 rounded border text-center transition-all duration-200 cursor-pointer ${giftOccasion === occ.id
-                      ? 'border-luxury-gold bg-luxury-gold/5'
-                      : 'border-white/10 hover:border-white/20'
-                      }`}
+                    className={`relative p-4 rounded border text-center transition-all duration-200 cursor-pointer ${
+                      giftOccasion === occ.id
+                        ? 'border-black bg-gray-50 shadow-md'
+                        : 'border-gray-200 bg-white hover:border-gray-400'
+                    }`}
                   >
                     {giftOccasion === occ.id && (
-                      <Check size={10} className="absolute top-2 right-2 text-[#b8892a]" strokeWidth={3} />
+                      <Check size={12} className="absolute top-2 right-2 text-black" strokeWidth={3} />
                     )}
-                    <span className="text-lg block mb-1">{occ.emoji}</span>
-                    <p className={`text-[10px] font-bold tracking-wide uppercase ${giftOccasion === occ.id ? 'text-luxury-gold' : 'text-neutral-800'
-                      }`}>{occ.label}</p>
+                    <span className="text-xl block mb-1">{occ.emoji}</span>
+                    <p className={`text-[10px] font-bold tracking-wide uppercase ${
+                      giftOccasion === occ.id ? 'text-black' : 'text-gray-500'
+                    }`}>{occ.label}</p>
                   </button>
                 ))}
               </div>
@@ -490,17 +492,21 @@ export default function Checkout({ params, onPageChange }) {
                     key={pkg.id}
                     type="button"
                     onClick={() => setPackagingType(pkg.id)}
-                    className={`relative p-4 rounded border text-left transition-all duration-200 cursor-pointer ${packagingType === pkg.id
-                      ? 'border-luxury-gold bg-luxury-gold/5'
-                      : 'border-white/10 hover:border-white/20'
-                      }`}
+                    className={`relative p-4 rounded border text-left transition-all duration-200 cursor-pointer ${
+                      packagingType === pkg.id
+                        ? 'border-black bg-gray-50 shadow-md'
+                        : 'border-gray-200 bg-white hover:border-gray-400'
+                    }`}
                   >
                     {packagingType === pkg.id && (
-                      <Check size={10} className="absolute top-2 right-2 text-[#b8892a]" strokeWidth={3} />
+                      <Check size={12} className="absolute top-2 right-2 text-black" strokeWidth={3} />
                     )}
-                    <p className={`text-xs font-bold tracking-wide uppercase ${packagingType === pkg.id ? 'text-luxury-gold' : 'text-white'
-                      }`}>{pkg.label}</p>
-                    <p className="text-[10px] text-gray-500 mt-1 leading-normal">{pkg.desc}</p>
+                    <p className={`text-xs font-bold tracking-wide uppercase ${
+                      packagingType === pkg.id ? 'text-black' : 'text-gray-600'
+                    }`}>{pkg.label}</p>
+                    <p className={`text-[10px] mt-1 leading-normal ${
+                      packagingType === pkg.id ? 'text-gray-700' : 'text-gray-400'
+                    }`}>{pkg.desc}</p>
                   </button>
                 ))}
               </div>
@@ -572,7 +578,7 @@ export default function Checkout({ params, onPageChange }) {
                   required
                   value={shippingForm.streetAddress}
                   onChange={(e) => setShippingForm({ ...shippingForm, streetAddress: e.target.value })}
-                  placeholder="Locality, Building Name/Number, Street Name"
+                  placeholder="120 Luxury Avenue, Suite 4B"
                   className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
                 />
               </div>
@@ -585,7 +591,7 @@ export default function Checkout({ params, onPageChange }) {
                     required
                     value={shippingForm.city}
                     onChange={(e) => setShippingForm({ ...shippingForm, city: e.target.value })}
-                    placeholder="Delhi"
+                    placeholder="New York"
                     className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
                   />
                 </div>
@@ -597,38 +603,40 @@ export default function Checkout({ params, onPageChange }) {
                     required
                     value={shippingForm.zipCode}
                     onChange={(e) => setShippingForm({ ...shippingForm, zipCode: e.target.value })}
-                    placeholder="201208"
+                    placeholder="10001"
                     className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
                   />
                 </div>
               </div>
 
-
+              <div className="space-y-1.5">
+                <label className="text-[10px] text-black font-bold uppercase tracking-widest block">State</label>
+                <input
+                  type="text"
+                  required
+                  value={shippingForm.state}
+                  onChange={(e) => setShippingForm({ ...shippingForm, state: e.target.value })}
+                  placeholder="e.g. Maharashtra, Delhi, Karnataka"
+                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
+                />
+              </div>
 
               <div className="grid grid-cols-2 gap-4">
+                {/* State */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] text-black font-bold uppercase tracking-widest block">
                     State
                   </label>
-
-                  <select
+                  <input
+                    type="text"
+                    required
                     value={shippingForm.state}
                     onChange={(e) =>
                       setShippingForm({ ...shippingForm, state: e.target.value })
                     }
+                    placeholder="Uttar Pradesh"
                     className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
-                  >
-                    <option value="Uttar Pradesh">Uttar Pradesh</option>
-                    <option value="Delhi">Delhi</option>
-                    <option value="Maharashtra">Maharashtra</option>
-                    <option value="Karnataka">Karnataka</option>
-                    <option value="Tamil Nadu">Tamil Nadu</option>
-                    <option value="Gujarat">Gujarat</option>
-                    <option value="Rajasthan">Rajasthan</option>
-                    <option value="Punjab">Punjab</option>
-                    <option value="Haryana">Haryana</option>
-                    <option value="West Bengal">West Bengal</option>
-                  </select>
+                  />
                 </div>
 
                 {/* Country */}

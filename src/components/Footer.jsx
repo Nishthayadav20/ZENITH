@@ -189,7 +189,7 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
                     </div>
                     <div>
                       <p style={{ fontSize:'0.65rem', fontWeight:700, letterSpacing:'0.12em', color:'#ffffff', textTransform:'uppercase' }}>{label}</p>
-                      <p style={{ fontSize:'0.6rem', color:'rgba(4,120,87,0.55)', marginTop:'1px' }}>{sub}</p>
+                      <p style={{ fontSize:'0.6rem', color:'rgba(255,255,255,0.7)', marginTop:'1px' }}>{sub}</p>
                     </div>
                   </div>
                 ))}
@@ -445,7 +445,7 @@ export default function Footer({ onPageChange, onWarrantyOpen }) {
             </p>
 
             {/* Clock-hours decoration */}
-            <p style={{ fontSize:'0.6rem', color:'#047857', letterSpacing:'0.1em', marginBottom:'1rem' }}>
+            <p style={{ fontSize:'0.6rem', color:'#ffffff', opacity: 0.8, letterSpacing:'0.1em', marginBottom:'1rem' }}>
               <Clock size={10} style={{ display:'inline', marginRight:'5px', verticalAlign:'middle' }} />
               MON–SAT · 9AM–7PM CET
             </p>
