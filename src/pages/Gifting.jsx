@@ -21,9 +21,9 @@ function Reveal({ children, delay = 0, dir = 'up', className = '' }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-50px' });
   const variants = {
-    up:    { hidden: { opacity: 0, y: 48 },  visible: { opacity: 1, y: 0 } },
-    down:  { hidden: { opacity: 0, y: -48 }, visible: { opacity: 1, y: 0 } },
-    left:  { hidden: { opacity: 0, x: 48 },  visible: { opacity: 1, x: 0 } },
+    up: { hidden: { opacity: 0, y: 48 }, visible: { opacity: 1, y: 0 } },
+    down: { hidden: { opacity: 0, y: -48 }, visible: { opacity: 1, y: 0 } },
+    left: { hidden: { opacity: 0, x: 48 }, visible: { opacity: 1, x: 0 } },
     right: { hidden: { opacity: 0, x: -48 }, visible: { opacity: 1, x: 0 } },
     scale: { hidden: { opacity: 0, scale: 0.82 }, visible: { opacity: 1, scale: 1 } },
   };
@@ -239,13 +239,13 @@ export default function Gifting({ onPageChange }) {
   };
 
   const particleData = [
-    { width: 5, height: 5, top: '12%', left: '8%',  background: '#c5a880', dur: 5,   del: 0   },
-    { width: 4, height: 4, top: '65%', left: '5%',  background: '#f472b6', dur: 7,   del: 1.2 },
-    { width: 6, height: 6, top: '78%', left: '88%', background: '#34d399', dur: 6,   del: 0.5 },
-    { width: 3, height: 3, top: '22%', left: '90%', background: '#c5a880', dur: 8,   del: 2   },
+    { width: 5, height: 5, top: '12%', left: '8%', background: '#c5a880', dur: 5, del: 0 },
+    { width: 4, height: 4, top: '65%', left: '5%', background: '#f472b6', dur: 7, del: 1.2 },
+    { width: 6, height: 6, top: '78%', left: '88%', background: '#34d399', dur: 6, del: 0.5 },
+    { width: 3, height: 3, top: '22%', left: '90%', background: '#c5a880', dur: 8, del: 2 },
     { width: 5, height: 5, top: '45%', left: '75%', background: '#60a5fa', dur: 5.5, del: 1.5 },
-    { width: 4, height: 4, top: '35%', left: '20%', background: '#fbbf24', dur: 9,   del: 3   },
-    { width: 3, height: 3, top: '88%', left: '42%', background: '#fff',    dur: 7,   del: 2.5 },
+    { width: 4, height: 4, top: '35%', left: '20%', background: '#fbbf24', dur: 9, del: 3 },
+    { width: 3, height: 3, top: '88%', left: '42%', background: '#fff', dur: 7, del: 2.5 },
   ];
 
   return (
@@ -412,9 +412,8 @@ export default function Gifting({ onPageChange }) {
               return (
                 <Reveal key={rec.id} delay={i * 0.08} dir="up">
                   <TiltCard
-                    className={`relative h-[360px] rounded-2xl overflow-hidden cursor-pointer group border-2 transition-all duration-300 ${
-                      isSelected ? 'border-opacity-100 shadow-2xl' : 'border-transparent'
-                    }`}
+                    className={`relative h-[360px] rounded-2xl overflow-hidden cursor-pointer group border-2 transition-all duration-300 ${isSelected ? 'border-opacity-100 shadow-2xl' : 'border-transparent'
+                      }`}
                     style={{ borderColor: isSelected ? rec.accent : 'transparent' }}
                     onClick={() => setSelectedRecipient(isSelected ? null : rec.id)}
                   >
@@ -534,7 +533,7 @@ export default function Gifting({ onPageChange }) {
               { icon: Clock, title: 'Lifetime Legacy', desc: 'A Khroniq is built to last generations, making it a gift that lives beyond the moment.', accent: '#c5a880' },
               { icon: Package, title: 'Luxury Packaging', desc: 'Every box is a keepsake — crafted with the same attention to detail as the watch inside.', accent: '#34d399' },
               { icon: Star, title: 'Made in India', desc: '100% Swadeshi design and assembly — gift pride, gift heritage, gift Khroniq.', accent: '#60a5fa' },
-              { icon: Ribbon, title: 'Free Engraving', desc: 'Add a personal name, date, or message. Available on select models.', accent: '#f472b6' },
+
             ].map((feat, i) => {
               const Icon = feat.icon;
               return (
