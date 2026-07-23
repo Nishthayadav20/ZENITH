@@ -460,8 +460,8 @@ export default function Checkout({ params, onPageChange }) {
                     type="button"
                     onClick={() => setGiftOccasion(occ.id)}
                     className={`relative p-4 rounded border text-center transition-all duration-200 cursor-pointer ${giftOccasion === occ.id
-                        ? 'border-luxury-gold bg-luxury-gold/5'
-                        : 'border-white/10 hover:border-white/20'
+                      ? 'border-luxury-gold bg-luxury-gold/5'
+                      : 'border-white/10 hover:border-white/20'
                       }`}
                   >
                     {giftOccasion === occ.id && (
@@ -491,8 +491,8 @@ export default function Checkout({ params, onPageChange }) {
                     type="button"
                     onClick={() => setPackagingType(pkg.id)}
                     className={`relative p-4 rounded border text-left transition-all duration-200 cursor-pointer ${packagingType === pkg.id
-                        ? 'border-luxury-gold bg-luxury-gold/5'
-                        : 'border-white/10 hover:border-white/20'
+                      ? 'border-luxury-gold bg-luxury-gold/5'
+                      : 'border-white/10 hover:border-white/20'
                       }`}
                   >
                     {packagingType === pkg.id && (
@@ -572,7 +572,7 @@ export default function Checkout({ params, onPageChange }) {
                   required
                   value={shippingForm.streetAddress}
                   onChange={(e) => setShippingForm({ ...shippingForm, streetAddress: e.target.value })}
-                  placeholder="120 Luxury Avenue, Suite 4B"
+                  placeholder="Locality, Building Name/Number, Street Name"
                   className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-3 focus:outline-none focus:border-luxury-gold"
                 />
               </div>
