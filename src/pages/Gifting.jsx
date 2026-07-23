@@ -527,8 +527,7 @@ export default function Gifting({ onPageChange }) {
               </h2>
             </SlideReveal>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {[
               { icon: Clock, title: 'Lifetime Legacy', desc: 'A Khroniq is built to last generations, making it a gift that lives beyond the moment.', accent: '#c5a880' },
               { icon: Package, title: 'Luxury Packaging', desc: 'Every box is a keepsake — crafted with the same attention to detail as the watch inside.', accent: '#34d399' },
