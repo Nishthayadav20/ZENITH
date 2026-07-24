@@ -255,9 +255,8 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
       )}
 
       {/* Sliding Drawer Panel */}
-      <div className={`fixed right-0 top-0 h-full w-80 sm:w-96 bg-neutral-950 border-l border-white/10 z-50 shadow-2xl p-6 transition-transform duration-300 ease-in-out transform flex flex-col ${
-        isOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}>
+      <div className={`fixed right-0 top-0 h-full w-80 sm:w-96 bg-neutral-950 border-l border-white/10 z-50 shadow-2xl p-6 transition-transform duration-300 ease-in-out transform flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}>
         {/* Drawer Header */}
         <div className="flex justify-between items-center border-b border-white/5 pb-4">
           <div className="flex items-center space-x-2">
@@ -300,7 +299,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Owner Name */}
               <div className="space-y-1.5">
-                <label className="text-[8px] !text-black warranty-portal-label !font-bold uppercase tracking-widest block">Full Name</label>
+                <label className="text-[8px] warranty-portal-label !font-bold uppercase tracking-widest block">Full Name</label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
                     <User size={12} />
@@ -318,7 +317,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Owner Email — locked to logged-in account */}
               <div className="space-y-1.5">
-                <label className="text-[8px] !text-black warranty-portal-label !font-bold uppercase tracking-widest block">Email Address</label>
+                <label className="text-[8px] warranty-portal-label !font-bold uppercase tracking-widest block">Email Address</label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
                     <Mail size={12} />
@@ -339,7 +338,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
               <div className="grid grid-cols-2 gap-4">
                 {/* Country Search Select */}
                 <div className="space-y-1.5 relative">
-                  <label className="text-[8px] !text-black warranty-portal-label !font-bold uppercase tracking-widest block">Country</label>
+                  <label className="text-[8px] warranty-portal-label !font-bold uppercase tracking-widest block">Country</label>
                   <input
                     type="text"
                     required
@@ -386,7 +385,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
                 {/* State Select / Text input */}
                 <div className="space-y-1.5">
-                  <label className="text-[8px] !text-black warranty-portal-label !font-bold uppercase tracking-widest block">State</label>
+                  <label className="text-[8px] warranty-portal-label !font-bold uppercase tracking-widest block">State</label>
                   {country === 'India' ? (
                     <select
                       required
@@ -427,7 +426,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Phone Number */}
               <div className="space-y-1.5">
-                <label className="text-[8px] !text-black warranty-portal-label !font-bold uppercase tracking-widest block">Phone Number</label>
+                <label className="text-[8px] warranty-portal-label !font-bold uppercase tracking-widest block">Phone Number</label>
                 <div className="flex space-x-2">
                   <div className="bg-neutral-900 border border-white/15 text-gray-100 font-mono text-xs px-3 py-2.5 rounded flex items-center justify-center min-w-[55px]">
                     {ALL_COUNTRIES.find(c => c.name === country)?.code || '+91'}
@@ -469,7 +468,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Watch Name Dropdown Input */}
               <div className="space-y-1.5 relative">
-                <label className="text-[8px] !text-black warranty-portal-label !font-bold uppercase tracking-widest block">Name of Watch</label>
+                <label className="text-[8px] warranty-portal-label !font-bold uppercase tracking-widest block">Name of Watch</label>
                 <div className="relative">
                   <input
                     type="text"
@@ -538,7 +537,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Serial Code — read-only, pulled from real order data */}
               <div className="space-y-1.5">
-                <label className="text-[8px] !text-black warranty-portal-label !font-bold uppercase tracking-widest block">Serial Number</label>
+                <label className="text-[8px] warranty-portal-label !font-bold uppercase tracking-widest block">Serial Number</label>
                 <input
                   type="text"
                   required
@@ -551,7 +550,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* Special Code to Claim Warranty — the only thing the customer must supply */}
               <div className="space-y-1.5">
-                <label className="text-[8px] !text-black warranty-portal-label !font-bold uppercase tracking-widest block">Claim Code (from your order invoice)</label>
+                <label className="text-[8px] warranty-portal-label !font-bold uppercase tracking-widest block">Claim Code (from your order invoice)</label>
                 <input
                   type="text"
                   required
