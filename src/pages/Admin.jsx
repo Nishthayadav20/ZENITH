@@ -122,7 +122,13 @@ export default function Admin({ onPageChange }) {
       case: 'Stainless Steel (40mm)',
       strap: 'Leather strap',
       waterResistance: '50m',
-      glass: 'Sapphire Crystal'
+      glass: 'Sapphire Crystal',
+      dialColor: 'Black',
+      caseMaterial: 'Stainless Steel',
+      watchFunction: 'Hours, Minutes, Seconds',
+      warrantyDetails: 'Manufacturer Warranty',
+      collection: 'Khronomaster',
+      warrantyPeriod: '2 Years'
     },
     customizable: true,
     allowStrapCustomization: true,
@@ -945,7 +951,7 @@ const handleEditImageUpload = async (e) => {
       setNewProduct({
         name: '', price: '', stock: '', discountPercent: 0, badge: '', badgeMode: 'none',unitCodes: [],  warrantyMonths: 12, category: 'Khronomaster', description: '',
         image: '',
-        specs: { movement: 'Automatic', case: '40mm', strap: 'Leather', waterResistance: '50m', glass: 'Sapphire' },
+        specs: { movement: 'Automatic', case: '40mm', strap: 'Leather', waterResistance: '50m', glass: 'Sapphire', dialColor: 'Black', caseMaterial: 'Stainless Steel', watchFunction: 'Hours, Minutes, Seconds', warrantyDetails: 'Manufacturer Warranty', collection: 'Khronomaster', warrantyPeriod: '2 Years' },
         customizable: true,
         allowStrapCustomization: true,
         allowCaseCustomization: true,
@@ -976,6 +982,19 @@ const handleEditImageUpload = async (e) => {
       customizable: product.customizable ?? false,
       allowStrapCustomization: product.allowStrapCustomization ?? true,
       allowCaseCustomization: product.allowCaseCustomization ?? true,
+      specs: {
+        movement: product.specs?.movement || 'Automatic Chronometer',
+        case: product.specs?.case || 'Stainless Steel (40mm)',
+        strap: product.specs?.strap || 'Leather',
+        waterResistance: product.specs?.waterResistance || '50m',
+        glass: product.specs?.glass || 'Sapphire Crystal',
+        dialColor: product.specs?.dialColor || 'Black',
+        caseMaterial: product.specs?.caseMaterial || 'Stainless Steel',
+        watchFunction: product.specs?.watchFunction || 'Hours, Minutes, Seconds',
+        warrantyDetails: product.specs?.warrantyDetails || 'Manufacturer Warranty',
+        collection: product.specs?.collection || 'Khronomaster',
+        warrantyPeriod: product.specs?.warrantyPeriod || '2 Years'
+      },
       customizationOptions: {
         dialColors: product.customizationOptions?.dialColors || [],
         strapMaterials: product.customizationOptions?.strapMaterials || [],
@@ -1565,6 +1584,37 @@ const handleEditImageUpload = async (e) => {
                   />
                 </div>
 
+                {/* Technical Specifications */}
+                <div className="md:col-span-2 space-y-3">
+                  <label className="text-[9px] text-black font-bold uppercase tracking-widest block border-t border-white/5 pt-3">Technical Specifications</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      { key: 'movement',       label: 'Movement',        ph: 'Automatic Chronometer' },
+                      { key: 'case',           label: 'Case Dimensions', ph: 'Stainless Steel (40mm)' },
+                      { key: 'dialColor',      label: 'Dial Color',      ph: 'Black' },
+                      { key: 'caseMaterial',   label: 'Case Material',   ph: 'Stainless Steel' },
+                      { key: 'strap',          label: 'Strap Material',  ph: 'Leather' },
+                      { key: 'waterResistance',label: 'Water Resistance', ph: '50m' },
+                      { key: 'glass',          label: 'Dial Glass',      ph: 'Sapphire Crystal' },
+                      { key: 'watchFunction',  label: 'Function',        ph: 'Hours, Minutes, Seconds' },
+                      { key: 'collection',     label: 'Collection',      ph: 'Khronomaster' },
+                      { key: 'warrantyDetails',label: 'Warranty Details', ph: 'Manufacturer Warranty' },
+                      { key: 'warrantyPeriod', label: 'Warranty Period',  ph: '2 Years' },
+                    ].map(({ key, label, ph }) => (
+                      <div key={key} className="space-y-1">
+                        <label className="text-[8px] text-black font-bold uppercase tracking-widest block">{label}</label>
+                        <input
+                          type="text"
+                          placeholder={ph}
+                          value={newProduct.specs?.[key] || ''}
+                          onChange={(e) => setNewProduct({ ...newProduct, specs: { ...newProduct.specs, [key]: e.target.value } })}
+                          className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2 focus:outline-none focus:border-luxury-gold"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Customizable Toggle for New Product */}
                 <div className="md:col-span-2 flex flex-col bg-luxury-dark border border-white/10 rounded p-3 space-y-3">
                   <div className="flex items-center justify-between">
@@ -2120,6 +2170,37 @@ const handleEditImageUpload = async (e) => {
                       onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                       className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5"
                     />
+                  </div>
+
+                  {/* Technical Specifications */}
+                  <div className="space-y-3">
+                    <label className="text-[9px] text-black font-bold uppercase tracking-widest block border-t border-white/5 pt-3">Technical Specifications</label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        { key: 'movement',        label: 'Movement',         ph: 'Automatic Chronometer' },
+                        { key: 'case',            label: 'Case Dimensions',  ph: 'Stainless Steel (40mm)' },
+                        { key: 'dialColor',       label: 'Dial Color',       ph: 'Black' },
+                        { key: 'caseMaterial',    label: 'Case Material',    ph: 'Stainless Steel' },
+                        { key: 'strap',           label: 'Strap Material',   ph: 'Leather' },
+                        { key: 'waterResistance', label: 'Water Resistance', ph: '50m' },
+                        { key: 'glass',           label: 'Dial Glass',       ph: 'Sapphire Crystal' },
+                        { key: 'watchFunction',   label: 'Function',         ph: 'Hours, Minutes, Seconds' },
+                        { key: 'collection',      label: 'Collection',       ph: 'Khronomaster' },
+                        { key: 'warrantyDetails', label: 'Warranty Details', ph: 'Manufacturer Warranty' },
+                        { key: 'warrantyPeriod',  label: 'Warranty Period',  ph: '2 Years' },
+                      ].map(({ key, label, ph }) => (
+                        <div key={key} className="space-y-1">
+                          <label className="text-[8px] text-black font-bold uppercase tracking-widest block">{label}</label>
+                          <input
+                            type="text"
+                            placeholder={ph}
+                            value={editForm.specs?.[key] || ''}
+                            onChange={(e) => setEditForm({ ...editForm, specs: { ...editForm.specs, [key]: e.target.value } })}
+                            className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2 focus:outline-none focus:border-luxury-gold"
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
                   {/* Customizable Toggle */}

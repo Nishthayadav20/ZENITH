@@ -346,9 +346,10 @@ export default function Shop({ onPageChange, filterParams }) {
                         }}
                         className={`w-9 h-9 rounded-md text-xs font-bold transition cursor-pointer ${
                           currentPage === pageNum
-                            ? 'bg-luxury-gold-dark text-white'
+                            ? 'bg-luxury-gold-dark'
                             : 'border border-luxury-text/10 text-luxury-text hover:border-luxury-gold-dark'
                         }`}
+                        style={currentPage === pageNum ? { color: '#ffffff' } : {}}
                       >
                         {pageNum}
                       </button>

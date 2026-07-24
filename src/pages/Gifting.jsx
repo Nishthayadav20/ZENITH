@@ -387,7 +387,7 @@ export default function Gifting({ onPageChange }) {
                   localStorage.setItem('khroniq_is_gifting_journey', 'true');
                   onPageChange('shop');
                 }}
-                className="flex items-center justify-center gap-3 px-8 py-4 bg-luxury-gold-dark text-white text-xs font-black tracking-widest uppercase cursor-pointer border border-luxury-gold-dark hover:bg-luxury-gold transition-colors duration-200"
+                className="flex items-center justify-center gap-3 px-8 py-4 bg-luxury-gold-dark text-white text-xs font-black tracking-widest uppercase cursor-pointer border border-luxury-gold-dark hover:bg-[#2a2a2a] hover:border-[#2a2a2a] transition-colors duration-200"
               >
                 <Gift size={15} />
                 Start Your Gift Journey
