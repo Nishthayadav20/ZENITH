@@ -12,6 +12,18 @@ const generateUnitCode = (productId, index) => {
   return { serialNumber, claimCode };
 };
 
+// Derives a human-readable warranty period string directly from warrantyMonths,
+// so specs.warrantyPeriod can never drift out of sync with the actual warrantyMonths value.
+const formatWarrantyPeriod = (months) => {
+  const m = Number(months) || 0;
+  if (m <= 0) return 'No Warranty';
+  if (m % 12 === 0) {
+    const years = m / 12;
+    return `${years} Year${years > 1 ? 's' : ''}`;
+  }
+  return `${m} Month${m > 1 ? 's' : ''}`;
+};
+
 const findDuplicateUnitCode = async (serialNumber, claimCode, excludeProductId) => {
   return Product.findOne({
     _id: { $ne: excludeProductId },
@@ -44,12 +56,13 @@ const { name, price, stock, category, gender, description, image, specs, customi
   try {
     const stockCount = Math.max(0, Number(stock) || 0);
     const incomingUnitCodes = Array.isArray(unitCodes) ? unitCodes : [];
+    const resolvedWarrantyMonths = warrantyMonths !== undefined ? Number(warrantyMonths) : 6;
 
     const product = new Product({
       name,
       price: Number(price),
       stock: stockCount,
-      warrantyMonths: warrantyMonths !== undefined ? Number(warrantyMonths) : 6,
+      warrantyMonths: resolvedWarrantyMonths,
       category,
       gender,
       description,
@@ -63,7 +76,11 @@ const { name, price, stock, category, gender, description, image, specs, customi
         strap: specs?.strap || 'Leather Strap',
         waterResistance: specs?.waterResistance || '50m',
         glass: specs?.glass || 'Sapphire Crystal',
-        function: specs?.function || 'Three-Hand'
+        dialColor: specs?.dialColor || 'Black',
+        watchFunction: specs?.watchFunction || 'Hours, Minutes, Seconds',
+        warrantyDetails: specs?.warrantyDetails || 'Manufacturer Warranty',
+        collection: specs?.collection || 'Khronomaster',
+        warrantyPeriod: formatWarrantyPeriod(resolvedWarrantyMonths)
       },
       customizable: customizable || false,
       allowStrapCustomization: allowStrapCustomization !== undefined ? allowStrapCustomization : true,
@@ -170,9 +187,18 @@ const { name, price, stock, category, gender, description, image, specs, customi
         strap: specs.strap !== undefined ? specs.strap : product.specs.strap,
         waterResistance: specs.waterResistance !== undefined ? specs.waterResistance : product.specs.waterResistance,
         glass: specs.glass !== undefined ? specs.glass : product.specs.glass,
-        function: specs.function !== undefined ? specs.function : product.specs.function
+        dialColor: specs.dialColor !== undefined ? specs.dialColor : product.specs.dialColor,
+        watchFunction: specs.watchFunction !== undefined ? specs.watchFunction : product.specs.watchFunction,
+        warrantyDetails: specs.warrantyDetails !== undefined ? specs.warrantyDetails : product.specs.warrantyDetails,
+        collection: specs.collection !== undefined ? specs.collection : product.specs.collection,
+        warrantyPeriod: product.specs.warrantyPeriod
       };
     }
+
+    // Auto-sync warrantyPeriod text with warrantyMonths so they can never drift out of sync,
+    // regardless of what was (or wasn't) sent in the specs object above.
+    if (!product.specs) product.specs = {};
+    product.specs.warrantyPeriod = formatWarrantyPeriod(product.warrantyMonths);
 
     if (customizable !== undefined) product.customizable = customizable;
     if (allowStrapCustomization !== undefined) product.allowStrapCustomization = allowStrapCustomization;

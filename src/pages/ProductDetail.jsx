@@ -208,7 +208,7 @@ export default function ProductDetail({ params, onPageChange }) {
             <div className="flex flex-col items-center text-center p-2 space-y-1 border-t sm:border-t-0 sm:border-l sm:border-r border-luxury-text/10">
               <RefreshCw size={18} className="text-luxury-gold-dark" />
               <span className="text-[9px] font-bold text-gray-800 tracking-widest uppercase">EASY RETURNS</span>
-              <p className="text-[9px] text-gray-500">14-day free return policy</p>
+              <p className="text-[9px] text-gray-500">7-day free return policy</p>
             </div>
             <div className="flex flex-col items-center text-center p-2 space-y-1">
               <Shield size={18} className="text-luxury-gold-dark" />
@@ -383,49 +383,41 @@ export default function ProductDetail({ params, onPageChange }) {
 
         {/* Tab Content: Specs */}
         {activeTab === 'specs' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-xs bg-white border border-luxury-text/10 rounded p-6 sm:p-8 shadow-sm">
-            <div className="flex justify-between py-2 border-b border-luxury-text/10">
-              <span className="text-gray-500 tracking-wider">MOVEMENT TYPE</span>
-              <span className="text-gray-800 font-semibold uppercase">{product.specs.movement}</span>
-            </div>
-            <div className="flex justify-between py-2 border-b border-luxury-text/10">
-              <span className="text-gray-500 tracking-wider">CASE DIMENSIONS</span>
-              <span className="text-gray-800 font-semibold uppercase">{product.specs.case}</span>
-            </div>
-            <div className="flex justify-between py-2 border-b border-luxury-text/10">
-              <span className="text-gray-500 tracking-wider">CASE MATERIAL</span>
-              <span className="text-gray-800 font-semibold uppercase">{product.specs.caseMaterial || 'Stainless Steel'}</span>
-            </div>
-            <div className="flex justify-between py-2 border-b border-luxury-text/10">
-              <span className="text-gray-500 tracking-wider">STRAP MATERIAL</span>
-              <span className="text-gray-800 font-semibold uppercase">{product.specs.strap}</span>
-            </div>
-            <div className="flex justify-between py-2 border-b border-luxury-text/10">
-              <span className="text-gray-500 tracking-wider">WATER RESISTANCE</span>
-              <span className="text-gray-800 font-semibold uppercase">{product.specs.waterResistance}</span>
-            </div>
-            <div className="flex justify-between py-2 border-b border-luxury-text/10">
-              <span className="text-gray-500 tracking-wider">DIAL GLASS TYPE</span>
-              <span className="text-gray-800 font-semibold uppercase">{product.specs.glass}</span>
-            </div>
-            <div className="flex justify-between py-2 border-b border-luxury-text/10">
-              <span className="text-gray-500 tracking-wider">FUNCTION</span>
-              <span className="text-gray-800 font-semibold uppercase">{product.specs.function || 'Three-Hand'}</span>
-            </div>
-            <div className="flex justify-between py-2 border-b border-luxury-text/10">
-              <span className="text-gray-500 tracking-wider">COLLECTION</span>
-              <span className="text-gray-800 font-semibold uppercase">{product.category}</span>
-            </div>
-            <div className="flex justify-between py-2 border-b border-luxury-text/10">
-              <span className="text-gray-500 tracking-wider">GENDER</span>
-              <span className="text-gray-800 font-semibold uppercase">{product.gender}</span>
-            </div>
-            <div className="flex justify-between py-2 md:border-b-0 border-b border-luxury-text/10">
-              <span className="text-gray-500 tracking-wider">ORIGIN</span>
-              <span className="text-gray-800 font-semibold uppercase">Designed & Crafted in India</span>
+          <div className="text-xs bg-white border border-luxury-text/10 rounded p-6 sm:p-8 shadow-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
+              {[
+                { label: 'Movement Type',    value: product.specs?.movement },
+                { label: 'Case Dimensions',  value: product.specs?.case },
+                { label: 'Dial Color',       value: product.specs?.dialColor },
+                { label: 'Case Material',    value: product.specs?.caseMaterial },
+                { label: 'Strap Material',   value: product.specs?.strap },
+                { label: 'Water Resistance', value: product.specs?.waterResistance },
+                { label: 'Dial Glass Type',  value: product.specs?.glass },
+                { label: 'Function',         value: product.specs?.watchFunction },
+                { label: 'Collection',       value: product.specs?.collection },
+                { label: 'Gender',           value: product.gender ? (product.gender === 'men' ? "Men's" : product.gender === 'women' ? "Women's" : 'Unisex') : 'Unisex' },
+                { label: 'Warranty Details', value: product.specs?.warrantyDetails },
+                { label: 'Warranty Period',  value: (() => {
+                    const m = Number(product.warrantyMonths) || 0;
+                    if (m <= 0) return '—';
+                    return m % 12 === 0 ? `${m / 12} Year${m / 12 > 1 ? 's' : ''}` : `${m} Month${m > 1 ? 's' : ''}`;
+                  })() },
+                { label: 'Origin',           value: 'Designed & Crafted in India' },
+              ].map(({ label, value }, i, arr) => (
+                <div
+                  key={label}
+                  className={`flex justify-between py-2.5 border-b border-luxury-text/10 ${
+                    i >= arr.length - 2 ? 'md:border-b-0' : ''
+                  } ${i === arr.length - 1 ? 'border-b-0' : ''}`}
+                >
+                  <span className="text-gray-500 tracking-wider uppercase">{label}</span>
+                  <span className="text-gray-800 font-semibold uppercase text-right ml-4">{value || '—'}</span>
+                </div>
+              ))}
             </div>
           </div>
         )}
+
 
         {/* Tab Content: Details */}
         {activeTab === 'details' && (

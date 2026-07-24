@@ -102,9 +102,10 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Country / State / Phone — sent only on final claim, saved as extra info on the claim record
+  // Country / State / City / Phone — sent only on final claim, saved as extra info on the claim record
   const [country, setCountry] = useState('India');
   const [stateName, setStateName] = useState('Maharashtra');
+  const [city, setCity] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [countrySearch, setCountrySearch] = useState('India');
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
@@ -200,6 +201,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
           specialCode: specialClaimCode,
           country,
           stateName,
+          city,
           phoneNumber
         })
       });
@@ -234,6 +236,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
     setSpecialClaimCode('');
     setCountry('India');
     setStateName('Maharashtra');
+    setCity('');
     setPhoneNumber('');
     setCountrySearch('India');
     setShowCountryDropdown(false);
@@ -407,6 +410,19 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
                     />
                   )}
                 </div>
+              </div>
+
+              {/* City */}
+              <div className="space-y-1.5">
+                <label className="text-[8px] !text-black warranty-portal-label !font-bold uppercase tracking-widest block">City</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Enter your city..."
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="w-full bg-neutral-900 border border-white/15 rounded text-white placeholder-gray-400 p-2.5 focus:outline-none focus:border-luxury-gold transition"
+                />
               </div>
 
               {/* Phone Number */}

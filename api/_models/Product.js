@@ -32,7 +32,11 @@ const productSchema = new mongoose.Schema({
     strap: { type: String },
     waterResistance: { type: String },
     glass: { type: String },
-    function: { type: String, default: 'Three-Hand' }
+    dialColor: { type: String, default: 'Black' },
+    watchFunction: { type: String, default: 'Hours, Minutes, Seconds' },
+    warrantyDetails: { type: String, default: 'Manufacturer Warranty' },
+    collection: { type: String, default: 'Khronomaster' },
+    warrantyPeriod: { type: String, default: '2 Years' }
   },
   discountPercent: { type: Number, default: 0 },
   badge: { type: String, default: '' },
