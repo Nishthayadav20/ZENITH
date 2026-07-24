@@ -28,9 +28,11 @@ const productSchema = new mongoose.Schema({
   specs: {
     movement: { type: String, default: 'Automatic' },
     case: { type: String },
+    caseMaterial: { type: String, default: 'Stainless Steel' },
     strap: { type: String },
     waterResistance: { type: String },
-    glass: { type: String }
+    glass: { type: String },
+    function: { type: String, default: 'Three-Hand' }
   },
   discountPercent: { type: Number, default: 0 },
   badge: { type: String, default: '' },

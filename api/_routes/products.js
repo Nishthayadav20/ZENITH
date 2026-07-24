@@ -59,9 +59,11 @@ const { name, price, stock, category, gender, description, image, specs, customi
       specs: {
         movement: specs?.movement || 'Automatic',
         case: specs?.case || 'Stainless Steel',
+        caseMaterial: specs?.caseMaterial || 'Stainless Steel',
         strap: specs?.strap || 'Leather Strap',
         waterResistance: specs?.waterResistance || '50m',
-        glass: specs?.glass || 'Sapphire Crystal'
+        glass: specs?.glass || 'Sapphire Crystal',
+        function: specs?.function || 'Three-Hand'
       },
       customizable: customizable || false,
       allowStrapCustomization: allowStrapCustomization !== undefined ? allowStrapCustomization : true,
@@ -164,9 +166,11 @@ const { name, price, stock, category, gender, description, image, specs, customi
       product.specs = {
         movement: specs.movement !== undefined ? specs.movement : product.specs.movement,
         case: specs.case !== undefined ? specs.case : product.specs.case,
+        caseMaterial: specs.caseMaterial !== undefined ? specs.caseMaterial : product.specs.caseMaterial,
         strap: specs.strap !== undefined ? specs.strap : product.specs.strap,
         waterResistance: specs.waterResistance !== undefined ? specs.waterResistance : product.specs.waterResistance,
-        glass: specs.glass !== undefined ? specs.glass : product.specs.glass
+        glass: specs.glass !== undefined ? specs.glass : product.specs.glass,
+        function: specs.function !== undefined ? specs.function : product.specs.function
       };
     }
 

@@ -393,6 +393,10 @@ export default function ProductDetail({ params, onPageChange }) {
               <span className="text-gray-800 font-semibold uppercase">{product.specs.case}</span>
             </div>
             <div className="flex justify-between py-2 border-b border-luxury-text/10">
+              <span className="text-gray-500 tracking-wider">CASE MATERIAL</span>
+              <span className="text-gray-800 font-semibold uppercase">{product.specs.caseMaterial || 'Stainless Steel'}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b border-luxury-text/10">
               <span className="text-gray-500 tracking-wider">STRAP MATERIAL</span>
               <span className="text-gray-800 font-semibold uppercase">{product.specs.strap}</span>
             </div>
@@ -400,11 +404,23 @@ export default function ProductDetail({ params, onPageChange }) {
               <span className="text-gray-500 tracking-wider">WATER RESISTANCE</span>
               <span className="text-gray-800 font-semibold uppercase">{product.specs.waterResistance}</span>
             </div>
-            <div className="flex justify-between py-2 md:border-b-0 border-b border-luxury-text/10">
+            <div className="flex justify-between py-2 border-b border-luxury-text/10">
               <span className="text-gray-500 tracking-wider">DIAL GLASS TYPE</span>
               <span className="text-gray-800 font-semibold uppercase">{product.specs.glass}</span>
             </div>
-            <div className="flex justify-between py-2">
+            <div className="flex justify-between py-2 border-b border-luxury-text/10">
+              <span className="text-gray-500 tracking-wider">FUNCTION</span>
+              <span className="text-gray-800 font-semibold uppercase">{product.specs.function || 'Three-Hand'}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b border-luxury-text/10">
+              <span className="text-gray-500 tracking-wider">COLLECTION</span>
+              <span className="text-gray-800 font-semibold uppercase">{product.category}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b border-luxury-text/10">
+              <span className="text-gray-500 tracking-wider">GENDER</span>
+              <span className="text-gray-800 font-semibold uppercase">{product.gender}</span>
+            </div>
+            <div className="flex justify-between py-2 md:border-b-0 border-b border-luxury-text/10">
               <span className="text-gray-500 tracking-wider">ORIGIN</span>
               <span className="text-gray-800 font-semibold uppercase">Designed & Crafted in India</span>
             </div>

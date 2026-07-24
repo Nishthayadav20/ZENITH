@@ -119,10 +119,12 @@ export default function Admin({ onPageChange }) {
     image: '', // default copy
     specs: {
       movement: 'Automatic Chronometer',
-      case: 'Stainless Steel (40mm)',
+      case: '40mm',
+      caseMaterial: 'Stainless Steel',
       strap: 'Leather strap',
       waterResistance: '50m',
-      glass: 'Sapphire Crystal'
+      glass: 'Sapphire Crystal',
+      function: 'Three-Hand'
     },
     customizable: true,
     allowStrapCustomization: true,
@@ -945,7 +947,7 @@ const handleEditImageUpload = async (e) => {
       setNewProduct({
         name: '', price: '', stock: '', discountPercent: 0, badge: '', badgeMode: 'none',unitCodes: [],  warrantyMonths: 12, category: 'Khronomaster', description: '',
         image: '',
-        specs: { movement: 'Automatic', case: '40mm', strap: 'Leather', waterResistance: '50m', glass: 'Sapphire' },
+        specs: { movement: 'Automatic', case: '40mm', caseMaterial: 'Stainless Steel', strap: 'Leather', waterResistance: '50m', glass: 'Sapphire', function: 'Three-Hand' },
         customizable: true,
         allowStrapCustomization: true,
         allowCaseCustomization: true,
@@ -976,6 +978,15 @@ const handleEditImageUpload = async (e) => {
       customizable: product.customizable ?? false,
       allowStrapCustomization: product.allowStrapCustomization ?? true,
       allowCaseCustomization: product.allowCaseCustomization ?? true,
+      specs: {
+        movement: product.specs?.movement || '',
+        case: product.specs?.case || '',
+        caseMaterial: product.specs?.caseMaterial || '',
+        strap: product.specs?.strap || '',
+        waterResistance: product.specs?.waterResistance || '',
+        glass: product.specs?.glass || '',
+        function: product.specs?.function || ''
+      },
       customizationOptions: {
         dialColors: product.customizationOptions?.dialColors || [],
         strapMaterials: product.customizationOptions?.strapMaterials || [],
@@ -1565,6 +1576,84 @@ const handleEditImageUpload = async (e) => {
                   />
                 </div>
 
+                {/* Technical Specifications for New Product */}
+                <div className="md:col-span-2 bg-luxury-dark border border-white/10 rounded p-3 space-y-3">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white">Technical Specifications</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Movement Type</label>
+                      <input
+                        type="text"
+                        value={newProduct.specs.movement}
+                        onChange={(e) => setNewProduct({ ...newProduct, specs: { ...newProduct.specs, movement: e.target.value } })}
+                        placeholder="e.g. Automatic Chronometer"
+                        className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none focus:border-luxury-gold"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Case Dimensions</label>
+                      <input
+                        type="text"
+                        value={newProduct.specs.case}
+                        onChange={(e) => setNewProduct({ ...newProduct, specs: { ...newProduct.specs, case: e.target.value } })}
+                        placeholder="e.g. 40mm"
+                        className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none focus:border-luxury-gold"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Case Material</label>
+                      <input
+                        type="text"
+                        value={newProduct.specs.caseMaterial}
+                        onChange={(e) => setNewProduct({ ...newProduct, specs: { ...newProduct.specs, caseMaterial: e.target.value } })}
+                        placeholder="e.g. Stainless Steel"
+                        className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none focus:border-luxury-gold"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Strap Material</label>
+                      <input
+                        type="text"
+                        value={newProduct.specs.strap}
+                        onChange={(e) => setNewProduct({ ...newProduct, specs: { ...newProduct.specs, strap: e.target.value } })}
+                        placeholder="e.g. Leather Strap"
+                        className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none focus:border-luxury-gold"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Water Resistance</label>
+                      <input
+                        type="text"
+                        value={newProduct.specs.waterResistance}
+                        onChange={(e) => setNewProduct({ ...newProduct, specs: { ...newProduct.specs, waterResistance: e.target.value } })}
+                        placeholder="e.g. 50m"
+                        className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none focus:border-luxury-gold"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Dial Glass Type</label>
+                      <input
+                        type="text"
+                        value={newProduct.specs.glass}
+                        onChange={(e) => setNewProduct({ ...newProduct, specs: { ...newProduct.specs, glass: e.target.value } })}
+                        placeholder="e.g. Sapphire Crystal"
+                        className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none focus:border-luxury-gold"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Function</label>
+                      <input
+                        type="text"
+                        value={newProduct.specs.function}
+                        onChange={(e) => setNewProduct({ ...newProduct, specs: { ...newProduct.specs, function: e.target.value } })}
+                        placeholder="e.g. Chronograph, GMT, Three-Hand"
+                        className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none focus:border-luxury-gold"
+                      />
+                    </div>
+                  </div>
+                  <p className="text-[9px] text-gray-500">Collection is set via "Collection / Category" above, and Gender via "Target Gender" above — both already appear in the Technical Specifications shown to customers.</p>
+                </div>
+
                 {/* Customizable Toggle for New Product */}
                 <div className="md:col-span-2 flex flex-col bg-luxury-dark border border-white/10 rounded p-3 space-y-3">
                   <div className="flex items-center justify-between">
@@ -2120,6 +2209,84 @@ const handleEditImageUpload = async (e) => {
                       onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                       className="w-full bg-luxury-dark border border-white/10 rounded text-white p-2.5"
                     />
+                  </div>
+
+                  {/* Technical Specifications */}
+                  <div className="bg-luxury-dark border border-white/10 rounded p-3 space-y-3">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-white">Technical Specifications</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Movement Type</label>
+                        <input
+                          type="text"
+                          value={editForm.specs?.movement || ''}
+                          onChange={(e) => setEditForm({ ...editForm, specs: { ...editForm.specs, movement: e.target.value } })}
+                          placeholder="e.g. Automatic Chronometer"
+                          className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none focus:border-luxury-gold"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Case Dimensions</label>
+                        <input
+                          type="text"
+                          value={editForm.specs?.case || ''}
+                          onChange={(e) => setEditForm({ ...editForm, specs: { ...editForm.specs, case: e.target.value } })}
+                          placeholder="e.g. 40mm"
+                          className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none focus:border-luxury-gold"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Case Material</label>
+                        <input
+                          type="text"
+                          value={editForm.specs?.caseMaterial || ''}
+                          onChange={(e) => setEditForm({ ...editForm, specs: { ...editForm.specs, caseMaterial: e.target.value } })}
+                          placeholder="e.g. Stainless Steel"
+                          className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none focus:border-luxury-gold"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Strap Material</label>
+                        <input
+                          type="text"
+                          value={editForm.specs?.strap || ''}
+                          onChange={(e) => setEditForm({ ...editForm, specs: { ...editForm.specs, strap: e.target.value } })}
+                          placeholder="e.g. Leather Strap"
+                          className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none focus:border-luxury-gold"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Water Resistance</label>
+                        <input
+                          type="text"
+                          value={editForm.specs?.waterResistance || ''}
+                          onChange={(e) => setEditForm({ ...editForm, specs: { ...editForm.specs, waterResistance: e.target.value } })}
+                          placeholder="e.g. 50m"
+                          className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none focus:border-luxury-gold"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Dial Glass Type</label>
+                        <input
+                          type="text"
+                          value={editForm.specs?.glass || ''}
+                          onChange={(e) => setEditForm({ ...editForm, specs: { ...editForm.specs, glass: e.target.value } })}
+                          placeholder="e.g. Sapphire Crystal"
+                          className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none focus:border-luxury-gold"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block">Function</label>
+                        <input
+                          type="text"
+                          value={editForm.specs?.function || ''}
+                          onChange={(e) => setEditForm({ ...editForm, specs: { ...editForm.specs, function: e.target.value } })}
+                          placeholder="e.g. Chronograph, GMT, Three-Hand"
+                          className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-2.5 focus:outline-none focus:border-luxury-gold"
+                        />
+                      </div>
+                    </div>
+                    <p className="text-[9px] text-gray-500">Collection is set via "Collection" above, and Gender via "Target Gender" above — both already appear in the Technical Specifications shown to customers.</p>
                   </div>
 
                   {/* Customizable Toggle */}
