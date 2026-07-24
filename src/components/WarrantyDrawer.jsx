@@ -413,7 +413,7 @@ export default function WarrantyDrawer({ isOpen, onClose }) {
 
               {/* City */}
               <div className="space-y-1.5">
-                <label className="text-[8px] !text-black warranty-portal-label !font-bold uppercase tracking-widest block">City</label>
+                <label className="text-[8px] warranty-portal-label !font-bold uppercase tracking-widest block">City</label>
                 <input
                   type="text"
                   required
