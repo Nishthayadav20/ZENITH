@@ -1088,7 +1088,7 @@ const prevSpotlight = () => {
                 <img
                   src="/assets/logo_text.png"
                   alt="KHRONIQ"
-                  className="h-20 object-contain"
+                  className="h-12 object-contain"
                   style={{ filter: 'brightness(1.05) saturate(1.1)' }}
                 />
               </motion.span>
