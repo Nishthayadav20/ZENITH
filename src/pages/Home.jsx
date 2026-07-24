@@ -802,7 +802,7 @@ const prevSpotlight = () => {
   const [brandUpdates, setBrandUpdates] = useState([]);
   const [hoveredProduct, setHoveredProduct] = useState(null);
   const updatesRef = useRef(null);
-  const updatesInView = useInView(updatesRef, { once: false, margin: '-40%' });
+  const updatesInView = useInView(updatesRef,{ once: false, margin: '-40%' });
 
   const hoverTimeoutRef = useRef(null);
 
@@ -1088,7 +1088,7 @@ const prevSpotlight = () => {
                 <img
                   src="/assets/logo_text.png"
                   alt="KHRONIQ"
-                  className="h-10 object-contain"
+                  className="h-20 object-contain"
                   style={{ filter: 'brightness(1.05) saturate(1.1)' }}
                 />
               </motion.span>
@@ -1096,10 +1096,10 @@ const prevSpotlight = () => {
 
             {/* Heading — both lines same depth */}
             <motion.div initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.85, delay: 0.16, ease: [0.22, 1, 0.36, 1] }} className="select-none cursor-default">
-              <div className="font-cinzel font-bold text-4xl sm:text-5xl md:text-6xl tracking-wider text-white uppercase leading-tight">
+              <div className="font-cinzel font-bold text-2xl sm:text-3xl md:text-4xl tracking-wider text-white uppercase leading-tight">
                 Born from the
               </div>
-              <div className="font-cinzel font-bold text-4xl sm:text-5xl md:text-6xl tracking-wider uppercase leading-tight mt-1">
+              <div className="font-cinzel font-bold text-2xl sm:text-3xl md:text-4xl tracking-wider uppercase leading-tight mt-1">
                 <span style={{
                   background: 'linear-gradient(135deg, #047857 0%, #065f46 45%, #022c22 100%)',
                   WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
