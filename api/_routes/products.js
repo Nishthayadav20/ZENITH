@@ -173,7 +173,8 @@ const { name, price, stock, category, gender, description, image, specs, customi
     if (customizable !== undefined) product.customizable = customizable;
     if (allowStrapCustomization !== undefined) product.allowStrapCustomization = allowStrapCustomization;
     if (allowCaseCustomization !== undefined) product.allowCaseCustomization = allowCaseCustomization;
-    if (discountPercent !== undefined) product.discountPercent = Number(discountPercent) || 0;
+if (allowDialCustomization !== undefined) product.allowDialCustomization = allowDialCustomization;
+if (discountPercent !== undefined) product.discountPercent = Number(discountPercent) || 0;
     if (req.body.customizationOptions !== undefined) {
       product.customizationOptions = req.body.customizationOptions;
     }

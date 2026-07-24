@@ -34,45 +34,6 @@ const PRESET_STRAPS = [
   { name: 'Brushed Steel Link', image: '/assets/strap_steel_link.jpg' }
 ];
 
-const PRESET_CASES = [
-  { name: 'Polished', color: '#c0c0c0' },
-  { name: 'Brushed', color: '#888888' },
-  { name: 'PVD Black', color: '#1a1a1a' },
-  { name: 'Rose Gold PVD', color: '#c8856a' },
-  { name: 'Matte Grey', color: '#555555' }
-];
-
-const DEFAULT_DIAL_PRICES = {
-  '#0a0a0f': 100, // Midnight Black
-  '#f5f0e8': 120, // Pearl White
-  '#1a2a4a': 140, // Navy Blue
-  '#1c3a2a': 160, // Forest Green
-  '#c8a96a': 180, // Champagne Gold
-  '#6b1515': 200, // Crimson Red
-  '#f5f5dc': 150  // Beige Dial
-};
-
-const DEFAULT_STRAP_PRICES = {
-  'Tan Leather': 150,
-  'Diamond Silver Link': 450,
-  'Classic Gold Chain': 500,
-  'Forest Green Rubber': 200,
-  'Brushed Steel Link': 300,
-  'Alligator Leather': 250,
-  'Steel Bracelet': 350,
-  'Rubber Sport': 180,
-  'Satin Fabric': 220,
-  'Titanium Mesh': 400
-};
-
-const DEFAULT_CASE_PRICES = {
-  'Polished': 100,
-  'Brushed': 150,
-  'PVD Black': 200,
-  'Rose Gold PVD': 250,
-  'Matte Grey': 300
-};
-
 const generateUnitCodePair = () => ({
   serialNumber: `KHQ-${new Date().getFullYear()}-${Math.random().toString(16).slice(2, 8).toUpperCase()}`,
   claimCode: `CLM-${Math.random().toString(16).slice(2, 12).toUpperCase()}`
@@ -170,16 +131,12 @@ export default function Admin({ onPageChange }) {
     customizationOptions: {
       dialColors: [],
       strapMaterials: [],
-      caseFinishes: [],
       customStrapName: '',
       customStrapImage: '',
       customCaseName: '',
       customCaseColor: '#ffffff',
       customStraps: [],
-      customCases: [],
-      dialPrices: {},
-      strapPrices: {},
-      casePrices: {}
+      customCases: []
     }
   });
 
@@ -197,10 +154,13 @@ export default function Admin({ onPageChange }) {
   // Customization Options temporary states and helper functions
   const [tempStrapName, setTempStrapName] = useState('');
   const [tempStrapImage, setTempStrapImage] = useState('');
-  const [tempStrapPrice, setTempStrapPrice] = useState('');
   const [tempCaseName, setTempCaseName] = useState('');
-  const [tempCaseColor, setTempCaseColor] = useState('#ffffff');
+const [tempCaseColor, setTempCaseColor] = useState('#ffffff');
   const [tempCasePrice, setTempCasePrice] = useState('');
+  const [tempDialColor, setTempDialColor] = useState('#ffffff');
+  const [tempDialPrice, setTempDialPrice] = useState('');
+  
+  
 
   const handleTempStrapImageChange = async (e) => {
     const file = e.target.files[0];
@@ -218,65 +178,49 @@ export default function Admin({ onPageChange }) {
       alert('Please enter a name for the custom strap.');
       return;
     }
-    const priceVal = Number(tempStrapPrice) || 0;
-    const newStrap = { name: tempStrapName.trim(), image: tempStrapImage, price: priceVal };
+    const newStrap = { name: tempStrapName.trim(), image: tempStrapImage };
     if (isEdit) {
       const currentStraps = editForm.customizationOptions?.customStraps || [];
-      const updatedPrices = { ...(editForm.customizationOptions?.strapPrices || {}) };
-      updatedPrices[newStrap.name] = priceVal;
       setEditForm({
         ...editForm,
         customizationOptions: {
           ...editForm.customizationOptions,
-          customStraps: [...currentStraps, newStrap],
-          strapPrices: updatedPrices
+          customStraps: [...currentStraps, newStrap]
         }
       });
     } else {
       const currentStraps = newProduct.customizationOptions?.customStraps || [];
-      const updatedPrices = { ...(newProduct.customizationOptions?.strapPrices || {}) };
-      updatedPrices[newStrap.name] = priceVal;
       setNewProduct({
         ...newProduct,
         customizationOptions: {
           ...newProduct.customizationOptions,
-          customStraps: [...currentStraps, newStrap],
-          strapPrices: updatedPrices
+          customStraps: [...currentStraps, newStrap]
         }
       });
     }
     setTempStrapName('');
     setTempStrapImage('');
-    setTempStrapPrice('');
   };
 
   const handleRemoveCustomStrap = (idx, isEdit = false) => {
     if (isEdit) {
       const currentStraps = editForm.customizationOptions?.customStraps || [];
-      const strapToRemove = currentStraps[idx];
       const updated = currentStraps.filter((_, i) => i !== idx);
-      const updatedPrices = { ...(editForm.customizationOptions?.strapPrices || {}) };
-      if (strapToRemove) delete updatedPrices[strapToRemove.name];
       setEditForm({
         ...editForm,
         customizationOptions: {
           ...editForm.customizationOptions,
-          customStraps: updated,
-          strapPrices: updatedPrices
+          customStraps: updated
         }
       });
     } else {
       const currentStraps = newProduct.customizationOptions?.customStraps || [];
-      const strapToRemove = currentStraps[idx];
       const updated = currentStraps.filter((_, i) => i !== idx);
-      const updatedPrices = { ...(newProduct.customizationOptions?.strapPrices || {}) };
-      if (strapToRemove) delete updatedPrices[strapToRemove.name];
       setNewProduct({
         ...newProduct,
         customizationOptions: {
           ...newProduct.customizationOptions,
-          customStraps: updated,
-          strapPrices: updatedPrices
+          customStraps: updated
         }
       });
     }
@@ -350,6 +294,55 @@ export default function Admin({ onPageChange }) {
       });
     }
   };
+
+  const handleAddCustomDialColor = (isEdit = false) => {
+    const priceVal = Number(tempDialPrice) || 0;
+    const target = isEdit ? editForm : newProduct;
+    const currentColors = target.customizationOptions?.dialColors || [];
+    if (currentColors.includes(tempDialColor)) {
+      alert('This dial color is already added.');
+      return;
+    }
+    const updatedColors = [...currentColors, tempDialColor];
+    const updatedPrices = { ...(target.customizationOptions?.dialPrices || {}) };
+    updatedPrices[tempDialColor] = priceVal;
+
+    if (isEdit) {
+      setEditForm({
+        ...editForm,
+        customizationOptions: { ...editForm.customizationOptions, dialColors: updatedColors, dialPrices: updatedPrices }
+      });
+    } else {
+      setNewProduct({
+        ...newProduct,
+        customizationOptions: { ...newProduct.customizationOptions, dialColors: updatedColors, dialPrices: updatedPrices }
+      });
+    }
+    setTempDialColor('#ffffff');
+    setTempDialPrice('');
+  };
+
+  const handleRemoveCustomDialColor = (hex, isEdit = false) => {
+    const target = isEdit ? editForm : newProduct;
+    const updatedColors = (target.customizationOptions?.dialColors || []).filter(c => c !== hex);
+    const updatedPrices = { ...(target.customizationOptions?.dialPrices || {}) };
+    delete updatedPrices[hex];
+
+    if (isEdit) {
+      setEditForm({
+        ...editForm,
+        customizationOptions: { ...editForm.customizationOptions, dialColors: updatedColors, dialPrices: updatedPrices }
+      });
+    } else {
+      setNewProduct({
+        ...newProduct,
+        customizationOptions: { ...newProduct.customizationOptions, dialColors: updatedColors, dialPrices: updatedPrices }
+      });
+    }
+  };
+
+
+  // Analytics State
 
 
   // Analytics State
@@ -464,19 +457,36 @@ export default function Admin({ onPageChange }) {
 
     try {
       const compressedBase64 = await compressImage(file);
+      const token = localStorage.getItem('khroniq_token');
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ image: compressedBase64 })
+      });
+      const data = await res.json();
+
+      if (!data.success) {
+        alert(data.message || 'Failed to upload strap image');
+        return;
+      }
+
       if (isEdit) {
         setEditForm(prev => ({
           ...prev,
-          customizationOptions: { ...prev.customizationOptions, customStrapImage: compressedBase64 }
+          customizationOptions: { ...prev.customizationOptions, customStrapImage: data.imageUrl }
         }));
       } else {
         setNewProduct(prev => ({
           ...prev,
-          customizationOptions: { ...prev.customizationOptions, customStrapImage: compressedBase64 }
+          customizationOptions: { ...prev.customizationOptions, customStrapImage: data.imageUrl }
         }));
       }
     } catch (err) {
-      console.error('Strap image compression error:', err);
+      console.error('Strap image upload error:', err);
+      alert('Failed to upload strap image');
     }
   };
 
@@ -533,107 +543,6 @@ export default function Admin({ onPageChange }) {
         customizationOptions: {
           ...newProduct.customizationOptions,
           dialColors: updatedColors
-        }
-      });
-    }
-  };
-
-  const handleDialPriceChange = (colorHex, price, isEdit = false) => {
-    const target = isEdit ? editForm : newProduct;
-    const currentPrices = { ...(target.customizationOptions?.dialPrices || {}) };
-    currentPrices[colorHex] = Number(price) || 0;
-    
-    if (isEdit) {
-      setEditForm({
-        ...editForm,
-        customizationOptions: {
-          ...editForm.customizationOptions,
-          dialPrices: currentPrices
-        }
-      });
-    } else {
-      setNewProduct({
-        ...newProduct,
-        customizationOptions: {
-          ...newProduct.customizationOptions,
-          dialPrices: currentPrices
-        }
-      });
-    }
-  };
-
-  const handleStrapPriceChange = (strapName, price, isEdit = false) => {
-    const target = isEdit ? editForm : newProduct;
-    const currentPrices = { ...(target.customizationOptions?.strapPrices || {}) };
-    currentPrices[strapName] = Number(price) || 0;
-    
-    if (isEdit) {
-      setEditForm({
-        ...editForm,
-        customizationOptions: {
-          ...editForm.customizationOptions,
-          strapPrices: currentPrices
-        }
-      });
-    } else {
-      setNewProduct({
-        ...newProduct,
-        customizationOptions: {
-          ...newProduct.customizationOptions,
-          strapPrices: currentPrices
-        }
-      });
-    }
-  };
-
-  const handleCasePriceChange = (caseFinishName, price, isEdit = false) => {
-    const target = isEdit ? editForm : newProduct;
-    const currentPrices = { ...(target.customizationOptions?.casePrices || {}) };
-    currentPrices[caseFinishName] = Number(price) || 0;
-    
-    if (isEdit) {
-      setEditForm({
-        ...editForm,
-        customizationOptions: {
-          ...editForm.customizationOptions,
-          casePrices: currentPrices
-        }
-      });
-    } else {
-      setNewProduct({
-        ...newProduct,
-        customizationOptions: {
-          ...newProduct.customizationOptions,
-          casePrices: currentPrices
-        }
-      });
-    }
-  };
-
-  const handleCaseFinishCheckboxChange = (finishName, isEdit = false) => {
-    const target = isEdit ? editForm : newProduct;
-    const currentFinishes = target.customizationOptions?.caseFinishes || [];
-    let updatedFinishes;
-    if (currentFinishes.includes(finishName)) {
-      updatedFinishes = currentFinishes.filter(f => f !== finishName);
-    } else {
-      updatedFinishes = [...currentFinishes, finishName];
-    }
-    
-    if (isEdit) {
-      setEditForm({
-        ...editForm,
-        customizationOptions: {
-          ...editForm.customizationOptions,
-          caseFinishes: updatedFinishes
-        }
-      });
-    } else {
-      setNewProduct({
-        ...newProduct,
-        customizationOptions: {
-          ...newProduct.customizationOptions,
-          caseFinishes: updatedFinishes
         }
       });
     }
@@ -1070,16 +979,10 @@ const handleEditImageUpload = async (e) => {
       customizationOptions: {
         dialColors: product.customizationOptions?.dialColors || [],
         strapMaterials: product.customizationOptions?.strapMaterials || [],
-        caseFinishes: product.customizationOptions?.caseFinishes || [],
         customStrapName: product.customizationOptions?.customStrapName || '',
         customStrapImage: product.customizationOptions?.customStrapImage || '',
         customCaseName: product.customizationOptions?.customCaseName || '',
-        customCaseColor: product.customizationOptions?.customCaseColor || '#ffffff',
-        customStraps: product.customizationOptions?.customStraps || [],
-        customCases: product.customizationOptions?.customCases || [],
-        dialPrices: product.customizationOptions?.dialPrices || {},
-        strapPrices: product.customizationOptions?.strapPrices || {},
-        casePrices: product.customizationOptions?.casePrices || {}
+        customCaseColor: product.customizationOptions?.customCaseColor || '#ffffff'
       }
     });
   };
@@ -1436,7 +1339,7 @@ const handleEditImageUpload = async (e) => {
             <div className="flex items-center gap-2">
               <button
                 onClick={handleDownloadInventoryCSV}
-                className="px-4 py-2 bg-luxury-gold/10 hover:bg-luxury-gold/20 border border-black text-black text-[10px] font-black tracking-widest uppercase rounded flex items-center gap-2 cursor-pointer transition"
+                className="px-4 py-2 bg-luxury-gold/10 hover:bg-luxury-gold/20 border-black text-black text-[10px] font-black tracking-widest uppercase rounded flex items-center gap-2 cursor-pointer transition"
               >
                 <Download size={13} />
                 Export Serial & Claim Codes (CSV)
@@ -1717,29 +1620,17 @@ const handleEditImageUpload = async (e) => {
                               <div className="grid grid-cols-2 gap-2">
                                 {PRESET_STRAPS.map(s => {
                                   const isChecked = (newProduct.customizationOptions?.strapMaterials || []).includes(s.name);
-                                  const priceVal = newProduct.customizationOptions?.strapPrices?.[s.name] || '';
                                   return (
-                                    <div key={s.name} className="flex flex-col p-1.5 rounded border border-white/5 bg-luxury-dark/85 space-y-1">
-                                      <label className="flex items-center space-x-2 cursor-pointer select-none">
-                                        <input
-                                          type="checkbox"
-                                          checked={isChecked}
-                                          onChange={() => handleStrapCheckboxChange(s.name, false)}
-                                          className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
-                                        />
-                                        <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded" />
-                                        <span className="text-[10px] text-gray-300 font-medium">{s.name}</span>
-                                      </label>
-                                      {isChecked && (
-                                        <input
-                                          type="number"
-                                          placeholder={`Default: $${DEFAULT_STRAP_PRICES[s.name] || 250}`}
-                                          value={priceVal}
-                                          onChange={(e) => handleStrapPriceChange(s.name, e.target.value, false)}
-                                          className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
-                                        />
-                                      )}
-                                    </div>
+                                    <label key={s.name} className="flex items-center space-x-2 p-1.5 rounded border border-white/5 bg-luxury-dark/85 cursor-pointer hover:border-white/10 select-none">
+                                      <input
+                                        type="checkbox"
+                                        checked={isChecked}
+                                        onChange={() => handleStrapCheckboxChange(s.name, false)}
+                                        className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
+                                      />
+                                      <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded" />
+                                      <span className="text-[10px] text-gray-300 font-medium">{s.name}</span>
+                                    </label>
                                   );
                                 })}
                               </div>
@@ -1748,19 +1639,12 @@ const handleEditImageUpload = async (e) => {
                             {/* Multiple Custom Straps Addition */}
                             <div className="space-y-2 pt-2 border-t border-white/5">
                               <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Straps</label>
-                              <div className="grid grid-cols-3 gap-2">
+                              <div className="grid grid-cols-2 gap-2">
                                 <input
                                   type="text"
                                   placeholder="Strap Name..."
                                   value={tempStrapName}
                                   onChange={(e) => setTempStrapName(e.target.value)}
-                                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
-                                />
-                                <input
-                                  type="number"
-                                  placeholder="Price modifier ($)..."
-                                  value={tempStrapPrice}
-                                  onChange={(e) => setTempStrapPrice(e.target.value)}
                                   className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
                                 />
                                 <input
@@ -1794,16 +1678,13 @@ const handleEditImageUpload = async (e) => {
                                         <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded bg-white/5" />
                                         <span className="text-[9px] text-gray-300 font-medium">{s.name}</span>
                                       </div>
-                                      <div className="flex items-center space-x-2">
-                                        <span className="text-[9px] text-gray-400 font-mono">+${s.price || 0}</span>
-                                        <button
-                                          type="button"
-                                          onClick={() => handleRemoveCustomStrap(idx, false)}
-                                          className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
-                                        >
-                                          Remove
-                                        </button>
-                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleRemoveCustomStrap(idx, false)}
+                                        className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
+                                      >
+                                        Remove
+                                      </button>
                                     </div>
                                   ))}
                                 </div>
@@ -1827,43 +1708,9 @@ const handleEditImageUpload = async (e) => {
                           </label>
                         </div>
                         {newProduct.allowCaseCustomization && (
-                          <div className="pl-6 space-y-3 border-l border-white/10 my-2">
-                            {/* Preset Case Finishes Selectors */}
-                            <div className="space-y-1.5">
-                              <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Enable Preset Case Finishes</label>
-                              <div className="grid grid-cols-2 gap-2">
-                                {PRESET_CASES.map(c => {
-                                  const isChecked = (newProduct.customizationOptions?.caseFinishes || []).includes(c.name);
-                                  const priceVal = newProduct.customizationOptions?.casePrices?.[c.name] || '';
-                                  return (
-                                    <div key={c.name} className="flex flex-col p-1.5 rounded border border-white/5 bg-luxury-dark/85 space-y-1">
-                                      <label className="flex items-center space-x-2 cursor-pointer select-none">
-                                        <input
-                                          type="checkbox"
-                                          checked={isChecked}
-                                          onChange={() => handleCaseFinishCheckboxChange(c.name, false)}
-                                          className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
-                                        />
-                                        <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: c.color }} />
-                                        <span className="text-[10px] text-gray-300 font-medium">{c.name}</span>
-                                      </label>
-                                      {isChecked && (
-                                        <input
-                                          type="number"
-                                          placeholder={`Default: $${DEFAULT_CASE_PRICES[c.name] || 200}`}
-                                          value={priceVal}
-                                          onChange={(e) => handleCasePriceChange(c.name, e.target.value, false)}
-                                          className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
-                                        />
-                                      )}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-
+                          <div className="pl-6 space-y-2 border-l border-white/10 my-2">
                             {/* Multiple Custom Cases Addition */}
-                            <div className="space-y-1.5 pt-2 border-t border-white/5">
+                            <div className="space-y-1.5">
                               <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Case Finish (Optional)</label>
                               <div className="grid grid-cols-3 gap-2">
                                 <input
@@ -1952,31 +1799,71 @@ const handleEditImageUpload = async (e) => {
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                               {DIAL_COLOR_PRESETS.map(color => {
                                 const isChecked = (newProduct.customizationOptions?.dialColors || []).includes(color.hex);
-                                const priceVal = newProduct.customizationOptions?.dialPrices?.[color.hex] || '';
                                 return (
-                                  <div key={color.hex} className="flex flex-col p-1.5 rounded border border-white/5 bg-luxury-dark/80 space-y-1">
-                                    <label className="flex items-center space-x-2 cursor-pointer select-none">
-                                      <input
-                                        type="checkbox"
-                                        checked={isChecked}
-                                        onChange={() => handleDialColorCheckboxChange(color.hex, false)}
-                                        className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
-                                      />
-                                      <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: color.hex }} />
-                                      <span className="text-[10px] text-gray-300 font-medium">{color.name}</span>
-                                    </label>
-                                    {isChecked && (
-                                      <input
-                                        type="number"
-                                        placeholder={`Default: $${DEFAULT_DIAL_PRICES[color.hex] || 150}`}
-                                        value={priceVal}
-                                        onChange={(e) => handleDialPriceChange(color.hex, e.target.value, false)}
-                                        className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
-                                      />
-                                    )}
-                                  </div>
+                                  <label key={color.hex} className="flex items-center space-x-2 p-1.5 rounded border border-white/5 bg-luxury-dark/80 cursor-pointer hover:border-white/10 select-none">
+                                    <input
+                                      type="checkbox"
+                                      checked={isChecked}
+                                      onChange={() => handleDialColorCheckboxChange(color.hex, false)}
+                                      className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
+                                    />
+                                    <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: color.hex }} />
+                                    <span className="text-[10px] text-gray-300 font-medium">{color.name}</span>
+                                  </label>
                                 );
                               })}
+                            </div>
+
+                            {/* Add Custom Dial Color */}
+                            <div className="space-y-1.5 pt-2 border-t border-white/5">
+                              <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Dial Color (Optional)</label>
+                              <div className="grid grid-cols-2 gap-2">
+                                <div className="flex items-center space-x-2">
+                                  <input
+                                    type="color"
+                                    value={tempDialColor}
+                                    onChange={(e) => setTempDialColor(e.target.value)}
+                                    className="w-8 h-8 rounded border-0 bg-transparent cursor-pointer"
+                                  />
+                                  <span className="text-[10px] text-gray-300 font-mono">{tempDialColor}</span>
+                                </div>
+                                <input
+                                  type="number"
+                                  placeholder="Price modifier ($)..."
+                                  value={tempDialPrice}
+                                  onChange={(e) => setTempDialPrice(e.target.value)}
+                                  className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
+                                />
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleAddCustomDialColor(false)}
+                                className="w-full py-1.5 bg-luxury-gold hover:bg-neutral-100 text-neutral-950 font-bold text-[9px] uppercase tracking-wider rounded transition cursor-pointer"
+                              >
+                                Add Dial Color
+                              </button>
+                              {((newProduct.customizationOptions?.dialColors || []).filter(hex => !DIAL_COLOR_PRESETS.some(p => p.hex === hex)).length > 0) && (
+                                <div className="space-y-1.5 max-h-32 overflow-y-auto scrollbar-thin mt-2">
+                                  {(newProduct.customizationOptions.dialColors || []).filter(hex => !DIAL_COLOR_PRESETS.some(p => p.hex === hex)).map((hex, idx) => (
+                                    <div key={idx} className="flex items-center justify-between bg-black/35 p-1.5 rounded border border-white/5">
+                                      <div className="flex items-center space-x-2">
+                                        <span className="w-4 h-4 rounded-full border border-white/10" style={{ backgroundColor: hex }} />
+                                        <span className="text-[9px] text-gray-300 font-mono">{hex}</span>
+                                      </div>
+                                      <div className="flex items-center space-x-2">
+                                        <span className="text-[9px] text-gray-400 font-mono">+${newProduct.customizationOptions?.dialPrices?.[hex] || 0}</span>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveCustomDialColor(hex, false)}
+                                          className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
+                                        >
+                                          Remove
+                                        </button>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           </div>
                         )}
@@ -2290,29 +2177,17 @@ const handleEditImageUpload = async (e) => {
                                 <div className="grid grid-cols-2 gap-2">
                                   {PRESET_STRAPS.map(s => {
                                     const isChecked = (editForm.customizationOptions?.strapMaterials || []).includes(s.name);
-                                    const priceVal = editForm.customizationOptions?.strapPrices?.[s.name] || '';
                                     return (
-                                      <div key={s.name} className="flex flex-col p-1.5 rounded border border-white/5 bg-luxury-dark/85 space-y-1">
-                                        <label className="flex items-center space-x-2 cursor-pointer select-none">
-                                          <input
-                                            type="checkbox"
-                                            checked={isChecked}
-                                            onChange={() => handleStrapCheckboxChange(s.name, true)}
-                                            className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
-                                          />
-                                          <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded" />
-                                          <span className="text-[10px] text-gray-300 font-medium">{s.name}</span>
-                                        </label>
-                                        {isChecked && (
-                                          <input
-                                            type="number"
-                                            placeholder={`Default: $${DEFAULT_STRAP_PRICES[s.name] || 250}`}
-                                            value={priceVal}
-                                            onChange={(e) => handleStrapPriceChange(s.name, e.target.value, true)}
-                                            className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
-                                          />
-                                        )}
-                                      </div>
+                                      <label key={s.name} className="flex items-center space-x-2 p-1.5 rounded border border-white/5 bg-luxury-dark/85 cursor-pointer hover:border-white/10 select-none">
+                                        <input
+                                          type="checkbox"
+                                          checked={isChecked}
+                                          onChange={() => handleStrapCheckboxChange(s.name, true)}
+                                          className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
+                                        />
+                                        <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded" />
+                                        <span className="text-[10px] text-gray-300 font-medium">{s.name}</span>
+                                      </label>
                                     );
                                   })}
                                 </div>
@@ -2321,19 +2196,12 @@ const handleEditImageUpload = async (e) => {
                               {/* Multiple Custom Straps Addition */}
                               <div className="space-y-2 pt-2 border-t border-white/5">
                                 <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Straps</label>
-                                <div className="grid grid-cols-3 gap-2">
+                                <div className="grid grid-cols-2 gap-2">
                                   <input
                                     type="text"
                                     placeholder="Strap Name..."
                                     value={tempStrapName}
                                     onChange={(e) => setTempStrapName(e.target.value)}
-                                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
-                                  />
-                                  <input
-                                    type="number"
-                                    placeholder="Price modifier ($)..."
-                                    value={tempStrapPrice}
-                                    onChange={(e) => setTempStrapPrice(e.target.value)}
                                     className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
                                   />
                                   <input
@@ -2367,16 +2235,13 @@ const handleEditImageUpload = async (e) => {
                                           <img src={s.image} alt={s.name} className="w-6 h-6 object-contain rounded bg-white/5" />
                                           <span className="text-[9px] text-gray-300 font-medium">{s.name}</span>
                                         </div>
-                                        <div className="flex items-center space-x-2">
-                                          <span className="text-[9px] text-gray-400 font-mono">+${s.price || 0}</span>
-                                          <button
-                                            type="button"
-                                            onClick={() => handleRemoveCustomStrap(idx, true)}
-                                            className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
-                                          >
-                                            Remove
-                                          </button>
-                                        </div>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveCustomStrap(idx, true)}
+                                          className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
+                                        >
+                                          Remove
+                                        </button>
                                       </div>
                                     ))}
                                   </div>
@@ -2399,44 +2264,10 @@ const handleEditImageUpload = async (e) => {
                               Allow Case Finish Customization
                             </label>
                           </div>
-                          {editForm.allowCaseCustomization && (
-                            <div className="pl-6 space-y-3 border-l border-white/10 my-2">
-                              {/* Preset Case Finishes Selectors */}
-                              <div className="space-y-1.5">
-                                <label className="text-[8px] text-gray-400 font-bold uppercase tracking-wider block">Enable Preset Case Finishes</label>
-                                <div className="grid grid-cols-2 gap-2">
-                                  {PRESET_CASES.map(c => {
-                                    const isChecked = (editForm.customizationOptions?.caseFinishes || []).includes(c.name);
-                                    const priceVal = editForm.customizationOptions?.casePrices?.[c.name] || '';
-                                    return (
-                                      <div key={c.name} className="flex flex-col p-1.5 rounded border border-white/5 bg-luxury-dark/85 space-y-1">
-                                        <label className="flex items-center space-x-2 cursor-pointer select-none">
-                                          <input
-                                            type="checkbox"
-                                            checked={isChecked}
-                                            onChange={() => handleCaseFinishCheckboxChange(c.name, true)}
-                                            className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
-                                          />
-                                          <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: c.color }} />
-                                          <span className="text-[10px] text-gray-300 font-medium">{c.name}</span>
-                                        </label>
-                                        {isChecked && (
-                                          <input
-                                            type="number"
-                                            placeholder={`Default: $${DEFAULT_CASE_PRICES[c.name] || 200}`}
-                                            value={priceVal}
-                                            onChange={(e) => handleCasePriceChange(c.name, e.target.value, true)}
-                                            className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
-                                          />
-                                        )}
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-
+                           {editForm.allowCaseCustomization && (
+                            <div className="pl-6 space-y-2 border-l border-white/10 my-2">
                               {/* Multiple Custom Cases Addition */}
-                              <div className="space-y-1.5 pt-2 border-t border-white/5">
+                              <div className="space-y-1.5">
                                 <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Case Finish (Optional)</label>
                                 <div className="grid grid-cols-3 gap-2">
                                   <input
@@ -2525,31 +2356,72 @@ const handleEditImageUpload = async (e) => {
                               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                 {DIAL_COLOR_PRESETS.map(color => {
                                   const isChecked = (editForm.customizationOptions?.dialColors || []).includes(color.hex);
-                                  const priceVal = editForm.customizationOptions?.dialPrices?.[color.hex] || '';
                                   return (
-                                    <div key={color.hex} className="flex flex-col p-1.5 rounded border border-white/5 bg-luxury-dark/80 space-y-1">
-                                      <label className="flex items-center space-x-2 cursor-pointer select-none">
-                                        <input
-                                          type="checkbox"
-                                          checked={isChecked}
-                                          onChange={() => handleDialColorCheckboxChange(color.hex, true)}
-                                          className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
-                                        />
-                                        <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: color.hex }} />
-                                        <span className="text-[10px] text-gray-300 font-medium">{color.name}</span>
-                                      </label>
-                                      {isChecked && (
-                                        <input
-                                          type="number"
-                                          placeholder={`Default: $${DEFAULT_DIAL_PRICES[color.hex] || 150}`}
-                                          value={priceVal}
-                                          onChange={(e) => handleDialPriceChange(color.hex, e.target.value, true)}
-                                          className="w-full bg-black/40 border border-white/10 rounded text-white text-[9px] p-1 focus:outline-none"
-                                        />
-                                      )}
-                                    </div>
+                                    <label key={color.hex} className="flex items-center space-x-2 p-1.5 rounded border border-white/5 bg-luxury-dark/80 cursor-pointer hover:border-white/10 select-none">
+                                      <input
+                                        type="checkbox"
+                                        checked={isChecked}
+                                        onChange={() => handleDialColorCheckboxChange(color.hex, true)}
+                                        className="w-3.5 h-3.5 accent-luxury-gold cursor-pointer"
+                                      />
+                                      <span className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ backgroundColor: color.hex }} />
+                                      <span className="text-[10px] text-gray-300 font-medium">{color.name}</span>
+                                    </label>
                                   );
                                 })}
+                                
+                              </div>
+
+                              {/* Add Custom Dial Color */}
+                              <div className="space-y-1.5 pt-2 border-t border-white/5">
+                                <label className="text-[9px] text-luxury-gold font-bold uppercase tracking-wider block">Add Custom Dial Color (Optional)</label>
+                                <div className="grid grid-cols-2 gap-2">
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="color"
+                                      value={tempDialColor}
+                                      onChange={(e) => setTempDialColor(e.target.value)}
+                                      className="w-8 h-8 rounded border-0 bg-transparent cursor-pointer"
+                                    />
+                                    <span className="text-[10px] text-gray-300 font-mono">{tempDialColor}</span>
+                                  </div>
+                                  <input
+                                    type="number"
+                                    placeholder="Price modifier ($)..."
+                                    value={tempDialPrice}
+                                    onChange={(e) => setTempDialPrice(e.target.value)}
+                                    className="w-full bg-luxury-dark border border-white/10 rounded text-white text-xs p-1.5 focus:outline-none"
+                                  />
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => handleAddCustomDialColor(true)}
+                                  className="w-full py-1.5 bg-luxury-gold hover:bg-neutral-100 text-neutral-950 font-bold text-[9px] uppercase tracking-wider rounded transition cursor-pointer"
+                                >
+                                  Add Dial Color
+                                </button>
+                                {((editForm.customizationOptions?.dialColors || []).filter(hex => !DIAL_COLOR_PRESETS.some(p => p.hex === hex)).length > 0) && (
+                                  <div className="space-y-1.5 max-h-32 overflow-y-auto scrollbar-thin mt-2">
+                                    {(editForm.customizationOptions.dialColors || []).filter(hex => !DIAL_COLOR_PRESETS.some(p => p.hex === hex)).map((hex, idx) => (
+                                      <div key={idx} className="flex items-center justify-between bg-black/35 p-1.5 rounded border border-white/5">
+                                        <div className="flex items-center space-x-2">
+                                          <span className="w-4 h-4 rounded-full border border-white/10" style={{ backgroundColor: hex }} />
+                                          <span className="text-[9px] text-gray-300 font-mono">{hex}</span>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                          <span className="text-[9px] text-gray-400 font-mono">+${editForm.customizationOptions?.dialPrices?.[hex] || 0}</span>
+                                          <button
+                                            type="button"
+                                            onClick={() => handleRemoveCustomDialColor(hex, true)}
+                                            className="text-[9px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wider cursor-pointer"
+                                          >
+                                            Remove
+                                          </button>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
                             </div>
                           )}
@@ -3426,4 +3298,3 @@ const handleEditImageUpload = async (e) => {
     </div>
   );
 }
-
